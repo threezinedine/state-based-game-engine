@@ -10,19 +10,20 @@ file(
     src/*.cpp
 )
 
-add_executable(
-    Example
+add_library(
+    ${PROJECT_NAME}
+    STATIC
     ${SOURCES}
 )
 
 target_include_directories(
-    Example
+    ${PROJECT_NAME}
     PUBLIC
-    .
+    ./include
 )
 
 target_link_libraries(
-    Example
+    ${PROJECT_NAME}
     PUBLIC
     raylib
 )
@@ -47,6 +48,9 @@ target_include_directories(
 target_link_libraries(
     ${PROJECT_NAME}_Test
     PUBLIC
+    ${PROJECT_NAME}
     gtest 
     gmock
 )
+
+add_subdirectory(examples)
