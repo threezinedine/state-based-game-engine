@@ -68,29 +68,29 @@ include CMakeFiles/Example.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Example.dir/flags.make
 
-CMakeFiles/Example.dir/main.cpp.obj: CMakeFiles/Example.dir/flags.make
-CMakeFiles/Example.dir/main.cpp.obj: CMakeFiles/Example.dir/includes_CXX.rsp
-CMakeFiles/Example.dir/main.cpp.obj: C:/Users/Acer/Games\ Dev/state-based-game-engine/main.cpp
-CMakeFiles/Example.dir/main.cpp.obj: CMakeFiles/Example.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Acer\Games Dev\state-based-game-engine\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Example.dir/main.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Example.dir/main.cpp.obj -MF CMakeFiles\Example.dir\main.cpp.obj.d -o CMakeFiles\Example.dir\main.cpp.obj -c "C:\Users\Acer\Games Dev\state-based-game-engine\main.cpp"
+CMakeFiles/Example.dir/src/main.cpp.obj: CMakeFiles/Example.dir/flags.make
+CMakeFiles/Example.dir/src/main.cpp.obj: CMakeFiles/Example.dir/includes_CXX.rsp
+CMakeFiles/Example.dir/src/main.cpp.obj: C:/Users/Acer/Games\ Dev/state-based-game-engine/src/main.cpp
+CMakeFiles/Example.dir/src/main.cpp.obj: CMakeFiles/Example.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Acer\Games Dev\state-based-game-engine\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Example.dir/src/main.cpp.obj"
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Example.dir/src/main.cpp.obj -MF CMakeFiles\Example.dir\src\main.cpp.obj.d -o CMakeFiles\Example.dir\src\main.cpp.obj -c "C:\Users\Acer\Games Dev\state-based-game-engine\src\main.cpp"
 
-CMakeFiles/Example.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Example.dir/main.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Acer\Games Dev\state-based-game-engine\main.cpp" > CMakeFiles\Example.dir\main.cpp.i
+CMakeFiles/Example.dir/src/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Example.dir/src/main.cpp.i"
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Acer\Games Dev\state-based-game-engine\src\main.cpp" > CMakeFiles\Example.dir\src\main.cpp.i
 
-CMakeFiles/Example.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Example.dir/main.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Acer\Games Dev\state-based-game-engine\main.cpp" -o CMakeFiles\Example.dir\main.cpp.s
+CMakeFiles/Example.dir/src/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Example.dir/src/main.cpp.s"
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Acer\Games Dev\state-based-game-engine\src\main.cpp" -o CMakeFiles\Example.dir\src\main.cpp.s
 
 # Object files for target Example
 Example_OBJECTS = \
-"CMakeFiles/Example.dir/main.cpp.obj"
+"CMakeFiles/Example.dir/src/main.cpp.obj"
 
 # External object files for target Example
 Example_EXTERNAL_OBJECTS =
 
-Example.exe: CMakeFiles/Example.dir/main.cpp.obj
+Example.exe: CMakeFiles/Example.dir/src/main.cpp.obj
 Example.exe: CMakeFiles/Example.dir/build.make
 Example.exe: vendors/raylib/raylib/libraylib.a
 Example.exe: CMakeFiles/Example.dir/linklibs.rsp

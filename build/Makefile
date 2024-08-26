@@ -106,7 +106,7 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target list_install_components
 list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\" \"gmock\" \"gtest\""
 .PHONY : list_install_components
 
 # Special rule for the target list_install_components
@@ -194,6 +194,71 @@ Example/fast:
 .PHONY : Example/fast
 
 #=============================================================================
+# Target rules for targets named NTTEngine_Test
+
+# Build rule for target.
+NTTEngine_Test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NTTEngine_Test
+.PHONY : NTTEngine_Test
+
+# fast build rule for target.
+NTTEngine_Test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\NTTEngine_Test.dir\build.make CMakeFiles/NTTEngine_Test.dir/build
+.PHONY : NTTEngine_Test/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f vendors\googletest\googlemock\CMakeFiles\gmock.dir\build.make vendors/googletest/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f vendors\googletest\googlemock\CMakeFiles\gmock_main.dir\build.make vendors/googletest/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f vendors\googletest\googletest\CMakeFiles\gtest.dir\build.make vendors/googletest/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f vendors\googletest\googletest\CMakeFiles\gtest_main.dir\build.make vendors/googletest/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
+
+#=============================================================================
 # Target rules for targets named uninstall
 
 # Build rule for target.
@@ -245,29 +310,53 @@ update_mappings/fast:
 	$(MAKE) $(MAKESILENT) -f vendors\raylib\raylib\external\glfw\src\CMakeFiles\update_mappings.dir\build.make vendors/raylib/raylib/external/glfw/src/CMakeFiles/update_mappings.dir/build
 .PHONY : update_mappings/fast
 
-main.obj: main.cpp.obj
-.PHONY : main.obj
+src/main.obj: src/main.cpp.obj
+.PHONY : src/main.obj
 
 # target to build an object file
-main.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Example.dir\build.make CMakeFiles/Example.dir/main.cpp.obj
-.PHONY : main.cpp.obj
+src/main.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Example.dir\build.make CMakeFiles/Example.dir/src/main.cpp.obj
+.PHONY : src/main.cpp.obj
 
-main.i: main.cpp.i
-.PHONY : main.i
+src/main.i: src/main.cpp.i
+.PHONY : src/main.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Example.dir\build.make CMakeFiles/Example.dir/main.cpp.i
-.PHONY : main.cpp.i
+src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Example.dir\build.make CMakeFiles/Example.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+src/main.s: src/main.cpp.s
+.PHONY : src/main.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Example.dir\build.make CMakeFiles/Example.dir/main.cpp.s
-.PHONY : main.cpp.s
+src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Example.dir\build.make CMakeFiles/Example.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
+
+test/_test.obj: test/_test.cpp.obj
+.PHONY : test/_test.obj
+
+# target to build an object file
+test/_test.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\NTTEngine_Test.dir\build.make CMakeFiles/NTTEngine_Test.dir/test/_test.cpp.obj
+.PHONY : test/_test.cpp.obj
+
+test/_test.i: test/_test.cpp.i
+.PHONY : test/_test.i
+
+# target to preprocess a source file
+test/_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\NTTEngine_Test.dir\build.make CMakeFiles/NTTEngine_Test.dir/test/_test.cpp.i
+.PHONY : test/_test.cpp.i
+
+test/_test.s: test/_test.cpp.s
+.PHONY : test/_test.s
+
+# target to generate assembly for a file
+test/_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\NTTEngine_Test.dir\build.make CMakeFiles/NTTEngine_Test.dir/test/_test.cpp.s
+.PHONY : test/_test.cpp.s
 
 # Help Target
 help:
@@ -286,11 +375,19 @@ help:
 	@echo ... uninstall
 	@echo ... update_mappings
 	@echo ... Example
+	@echo ... NTTEngine_Test
 	@echo ... glfw
+	@echo ... gmock
+	@echo ... gmock_main
+	@echo ... gtest
+	@echo ... gtest_main
 	@echo ... raylib
-	@echo ... main.obj
-	@echo ... main.i
-	@echo ... main.s
+	@echo ... src/main.obj
+	@echo ... src/main.i
+	@echo ... src/main.s
+	@echo ... test/_test.obj
+	@echo ... test/_test.i
+	@echo ... test/_test.s
 .PHONY : help
 
 

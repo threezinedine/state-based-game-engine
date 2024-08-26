@@ -12,6 +12,7 @@
 
 set(CPACK_BUILD_SOURCE_DIRS "C:/Users/Acer/Games Dev/state-based-game-engine;C:/Users/Acer/Games Dev/state-based-game-engine/build")
 set(CPACK_CMAKE_GENERATOR "MinGW Makefiles")
+set(CPACK_COMPONENTS_ALL "Unspecified;gmock;gtest")
 set(CPACK_COMPONENT_UNSPECIFIED_HIDDEN "TRUE")
 set(CPACK_COMPONENT_UNSPECIFIED_REQUIRED "TRUE")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libatomic1, libc6, libglfw3, libglu1-mesa | libglu1, libglx0, libopengl0")

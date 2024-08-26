@@ -17,6 +17,9 @@
 //Build the examples.
 BUILD_EXAMPLES:BOOL=OFF
 
+//Builds the googlemock subproject
+BUILD_GMOCK:BOOL=ON
+
 //Build shared libraries
 BUILD_SHARED_LIBS:BOOL=OFF
 
@@ -353,8 +356,16 @@ GLFW_SOURCE_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/vendors/r
 //Force use of high-performance GPU on hybrid systems
 GLFW_USE_HYBRID_HPG:BOOL=OFF
 
+//Use Abseil and RE2. Requires Abseil and RE2 to be separately
+// added to the build.
+GTEST_HAS_ABSL:BOOL=OFF
+
 //Include everything disabled by default (for CI usage
 INCLUDE_EVERYTHING:BOOL=OFF
+
+//Enable installation of googletest. (Projects embedding googletest
+// may want to turn this OFF.)
+INSTALL_GTEST:BOOL=ON
 
 //Value Computed by CMake
 NTTEngine_BINARY_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/build
@@ -382,6 +393,52 @@ USE_EXTERNAL_GLFW:STRING=OFF
 
 //Compile static library as position-independent code
 WITH_PIC:BOOL=OFF
+
+//Value Computed by CMake
+gmock_BINARY_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/build/vendors/googletest/googlemock
+
+//Value Computed by CMake
+gmock_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+gmock_SOURCE_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/vendors/googletest/googlemock
+
+//Build all of Google Mock's own tests.
+gmock_build_tests:BOOL=OFF
+
+//Value Computed by CMake
+googletest-distribution_BINARY_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/build/vendors/googletest
+
+//Value Computed by CMake
+googletest-distribution_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+googletest-distribution_SOURCE_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/vendors/googletest
+
+//Value Computed by CMake
+gtest_BINARY_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/build/vendors/googletest/googletest
+
+//Value Computed by CMake
+gtest_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+gtest_SOURCE_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/vendors/googletest/googletest
+
+//Build gtest's sample programs.
+gtest_build_samples:BOOL=OFF
+
+//Build all of gtest's own tests.
+gtest_build_tests:BOOL=OFF
+
+//Disable uses of pthreads in gtest.
+gtest_disable_pthreads:BOOL=OFF
+
+//Use shared (DLL) run-time lib even when Google Test is built
+// as static lib.
+gtest_force_shared_crt:BOOL=OFF
+
+//Build gtest with internal symbols hidden in shared libraries.
+gtest_hide_internal_symbols:BOOL=OFF
 
 //Value Computed by CMake
 raylib_BINARY_DIR:STATIC=C:/Users/Acer/Games Dev/state-based-game-engine/build/vendors/raylib/raylib
@@ -536,7 +593,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=6
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=9
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -627,4 +684,19 @@ XINPUT_H_FOUND:INTERNAL=1
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/NTTEngine
+cmake_package_name:INTERNAL=GTest
+generated_dir:INTERNAL=C:/Users/Acer/Games Dev/state-based-game-engine/build/vendors/googletest/googletest/generated
+//ADVANCED property for variable: gmock_build_tests
+gmock_build_tests-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_build_samples
+gtest_build_samples-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_build_tests
+gtest_build_tests-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_disable_pthreads
+gtest_disable_pthreads-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_force_shared_crt
+gtest_force_shared_crt-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gtest_hide_internal_symbols
+gtest_hide_internal_symbols-ADVANCED:INTERNAL=1
+targets_export_name:INTERNAL=GTestTargets
 
