@@ -2,4 +2,5 @@
 
 #include "defines.hpp"
 #include "pointers.hpp"
-#include "IApplication.hpp"
+#include "Application.hpp"
+#include "core/core.hpp"

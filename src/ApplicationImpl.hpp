@@ -1,14 +1,14 @@
 #pragma once
 
-#include <NTTEngine/IApplication.hpp>
+#include <NTTEngine/Application.hpp>
 
 namespace ntt
 {
-    class Application : public IApplication
+    class ApplicationImpl : public Application
     {
     public:
-        Application(u16 screenWidth, u16 screenHeight, const char *title);
-        ~Application() override;
+        ApplicationImpl(u16 screenWidth, u16 screenHeight, const char *title);
+        ~ApplicationImpl() override;
 
         void Begin() override;
         bool ShouldClose() override;
