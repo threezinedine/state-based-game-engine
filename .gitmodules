@@ -1,0 +1,3 @@
+[submodule "vendors/raylib"]
+	path = vendors/raylib
+	url = https://github.com/raysan5/raylib.git
