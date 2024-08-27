@@ -16,6 +16,7 @@ namespace ntt
     void ApplicationImpl::Begin()
     {
         ENGINE_INFO("Begin the application");
+        SetTraceLogLevel(LOG_NONE);
         InitWindow(m_screenWidth, m_screenHeight, m_title);
         SetTargetFPS(60);
     }
@@ -28,7 +29,7 @@ namespace ntt
     void ApplicationImpl::Update(f32 deltaTime)
     {
         BeginDrawing();
-        ClearBackground(LIGHTGRAY);
+        ClearBackground(BLACK);
         EndDrawing();
     }
 
