@@ -5,6 +5,8 @@
 
 namespace ntt
 {
+    using namespace memory;
+
     ApplicationImpl::ApplicationImpl(u16 screenWidth, u16 screenHeight, const char *title)
         : m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_title(title)
     {

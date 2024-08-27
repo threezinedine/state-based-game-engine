@@ -4,6 +4,8 @@
 
 namespace ntt
 {
+    using namespace memory;
+
     class Application
     {
     public:

@@ -1,7 +1,15 @@
 #pragma once
 #include <memory>
 
-namespace ntt
+/**
+ * The Memory module provides functionalities for dealing with
+ *   object allocation and deallocation in the engine.
+ * Users do not need to delete the object manually, the engine will handle it.
+ * The Memory module provides 2 types of smart pointers:
+ *  - Scope pointer: The object can be owned by only 1 context.
+ *  - Ref pointer: The object can be owned by multiple contexts.
+ */
+namespace ntt::memory
 {
     /**
      * The Memory module provides functionalities for dealing with
