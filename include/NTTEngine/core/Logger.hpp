@@ -20,30 +20,30 @@ namespace ntt::log
 
     /**
      * The LogLevel represents the importance of the message
-     *  in log system.
+     *      in log system.
      */
     enum LogLevel
     {
-        LOG_FATAL = 0, // The error that crashes the whole application
-        LOG_ERROR = 1, // The error that can be handled but the application
-                       //    cannot continue to run (like network error, etc.)
-        LOG_WARN = 2,  // The exceptions which can be handled easily or ignored (
-                       //    like missing resources, etc.)
-        LOG_INFO = 3,  // The normal information such as intialized the window, etc.
-        LOG_DEBUG = 4, // The detail information which can be valuable for debugging
-                       // such as the position of the object, size of the image, etc.
-        LOG_TRACE = 5  // The information which is representing the flow of the application
-                       //    such as the function is called, etc. (should use in profiling)
+        LOG_FATAL = 0, ///< The error that crashes the whole application
+        LOG_ERROR = 1, ///< The error that can be handled but the application
+                       ///<     cannot continue to run (like network error, etc.)
+        LOG_WARN = 2,  ///< The exceptions which can be handled easily or ignored (
+                       ///<     like missing resources, etc.)
+        LOG_INFO = 3,  ///< The normal information such as intialized the window, etc.
+        LOG_DEBUG = 4, ///< The detail information which can be valuable for debugging
+                       ///<     such as the position of the object, size of the image, etc.
+        LOG_TRACE = 5  ///< The information which is representing the flow of the application
+                       ///<     such as the function is called, etc. (should use in profiling)
     };
 
     /**
      * The Instance of Logger will receive the
-     *  message and handles it (can be stored, printed, etc.)
+     *      message and handles it (can be stored, printed, etc.)
      *
-     * The default logger format is:
+     * The default message format is:
      *      "[%l] - %t - %f:%L - %m"
      *
-     * The default logger level is LOG_INFO
+     * The default logger level is `LOG_INFO`
      */
     class Logger
     {
@@ -52,7 +52,7 @@ namespace ntt::log
 
         /**
          * Method receives the needed information and handles it
-         *  inside the logger.
+         *      inside the logger.
          *
          * @param level: The importance of the message
          * @param file: The full path of file name which the
@@ -79,20 +79,20 @@ namespace ntt::log
         /**
          * Configure the format of the of the logger
          *      with certain information:
-         *      - %l: The level of the message
-         *      - %f: The file name where the log is placed (only file name)
-         *      - %L: The line where the log is placed
-         *      - %m: The message which needs to be handled (arguments
+         *      - `%l`: The level of the message
+         *      - `%n`: The name of the logger
+         *      - `%f`: The file name where the log is placed (only file name)
+         *      - `%L`: The line where the log is placed
+         *      - `%m`: The message which needs to be handled (arguments
          *          will be replaced with the format of printf)
-         *      - %t: The time when the log is placed (format: DD/MM/YYYY HH:MM:SS)
+         *      - `%t`: The time when the log is placed (format: DD/MM/YYYY HH:MM:SS)
          *
          * For example: "[%l] - %t - %f:%L - %m" ->
          *      "[INFO] - 12/12/2021 12:12:12 - main.cpp:12 - The message"
          *
-         * The error format only prints out the warn message and
-         *      there no changes in the format
-         *
-         * @param format: The format of the message
+         * @param format: The format of the message,
+         *      if the format is invalid, the logger will not change
+         *      and the warning will be printed
          */
         virtual void SetFormat(const char *format) = 0;
     };

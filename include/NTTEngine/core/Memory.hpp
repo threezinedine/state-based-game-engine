@@ -3,11 +3,11 @@
 
 /**
  * The Memory module provides functionalities for dealing with
- *   object allocation and deallocation in the engine.
+ *      object allocation and deallocation in the engine.
  * Users do not need to delete the object manually, the engine will handle it.
  * The Memory module provides 2 types of smart pointers:
- *  - Scope pointer: The object can be owned by only 1 context.
- *  - Ref pointer: The object can be owned by multiple contexts.
+ *      - Scope pointer: The object can be owned by only 1 context.
+ *      - Ref pointer: The object can be owned by multiple contexts.
  */
 namespace ntt::memory
 {
@@ -18,7 +18,7 @@ namespace ntt::memory
 
     /**
      * The Scope pointer which can be owned by only 1 context,
-     *  when the ownership of the object is moved, the object will be deleted
+     *      when the ownership of the object is moved, the object will be deleted
      */
     template <typename T>
     using Scope = std::unique_ptr<T>;
@@ -37,7 +37,7 @@ namespace ntt::memory
 
     /**
      * The shared pointer which can be owned by multiple contexts,
-     *  when the ownership of the object is moved, the object will remain
+     *      when the ownership of the object is moved, the object will remain
      */
     template <typename T>
     using Ref = std::shared_ptr<T>;
