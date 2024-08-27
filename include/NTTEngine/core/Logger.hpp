@@ -13,6 +13,10 @@
  *
  * The Log module also provides the way to configure the log level
  *      and format of the output message
+ *
+ * Not support:
+ *      - //TODO: Multi-threading
+ *      - //TODO: File logging
  */
 namespace ntt::log
 {
@@ -37,6 +41,27 @@ namespace ntt::log
     };
 
     /**
+     * The logger type which is supported by the logging module
+     *     (can be extended in the future) such as:
+     *      - Console logger
+     *      - //TODO: File logger
+     *
+     * Each logger can have multiple types of output (like console, file, etc.)
+     *
+     * But currently, the logger only supports the console logger and cannot
+     *      has multiple logger types. (//TODO: multiple logger types)
+     */
+    enum LoggerType
+    {
+        CONSOLE ///< Print the message to the console
+
+        /**
+         * If add more logger types:
+         *     - Add the new type here
+         */
+    };
+
+    /**
      * The Instance of Logger will receive the
      *      message and handles it (can be stored, printed, etc.)
      *
@@ -44,6 +69,7 @@ namespace ntt::log
      *      "[%l] - %t - %f:%L - %m"
      *
      * The default logger level is `LOG_INFO`
+     * The default logger type is `CONSOLE`
      */
     class Logger
     {
@@ -95,6 +121,13 @@ namespace ntt::log
          *      and the warning will be printed
          */
         virtual void SetFormat(const char *format) = 0;
+
+        /**
+         * Set the logger type for the logger
+         *
+         * @param type: The type of the logger
+         */
+        virtual void SetType(LoggerType type) = 0;
     };
 
     /**

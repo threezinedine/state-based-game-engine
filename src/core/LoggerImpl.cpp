@@ -21,16 +21,15 @@ namespace ntt::log
             "DEBUG",
             "TRACE"};
 
-        // get time string with format DD/MM/YYYY HH:MM:SS
+        // convert time to string with format DD/MM/YYYY HH:MM:SS #TODO: move
+        //      to another function or module
         auto now = std::chrono::system_clock::now();
         auto nowTime = std::chrono::system_clock::to_time_t(now);
         auto time = std::localtime(&nowTime);
-
-        // convert time to string with format DD/MM/YYYY HH:MM:SS
         char timeStr[20];
         std::strftime(timeStr, sizeof(timeStr), "%d/%m/%Y %H:%M:%S", time);
 
-        // get file name from path
+        // get file name from path #TODO: move to file module
         std::filesystem::path filePath(file);
         std::string fileName = filePath.filename().string();
 
