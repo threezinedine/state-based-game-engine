@@ -1,6 +1,7 @@
 #include "ApplicationImpl.hpp"
 #include <raylib.h>
 #include <NTTEngine/core/Logger.hpp>
+#include <NTTEngine/core/Memory.hpp>
 
 namespace ntt
 {
@@ -15,7 +16,7 @@ namespace ntt
 
     void ApplicationImpl::Begin()
     {
-        ENGINE_INFO("Begin the application");
+        // ENGINE_INFO("Begin the application");
         SetTraceLogLevel(LOG_NONE);
         InitWindow(m_screenWidth, m_screenHeight, m_title);
         SetTargetFPS(60);
@@ -35,7 +36,7 @@ namespace ntt
 
     void ApplicationImpl::End()
     {
-        ENGINE_INFO("End the application");
+        // ENGINE_INFO("End the application");
         CloseWindow();
     }
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "defines.hpp"
-#include "pointers.hpp"
+#include "core/Memory.hpp"
 
 namespace ntt
 {

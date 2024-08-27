@@ -1,5 +1,12 @@
 #pragma once
 
+/**
+ * Change primitive types to more size-specific types
+ *  to ensure the size of the types in different platforms.
+ *
+ * Each type must be validated with the size of the type
+ */
+
 using u8 = unsigned char;
 using u16 = unsigned short;
 using u32 = unsigned int;
@@ -35,6 +42,7 @@ static_assert(sizeof(b32) == 4, "b32 is not 4 bytes");
 #define TRUE 1
 #define FALSE 0
 
+// TODO: Currently only support Windows platform
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #define PLATFORM_WINDOWS
 #else
