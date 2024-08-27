@@ -149,6 +149,8 @@ namespace ntt::log
     GetLogger(ENGINE_LOGGER_NAME)->SetLevel(level)
 #define NTT_ENGINE_FORMAT(format) \
     GetLogger(ENGINE_LOGGER_NAME)->SetFormat(format)
+#define NTT_ENGINE_TYPE(type) \
+    GetLogger(ENGINE_LOGGER_NAME)->SetType(type)
 
 #define NTT_ENGINE_FATAL(message, ...) \
     GetLogger(ENGINE_LOGGER_NAME)->Log(LogLevel::LOG_FATAL, __FILE__, __LINE__, message, ##__VA_ARGS__)
@@ -167,6 +169,8 @@ namespace ntt::log
     GetLogger(APP_LOGGER_NAME)->SetLevel(level)
 #define NTT_APP_FORMAT(format) \
     GetLogger(APP_LOGGER_NAME)->SetFormat(format)
+#define NTT_APP_TYPE(type) \
+    GetLogger(APP_LOGGER_NAME)->SetType(type)
 
 #define NTT_APP_FATAL(message, ...) \
     GetLogger(APP_LOGGER_NAME)->Log(LogLevel::LOG_FATAL, __FILE__, __LINE__, message, ##__VA_ARGS__)
