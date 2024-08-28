@@ -39,16 +39,30 @@ namespace ntt::log
         std::filesystem::path filePath(file);
         std::string fileName = filePath.filename().string();
 
-        const LogMessage logMessage = {
+        LogMessage logMessage = {
+            m_name,
             levelStrs[level],
             fileName.c_str(),
             line,
             message,
-            timeStr};
+            timeStr,
+        };
+
+        // TODO: Replace with macros
+        char fullMessage[1024];
+        snprintf(fullMessage, sizeof(fullMessage),
+                 "[%s] - %s - %s:%d - %s\n",
+                 logMessage.levelStr,
+                 logMessage.time,
+                 logMessage.fileName,
+                 logMessage.line,
+                 logMessage.message);
+
+        logMessage.fullMessage = fullMessage;
 
         for (auto &handler : m_handlers)
         {
-            handler->Handle(m_name, logMessage, m_format);
+            handler->Handle(logMessage);
         }
     }
 } // namespace ntt::log

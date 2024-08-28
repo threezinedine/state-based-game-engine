@@ -23,9 +23,7 @@ namespace ntt::log
          *      printing, storing, these information with the certain
          *      format
          */
-        virtual void Handle(const char *name,
-                            const LogMessage &message,
-                            const char *format) = 0;
+        virtual void Handle(const LogMessage &message) = 0;
     };
 
     /**

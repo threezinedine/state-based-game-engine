@@ -16,6 +16,6 @@ namespace ntt::log
         ConsoleHandler() = default;
         ~ConsoleHandler() override = default;
 
-        void Handle(const char *name, const LogMessage &message, const char *format) override;
+        void Handle(const LogMessage &message) override;
     };
 } // namespace ntt::log

@@ -3,9 +3,8 @@
 
 namespace ntt::log
 {
-    void ConsoleHandler::Handle(const char *name, const LogMessage &message, const char *format)
+    void ConsoleHandler::Handle(const LogMessage &message)
     {
-        printf("[%s] - %s - %s:%d - %s\n", message.levelStr,
-               message.time, message.fileName, message.line, message.message);
+        printf(message.fullMessage);
     }
 } // namespace ntt::log
