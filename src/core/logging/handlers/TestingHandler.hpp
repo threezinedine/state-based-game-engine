@@ -19,6 +19,15 @@ namespace ntt::log
         static TestingHandler *s_instance;
 
         /**
+         * Use this method after each test to reset the
+         */
+        inline static void DeleteInstance()
+        {
+            delete s_instance;
+            s_instance = nullptr;
+        }
+
+        /**
          * These variables are not needed to be
          *      reset after each test
          */

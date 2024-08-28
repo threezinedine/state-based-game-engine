@@ -9,6 +9,10 @@ using namespace ntt::log;
 class LoggerTest : public ::testing::Test
 {
 protected:
+    void TearDown() override
+    {
+        TestingHandler::DeleteInstance();
+    }
 };
 
 TEST_F(LoggerTest, LogFunctionShouldCall_WhenLogLevelValid)
