@@ -23,4 +23,4 @@
  */
 
 #include "Memory.hpp"
-#include "Logger.hpp"
+#include "logging.hpp"
