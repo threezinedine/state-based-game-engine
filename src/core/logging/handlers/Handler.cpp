@@ -1,5 +1,6 @@
 #include "Handler.hpp"
 #include "ConsoleHandler.hpp"
+#include "TestingHandler.hpp"
 
 namespace ntt::log
 {
@@ -9,6 +10,13 @@ namespace ntt::log
 
         // TODO: Create the mechanism to extract the handlers
 
-        handlers.push_back(CreateScope<ConsoleHandler>());
+        if (type == LOGGER_TESTING)
+        {
+            handlers.push_back(CreateScope<TestingHandler>());
+        }
+        else
+        {
+            handlers.push_back(CreateScope<ConsoleHandler>());
+        }
     }
 } // namespace ntt::log

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LogMessage.hpp"
 #include "Handler.hpp"
 
 namespace ntt::log

@@ -16,6 +16,15 @@ file(
     src/*.cpp
 )
 
+set (TEST_SOURCES)
+
+foreach(SOURCE ${SOURCES})
+    if (SOURCE MATCHES ".*__tests__.*")
+        list(APPEND TEST_SOURCES ${SOURCE})
+        list(REMOVE_ITEM SOURCES ${SOURCE})
+    endif()
+endforeach()
+
 add_library(
     ${PROJECT_NAME}
     STATIC
@@ -34,21 +43,17 @@ target_link_libraries(
     raylib
 )
 
-file(
-    GLOB_RECURSE
-    TEST_SOURCES
-    test/*.cpp
-)
-
 add_executable(
     ${PROJECT_NAME}_Test
     ${TEST_SOURCES}
+    _test.cpp
 )
 
 target_include_directories(
     ${PROJECT_NAME}_Test
     PUBLIC
-    .
+    ./include
+    ./src
 )
 
 target_link_libraries(

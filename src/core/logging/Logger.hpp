@@ -1,5 +1,5 @@
 #include <NTTEngine/core/logging.hpp>
-#include "Handler.hpp"
+#include "handlers/Handler.hpp"
 
 // TODO: Temporary includes
 #include <vector>
@@ -47,7 +47,7 @@ namespace ntt::log
         //      to distinguish between them
         const char *m_name;
 
-        LogLevel m_level = LogLevel::LOG_INFO;
+        LogLevel m_level = LogLevel::INFO;
 
         // TODO: Change not use std:vector, use self-implemented list
         // all logger type which the log message

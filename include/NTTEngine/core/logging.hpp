@@ -28,16 +28,16 @@ namespace ntt::log
      */
     enum LogLevel
     {
-        LOG_FATAL = 0, ///< The error that crashes the whole application
-        LOG_ERROR = 1, ///< The error that can be handled but the application
-                       ///<     cannot continue to run (like network error, etc.)
-        LOG_WARN = 2,  ///< The exceptions which can be handled easily or ignored (
-                       ///<     like missing resources, etc.)
-        LOG_INFO = 3,  ///< The normal information such as intialized the window, etc.
-        LOG_DEBUG = 4, ///< The detail information which can be valuable for debugging
-                       ///<     such as the position of the object, size of the image, etc.
-        LOG_TRACE = 5  ///< The information which is representing the flow of the application
-                       ///<     such as the function is called, etc. (should use in profiling)
+        FATAL = 0, ///< The error that crashes the whole application
+        ERROR = 1, ///< The error that can be handled but the application
+                   ///<     cannot continue to run (like network error, etc.)
+        WARN = 2,  ///< The exceptions which can be handled easily or ignored (
+                   ///<     like missing resources, etc.)
+        INFO = 3,  ///< The normal information such as intialized the window, etc.
+        DEBUG = 4, ///< The detail information which can be valuable for debugging
+                   ///<     such as the position of the object, size of the image, etc.
+        TRACE = 5  ///< The information which is representing the flow of the application
+                   ///<     such as the function is called, etc. (should use in profiling)
     };
 
     /**
@@ -58,6 +58,7 @@ namespace ntt::log
      *          - If there is only 1 type: `LOGGER_FILE`
      *              then type will be 0b00000010
      *
+     * The `0b10000000` is used for testing purpose
      *
      * But currently, the logger only supports the console logger and cannot
      *      has multiple logger types. (//TODO: multiple logger types)
@@ -70,8 +71,9 @@ namespace ntt::log
      *          increase the size of the type variable.
      */
 
-#define LOGGER_CONSOLE 0x01
+#define LOGGER_CONSOLE 0x01 ///< The logger which prints the message to the console
 #define LOGGER_FILE (0x01 << 1)
+#define LOGGER_TESTING (0x01 << 7) ///< For testing purpose, not use in production
 
     /**
      * Initialize the logger with configuration
@@ -101,8 +103,9 @@ namespace ntt::log
      *          - `%m`: The message which needs to be handled (arguments will
      *              be replaced with the format of printf)
      *          - `%t`: The time when the log is placed (format: DD/MM/YYYY HH:MM:SS)
+     *      The default format is "[%l] - %t - %f:%L - %m"
      */
-    void ConfigureLogger(const char *name, LogLevel level = LogLevel::LOG_INFO,
+    void ConfigureLogger(const char *name, LogLevel level = LogLevel::INFO,
                          u8 type = LOGGER_CONSOLE,
                          const char *format = "[%l] - %t - %f:%L - %m");
 
@@ -127,29 +130,29 @@ namespace ntt::log
     ntt::log::ConfigureLogger(ENGINE_LOGGER_NAME, ##__VA_ARGS__)
 
 #define NTT_ENGINE_FATAL(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::LOG_FATAL, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(ENGINE_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_ENGINE_ERROR(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::LOG_ERROR, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(ENGINE_LOGGER_NAME, LogLevel::ERROR, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_ENGINE_WARN(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::LOG_WARN, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(ENGINE_LOGGER_NAME, LogLevel::WARN, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_ENGINE_INFO(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::LOG_INFO, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(ENGINE_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_ENGINE_DEBUG(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::LOG_DEBUG, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(ENGINE_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_ENGINE_TRACE(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::LOG_TRACE, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(ENGINE_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, message, ##__VA_ARGS__)
 
 #define NTT_APP_CONFIG(...) \
     ntt::log::ConfigureLogger(APP_LOGGER_NAME, ##__VA_ARGS__)
 
 #define NTT_APP_FATAL(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::LOG_FATAL, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(APP_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_APP_ERROR(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::LOG_ERROR, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(APP_LOGGER_NAME, LogLevel::ERROR, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_APP_WARN(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::LOG_WARN, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(APP_LOGGER_NAME, LogLevel::WARN, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_APP_INFO(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::LOG_INFO, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(APP_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_APP_DEBUG(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::LOG_DEBUG, __FILE__, __LINE__, message, ##__VA_ARGS__)
+    Log(APP_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_APP_TRACE(message, ...) Log(APP_LOGGER_NAME, LogLevel::LOG_TRACE, __FILE__, __LINE__, message, ##__VA_ARGS__)

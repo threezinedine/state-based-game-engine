@@ -1,7 +1,6 @@
 #include "Logger.hpp"
 #include <chrono>
 #include <filesystem>
-#include "Handler.hpp"
 
 namespace ntt::log
 {
@@ -14,7 +13,7 @@ namespace ntt::log
 
     void Logger::Log(LogLevel level, const char *file, u16 line, const char *message)
     {
-        if (level < m_level)
+        if (level > m_level)
         {
             return;
         }
@@ -41,6 +40,7 @@ namespace ntt::log
 
         LogMessage logMessage = {
             m_name,
+            level,
             levelStrs[level],
             fileName.c_str(),
             line,
