@@ -1,6 +1,6 @@
 #include <NTTEngine/core/logging.hpp>
 #include "Logger.hpp"
-#include <NTTEngine/core/Memory.hpp>
+#include <NTTEngine/core/memory.hpp>
 #include <cstdarg>
 #include <cstring>
 #include <cstdio>

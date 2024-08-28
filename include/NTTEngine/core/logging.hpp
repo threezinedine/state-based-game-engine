@@ -1,6 +1,6 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
-#include "Memory.hpp"
+#include "memory.hpp"
 
 /**
  * Log module provides functionalities for presenting, storing and managing

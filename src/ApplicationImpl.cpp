@@ -1,7 +1,7 @@
 #include "ApplicationImpl.hpp"
 #include <raylib.h>
 #include <NTTEngine/core/logging.hpp>
-#include <NTTEngine/core/Memory.hpp>
+#include <NTTEngine/core/memory.hpp>
 
 namespace ntt
 {
