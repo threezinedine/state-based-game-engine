@@ -36,15 +36,28 @@ namespace ntt
         return String(m_Str.substr(start, end));
     }
 
-    u32 String::FindFirst(String str) const
+    u32 String::FindFirst(String str, u32 startIndex) const
     {
-        auto index = m_Str.find(str.RawString());
+        auto index = m_Str.find(str.RawString(), startIndex);
         if (index == std::string::npos)
         {
             return NotFound;
         }
 
         return index;
+    }
+
+    List<u32> String::FindAll(String str) const
+    {
+        List<u32> indexes;
+        auto index = m_Str.find(str.RawString());
+        while (index != std::string::npos)
+        {
+            indexes.Add(index);
+            index = m_Str.find(str.RawString(), index + 1);
+        }
+
+        return indexes;
     }
 
     void String::Replace(const String &oldStr, const String &newStr)
@@ -78,9 +91,66 @@ namespace ntt
         }
     }
 
+    void String::Trim()
+    {
+        auto start = m_Str.find_first_not_of(" ");
+        auto end = m_Str.find_last_not_of(" ");
+        m_Str = m_Str.substr(start, end - start + 1);
+    }
+
+    List<String> String::Split(const String &delimiter) const
+    {
+        List<String> res;
+        auto index = m_Str.find(delimiter.RawString());
+        u32 lastIndex = 0;
+        while (index != std::string::npos)
+        {
+            res.Add(m_Str.substr(lastIndex, index - lastIndex));
+            lastIndex = index + delimiter.Length();
+            index = m_Str.find(delimiter.RawString(), lastIndex);
+        }
+
+        res.Add(m_Str.substr(lastIndex, m_Str.length() - lastIndex));
+        return res;
+    }
+
+    b8 String::MatchPattern(const String &pattern) const
+    {
+        u32 index = 0;
+        b8 isMatch = TRUE;
+        auto segment = pattern.Split("{}");
+
+        if (segment.Length() == 0)
+        {
+            return *this == pattern;
+        }
+
+        for (u32 i = 0; i < segment.Length(); i++)
+        {
+            auto str = segment[i];
+            if (str.Length() == 0)
+            {
+                continue;
+            }
+            auto foundIndex = FindFirst(str, index);
+            if (foundIndex == NotFound)
+            {
+                return FALSE;
+            }
+            index = foundIndex + str.Length();
+        }
+
+        return TRUE;
+    }
+
     bool String::operator==(const String &str) const
     {
         return m_Str == str.m_Str;
+    }
+
+    bool String::operator!=(const String &str) const
+    {
+        return m_Str != str.m_Str;
     }
 
     bool String::operator<(const String &str) const

@@ -4,8 +4,6 @@
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/core/exception.hpp>
 
-#include "string.hpp"
-
 #include <string>
 #include <vector>
 #include <functional>
@@ -119,11 +117,11 @@ namespace ntt
          *      which is passed to the function
          */
         template <typename U>
-        inline void Reduce(std::function<void(U &, const T &)> callback, U &reducedList)
+        inline void Reduce(std::function<void(U &, const T &, const u32)> callback, U &reducedList)
         {
             for (u32 i = 0; i < m_List.size(); i++)
             {
-                callback(reducedList, m_List[i]);
+                callback(reducedList, m_List[i], i);
             }
         }
 
@@ -155,22 +153,22 @@ namespace ntt
         /**
          * Use for iterating through the list
          */
-        inline void ForEach(std::function<void(const T &)> callback) const
+        inline void ForEach(std::function<void(const T &, const u32)> callback) const
         {
             for (u32 i = 0; i < Length(); i++)
             {
-                callback(m_List[i]);
+                callback(m_List[i], i);
             }
         }
 
         /**
          * Check if any item of the list satisfies the condition
          */
-        inline b8 Any(std::function<b8(const T &)> callback)
+        inline b8 Any(std::function<b8(const T &, const u32)> callback)
         {
             for (u32 i = 0; i < Length(); i++)
             {
-                if (callback(m_List[i]))
+                if (callback(m_List[i], i))
                 {
                     return true;
                 }
@@ -181,11 +179,11 @@ namespace ntt
         /**
          * Check if all items of the list satisfy the condition
          */
-        inline b8 All(std::function<b8(const T &)> callback)
+        inline b8 All(std::function<b8(const T &, const u32)> callback)
         {
             for (u32 i = 0; i < Length(); i++)
             {
-                if (!callback(m_List[i]))
+                if (!callback(m_List[i], i))
                 {
                     return false;
                 }
@@ -194,21 +192,37 @@ namespace ntt
         }
 
         /**
-         * Convert to string with format [item1, item2, ...]
+         * Create a new list with the same number of items
+         *      which each item can be created from
+         *      the current list item via the callback
          */
-        inline String ToString()
+        template <typename U>
+        inline List<U> Map(std::function<U(const T &, const u32)> callback)
         {
-            String str = "[";
+            List<U> newList;
             for (u32 i = 0; i < Length(); i++)
             {
-                str.Concat(std::to_string(m_List[i]));
+                newList.Add(callback(m_List[i], i));
+            }
+            return newList;
+        }
+
+        /**
+         * Convert to string with format [item1, item2, ...]
+         */
+        inline const char *ToString()
+        {
+            std::string buffer = "[";
+            for (u32 i = 0; i < Length(); i++)
+            {
+                buffer += std::to_string(m_List[i]);
                 if (i != Length() - 1)
                 {
-                    str.Concat(", ");
+                    buffer += ", ";
                 }
             }
-            str.Concat("]");
-            return str;
+            buffer += "]";
+            return buffer.c_str();
         }
 
     protected:

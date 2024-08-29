@@ -33,6 +33,7 @@ TEST_F(StringTest, TestToString)
 
     EXPECT_THAT(String("Testing").FindFirst("ing"), testing::Eq(4));
     EXPECT_THAT(String("Testing").FindFirst("ang"), testing::Eq(String::NotFound));
+    EXPECT_THAT(String("Testing").FindFirst(""), testing::Eq(0));
 
     String str3("Wokong, Hobong");
     str3.Replace("ong", "ing");
@@ -61,4 +62,26 @@ TEST_F(StringTest, StringConcat)
     String hello2 = hello + ", Test2";
     EXPECT_STR_EQ(hello2, String("Hello World, Test, Test2"));
     EXPECT_STR_EQ(hello, String("Hello World, Test"));
+
+    String spacesStr = "   Hello, World!   ";
+    spacesStr.Trim();
+    EXPECT_STR_EQ(spacesStr, String("Hello, World!"));
+
+    String splitTestStr = "Hello, World, Test";
+    auto splittedStr = splitTestStr.Split(", ");
+    EXPECT_TRUE(splittedStr.Equals(List<String>{"Hello", "World", "Test"}));
+    EXPECT_TRUE(String(", Testing, Method").Split(", ").Equals(List<String>{"", "Testing", "Method"}));
+
+    EXPECT_TRUE(splitTestStr.Split(": ").Equals(List<String>{"Hello, World, Test"}));
+}
+
+TEST_F(StringTest, StringPatternMatching)
+{
+    String str = "Hello, World first";
+    EXPECT_TRUE(str.MatchPattern("Hello, {} first"));
+    EXPECT_FALSE(str.MatchPattern("Hello, {} second"));
+    EXPECT_FALSE(str.MatchPattern("{}, {} second"));
+    EXPECT_TRUE(str.MatchPattern("{}, {} first"));
+    EXPECT_TRUE(str.MatchPattern("{}, {}World{} first"));
+    EXPECT_TRUE(str.MatchPattern("Hello, World {}"));
 }

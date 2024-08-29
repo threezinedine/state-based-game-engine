@@ -1,6 +1,7 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include <string>
+#include "list.hpp"
 
 namespace ntt
 {
@@ -27,8 +28,19 @@ namespace ntt
          * @param str: The string to find the first occurrence index
          *      in the current string, if the string is not found
          *      then return String::NotFound
+         * @param index: The index to start finding the string
          */
-        u32 FindFirst(String str) const;
+        u32 FindFirst(String str, u32 startIndex = 0) const;
+
+        /**
+         * @param str: The string to find all the occurrence indexes
+         */
+        List<u32> FindAll(String str) const;
+
+        /**
+         * Remove all spaces at the beginning and the end of the string
+         */
+        void Trim();
 
         /**
          * Replace all occurrences of the old string with the new string
@@ -54,10 +66,33 @@ namespace ntt
         void Concat(const String &str, const String &format = "");
 
         /**
+         * Split the string by the delimiter
+         *
+         * @param delimiter: The delimiter to split the string,
+         *      if the delimiter is not found then return
+         *      the list with only the current string
+         */
+        List<String> Split(const String &delimiter) const;
+
+        /**
+         * Pattern matching with the current string
+         *      where as all `{}` will be ignored
+         *      when checking whether the pattern is matched
+         *
+         * @param pattern: The pattern to be matched with the current string
+         *      - Ex: current string "Hello, World first" with pattern "Hello, {} first"
+         *          will return true
+         *      - Ex: current string "Hello, World first" with pattern "Hello, {} second"
+         *          will return false
+         */
+        b8 MatchPattern(const String &pattern) const;
+
+        /**
          * If 2 strings has the same length and the same characters
          *     then they are equal
          */
         bool operator==(const String &str) const;
+        bool operator!=(const String &str) const;
         bool operator<(const String &str) const;
         bool operator>(const String &str) const;
 

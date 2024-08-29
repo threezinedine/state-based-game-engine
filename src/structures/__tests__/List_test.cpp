@@ -9,10 +9,10 @@ using namespace ntt;
 using namespace ntt::log;
 using namespace ntt::exception;
 
-#define EXPECT_LIST_EQ(lst1, lst2)                     \
-    EXPECT_TRUE(lst1.Equals(lst2))                     \
-        << "Expected: " << lst2.ToString().RawString() \
-        << " but got: " << lst1.ToString().RawString()
+#define EXPECT_LIST_EQ(lst1, lst2)                      \
+    EXPECT_TRUE(lst1.Equals(lst2))                      \
+        << "Expected: " << std::string(lst2.ToString()) \
+        << " but got: " << std::string(lst1.ToString())
 
 class TestObject
 {
@@ -55,7 +55,7 @@ TEST_F(ListTest, SubListTest)
 {
     List<int> lst = {1, 2, 3, 4, 5};
 
-    EXPECT_STREQ(lst.ToString().RawString().c_str(), "[1, 2, 3, 4, 5]");
+    EXPECT_STREQ(lst.ToString(), "[1, 2, 3, 4, 5]");
 
     auto subList = lst.SubList(1, 3);
     EXPECT_LIST_EQ(subList, List({2, 3}));
@@ -164,18 +164,29 @@ TEST_F(ListTest, TestReducing)
     List<u32> lst = {1, 2, 3, 4, 5};
 
     u32 sum = 0;
-    lst.Reduce<u32>([](u32 &sum, const u32 &element)
+    lst.Reduce<u32>([](u32 &sum, const u32 &element, ...)
                     { sum += element; }, sum);
     EXPECT_THAT(sum, testing::Eq(15));
 
     u32 factorial = 1;
-    lst.Reduce<u32>([](u32 &fac, const u32 &element)
+    lst.Reduce<u32>([](u32 &fac, const u32 &element, ...)
                     { fac *= element; }, factorial);
     EXPECT_THAT(factorial, testing::Eq(120));
 
     List<u32> lst2 = {2, 4, 6, 8};
-    EXPECT_TRUE(lst2.All([](const u32 &element)
+    EXPECT_TRUE(lst2.All([](const u32 &element, ...)
                          { return element % 2 == 0; }));
-    EXPECT_FALSE(lst2.Any([](const u32 &element)
+    EXPECT_FALSE(lst2.Any([](const u32 &element, ...)
                           { return element % 2 != 0; }));
+
+    sum = 0;
+    lst2.ForEach([&sum](const u32 &element, ...)
+                 { sum += element; });
+
+    EXPECT_THAT(sum, testing::Eq(20));
+
+    auto dbLst = lst2.Map<f32>([](const u32 &element, ...)
+                               { return element * 2.0; });
+
+    EXPECT_LIST_EQ(dbLst, List<f32>({4.0, 8.0, 12.0, 16.0}));
 }
