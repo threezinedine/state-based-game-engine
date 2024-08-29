@@ -54,6 +54,7 @@ target_include_directories(
     PUBLIC
     ./include
     ./src
+    ./
 )
 
 target_link_libraries(

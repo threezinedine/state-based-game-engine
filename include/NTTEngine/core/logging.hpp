@@ -59,6 +59,7 @@ namespace ntt::log
      *              then type will be 0b00000010
      *
      * The `0b10000000` is used for testing purpose
+     * The `0b00000000` is reserved for do nothing with the message
      *
      * But currently, the logger only supports the console logger and cannot
      *      has multiple logger types. (//TODO: multiple logger types)
@@ -71,6 +72,7 @@ namespace ntt::log
      *          increase the size of the type variable.
      */
 
+#define LOGGER_NONE 0x00    ///< The logger which does nothing with the message
 #define LOGGER_CONSOLE 0x01 ///< The logger which prints the message to the console
 #define LOGGER_FILE (0x01 << 1)
 #define LOGGER_TESTING (0x01 << 7) ///< For testing purpose, not use in production
@@ -127,7 +129,7 @@ namespace ntt::log
 #define APP_LOGGER_NAME "Application"
 
 #define NTT_ENGINE_CONFIG(...) \
-    ntt::log::ConfigureLogger(ENGINE_LOGGER_NAME, ##__VA_ARGS__)
+    ConfigureLogger(ENGINE_LOGGER_NAME, ##__VA_ARGS__)
 
 #define NTT_ENGINE_FATAL(message, ...) \
     Log(ENGINE_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, message, ##__VA_ARGS__)
@@ -143,7 +145,7 @@ namespace ntt::log
     Log(ENGINE_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, message, ##__VA_ARGS__)
 
 #define NTT_APP_CONFIG(...) \
-    ntt::log::ConfigureLogger(APP_LOGGER_NAME, ##__VA_ARGS__)
+    ConfigureLogger(APP_LOGGER_NAME, ##__VA_ARGS__)
 
 #define NTT_APP_FATAL(message, ...) \
     Log(APP_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, message, ##__VA_ARGS__)

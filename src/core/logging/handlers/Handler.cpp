@@ -10,6 +10,11 @@ namespace ntt::log
 
         // TODO: Create the mechanism to extract the handlers
 
+        if (type == LOGGER_NONE)
+        {
+            return;
+        }
+
         if (type == LOGGER_TESTING)
         {
             handlers.push_back(CreateScope<TestingHandler>());
