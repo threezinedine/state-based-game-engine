@@ -4,7 +4,7 @@
 
 namespace ntt::log
 {
-    void ExtractHandlers(u8 type, std::vector<Scope<Handler>> &handlers)
+    void ExtractHandlers(LoggerType type, std::vector<Scope<Handler>> &handlers)
     {
         handlers.clear();
 

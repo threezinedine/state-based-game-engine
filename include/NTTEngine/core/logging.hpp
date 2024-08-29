@@ -69,13 +69,16 @@ namespace ntt::log
      *      - Define the new handler class which inherits from Handler
      *      - Update the ExtractHandlers function in Handler.hpp
      *      - If the number of types is more than 8, then must
-     *          increase the size of the type variable.
+     *          increase the size of the type variable by
+     *          changing the LoggerType to u16 or u32
      */
 
 #define LOGGER_NONE 0x00    ///< The logger which does nothing with the message
 #define LOGGER_CONSOLE 0x01 ///< The logger which prints the message to the console
 #define LOGGER_FILE (0x01 << 1)
 #define LOGGER_TESTING (0x01 << 7) ///< For testing purpose, not use in production
+
+    using LoggerType = u8;
 
     /**
      * Initialize the logger with configuration
@@ -108,7 +111,7 @@ namespace ntt::log
      *      The default format is "[%l] - %t - %f:%L - %m"
      */
     void ConfigureLogger(const char *name, LogLevel level = LogLevel::INFO,
-                         u8 type = LOGGER_CONSOLE,
+                         LoggerType type = LOGGER_CONSOLE,
                          const char *format = "[%l] - %t - %f:%L - %m");
 
     /**

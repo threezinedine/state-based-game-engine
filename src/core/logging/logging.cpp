@@ -21,7 +21,8 @@ namespace ntt::log
         Scope<Logger> s_appLogger = nullptr;
     } // namespace
 
-    void ConfigureLogger(const char *name, LogLevel level, u8 type, const char *format)
+    void ConfigureLogger(const char *name, LogLevel level,
+                         LoggerType type, const char *format)
     {
         if (strcmp(name, ENGINE_LOGGER_NAME) == 0)
         {

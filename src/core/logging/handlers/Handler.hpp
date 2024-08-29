@@ -38,5 +38,5 @@ namespace ntt::log
      *      to the list of handlers, if the `handlers` contains any
      *      handler, it will be cleared before extracting
      */
-    void ExtractHandlers(u8 type, std::vector<Scope<Handler>> &handlers);
+    void ExtractHandlers(LoggerType type, std::vector<Scope<Handler>> &handlers);
 } // namespace ntt::log

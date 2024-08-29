@@ -4,7 +4,8 @@
 
 namespace ntt::log
 {
-    Logger::Logger(const char *name, LogLevel level, u8 type, const char *format)
+    Logger::Logger(const char *name, LogLevel level,
+                   LoggerType type, const char *format)
         : m_name(name), m_level(level), m_format(format)
     {
         // TODO: Implement logger format checking
