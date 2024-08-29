@@ -88,7 +88,7 @@ namespace ntt::log
      *
      * Each logger must have the unique initialization
      *      configuration, if not, the default configuration
-     *      will be used (`CONSOLE`, "[%l] - %t - %f:%L - %m", `LOG_INFO`)
+     *      will be used (`CONSOLE`, "[@l] - @t - @f:@L - @m", `INFO`)
      *
      * @param name: Must be unique for each logger or it will raise
      *      the warning and use the default configuration.
@@ -101,18 +101,18 @@ namespace ntt::log
      *
      * @param format: The format of the of the printed message
      *      which has some special characters:
-     *          - `%l`: The level of the message
-     *          - `%n`: The name of the logger
-     *          - `%f`: The file name where the log is placed (only file name)
-     *          - `%L`: The line where the log is placed
-     *          - `%m`: The message which needs to be handled (arguments will
+     *          - `@l`: The level of the message
+     *          - `@n`: The name of the logger
+     *          - `@f`: The file name where the log is placed (only file name)
+     *          - `@L`: The line where the log is placed
+     *          - `@m`: The message which needs to be handled (arguments will
      *              be replaced with the format of printf)
-     *          - `%t`: The time when the log is placed (format: DD/MM/YYYY HH:MM:SS)
-     *      The default format is "[%l] - %t - %f:%L - %m"
+     *          - `@t`: The time when the log is placed (format: DD/MM/YYYY HH:MM:SS)
+     *      The default format is "[@l] - @t - @f:@L - @m"
      */
     void ConfigureLogger(const char *name, LogLevel level = LogLevel::INFO,
                          LoggerType type = LOGGER_CONSOLE,
-                         const char *format = "[%l] - %t - %f:%L - %m");
+                         const char *format = "[@l] - @t - @f:@L - @m");
 
     /**
      * The needed arguments to perform the logging

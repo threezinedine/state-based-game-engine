@@ -12,9 +12,9 @@ namespace ntt::log
      *      message and handles it (can be stored, printed, etc.)
      *
      * The default message format is:
-     *      "[%l] - %t - %f:%L - %m"
+     *      "[@l] - @t - @f:@L - @m"
      *
-     * The default logger level is `LOG_INFO`
+     * The default logger level is `INFO`
      * The default logger type is `CONSOLE`
      */
     class Logger
@@ -54,11 +54,11 @@ namespace ntt::log
         //      will be handled through
         std::vector<Scope<Handler>> m_handlers;
 
-        // The format must always contain the following: `%l`, `%t`, `%f`, `%L`, `%m`, `%n`
+        // The format must always contain the following:
+        //      `@l`, `@t`, `@f`, `@L`, `@m`, `@n`
         //      and can contain other characters
-        //      but any other characters which are behind `%` will
-        //      be error
-        const char *m_format = "[%l] - %t - %f:%L - %m";
+        //      but only the above characters will be replaced
+        const char *m_format = "[@l] - @t - @f:@L - @m";
     };
 
 } // namespace ntt::log

@@ -5,6 +5,7 @@ using namespace ntt::log;
 
 int main()
 {
+    NTT_APP_CONFIG(LogLevel::INFO, LOGGER_CONSOLE, "[@l]:[@n] - @t - @f:@L: @m");
     NTT_APP_INFO("Starting the game");
     auto game = ntt::CreateApplication(800, 600, "Hero");
 

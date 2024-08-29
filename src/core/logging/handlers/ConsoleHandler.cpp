@@ -5,6 +5,6 @@ namespace ntt::log
 {
     void ConsoleHandler::Handle(const LogMessage &message)
     {
-        printf(message.fullMessage);
+        printf(message.fullMessage.RawString().c_str());
     }
 } // namespace ntt::log

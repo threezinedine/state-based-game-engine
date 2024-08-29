@@ -37,8 +37,9 @@ TEST_F(StringTest, TestToString)
 
     String str3("Wokong, Hobong");
     str3.Replace("ong", "ing");
-    EXPECT_THAT(str3.RawString(),
-                testing::StrEq("Woking, Hobing"));
+    EXPECT_EQ(str3.RawString(), "Woking, Hobing");
+    str3.Replace("ien", "ong");
+    EXPECT_EQ(str3, "Woking, Hobing");
 }
 
 TEST_F(StringTest, StringConcat)

@@ -49,17 +49,14 @@ namespace ntt::log
             timeStr,
         };
 
-        // TODO: Replace with macros
-        char fullMessage[1024];
-        snprintf(fullMessage, sizeof(fullMessage),
-                 "[%s] - %s - %s:%d - %s\n",
-                 logMessage.levelStr,
-                 logMessage.time,
-                 logMessage.fileName,
-                 logMessage.line,
-                 logMessage.message);
-
-        logMessage.fullMessage = fullMessage;
+        logMessage.fullMessage = m_format;
+        logMessage.fullMessage.Replace("@l", logMessage.levelStr);
+        logMessage.fullMessage.Replace("@n", logMessage.name);
+        logMessage.fullMessage.Replace("@f", logMessage.fileName);
+        logMessage.fullMessage.Replace("@L", std::to_string(logMessage.line));
+        logMessage.fullMessage.Replace("@m", logMessage.message);
+        logMessage.fullMessage.Replace("@t", logMessage.time);
+        logMessage.fullMessage += "\n";
 
         for (auto &handler : m_handlers)
         {
