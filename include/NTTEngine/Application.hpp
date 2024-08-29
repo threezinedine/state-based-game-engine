@@ -13,7 +13,7 @@ namespace ntt
 
         virtual void Begin() = 0;
         virtual bool ShouldClose() = 0;
-        virtual void Update(f32 deltaTime) = 0;
+        virtual void Update() = 0;
         virtual void End() = 0;
     };
 

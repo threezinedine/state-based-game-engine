@@ -2,6 +2,7 @@
 
 using namespace ntt;
 using namespace ntt::log;
+using namespace ntt::input;
 
 int main()
 {
@@ -15,7 +16,12 @@ int main()
 
     while (!game->ShouldClose())
     {
-        game->Update(0.0f);
+        game->Update();
+
+        if (CheckState(Key::NTT_KEY_A, InputState::NTT_PRESS))
+        {
+            NTT_APP_INFO("Key A is pressed");
+        }
     }
 
     game->End();

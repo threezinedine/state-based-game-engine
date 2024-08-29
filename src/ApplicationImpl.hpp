@@ -12,7 +12,7 @@ namespace ntt
 
         void Begin() override;
         bool ShouldClose() override;
-        void Update(f32 deltaTime) override;
+        void Update() override;
         void End() override;
 
     private:
