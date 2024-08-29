@@ -78,9 +78,19 @@ namespace ntt
         }
     }
 
-    bool String::operator==(const String &str)
+    bool String::operator==(const String &str) const
     {
         return m_Str == str.m_Str;
+    }
+
+    bool String::operator<(const String &str) const
+    {
+        return m_Str < str.m_Str;
+    }
+
+    bool String::operator>(const String &str) const
+    {
+        return m_Str > str.m_Str;
     }
 
     void String::operator=(const String &str)

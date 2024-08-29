@@ -57,7 +57,9 @@ namespace ntt
          * If 2 strings has the same length and the same characters
          *     then they are equal
          */
-        bool operator==(const String &str);
+        bool operator==(const String &str) const;
+        bool operator<(const String &str) const;
+        bool operator>(const String &str) const;
 
         /**
          * Assign the value of the string to the current string
@@ -75,6 +77,14 @@ namespace ntt
         void operator+=(const char *str);
         void operator+=(const std::string &str);
 
+        /**
+         * Hash the string to a 32-bit integer
+         */
+        inline std::size_t Hash() const
+        {
+            return std::hash<std::string>{}(m_Str);
+        }
+
         std::string RawString() const;
 
         // Represents the index of something that does
@@ -84,4 +94,14 @@ namespace ntt
     private:
         std::string m_Str;
     };
+
 } // namespace ntt
+
+template <>
+struct std::hash<ntt::String>
+{
+    std::size_t operator()(const ntt::String &str) const
+    {
+        return str.Hash();
+    }
+};

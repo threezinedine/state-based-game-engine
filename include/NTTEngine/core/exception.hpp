@@ -21,4 +21,10 @@ namespace ntt::exception
     public:
         IndexOutOfRange() : Exception("Index out of range") {}
     };
+
+    class KeyNotFound : public Exception
+    {
+    public:
+        KeyNotFound() : Exception("Key not found in the dictionary") {}
+    };
 } // namespace ntt::exception

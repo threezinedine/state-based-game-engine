@@ -47,6 +47,8 @@ namespace ntt
             return m_List[stdIndex];
         }
 
+        inline T operator[](i64 index) const { return Get(index); }
+
         inline u32 Length() const { return m_List.size(); }
 
         inline void Add(T item) { m_List.push_back(item); }

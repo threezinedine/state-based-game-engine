@@ -61,11 +61,14 @@ TEST_F(ListTest, SubListTest)
     EXPECT_LIST_EQ(subList, List({2, 3}));
     EXPECT_THAT(subList.Get(0), testing::Eq(2));
     EXPECT_THAT(subList.Get(1), testing::Eq(3));
+    EXPECT_THAT(subList[0], testing::Eq(2));
 
     EXPECT_THROW(subList.Get(2), IndexOutOfRange);
     EXPECT_THROW(subList.Get(3), IndexOutOfRange);
+    EXPECT_THROW(subList[3], IndexOutOfRange);
 
     EXPECT_THAT(subList.Get(-1), testing::Eq(3));
+    EXPECT_THAT(subList[-1], testing::Eq(3));
     EXPECT_THAT(subList.Get(-2), testing::Eq(2));
     EXPECT_THROW(subList.Get(-3), IndexOutOfRange);
     EXPECT_THROW(subList.Get(-4), IndexOutOfRange);
