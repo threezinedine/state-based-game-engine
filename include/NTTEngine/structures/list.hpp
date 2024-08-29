@@ -4,6 +4,8 @@
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/core/exception.hpp>
 
+#include "string.hpp"
+
 #include <string>
 #include <vector>
 #include <functional>
@@ -192,18 +194,18 @@ namespace ntt
         /**
          * Convert to string with format [item1, item2, ...]
          */
-        inline std::string ToString()
+        inline String ToString()
         {
-            std::string str = "[";
+            String str = "[";
             for (u32 i = 0; i < Length(); i++)
             {
-                str += std::to_string(m_List[i]);
+                str.Concat(std::to_string(m_List[i]));
                 if (i != Length() - 1)
                 {
-                    str += ", ";
+                    str.Concat(", ");
                 }
             }
-            str += "]";
+            str.Concat("]");
             return str;
         }
 

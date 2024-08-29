@@ -9,9 +9,10 @@ using namespace ntt;
 using namespace ntt::log;
 using namespace ntt::exception;
 
-#define EXPECT_LIST_EQ(lst1, lst2) \
-    EXPECT_TRUE(lst1.Equals(lst2)) \
-        << "Expected: " << lst2.ToString() << " but got: " << lst1.ToString()
+#define EXPECT_LIST_EQ(lst1, lst2)                     \
+    EXPECT_TRUE(lst1.Equals(lst2))                     \
+        << "Expected: " << lst2.ToString().RawString() \
+        << " but got: " << lst1.ToString().RawString()
 
 class TestObject
 {
@@ -54,7 +55,7 @@ TEST_F(ListTest, SubListTest)
 {
     List<int> lst = {1, 2, 3, 4, 5};
 
-    EXPECT_STREQ(lst.ToString().c_str(), "[1, 2, 3, 4, 5]");
+    EXPECT_STREQ(lst.ToString().RawString().c_str(), "[1, 2, 3, 4, 5]");
 
     auto subList = lst.SubList(1, 3);
     EXPECT_LIST_EQ(subList, List({2, 3}));
