@@ -1,6 +1,7 @@
 #pragma once
 
 #include <NTTEngine/Application.hpp>
+#include <NTTEngine/core/time.hpp>
 
 namespace ntt
 {
@@ -19,5 +20,6 @@ namespace ntt
         u16 m_screenWidth;
         u16 m_screenHeight;
         const char *m_title;
+        Timer m_timer;
     };
 } // namespace ntt

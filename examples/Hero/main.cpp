@@ -7,11 +7,16 @@ using namespace ntt::event;
 
 int main()
 {
-    NTT_APP_CONFIG(LogLevel::INFO, LOGGER_CONSOLE, "[@l]:[@n] - @t - @f:@L: @m");
+    NTT_APP_CONFIG(LogLevel::TRACE, LOGGER_CONSOLE, "[@l]:[@n] - @t - @f:@L: @m");
     NTT_APP_INFO("Starting the game");
     auto game = ntt::CreateApplication(800, 600, "Hero");
 
     NTT_APP_INFO("The game started with the size: (%d, %d)", 800, 600);
+    NTT_APP_TRACE("Trace message");
+    NTT_APP_DEBUG("Debug message");
+    NTT_APP_WARN("Warning message");
+    NTT_APP_ERROR("Error message");
+    NTT_APP_FATAL("Fatal message");
 
     auto id = RegisterEvent(EventCode::KEY_PRESSED,
                             [](EventCode event_code, void *sender, const EventContext &context)

@@ -160,4 +160,4 @@ namespace ntt::log
     Log(APP_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #define NTT_APP_DEBUG(message, ...) \
     Log(APP_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, message, ##__VA_ARGS__)
-#define NTT_APP_TRACE(message, ...) Log(APP_LOGGER_NAME, LogLevel::LOG_TRACE, __FILE__, __LINE__, message, ##__VA_ARGS__)
+#define NTT_APP_TRACE(message, ...) Log(APP_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, message, ##__VA_ARGS__)

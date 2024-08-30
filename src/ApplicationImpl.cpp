@@ -26,9 +26,11 @@ namespace ntt
     {
         NTT_ENGINE_INFO("Begin the application");
         SetTraceLogLevel(LOG_NONE);
-        SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+        // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
         InitWindow(m_screenWidth, m_screenHeight, m_title);
         SetTargetFPS(60);
+
+        m_timer.Reset();
     }
 
     bool ApplicationImpl::ShouldClose()
@@ -38,19 +40,22 @@ namespace ntt
 
     void ApplicationImpl::Update()
     {
-        if (IsWindowResized())
-        {
-            u32 width = GetScreenWidth();
-            u32 height = GetScreenHeight();
+        // if (IsWindowResized())
+        // {
+        //     u32 width = GetScreenWidth();
+        //     u32 height = GetScreenHeight();
 
-            EventContext context;
+        //     EventContext context;
 
-            context.u32_data[0] = width;
-            context.u32_data[1] = height;
-            TriggerEvent(EventCode::WINDOW_RESIZED, nullptr, context);
-        }
+        //     context.u32_data[0] = width;
+        //     context.u32_data[1] = height;
+        //     TriggerEvent(EventCode::WINDOW_RESIZED, nullptr, context);
+        // }
 
-        input::Update(0.0f);
+        auto delta = m_timer.GetMilliseconds();
+        m_timer.Reset();
+
+        input::Update(static_cast<f32>(delta));
         BeginDrawing();
         ClearBackground(BLACK);
         EndDrawing();

@@ -49,6 +49,11 @@ namespace ntt::event
 
     void TriggerEvent(EventCode event_code, void *sender, const EventContext &context)
     {
+        if (!s_eventCallbacks.Contains(event_code))
+        {
+            return;
+        }
+
         auto callbacks = s_eventCallbacks[event_code];
 
         callbacks.ForEach([&](const EventCallbackContext &callbackCxt, ...)
