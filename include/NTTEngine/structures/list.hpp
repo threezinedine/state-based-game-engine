@@ -150,6 +150,8 @@ namespace ntt
             return TRUE;
         }
 
+        b8 operator==(const List<T> &list) const { return Equals(list); }
+
         /**
          * Use for iterating through the list
          */

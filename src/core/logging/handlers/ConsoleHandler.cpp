@@ -1,5 +1,5 @@
 #include "ConsoleHandler.hpp"
-#include <NTTEngine/platforms/platforms.hpp>
+#include <NTTEngine/platforms/stream.hpp>
 
 namespace ntt::log
 {

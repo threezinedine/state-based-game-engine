@@ -3,7 +3,6 @@
 #include <NTTEngine/core/memory.hpp>
 #include <cstdarg>
 #include <cstring>
-#include <cstdio>
 
 namespace ntt::log
 {

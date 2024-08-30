@@ -41,6 +41,7 @@ target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
     raylib
+    nlohmann_json
 )
 
 add_executable(

@@ -79,6 +79,12 @@
 		"xtree": "cpp",
 		"xutility": "cpp",
 		"filesystem": "cpp",
-		"*.m": "cpp"
+		"*.m": "cpp",
+		"ranges": "cpp",
+		"regex": "cpp",
+		"codecvt": "cpp",
+		"numeric": "cpp",
+		"random": "cpp",
+		"valarray": "cpp"
 	}
 }
