@@ -3,6 +3,7 @@
 using namespace ntt;
 using namespace ntt::log;
 using namespace ntt::input;
+using namespace ntt::event;
 
 int main()
 {
@@ -12,6 +13,16 @@ int main()
 
     NTT_APP_INFO("The game started with the size: (%d, %d)", 800, 600);
 
+    auto id = RegisterEvent(EventCode::KEY_PRESSED,
+                            [](EventCode event_code, void *sender, const EventContext &context)
+                            { NTT_APP_INFO("Button \"%s\" is pressed",
+                                           GetKeyName(static_cast<Key>(context.u16_data[0]))); });
+
+    RegisterEvent(EventCode::KEY_RELEASED,
+                  [](EventCode event_code, void *sender, const EventContext &context)
+                  { NTT_APP_INFO("Button \"%s\" is released",
+                                 GetKeyName(static_cast<Key>(context.u16_data[0]))); });
+
     game->Begin();
 
     while (!game->ShouldClose())
@@ -20,7 +31,7 @@ int main()
 
         if (CheckState(Key::NTT_KEY_A, InputState::NTT_PRESS))
         {
-            NTT_APP_INFO("Key A is pressed");
+            UnregisterEvent(id);
         }
     }
 

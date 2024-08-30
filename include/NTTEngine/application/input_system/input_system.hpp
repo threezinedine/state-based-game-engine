@@ -16,9 +16,15 @@ namespace ntt::input
 {
     /**
      * All the keys that this engine supports
-     *      and their values
+     *      and their values it suports
+     *      only 8-bit values
+     *
+     * If wanna change the value to 16-bit (or more)
+     *      then in the `input_system.cpp` must
+     *      change the trigger event to pass the
+     *      context with the u16_data
      */
-    enum Key
+    enum Key : u8
     {
         KEY_DEFINE(A, 0x00),
         KEY_DEFINE(B, 0x01),
@@ -64,6 +70,14 @@ namespace ntt::input
         KEY_DEFINE(RIGHT_SHIFT, 0x29),
         KEY_DEFINE(RIGHT_ALT, 0x2A),
     };
+
+    /**
+     * Get the raw string version
+     *      the the key name
+     *
+     * @param key The key
+     */
+    const char *GetKeyName(Key key);
 
     /**
      * The button of the mouse

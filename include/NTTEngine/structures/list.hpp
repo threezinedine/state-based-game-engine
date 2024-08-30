@@ -153,7 +153,7 @@ namespace ntt
         /**
          * Use for iterating through the list
          */
-        inline void ForEach(std::function<void(const T &, const u32)> callback) const
+        inline void ForEach(std::function<void(const T &, const u32)> callback)
         {
             for (u32 i = 0; i < Length(); i++)
             {

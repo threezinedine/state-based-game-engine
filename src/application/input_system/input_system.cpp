@@ -1,6 +1,8 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/application/event_system/event_system.hpp>
+#include <cstring>
 
 #define KEY_SIZE 256
 #define MOUSE_BUTTON_SIZE 3
@@ -10,13 +12,16 @@
 #ifdef USE_RAYLIB
 #include <raylib.h>
 #define CHECK_KEY_STATE(key)                                       \
+    ctx.u8_data[0] = Key::NTT_KEY_##key;                           \
     if (IsKeyPressed(KEY_##key))                                   \
     {                                                              \
         s_keyStates[Key::NTT_KEY_##key] = InputState::NTT_PRESS;   \
+        TriggerEvent(EventCode::KEY_PRESSED, nullptr, ctx);        \
     }                                                              \
-    else if (IsKeyDown(KEY_##key))                                 \
+    else if (IsKeyReleased(KEY_##key))                             \
     {                                                              \
-        s_keyStates[Key::NTT_KEY_##key] = InputState::NTT_DOWN;    \
+        s_keyStates[Key::NTT_KEY_##key] = InputState::NTT_RELEASE; \
+        TriggerEvent(EventCode::KEY_RELEASED, nullptr, ctx);       \
     }                                                              \
     else if (IsKeyUp(KEY_##key))                                   \
     {                                                              \
@@ -24,7 +29,7 @@
     }                                                              \
     else                                                           \
     {                                                              \
-        s_keyStates[Key::NTT_KEY_##key] = InputState::NTT_RELEASE; \
+        s_keyStates[Key::NTT_KEY_##key] = InputState::NTT_DOWN;    \
     }
 
 #define CHECK_MOUSE_STATE(button)                                                  \
@@ -49,8 +54,15 @@
 // #define CHECK_KEY_STATE(key)
 #endif
 
+#define GET_KEY_NAME(key)    \
+    case Key::NTT_KEY_##key: \
+        return #key;
+
 namespace ntt::input
 {
+    using namespace log;
+    using namespace event;
+
     namespace
     {
         // InputState s_keyPreStates[KEY_SIZE];
@@ -64,6 +76,9 @@ namespace ntt::input
 
     void Update(f32 delta)
     {
+        EventContext ctx;
+        memset(&ctx, 0, sizeof(EventContext));
+
         CHECK_KEY_STATE(A);
         CHECK_KEY_STATE(B);
         CHECK_KEY_STATE(C);
@@ -116,6 +131,58 @@ namespace ntt::input
         s_mousePrePos.pix_y = s_mousePos.pix_y;
         s_mousePos.pix_x = GetMouseX();
         s_mousePos.pix_y = GetMouseY();
+    }
+
+    const char *GetKeyName(Key key)
+    {
+        switch (key)
+        {
+            GET_KEY_NAME(A);
+            GET_KEY_NAME(B);
+            GET_KEY_NAME(C);
+            GET_KEY_NAME(D);
+            GET_KEY_NAME(E);
+            GET_KEY_NAME(F);
+            GET_KEY_NAME(G);
+            GET_KEY_NAME(H);
+            GET_KEY_NAME(I);
+            GET_KEY_NAME(J);
+            GET_KEY_NAME(K);
+            GET_KEY_NAME(L);
+            GET_KEY_NAME(M);
+            GET_KEY_NAME(N);
+            GET_KEY_NAME(O);
+            GET_KEY_NAME(P);
+            GET_KEY_NAME(Q);
+            GET_KEY_NAME(R);
+            GET_KEY_NAME(S);
+            GET_KEY_NAME(T);
+            GET_KEY_NAME(U);
+            GET_KEY_NAME(V);
+            GET_KEY_NAME(W);
+            GET_KEY_NAME(X);
+            GET_KEY_NAME(Y);
+            GET_KEY_NAME(Z);
+            GET_KEY_NAME(ZERO);
+            GET_KEY_NAME(ONE);
+            GET_KEY_NAME(TWO);
+            GET_KEY_NAME(THREE);
+            GET_KEY_NAME(FOUR);
+            GET_KEY_NAME(FIVE);
+            GET_KEY_NAME(SIX);
+            GET_KEY_NAME(SEVEN);
+            GET_KEY_NAME(EIGHT);
+            GET_KEY_NAME(NINE);
+            GET_KEY_NAME(ESCAPE);
+            GET_KEY_NAME(LEFT_CONTROL);
+            GET_KEY_NAME(LEFT_SHIFT);
+            GET_KEY_NAME(LEFT_ALT);
+            GET_KEY_NAME(RIGHT_CONTROL);
+            GET_KEY_NAME(RIGHT_SHIFT);
+            GET_KEY_NAME(RIGHT_ALT);
+        default:
+            return "Key is not supported string version";
+        }
     }
 
     b8 CheckState(Key key, InputState state)
