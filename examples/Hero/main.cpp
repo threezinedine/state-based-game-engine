@@ -18,10 +18,10 @@ int main()
                             { NTT_APP_INFO("Button \"%s\" is pressed",
                                            GetKeyName(static_cast<Key>(context.u16_data[0]))); });
 
-    RegisterEvent(EventCode::KEY_RELEASED,
+    RegisterEvent(EventCode::WINDOW_RESIZED,
                   [](EventCode event_code, void *sender, const EventContext &context)
-                  { NTT_APP_INFO("Button \"%s\" is released",
-                                 GetKeyName(static_cast<Key>(context.u16_data[0]))); });
+                  { NTT_APP_INFO("Window is resized to (%d, %d)",
+                                 context.u32_data[0], context.u32_data[1]); });
 
     game->Begin();
 

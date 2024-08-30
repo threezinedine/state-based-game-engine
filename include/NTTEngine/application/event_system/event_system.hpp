@@ -51,15 +51,24 @@ namespace ntt::event
      */
     enum EventCode
     {
-        KEY_PRESSED = 0x00,  ///< When a keyboard button or mouse button is pressed
-        KEY_RELEASED = 0x01, ///< When a keyboard button or mouse button is released
+        TEST = 0x00,         ///< Test event code which is used for testing purpose (can be used
+                             ///<      as reversed event code)
+        KEY_PRESSED = 0x01,  ///< When a keyboard button or mouse button is pressed
+        KEY_RELEASED = 0x02, ///< When a keyboard button or mouse button is released
+
+        WINDOW_RESIZED = 0x03, ///< When the window is resized
     };
+    /**
+     * Can add more event code here
+     *      without changing any other
+     *      code in the engine
+     */
 
     /**
      * The type of the callback function which
      *      is used in the event bus system
      */
-    typedef void (*EventCallback)(const EventCode, void *, const EventContext &);
+    using EventCallback = std::function<void(const EventCode, void *, const EventContext &)>;
 
     /**
      * When any callback is registered to the event bus
