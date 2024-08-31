@@ -12,3 +12,7 @@
  */
 
 #include "list.hpp"
+#include "dictionary.hpp"
+#include "position.hpp"
+#include "size.hpp"
+#include "string.hpp"

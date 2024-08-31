@@ -4,16 +4,19 @@
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
-#include <glfw/glfw3.h>
+#include <NTTEngine/renderer/GraphicInterface.hpp>
 
 namespace ntt
 {
     using namespace memory;
     using namespace log;
     using namespace event;
+    using namespace renderer;
 
-    ApplicationImpl::ApplicationImpl(u16 screenWidth, u16 screenHeight, const char *title)
-        : m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_title(title)
+    ApplicationImpl::ApplicationImpl(u16 screenWidth, u16 screenHeight,
+                                     const char *title, const Phrases &phrases)
+        : m_screenWidth(screenWidth), m_screenHeight(screenHeight),
+          m_title(title), m_phrases(phrases)
     {
         NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
     }
@@ -24,11 +27,14 @@ namespace ntt
 
     void ApplicationImpl::Begin()
     {
-        NTT_ENGINE_INFO("Begin the application");
+        NTT_ENGINE_INFO("Starting the application ...");
         SetTraceLogLevel(LOG_NONE);
         // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
         InitWindow(m_screenWidth, m_screenHeight, m_title);
         SetTargetFPS(60);
+        RendererInit();
+        m_phrases.Begin();
+        NTT_ENGINE_INFO("The application is started.");
 
         m_timer.Reset();
     }
@@ -52,23 +58,28 @@ namespace ntt
         //     TriggerEvent(EventCode::WINDOW_RESIZED, nullptr, context);
         // }
 
-        auto delta = m_timer.GetMilliseconds();
+        auto delta = static_cast<f32>(m_timer.GetMilliseconds());
         m_timer.Reset();
 
-        input::Update(static_cast<f32>(delta));
+        input::Update(delta);
         BeginDrawing();
         ClearBackground(BLACK);
+        m_phrases.MainLoop(delta);
         EndDrawing();
     }
 
     void ApplicationImpl::End()
     {
-        NTT_ENGINE_INFO("Close the application");
+        NTT_ENGINE_INFO("The applicaiton is closing ...");
+        m_phrases.Close();
+        RendererShutdown();
         CloseWindow();
+        NTT_ENGINE_INFO("The applicaiton is closed");
     }
 
-    Scope<Application> CreateApplication(u16 screenWidth, u16 screenHeight, const char *title)
+    Scope<Application> CreateApplication(u16 screenWidth, u16 screenHeight, const char *title,
+                                         const Phrases &phrases)
     {
-        return CreateScope<ApplicationImpl>(screenWidth, screenHeight, title);
+        return CreateScope<ApplicationImpl>(screenWidth, screenHeight, title, phrases);
     }
 } // namespace ntt

@@ -1,46 +1,45 @@
 #include <NTTEngine/NTTEngine.hpp>
 
+#include <NTTEngine/main.hpp>
 using namespace ntt;
 using namespace ntt::log;
 using namespace ntt::input;
 using namespace ntt::event;
+using namespace ntt::renderer;
 
-int main()
+event_id_t id;
+texture_id_t test_texture_id;
+
+void Begin()
 {
-    NTT_APP_CONFIG(LogLevel::TRACE, LOGGER_CONSOLE, "[@l]:[@n] - @t - @f:@L: @m");
-    NTT_APP_INFO("Starting the game");
-    auto game = ntt::CreateApplication(800, 600, "Hero");
+    NTT_APP_CONFIG(LogLevel::TRACE, LOGGER_CONSOLE, "[@l] - @m");
+    id = RegisterEvent(EventCode::KEY_PRESSED,
+                       [](EventCode event_code, void *sender, const EventContext &context)
+                       { NTT_APP_INFO("Button \"%s\" is pressed",
+                                      GetKeyName(static_cast<Key>(context.u16_data[0]))); });
 
-    NTT_APP_INFO("The game started with the size: (%d, %d)", 800, 600);
-    NTT_APP_TRACE("Trace message");
-    NTT_APP_DEBUG("Debug message");
-    NTT_APP_WARN("Warning message");
-    NTT_APP_ERROR("Error message");
-    NTT_APP_FATAL("Fatal message");
+    test_texture_id = LoadTexture("C:/Users/Acer/Games Dev/state-based-game-engine/"
+                                  "examples/Hero/assets/images/button.png");
 
-    auto id = RegisterEvent(EventCode::KEY_PRESSED,
-                            [](EventCode event_code, void *sender, const EventContext &context)
-                            { NTT_APP_INFO("Button \"%s\" is pressed",
-                                           GetKeyName(static_cast<Key>(context.u16_data[0]))); });
+    auto new_id = LoadTexture("C:/Users/Acer/Games Dev/state-based-game-engine/"
+                              "examples/Hero/assets/images/button.png");
 
-    RegisterEvent(EventCode::WINDOW_RESIZED,
-                  [](EventCode event_code, void *sender, const EventContext &context)
-                  { NTT_APP_INFO("Window is resized to (%d, %d)",
-                                 context.u32_data[0], context.u32_data[1]); });
+    ASSERT_M(test_texture_id == new_id, "The texture ID is not the same");
+}
 
-    game->Begin();
+void MainLoop(f32 delta)
+{
+    DrawTexture(test_texture_id);
+    DrawTexture(test_texture_id, {{300, 100}, {100}});
+    DrawTexture(test_texture_id, {{500, 100}, {100, 100}});
 
-    while (!game->ShouldClose())
+    if (CheckState(Key::NTT_KEY_A, InputState::NTT_PRESS))
     {
-        game->Update();
-
-        if (CheckState(Key::NTT_KEY_A, InputState::NTT_PRESS))
-        {
-            UnregisterEvent(id);
-        }
+        UnregisterEvent(id);
     }
+}
 
-    game->End();
-
-    return 0;
+void Close()
+{
+    UnloadTexture(test_texture_id);
 }

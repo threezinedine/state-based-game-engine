@@ -2,6 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/exception.hpp>
+#include "list.hpp"
 #include <map>
 #include <initializer_list>
 #include <utility>
@@ -31,8 +32,29 @@ namespace ntt
         inline V &operator[](K key) { return m_Dict[key]; }
 
         inline void Insert(K key, V value) { m_Dict[key] = value; }
+        inline void Remove(K key) { m_Dict.erase(key); }
 
         inline bool Contains(K key) { return m_Dict.find(key) != m_Dict.end(); }
+        inline u32 Count() { return m_Dict.size(); }
+        inline List<V> Keys()
+        {
+            List<V> keys;
+            for (auto &pair : m_Dict)
+            {
+                keys.PushBack(pair.first);
+            }
+            return keys;
+        }
+
+        inline List<V> Values()
+        {
+            List<V> values;
+            for (auto &pair : m_Dict)
+            {
+                values.PushBack(pair.second);
+            }
+            return values;
+        }
 
         /**
          * The callback will be called with each key-value pair in the dictionary
@@ -56,6 +78,21 @@ namespace ntt
             {
                 callback(pair.first, pair.second, initialValue);
             }
+        }
+
+        const char *ToString()
+        {
+            std::string str = "{";
+            for (auto &pair : m_Dict)
+            {
+                str += "\n\t" + pair.first + ": " + pair.second;
+                if (pair != m_Dict.end() - 1)
+                {
+                    str += ",";
+                }
+            }
+            str += "}";
+            return str.c_str();
         }
 
     private:

@@ -8,7 +8,8 @@ namespace ntt
     class ApplicationImpl : public Application
     {
     public:
-        ApplicationImpl(u16 screenWidth, u16 screenHeight, const char *title);
+        ApplicationImpl(u16 screenWidth, u16 screenHeight,
+                        const char *title, const Phrases &phrases);
         ~ApplicationImpl() override;
 
         void Begin() override;
@@ -21,5 +22,6 @@ namespace ntt
         u16 m_screenHeight;
         const char *m_title;
         Timer m_timer;
+        Phrases m_phrases;
     };
 } // namespace ntt

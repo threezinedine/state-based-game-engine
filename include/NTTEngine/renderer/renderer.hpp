@@ -20,3 +20,5 @@ namespace ntt::renderer
 {
 
 } // namespace ntt::renderer
+
+#include "GraphicInterface.hpp"

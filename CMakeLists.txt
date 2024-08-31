@@ -25,6 +25,7 @@ foreach(SOURCE ${SOURCES})
     endif()
 endforeach()
 
+
 add_library(
     ${PROJECT_NAME}
     STATIC
@@ -66,4 +67,5 @@ target_link_libraries(
     gmock
 )
 
+add_compile_definitions(BUILD_GAME)
 add_subdirectory(examples)

@@ -127,10 +127,10 @@ namespace ntt::input
         CHECK_MOUSE_STATE(RIGHT);
         CHECK_MOUSE_STATE(MIDDLE);
 
-        s_mousePrePos.pix_x = s_mousePos.pix_x;
-        s_mousePrePos.pix_y = s_mousePos.pix_y;
-        s_mousePos.pix_x = GetMouseX();
-        s_mousePos.pix_y = GetMouseY();
+        s_mousePrePos.x = s_mousePos.x;
+        s_mousePrePos.y = s_mousePos.y;
+        s_mousePos.x = GetMouseX();
+        s_mousePos.y = GetMouseY();
     }
 
     const char *GetKeyName(Key key)
@@ -197,7 +197,7 @@ namespace ntt::input
 
     b8 IsMouseMoving()
     {
-        return s_mousePrePos.pix_x != s_mousePos.pix_x || s_mousePrePos.pix_y != s_mousePos.pix_y;
+        return s_mousePrePos.x != s_mousePos.x || s_mousePrePos.y != s_mousePos.y;
     }
 
     Position &GetMousePosition()

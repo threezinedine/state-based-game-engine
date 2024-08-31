@@ -5,3 +5,4 @@
 #include "core/core.hpp"
 #include "structures/structures.hpp"
 #include "application/application.hpp"
+#include "renderer/renderer.hpp"
