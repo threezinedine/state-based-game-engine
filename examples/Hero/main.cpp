@@ -1,6 +1,5 @@
-#include <NTTEngine/NTTEngine.hpp>
-
 #include <NTTEngine/main.hpp>
+
 using namespace ntt;
 using namespace ntt::log;
 using namespace ntt::input;

@@ -75,6 +75,9 @@ namespace ntt
 
     private:
         class Impl;
+        // Cannot detect the size of the Impl class
+        //      so we need to use the pointer to the Impl class
+        //      instead of the smart pointer
         Impl *m_Impl = nullptr;
     };
 } // namespace ntt

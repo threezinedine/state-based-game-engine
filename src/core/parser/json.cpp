@@ -13,6 +13,7 @@ namespace ntt
     JSON::JSON()
         : m_Impl(new Impl())
     {
+        NTT_ENGINE_DEBUG("Creating the JSON object");
     }
 
     JSON::JSON(String data)
@@ -31,6 +32,7 @@ namespace ntt
     {
         if (m_Impl != nullptr)
         {
+            NTT_ENGINE_DEBUG("Destroying the JSON object");
             delete m_Impl;
             m_Impl = nullptr;
         }

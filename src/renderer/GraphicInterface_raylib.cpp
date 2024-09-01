@@ -35,7 +35,7 @@ namespace ntt::renderer
         texture_id_t s_currentTextureId = 0;
 
         // The list of loaded textures
-        TextureInfo *s_loadedTextures[TEXTURE_MAX];
+        Scope<TextureInfo> s_loadedTextures[TEXTURE_MAX];
 
         Dictionary<String, texture_id_t> s_loadedTexturesPath;
     } // namespace
@@ -54,23 +54,22 @@ namespace ntt::renderer
 
         auto texture = ::LoadTexture(path.RawString().c_str());
 
-        s_loadedTextures[s_currentTextureId] = new TextureInfo(texture, grid, path);
+        s_loadedTextures[s_currentTextureId] = CreateScope<TextureInfo>(texture, grid, path);
         s_loadedTexturesPath.Insert(path, s_currentTextureId);
         return s_currentTextureId++;
     }
 
     void DrawTexture(texture_id_t texture_id, const RectContext &context)
     {
-        auto textureInfo = s_loadedTextures[texture_id];
-        if (textureInfo == nullptr)
+        if (s_loadedTextures[texture_id] == nullptr)
         {
             NTT_ENGINE_WARN("The texture with the ID %d is not loaded yet", texture_id);
             return;
         }
 
-        auto texture = textureInfo->texture;
-        f32 textureWidth = static_cast<f32>(textureInfo->texture.width);
-        f32 textureHeight = static_cast<f32>(textureInfo->texture.height);
+        auto texture = s_loadedTextures[texture_id]->texture;
+        f32 textureWidth = static_cast<f32>(s_loadedTextures[texture_id]->texture.width);
+        f32 textureHeight = static_cast<f32>(s_loadedTextures[texture_id]->texture.height);
         f32 width = 0.0f;
         f32 height = 0.0f;
 
@@ -117,19 +116,19 @@ namespace ntt::renderer
 
     void UnloadTexture(texture_id_t texture_id)
     {
-        auto textureInfo = s_loadedTextures[texture_id];
         if (s_loadedTextures[texture_id] == nullptr)
         {
             NTT_ENGINE_WARN("The texture with the ID %d is already unloaded", texture_id);
             return;
         }
 
-        auto texture = textureInfo->texture;
+        auto texture = s_loadedTextures[texture_id]->texture;
 
         ::UnloadTexture(texture);
-        s_loadedTextures[texture_id] = nullptr;
-        s_loadedTexturesPath.Remove(textureInfo->path);
-        delete textureInfo;
+        s_loadedTexturesPath.Remove(s_loadedTextures[texture_id]->path);
+        s_loadedTextures[texture_id].reset();
+
+        ASSERT_M(s_loadedTextures[texture_id] == nullptr, "The texture is not unloaded");
     }
 
     void RendererShutdown()

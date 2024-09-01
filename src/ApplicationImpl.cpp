@@ -19,6 +19,7 @@ namespace ntt
           m_title(title), m_phrases(phrases)
     {
         NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
+        MemoryInit();
     }
 
     ApplicationImpl::~ApplicationImpl()
@@ -75,6 +76,8 @@ namespace ntt
         RendererShutdown();
         CloseWindow();
         NTT_ENGINE_INFO("The applicaiton is closed");
+        MemoryShutdown();
+        LogShutdown();
     }
 
     Scope<Application> CreateApplication(u16 screenWidth, u16 screenHeight, const char *title,

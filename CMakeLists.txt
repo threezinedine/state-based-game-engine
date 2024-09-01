@@ -4,9 +4,19 @@ project(NTTEngine)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
-    
+    add_compile_definitions(_DEBUG)
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-D_DEBUG)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        message(STATUS "C++ compiler is Clang++")
+        # Add specific C++ compiler flags for Clang++
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+    else()
+        message(STATUS "C++ compiler is not Clang")
+    endif()
+endif()
 
 add_subdirectory(vendors)
 
@@ -43,6 +53,7 @@ target_link_libraries(
     PUBLIC
     raylib
     nlohmann_json
+    memplumber 
 )
 
 add_executable(

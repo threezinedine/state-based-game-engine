@@ -126,6 +126,11 @@ namespace ntt::log
     void Log(const char *name, LogLevel level, const char *file,
              u16 line,
              const char *message, ...);
+
+    /**
+     * Clear all the loggers which are created by the engine
+     */
+    void LogShutdown();
 } // namespace ntt::log
 
 #define ENGINE_LOGGER_NAME "Engine"

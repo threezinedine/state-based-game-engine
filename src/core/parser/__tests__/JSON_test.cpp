@@ -33,6 +33,8 @@ protected:
             ],
             "list": [1, 2, 3]
         })";
+
+        // NTT_ENGINE_CONFIG(LogLevel::TRACE, LOGGER_CONSOLE, "[@l] - @m");
     }
 
     JSON json;

@@ -63,4 +63,7 @@ namespace ntt::log
         }
     }
 
+    void LogShutdown()
+    {
+    }
 } // namespace ntt::log

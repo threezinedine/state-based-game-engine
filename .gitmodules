@@ -7,3 +7,6 @@
 [submodule "vendors/json"]
 	path = vendors/json
 	url = https://github.com/nlohmann/json.git
+[submodule "vendors/memory-checker"]
+	path = vendors/memory-checker
+	url = git@github.com:threezinedine/MemPlumber.git

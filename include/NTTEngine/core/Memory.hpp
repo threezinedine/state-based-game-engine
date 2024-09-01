@@ -8,6 +8,8 @@
  * The Memory module provides 2 types of smart pointers:
  *      - Scope pointer: The object can be owned by only 1 context.
  *      - Ref pointer: The object can be owned by multiple contexts.
+ *
+ * Provides the mechanism for checking memory leaks in the engine.
  */
 namespace ntt::memory
 {
@@ -53,4 +55,21 @@ namespace ntt::memory
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
+
+    /**
+     * Initialize all functionalities of the Memory module
+     */
+    void MemoryInit();
+
+    /**
+     * End all functionalities of the Memory module
+     */
+    void MemoryShutdown();
+
+    class MemoryChecker
+    {
+    public:
+        MemoryChecker();
+        ~MemoryChecker();
+    };
 } // namespace ntt

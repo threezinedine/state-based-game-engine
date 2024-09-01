@@ -82,7 +82,7 @@ namespace ntt
 
         const char *ToString()
         {
-            std::string str = "{";
+            static std::string str = "{";
             for (auto &pair : m_Dict)
             {
                 str += "\n\t" + pair.first + ": " + pair.second;
