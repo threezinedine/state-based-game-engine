@@ -17,6 +17,15 @@ void Begin()
                        { NTT_APP_INFO("Button \"%s\" is pressed",
                                       GetKeyName(static_cast<Key>(context.u16_data[0]))); });
 
+    ConfigureSourcePath("C:/Users/Acer/Games Dev/state-based-game-engine");
+
+    NTT_APP_INFO("Full path: {}",
+                 RelativePath("assets/images/button.png"));
+    NTT_APP_INFO("File name: {}",
+                 GetFileName(RelativePath("assets/images/button.png")));
+    NTT_APP_INFO("Relative path: {}",
+                 GetFileName(RelativePath("assets/images/button.png"), true));
+
     test_texture_id = LoadTexture("C:/Users/Acer/Games Dev/state-based-game-engine/"
                                   "examples/Hero/assets/images/button.png");
 

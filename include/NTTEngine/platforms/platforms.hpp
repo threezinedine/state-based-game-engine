@@ -5,3 +5,4 @@
  */
 
 #include "stream.hpp"
+#include "path.hpp"

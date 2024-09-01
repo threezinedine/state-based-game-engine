@@ -11,15 +11,15 @@
 			"program": "${workspaceFolder}/build/examples/Hero/Hero.exe",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${workspaceFolder}/build/examples/Hero",
+			"cwd": "C:/msys64/mingw64/bin",
+			"miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
 			"environment": [],
 			"externalConsole": false,
-			// "pipeTransport": {
-			//     "debuggerPath": "/usr/bin/gdb",
-			//     "pipeProgram": "<full path to pipe program such as plink.exe>",
-			//     "pipeArgs": [],
-			//     "pipeCwd": ""
-			// },
+			"logging": {
+				"engineLogging": true,
+				"trace": true,
+				"traceResponse": true
+			},
 			"MIMode": "gdb",
 			"setupCommands": [
 				{

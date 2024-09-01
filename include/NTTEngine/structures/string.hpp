@@ -1,10 +1,12 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include <string>
-#include "list.hpp"
 
 namespace ntt
 {
+    template <typename T>
+    class List;
+
     class String
     {
     public:
@@ -13,6 +15,11 @@ namespace ntt
         String(const std::string &str);
         String(const String &str);
         ~String();
+
+        /**
+         * @param start: The start index of the substring
+         */
+        String SubString(u32 start) const;
 
         /**
          * @param start: The start index of the substring
@@ -64,6 +71,13 @@ namespace ntt
          *          and passed string "Universe" will return "Hello, Universe"
          */
         void Concat(const String &str, const String &format = "");
+
+        /**
+         * Check a string contains another string or not
+         *
+         * @param str: The string to be checked
+         */
+        b8 Contains(const String &str) const;
 
         /**
          * Split the string by the delimiter
@@ -118,6 +132,12 @@ namespace ntt
         inline std::size_t Hash() const
         {
             return std::hash<std::string>{}(m_Str);
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const String &str)
+        {
+            os << str.RawString();
+            return os;
         }
 
         std::string RawString() const;

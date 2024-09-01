@@ -40,7 +40,7 @@ namespace ntt::log
         void Log(LogLevel level,
                  const char *file,
                  u16 line,
-                 const char *message);
+                 const String &message);
 
     private:
         // This name must be different for each logger

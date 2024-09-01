@@ -1,4 +1,5 @@
 #include <NTTEngine/structures/string.hpp>
+#include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <cstdarg>
 
@@ -23,6 +24,11 @@ namespace ntt
     String::String(const String &str) : m_Str(str.m_Str) {}
 
     String::~String() {}
+
+    String String::SubString(u32 start) const
+    {
+        return String(m_Str.substr(start));
+    }
 
     String String::SubString(u32 start, u32 end) const
     {
@@ -91,6 +97,11 @@ namespace ntt
         }
     }
 
+    b8 String::Contains(const String &str) const
+    {
+        return m_Str.find(str.RawString()) != std::string::npos;
+    }
+
     void String::Trim()
     {
         auto start = m_Str.find_first_not_of(" ");
@@ -118,7 +129,7 @@ namespace ntt
     {
         u32 index = 0;
         b8 isMatch = TRUE;
-        auto segment = pattern.Split("{}");
+        auto segment = pattern.Split("@");
 
         if (segment.Length() == 0)
         {

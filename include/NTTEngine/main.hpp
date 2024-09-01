@@ -1,5 +1,3 @@
-#pragma once
-
 #include <NTTEngine/NTTEngine.hpp>
 
 #ifdef BUILD_GAME

@@ -12,7 +12,7 @@ namespace ntt::log
         ExtractHandlers(type, m_handlers);
     }
 
-    void Logger::Log(LogLevel level, const char *file, u16 line, const char *message)
+    void Logger::Log(LogLevel level, const char *file, u16 line, const String &message)
     {
         if (level > m_level)
         {

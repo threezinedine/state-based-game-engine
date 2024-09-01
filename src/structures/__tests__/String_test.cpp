@@ -2,6 +2,7 @@
 #include <gmock/gmock.h>
 
 #include <NTTEngine/structures/string.hpp>
+#include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/core/logging.hpp>
 
 using namespace ntt;
@@ -79,10 +80,10 @@ TEST_F(StringTest, StringConcat)
 TEST_F(StringTest, StringPatternMatching)
 {
     String str = "Hello, World first";
-    EXPECT_TRUE(str.MatchPattern("Hello, {} first"));
-    EXPECT_FALSE(str.MatchPattern("Hello, {} second"));
-    EXPECT_FALSE(str.MatchPattern("{}, {} second"));
-    EXPECT_TRUE(str.MatchPattern("{}, {} first"));
-    EXPECT_TRUE(str.MatchPattern("{}, {}World{} first"));
-    EXPECT_TRUE(str.MatchPattern("Hello, World {}"));
+    EXPECT_TRUE(str.MatchPattern("Hello, @ first"));
+    EXPECT_FALSE(str.MatchPattern("Hello, @ second"));
+    EXPECT_FALSE(str.MatchPattern("@, @ second"));
+    EXPECT_TRUE(str.MatchPattern("@, @ first"));
+    EXPECT_TRUE(str.MatchPattern("@, @World@ first"));
+    EXPECT_TRUE(str.MatchPattern("Hello, World @"));
 }

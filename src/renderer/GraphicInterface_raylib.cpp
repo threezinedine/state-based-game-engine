@@ -49,6 +49,8 @@ namespace ntt::renderer
     {
         if (s_loadedTexturesPath.Contains(path))
         {
+            NTT_ENGINE_WARN("The texture is already loaded",
+                            path.RawString().c_str());
             return s_loadedTexturesPath.Get(path);
         }
 
@@ -63,7 +65,7 @@ namespace ntt::renderer
     {
         if (s_loadedTextures[texture_id] == nullptr)
         {
-            NTT_ENGINE_WARN("The texture with the ID %d is not loaded yet", texture_id);
+            NTT_ENGINE_WARN("The texture with the ID {} is not loaded yet", texture_id);
             return;
         }
 
@@ -94,7 +96,7 @@ namespace ntt::renderer
             height = static_cast<f32>(textureHeight);
         }
 
-        NTT_ENGINE_TRACE("Drawing the texture with the ID %d with Rect (%d, %d, %f, %f)",
+        NTT_ENGINE_TRACE("Drawing the texture with the ID {} with Rect ({}, {}, {}, {})",
                          texture_id,
                          static_cast<u32>(context.position.x),
                          static_cast<u32>(context.position.y),
@@ -118,7 +120,7 @@ namespace ntt::renderer
     {
         if (s_loadedTextures[texture_id] == nullptr)
         {
-            NTT_ENGINE_WARN("The texture with the ID %d is already unloaded", texture_id);
+            NTT_ENGINE_WARN("The texture with the ID {} is already unloaded", texture_id);
             return;
         }
 
@@ -138,7 +140,7 @@ namespace ntt::renderer
             if (s_loadedTextures[i] != nullptr)
             {
                 UnloadTexture(i);
-                NTT_ENGINE_WARN("The texture with the ID %d is not unloaded", i);
+                NTT_ENGINE_WARN("The texture with the ID {} is not unloaded", i);
             }
         }
         ASSERT_M(s_loadedTexturesPath.Count() == 0, "The loaded textures path is not empty");

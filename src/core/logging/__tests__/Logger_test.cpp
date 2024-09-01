@@ -21,7 +21,7 @@ TEST_F(LoggerTest, LogFunctionShouldCall_WhenLogLevelValid)
     NTT_ENGINE_TRACE("This is a trace message");
     NTT_ENGINE_DEBUG("This is a debug message");
     NTT_ENGINE_INFO("This is an info message");
-    NTT_ENGINE_WARN("This is a warning message: %d", 8);
+    NTT_ENGINE_WARN("This is a warning message: {}", 8);
     NTT_ENGINE_ERROR("This is an error message");
     NTT_ENGINE_FATAL("This is a fatal message");
 
@@ -45,5 +45,5 @@ TEST_F(LoggerTest, MatchTheFormat)
     NTT_ENGINE_INFO("This is a info message");
     EXPECT_TRUE(
         GetData().LogMessageString.MatchPattern(
-            "[INFO] - {} - This is a info message\n"));
+            "[INFO] - @ - This is a info message\n"));
 }
