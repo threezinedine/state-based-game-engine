@@ -1,4 +1,4 @@
-#include "ApplicationImpl.hpp"
+#include "./ApplicationImpl.hpp"
 #include <raylib.h>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/memory.hpp>

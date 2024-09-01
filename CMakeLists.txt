@@ -9,6 +9,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(_DEBUG)
 endif()
 
+# TODO: fix later
+# add_compile_definitions(_WIN32)
+# add_compile_definitions(_MSC_VER)
+
 add_subdirectory(vendors)
 
 file(

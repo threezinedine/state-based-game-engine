@@ -1,4 +1,4 @@
 cd C:\Users\Acer\Games Dev\state-based-game-engine\build
-@REM mingw32-make
-make
+mingw32-make
+@REM make
 cd C:\Users\Acer\Games Dev\state-based-game-engine

@@ -42,9 +42,9 @@ static_assert(sizeof(b32) == 4, "b32 is not 4 bytes");
 #define TRUE 1
 #define FALSE 0
 
-// TODO: Currently only support Windows platform
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+// // TODO: Currently only support Windows platform
+// #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #define PLATFORM_WINDOWS
-#else
-#error "This library only supports Windows"
-#endif
+// #else
+// #error "This library only supports Windows"
+// #endif

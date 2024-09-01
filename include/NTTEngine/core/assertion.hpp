@@ -5,7 +5,8 @@
 
 // define the debug break
 #ifdef PLATFORM_WINDOWS
-#define DEBUG_BREAK() __debugbreak()
+// #define DEBUG_BREAK() __debugbreak()
+#define DEBUG_BREAK()
 #else
 #define DEBUG_BREAK()
 #endif

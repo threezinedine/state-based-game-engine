@@ -27,11 +27,11 @@ namespace ntt::renderer
      */
     struct Grid
     {
-        u8 numRows; ///< The number of rows in the grid of the texture
-        u8 numCols; ///< The number of columns in the grid of the texture
+        u8 row; ///< The number of rows in the grid of the texture
+        u8 col; ///< The number of columns in the grid of the texture
 
-        Grid() : numRows(1), numCols(1) {}
-        Grid(u8 numRows, u8 numCols) : numRows(numRows), numCols(numCols) {}
+        Grid() : row(1), col(1) {}
+        Grid(u8 row, u8 col) : row(row), col(col) {}
     };
 
     /**
@@ -51,7 +51,7 @@ namespace ntt::renderer
      *      rows and columns in the texture, if the grid is not provided
      *      then the default grid will be used (only 1 row and 1 column).
      */
-    texture_id_t LoadTexture(const String &path, const Grid &grid = Grid());
+    texture_id_t LoadTexture(const String &path, const Grid &grid = Grid{1, 1});
 
     /**
      * The context which the renderer used for drawing
@@ -74,8 +74,14 @@ namespace ntt::renderer
      *      happen and the warning will be printed.
      *
      * @param context: (Optional) The context which the renderer used for drawing
+     * @param cell: (Optional) The cell of the texture which should be drawn
+     *      if the cell is not provided then the default grid will be used (0, 0).
+     *      if the cell is out of the grid, then the warning will be printed and the
+     *      maximum cell will be used.
      */
-    void DrawTexture(texture_id_t texture_id, const RectContext &context = RectContext());
+    void DrawTexture(texture_id_t texture_id,
+                     const RectContext &context = RectContext(),
+                     const Grid &cell = Grid{0, 0});
 
     /**
      * Unload the texture with the given texture ID, if
