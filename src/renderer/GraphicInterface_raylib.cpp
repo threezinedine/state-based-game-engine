@@ -7,8 +7,9 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <cstring>
 
+#include "GraphicInterface_platforms.hpp"
+
 #ifdef PLATFORM_WINDOWS
-#include <raylib.h>
 
 namespace ntt::renderer
 {
@@ -19,11 +20,11 @@ namespace ntt::renderer
      */
     struct TextureInfo
     {
-        Texture2D texture; ///< The texture which is loaded
-        Grid grid;         ///< The grid of the texture
-        String path;       ///< The path of the texture
-        f32 frameWith;     ///< The width each frame in the texture
-        f32 frameHeight;   ///< The height each frame in the texture
+        TEXTURE_2D texture; ///< The texture which is loaded
+        Grid grid;          ///< The grid of the texture
+        String path;        ///< The path of the texture
+        f32 frameWith;      ///< The width each frame in the texture
+        f32 frameHeight;    ///< The height each frame in the texture
 
         TextureInfo(Texture2D texture, const String &path) : texture(texture), path(path) {}
         TextureInfo(Texture2D texture, const Grid &grid, const String &path)
@@ -64,7 +65,7 @@ namespace ntt::renderer
             return DEFAULT_TEXTURE;
         }
 
-        auto texture = ::LoadTexture(path.RawString().c_str());
+        auto texture = LOAD_TEXTURE(path);
 
         s_loadedTextures[s_currentTextureId] = CreateScope<TextureInfo>(texture, grid, path);
         s_loadedTextures[s_currentTextureId]->frameWith = static_cast<f32>(texture.width) / grid.col;
@@ -77,7 +78,6 @@ namespace ntt::renderer
     {
         if (s_loadedTextures[texture_id] == nullptr)
         {
-            // NTT_ENGINE_WARN("The texture with the ID {} is not loaded yet", texture_id);
             return;
         }
 
@@ -127,18 +127,15 @@ namespace ntt::renderer
                          frame.row,
                          frame.col);
 
-        ::DrawTexturePro(
-            texture,
-            ::Rectangle{frame.col * frameWidth,
-                        frame.row * frameHeight,
-                        frameWidth,
-                        frameHeight},
-            ::Rectangle{static_cast<f32>(context.position.x),
-                        static_cast<f32>(context.position.y),
-                        width, height},
-            ::Vector2{width / 2.0f, height / 2.0f},
-            0.0f,
-            ::WHITE);
+        DRAW_TEXTURE(texture,
+                     frameWidth * frame.col,
+                     frameHeight * frame.row,
+                     frameWidth,
+                     frameHeight,
+                     static_cast<f32>(context.position.x),
+                     static_cast<f32>(context.position.y),
+                     width,
+                     height);
     }
 
     void UnloadTexture(texture_id_t texture_id)
@@ -151,7 +148,7 @@ namespace ntt::renderer
 
         auto texture = s_loadedTextures[texture_id]->texture;
 
-        ::UnloadTexture(texture);
+        UNLOAD_TEXTURE(texture);
         s_loadedTexturesPath.Remove(s_loadedTextures[texture_id]->path);
         s_loadedTextures[texture_id].reset();
 

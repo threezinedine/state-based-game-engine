@@ -66,6 +66,11 @@ void MainLoop(f32 delta)
         PlayAudio(DEFAULT_AUDIO);
     }
 
+    if (CheckState(Key::NTT_KEY_X, InputState::NTT_PRESS))
+    {
+        UnloadAudio(DEFAULT_AUDIO);
+    }
+
     if (CheckState(Key::NTT_KEY_B, InputState::NTT_DOWN))
     {
         DrawTexture(full_id, {{300, 300}, {200}}, {1, 0});

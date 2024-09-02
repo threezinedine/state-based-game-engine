@@ -86,7 +86,7 @@ namespace ntt::audio
 
         if (audioInfo == nullptr)
         {
-            NTT_ENGINE_WARN("The audio id is not existed or unloaded");
+            NTT_ENGINE_WARN("The audio id {} is not existed or unloaded", audio_id);
             return;
         }
 
@@ -106,7 +106,7 @@ namespace ntt::audio
 
         if (audioInfo == nullptr)
         {
-            NTT_ENGINE_WARN("The audio id is not existed or unloaded");
+            NTT_ENGINE_WARN("The audio id {} is not existed or unloaded", audio_id);
             return;
         }
 
@@ -123,14 +123,24 @@ namespace ntt::audio
             return;
         }
 
-        for (u32 i = 0; i < s_playingAudios.Length(); i++)
+        auto tempPlayingAudios = s_playingAudios.Copy();
+
+        for (auto i = 0; i < tempPlayingAudios.Length(); i++)
         {
-            auto audioInfo = s_audioStore.Get(s_playingAudios[i]);
+            auto audioInfo = s_audioStore.Get(tempPlayingAudios[i]);
+
+            if (audioInfo == nullptr)
+            {
+                NTT_ENGINE_WARN("The audio {} was unloaded", tempPlayingAudios[i]);
+                s_playingAudios.RemoveItem(tempPlayingAudios[i]);
+                continue;
+            }
+
             if (!IS_SOUND_PLAYING(audioInfo->sound))
             {
                 EventContext context;
-                context.u32_data[0] = s_playingAudios[i];
-                s_playingAudios.Remove(i);
+                context.u32_data[0] = tempPlayingAudios[i];
+                s_playingAudios.Remove(tempPlayingAudios[i]);
                 TriggerEvent(EventCode::AUDIO_FINISHED, nullptr, context);
             }
         }
@@ -143,17 +153,11 @@ namespace ntt::audio
             return;
         }
 
-        if (audio_id == DEFAULT_AUDIO)
-        {
-            NTT_ENGINE_WARN("The default audio is not allowed to unload");
-            return;
-        }
-
         auto audioInfo = s_audioStore.Get(audio_id);
 
         if (audioInfo == nullptr)
         {
-            NTT_ENGINE_WARN("The audio id is not existed or unloaded");
+            NTT_ENGINE_WARN("The audio id {} is not existed or unloaded", audio_id);
             return;
         }
 

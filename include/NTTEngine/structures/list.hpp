@@ -248,6 +248,21 @@ namespace ntt
         }
 
         /**
+         * Copy all items of the list to a new list
+         *      but does not deep copy (the pointer elements
+         *      still point to the same memory location)
+         */
+        List<T> Copy()
+        {
+            List<T> newList;
+            for (u32 i = 0; i < Length(); i++)
+            {
+                newList.Add(m_List[i]);
+            }
+            return newList;
+        }
+
+        /**
          * Convert to string with format [item1, item2, ...]
          */
         inline const char *ToString()

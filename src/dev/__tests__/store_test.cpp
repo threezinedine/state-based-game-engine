@@ -68,3 +68,44 @@ TEST_F(StoreTest, HappyPath)
 
     EXPECT_TRUE(store.GetAvailableIds() == List<u32>({0, 1, 3}));
 }
+
+TEST_F(StoreTest, TestForEach)
+{
+    auto id1 = store.Add(TestObj{1, "obj1"});
+    auto id2 = store.Add(TestObj{3, "obj2"});
+    auto id3 = store.Add(TestObj{3, "obj3"});
+    auto id4 = store.Add(TestObj{4, "obj4"});
+    auto id5 = store.Add(TestObj{5, "obj5"});
+    auto id6 = store.Add(TestObj{6, "obj6"});
+
+    String result = "";
+
+    store.ForEach([&result](TestObj &obj, const u32 id)
+                  { result += obj.name + "; "; });
+
+    EXPECT_EQ(result, "obj1; obj2; obj4; obj5; obj6; ");
+
+    store.Release(id3);
+
+    result = "";
+
+    store.ForEach([&result](TestObj &obj, const u32 id)
+                  { result += obj.name + "; "; });
+
+    EXPECT_EQ(result, "obj1; obj4; obj5; obj6; ");
+}
+
+TEST_F(StoreTest, MaxCondition)
+{
+    store.Add(TestObj{1, "obj1"});
+    store.Add(TestObj{2, "obj2"});
+    store.Add(TestObj{3, "obj3"});
+    store.Add(TestObj{4, "obj4"});
+    store.Add(TestObj{5, "obj5"});
+    store.Add(TestObj{6, "obj6"});
+    store.Add(TestObj{7, "obj7"});
+    store.Add(TestObj{8, "obj8"});
+    store.Add(TestObj{9, "obj9"});
+    store.Add(TestObj{10, "obj10"});
+    EXPECT_THAT(store.Add(TestObj{11, "obj11"}), 0);
+}
