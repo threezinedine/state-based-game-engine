@@ -80,6 +80,8 @@ namespace ntt
             }
         }
 
+        inline void Clear() { m_Dict.clear(); }
+
         const char *ToString()
         {
             static std::string str = "{";

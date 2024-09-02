@@ -121,6 +121,15 @@ TEST_F(ListTest, TestWithPremitiveData)
 
     lst.RemoveItem(6);
     EXPECT_LIST_EQ(lst, List({2, 4}));
+
+    lst.Add(1, 3);
+    EXPECT_LIST_EQ(lst, List({2, 3, 4}));
+
+    lst.Add(0, 1);
+    EXPECT_LIST_EQ(lst, List({1, 2, 3, 4}));
+
+    lst.Add(9, 8);
+    EXPECT_LIST_EQ(lst, List({1, 2, 3, 4, 8}));
 }
 
 TEST_F(ListTest, WithOtherObject)

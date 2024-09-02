@@ -45,11 +45,49 @@ namespace ntt
             return m_List[stdIndex];
         }
 
+        /**
+         * @param index: Can be positive or negative
+         *      if positive: index from the start of the list
+         *      if negative: index from the end of the list
+         *
+         * @param item: The item to be set
+         */
+        void Set(i64 index, T item)
+        {
+            auto stdIndex = ConvertNegativeIndexToPositive(index);
+            if (stdIndex >= Length() || stdIndex < 0)
+            {
+                throw IndexOutOfRange();
+            }
+
+            m_List[stdIndex] = item;
+        }
+
         inline T operator[](i64 index) const { return Get(index); }
 
         inline u32 Length() const { return m_List.size(); }
 
         inline void Add(T item) { m_List.push_back(item); }
+
+        /**
+         * Add the item at the specific index
+         *
+         * @param index: Can be positive only
+         *      if the index is out of range, the item will be added to the end
+         *
+         * @param item: The item to be added
+         */
+        void Add(u32 index, T item)
+        {
+            if (index >= Length())
+            {
+                Add(item);
+                return;
+            }
+            m_List.insert(m_List.begin() + index, item);
+        }
+
+        inline void Clear() { m_List.clear(); }
 
         /**
          * @param index: Can be positive or negative

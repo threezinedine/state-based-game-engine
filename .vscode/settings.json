@@ -85,6 +85,15 @@
 		"codecvt": "cpp",
 		"numeric": "cpp",
 		"random": "cpp",
-		"valarray": "cpp"
+		"valarray": "cpp",
+		"bitset": "cpp",
+		"cfenv": "cpp",
+		"complex": "cpp",
+		"coroutine": "cpp",
+		"expected": "cpp",
+		"queue": "cpp",
+		"source_location": "cpp",
+		"stack": "cpp",
+		"typeindex": "cpp"
 	}
 }
