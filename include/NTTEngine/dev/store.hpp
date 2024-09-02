@@ -50,6 +50,11 @@ namespace ntt::dev::store
         u8 Contains(data_t data);
 
         /**
+         * Check if the unique field is already stored in the store.
+         */
+        u8 ContainsUnique(unique_field_t uniqueField);
+
+        /**
          * Remove the object with the id. Then that id
          *      can be reused, if the id is not added,
          *      then nothing happens

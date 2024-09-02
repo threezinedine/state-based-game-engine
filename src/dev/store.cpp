@@ -2,9 +2,11 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/dev/store.hpp>
 #include "store_conf_t.hpp"
+#include "../audio/audio_info.hpp"
 
 namespace ntt::dev::store
 {
+    using namespace audio;
 
 #define STORE(...) template <typename id_t, typename data_t, typename unique_field_t> \
 __VA_ARGS__ Store<id_t, data_t, unique_field_t>
@@ -93,6 +95,11 @@ __VA_ARGS__ Store<id_t, data_t, unique_field_t>
         return m_uniqueFieldToId.Contains(uniqueField);
     }
 
+    STORE(u8)::ContainsUnique(unique_field_t uniqueField)
+    {
+        return m_uniqueFieldToId.Contains(uniqueField);
+    }
+
     STORE(void)::Release(id_t id)
     {
         Ref<data_t> data = Get(id);
@@ -130,4 +137,5 @@ __VA_ARGS__ Store<id_t, data_t, unique_field_t>
     }
 
     template class Store<u32, TestObj, u32>;
+    template class Store<audio_id_t, AudioInfo, String>;
 } // namespace ntt::dev::store

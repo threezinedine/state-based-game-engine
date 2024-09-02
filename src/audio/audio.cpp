@@ -6,6 +6,9 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <cstring>
+#include <NTTEngine/dev/store.hpp>
+#include "audio_info.hpp"
+#include <NTTEngine/dev/store.hpp>
 
 #include "audio_platforms.hpp"
 
@@ -14,22 +17,18 @@ namespace ntt::audio
     using namespace memory;
     using namespace log;
     using namespace event;
+    using namespace dev::store;
 
 #define MAX_AUDIO 100
 
     namespace
     {
         b8 s_isInitialized = FALSE;
-        audio_id_t s_currentAudioId = DEFAULT_AUDIO;
 
-        struct AudioInfo
-        {
-            SOUND sound;
-            String path;
-        };
+        Store<audio_id_t, AudioInfo, String> s_audioStore(DEFAULT_AUDIO,
+                                                          MAX_AUDIO, [](const AudioInfo &audio)
+                                                          { return audio.path; });
 
-        Scope<AudioInfo> s_loadedAudios[MAX_AUDIO];
-        Dictionary<String, audio_id_t> s_loadedAudiosPath;
         List<audio_id_t> s_playingAudios;
     } // namespace
 
@@ -40,13 +39,11 @@ namespace ntt::audio
             return;
         }
 
-        memset(s_loadedAudios, 0, sizeof(s_loadedAudios));
-        s_loadedAudiosPath = {};
         s_playingAudios = {};
 
         INIT_DEVICE();
 
-        LoadAudio(RelativePath("assets/audios/default.wav"));
+        // LoadAudio(RelativePath("assets/audios/default.wav"));
 
         s_isInitialized = TRUE;
     }
@@ -58,28 +55,24 @@ namespace ntt::audio
             return DEFAULT_AUDIO;
         }
 
-        if (s_loadedAudiosPath.Contains(path))
+        if (s_audioStore.ContainsUnique(path))
         {
             NTT_ENGINE_WARN("The audio file is already loaded: {}", GetFileName(path, true));
-            return s_loadedAudiosPath.Get(path);
+            return DEFAULT_AUDIO;
         }
 
         LOAD_SOUND(sound, path);
 
         if (IS_LOADED_SUCCESS(sound))
         {
-            s_loadedAudios[s_currentAudioId] = CreateScope<AudioInfo>();
-            s_loadedAudios[s_currentAudioId]->sound = sound;
-            s_loadedAudios[s_currentAudioId]->path = path;
-            s_loadedAudiosPath.Insert(path, s_currentAudioId);
+            AudioInfo info = {sound, path};
+            return s_audioStore.Add(info);
         }
         else
         {
             NTT_ENGINE_WARN("Loading Audio {} Error", GetFileName(path, true));
             return DEFAULT_AUDIO;
         }
-
-        return s_currentAudioId++;
     }
 
     void PlayAudio(audio_id_t audio_id)
@@ -89,7 +82,9 @@ namespace ntt::audio
             return;
         }
 
-        if (s_loadedAudios[audio_id] == nullptr)
+        auto audioInfo = s_audioStore.Get(audio_id);
+
+        if (audioInfo == nullptr)
         {
             NTT_ENGINE_WARN("The audio id is not existed or unloaded");
             return;
@@ -97,8 +92,7 @@ namespace ntt::audio
 
         s_playingAudios.RemoveItem(audio_id);
         s_playingAudios.Add(audio_id);
-
-        PLAY_SOUND(s_loadedAudios[audio_id]->sound);
+        PLAY_SOUND(audioInfo->sound);
     }
 
     void StopAudio(audio_id_t audio_id)
@@ -108,15 +102,17 @@ namespace ntt::audio
             return;
         }
 
-        if (s_loadedAudios[audio_id] == nullptr)
+        auto audioInfo = s_audioStore.Get(audio_id);
+
+        if (audioInfo == nullptr)
         {
             NTT_ENGINE_WARN("The audio id is not existed or unloaded");
             return;
         }
 
-        if (IS_SOUND_PLAYING(s_loadedAudios[audio_id]->sound))
+        if (IS_SOUND_PLAYING(audioInfo->sound))
         {
-            STOP_SOUND(s_loadedAudios[audio_id]->sound);
+            STOP_SOUND(audioInfo->sound);
         }
     }
 
@@ -129,7 +125,8 @@ namespace ntt::audio
 
         for (u32 i = 0; i < s_playingAudios.Length(); i++)
         {
-            if (!IS_SOUND_PLAYING(s_loadedAudios[s_playingAudios[i]]->sound))
+            auto audioInfo = s_audioStore.Get(s_playingAudios[i]);
+            if (!IS_SOUND_PLAYING(audioInfo->sound))
             {
                 EventContext context;
                 context.u32_data[0] = s_playingAudios[i];
@@ -152,16 +149,17 @@ namespace ntt::audio
             return;
         }
 
-        if (s_loadedAudios[audio_id] == nullptr)
+        auto audioInfo = s_audioStore.Get(audio_id);
+
+        if (audioInfo == nullptr)
         {
             NTT_ENGINE_WARN("The audio id is not existed or unloaded");
             return;
         }
 
         StopAudio(audio_id);
-        UNLOAD_SOUND(s_loadedAudios[audio_id]->sound);
-        s_loadedAudiosPath.Remove(s_loadedAudios[audio_id]->path);
-        s_loadedAudios[audio_id] = nullptr;
+        UNLOAD_SOUND(audioInfo->sound);
+        s_audioStore.Release(audio_id);
     }
 
     void AudioShutdown()
@@ -171,13 +169,11 @@ namespace ntt::audio
             return;
         }
 
-        for (u32 i = 0; i < MAX_AUDIO; i++)
+        auto availableIds = s_audioStore.GetAvailableIds();
+
+        for (auto i = 0; i < availableIds.Length(); i++)
         {
-            if (s_loadedAudios[i] != nullptr)
-            {
-                NTT_ENGINE_WARN("The audio id {} is not unloaded, unloading...", i);
-                UnloadAudio(i);
-            }
+            UnloadAudio(availableIds[i]);
         }
 
         s_isInitialized = FALSE;
