@@ -122,6 +122,8 @@ namespace ntt::input
         CHECK_KEY_STATE(RIGHT_CONTROL);
         CHECK_KEY_STATE(RIGHT_SHIFT);
         CHECK_KEY_STATE(RIGHT_ALT);
+        CHECK_KEY_STATE(SPACE);
+        CHECK_KEY_STATE(ENTER);
 
         CHECK_MOUSE_STATE(LEFT);
         CHECK_MOUSE_STATE(RIGHT);
@@ -180,6 +182,8 @@ namespace ntt::input
             GET_KEY_NAME(RIGHT_CONTROL);
             GET_KEY_NAME(RIGHT_SHIFT);
             GET_KEY_NAME(RIGHT_ALT);
+            GET_KEY_NAME(SPACE);
+            GET_KEY_NAME(ENTER);
         default:
             return "Key is not supported string version";
         }

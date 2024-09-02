@@ -57,6 +57,8 @@ namespace ntt::event
         KEY_RELEASED = 0x02, ///< When a keyboard button or mouse button is released
 
         WINDOW_RESIZED = 0x03, ///< When the window is resized
+
+        AUDIO_FINISHED = 0x04, ///< When the audio is finished playing
     };
     /**
      * Can add more event code here

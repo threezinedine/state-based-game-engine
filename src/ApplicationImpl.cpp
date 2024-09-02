@@ -5,6 +5,7 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
+#include <NTTEngine/audio/audio.hpp>
 
 namespace ntt
 {
@@ -12,6 +13,7 @@ namespace ntt
     using namespace log;
     using namespace event;
     using namespace renderer;
+    using namespace audio;
 
     ApplicationImpl::ApplicationImpl(u16 screenWidth, u16 screenHeight,
                                      const char *title, const Phrases &phrases)
@@ -34,6 +36,7 @@ namespace ntt
         InitWindow(m_screenWidth, m_screenHeight, m_title);
         SetTargetFPS(60);
         RendererInit();
+        AudioInit();
         m_phrases.Begin();
         NTT_ENGINE_INFO("The application is started.");
 
@@ -47,22 +50,11 @@ namespace ntt
 
     void ApplicationImpl::Update()
     {
-        // if (IsWindowResized())
-        // {
-        //     u32 width = GetScreenWidth();
-        //     u32 height = GetScreenHeight();
-
-        //     EventContext context;
-
-        //     context.u32_data[0] = width;
-        //     context.u32_data[1] = height;
-        //     TriggerEvent(EventCode::WINDOW_RESIZED, nullptr, context);
-        // }
-
         auto delta = static_cast<f32>(m_timer.GetMilliseconds());
         m_timer.Reset();
 
         input::Update(delta);
+        AudioUpdate(delta);
         BeginDrawing();
         ClearBackground(BLACK);
         m_phrases.MainLoop(delta);
@@ -73,6 +65,7 @@ namespace ntt
     {
         NTT_ENGINE_INFO("The applicaiton is closing ...");
         m_phrases.Close();
+        AudioShutdown();
         RendererShutdown();
         CloseWindow();
         NTT_ENGINE_INFO("The applicaiton is closed");

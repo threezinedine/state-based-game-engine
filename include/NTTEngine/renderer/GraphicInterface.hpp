@@ -15,6 +15,7 @@ namespace ntt::renderer
 
     // When changing this type, does not need to change any code in the engine
     using texture_id_t = u32;
+    constexpr texture_id_t DEFAULT_TEXTURE = 0;
 
     /**
      * Initialize the graphic interface if it is not initialized yet
@@ -46,6 +47,7 @@ namespace ntt::renderer
      * @param path: The path to the image file
      *      if this path is already loaded, then the texture ID
      *      of the image will be returned (the id of  previous loaded image)
+     *      if the path is not found, then the default texture will be returned.
      *
      * @param grid: (Optional) The grid of the texture which are how many
      *      rows and columns in the texture, if the grid is not provided

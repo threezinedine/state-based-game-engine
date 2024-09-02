@@ -69,6 +69,13 @@ namespace ntt::input
         KEY_DEFINE(RIGHT_CONTROL, 0x28),
         KEY_DEFINE(RIGHT_SHIFT, 0x29),
         KEY_DEFINE(RIGHT_ALT, 0x2A),
+        KEY_DEFINE(SPACE, 0x2B),
+        KEY_DEFINE(ENTER, 0x2C),
+
+        /**
+         * Add new key here and update the `GetKeyName`
+         *      and the `Update` function in the `input_system.cpp`
+         */
     };
 
     /**

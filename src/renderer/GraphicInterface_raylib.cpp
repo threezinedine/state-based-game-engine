@@ -4,6 +4,7 @@
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/core/memory.hpp>
+#include <NTTEngine/platforms/path.hpp>
 #include <cstring>
 
 #ifdef PLATFORM_WINDOWS
@@ -34,7 +35,8 @@ namespace ntt::renderer
         // If the new texture is loaded then its ID will be
         //      the current texture ID if that texture is not
         //      loaded yet, else the previous texture ID will be returned
-        texture_id_t s_currentTextureId = 0;
+        // The default texture ID is 0
+        texture_id_t s_currentTextureId = DEFAULT_TEXTURE + 1;
 
         // The list of loaded textures
         Scope<TextureInfo> s_loadedTextures[TEXTURE_MAX];
@@ -52,8 +54,14 @@ namespace ntt::renderer
         if (s_loadedTexturesPath.Contains(path))
         {
             NTT_ENGINE_WARN("The texture is already loaded",
-                            path.RawString().c_str());
+                            GetFileName(path, true));
             return s_loadedTexturesPath.Get(path);
+        }
+
+        if (IsExist(path) == FALSE)
+        {
+            NTT_ENGINE_WARN("The texture is not found: {}", GetFileName(path, true));
+            return DEFAULT_TEXTURE;
         }
 
         auto texture = ::LoadTexture(path.RawString().c_str());
@@ -69,7 +77,7 @@ namespace ntt::renderer
     {
         if (s_loadedTextures[texture_id] == nullptr)
         {
-            NTT_ENGINE_WARN("The texture with the ID {} is not loaded yet", texture_id);
+            // NTT_ENGINE_WARN("The texture with the ID {} is not loaded yet", texture_id);
             return;
         }
 
