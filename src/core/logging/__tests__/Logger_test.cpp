@@ -9,8 +9,14 @@ using namespace ntt::log;
 class LoggerTest : public ::testing::Test
 {
 protected:
+    void SetUp() override
+    {
+        LogInit();
+    }
+
     void TearDown() override
     {
+        LogShutdown();
     }
 };
 

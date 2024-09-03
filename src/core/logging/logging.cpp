@@ -19,23 +19,50 @@ namespace ntt::log
          * Application Logger is only used by the game developer
          */
         Scope<Logger> s_appLogger = nullptr;
+
+        b8 s_isInitialized = FALSE;
     } // namespace
+
+    void LogInit()
+    {
+        if (s_isInitialized)
+        {
+            return;
+        }
+
+        s_isInitialized = TRUE;
+    }
 
     void ConfigureLogger(const char *name, LogLevel level,
                          LoggerType type, const char *format)
     {
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
         if (strcmp(name, ENGINE_LOGGER_NAME) == 0)
         {
-            s_engineLogger = CreateScope<Logger>(name, level, type, format);
+            s_engineLogger = CREATE_SCOPE(Logger, name, level, type, format);
         }
         else // if (strcmp(name, APP_LOGGER_NAME) == 0)
         {
-            s_appLogger = CreateScope<Logger>(name, level, type, format);
+            s_appLogger = CREATE_SCOPE(Logger, name, level, type, format);
         }
     }
 
     void Log(const char *name, LogLevel level, const char *file, u16 line, const String &message)
     {
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
         if (strcmp(name, ENGINE_LOGGER_NAME) == 0)
         {
             if (s_engineLogger == nullptr)
@@ -58,5 +85,11 @@ namespace ntt::log
 
     void LogShutdown()
     {
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
+        s_isInitialized = FALSE;
     }
 } // namespace ntt::log

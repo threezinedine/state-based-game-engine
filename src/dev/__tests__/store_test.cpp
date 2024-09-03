@@ -4,11 +4,18 @@
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/core/logging.hpp>
-#include "../store_conf_t.hpp"
 
 using namespace ntt;
 using namespace ntt::log;
 using namespace ntt::dev::store;
+
+struct TestObj
+{
+    u32 data;
+    String name;
+
+    TestObj(u32 data, const String &name) : data(data), name(name) {}
+};
 
 class StoreTest : public ::testing::Test
 {
@@ -19,18 +26,18 @@ protected:
     }
 
     Store<u32, TestObj, u32> store{0, 10,
-                                   [](const TestObj &obj)
-                                   { return obj.data; }};
+                                   [](Ref<TestObj> obj)
+                                   { return obj->data; }};
 };
 
 TEST_F(StoreTest, HappyPath)
 {
-    auto obj1 = TestObj{1, "obj1"};
-    auto obj2 = TestObj{3, "obj2"};
-    auto obj3 = TestObj{3, "obj2"};
-    auto obj4 = TestObj{4, "obj4"};
-    auto obj5 = TestObj{5, "obj5"};
-    auto obj6 = TestObj{6, "obj6"};
+    auto obj1 = CREATE_REF(TestObj, 1, "obj1");
+    auto obj2 = CREATE_REF(TestObj, 3, "obj2");
+    auto obj3 = CREATE_REF(TestObj, 3, "obj2");
+    auto obj4 = CREATE_REF(TestObj, 4, "obj4");
+    auto obj5 = CREATE_REF(TestObj, 5, "obj5");
+    auto obj6 = CREATE_REF(TestObj, 6, "obj6");
 
     auto id1 = store.Add(obj1);
     auto id2 = store.Add(obj2);
@@ -51,7 +58,11 @@ TEST_F(StoreTest, HappyPath)
     EXPECT_EQ(store.Get(id3)->data, 3);
     EXPECT_EQ(store.Get(id3)->name, "obj2");
 
+    EXPECT_EQ(store.Get(8) == nullptr, true);
+
     store.Release(id3);
+
+    EXPECT_EQ(store.Get(id3) == nullptr, true);
 
     EXPECT_TRUE(store.GetAvailableIds() == List<u32>({0, 2, 3}));
 
@@ -64,24 +75,26 @@ TEST_F(StoreTest, HappyPath)
 
     EXPECT_TRUE(store.GetAvailableIds() == List<u32>({1, 3}));
 
-    EXPECT_EQ(store.Add({1, "obj1"}), 0);
+    EXPECT_EQ(store.Add(CREATE_REF(TestObj, 1, "obj1")), 0);
 
     EXPECT_TRUE(store.GetAvailableIds() == List<u32>({0, 1, 3}));
+
+    EXPECT_EQ(store.Add(CREATE_REF(TestObj, 44, "obj1")), 2);
 }
 
 TEST_F(StoreTest, TestForEach)
 {
-    auto id1 = store.Add(TestObj{1, "obj1"});
-    auto id2 = store.Add(TestObj{3, "obj2"});
-    auto id3 = store.Add(TestObj{3, "obj3"});
-    auto id4 = store.Add(TestObj{4, "obj4"});
-    auto id5 = store.Add(TestObj{5, "obj5"});
-    auto id6 = store.Add(TestObj{6, "obj6"});
+    auto id1 = store.Add(CREATE_REF(TestObj, 1, "obj1"));
+    auto id2 = store.Add(CREATE_REF(TestObj, 3, "obj2"));
+    auto id3 = store.Add(CREATE_REF(TestObj, 3, "obj3"));
+    auto id4 = store.Add(CREATE_REF(TestObj, 4, "obj4"));
+    auto id5 = store.Add(CREATE_REF(TestObj, 5, "obj5"));
+    auto id6 = store.Add(CREATE_REF(TestObj, 6, "obj6"));
 
     String result = "";
 
-    store.ForEach([&result](TestObj &obj, const u32 id)
-                  { result += obj.name + "; "; });
+    store.ForEach([&result](Ref<TestObj> obj, const u32 id)
+                  { result += obj->name + "; "; });
 
     EXPECT_EQ(result, "obj1; obj2; obj4; obj5; obj6; ");
 
@@ -89,23 +102,23 @@ TEST_F(StoreTest, TestForEach)
 
     result = "";
 
-    store.ForEach([&result](TestObj &obj, const u32 id)
-                  { result += obj.name + "; "; });
+    store.ForEach([&result](Ref<TestObj> obj, const u32 id)
+                  { result += obj->name + "; "; });
 
     EXPECT_EQ(result, "obj1; obj4; obj5; obj6; ");
 }
 
 TEST_F(StoreTest, MaxCondition)
 {
-    store.Add(TestObj{1, "obj1"});
-    store.Add(TestObj{2, "obj2"});
-    store.Add(TestObj{3, "obj3"});
-    store.Add(TestObj{4, "obj4"});
-    store.Add(TestObj{5, "obj5"});
-    store.Add(TestObj{6, "obj6"});
-    store.Add(TestObj{7, "obj7"});
-    store.Add(TestObj{8, "obj8"});
-    store.Add(TestObj{9, "obj9"});
-    store.Add(TestObj{10, "obj10"});
-    EXPECT_THAT(store.Add(TestObj{11, "obj11"}), 0);
+    store.Add(CREATE_REF(TestObj, 1, "obj1"));
+    store.Add(CREATE_REF(TestObj, 2, "obj2"));
+    store.Add(CREATE_REF(TestObj, 3, "obj3"));
+    store.Add(CREATE_REF(TestObj, 4, "obj4"));
+    store.Add(CREATE_REF(TestObj, 5, "obj5"));
+    store.Add(CREATE_REF(TestObj, 6, "obj6"));
+    store.Add(CREATE_REF(TestObj, 7, "obj7"));
+    store.Add(CREATE_REF(TestObj, 8, "obj8"));
+    store.Add(CREATE_REF(TestObj, 9, "obj9"));
+    store.Add(CREATE_REF(TestObj, 10, "obj10"));
+    EXPECT_THAT(store.Add(CREATE_REF(TestObj, 11, "obj11")), 0);
 }

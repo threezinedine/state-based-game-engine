@@ -103,6 +103,11 @@ namespace ntt::log
     using LoggerType = u8;
 
     /**
+     * Start the logging system
+     */
+    void LogInit();
+
+    /**
      * Initialize the logger with configuration
      *      each time this function is called, the logger
      *      will be created if it is not created yet,

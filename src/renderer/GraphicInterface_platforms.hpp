@@ -6,6 +6,7 @@
 #define TEXTURE_2D Texture2D
 #define LOAD_TEXTURE(path) ::LoadTexture(path.RawString().c_str())
 #define UNLOAD_TEXTURE(texture) ::UnloadTexture(texture)
+#define IS_LOADED_SUCCESS(texture) (texture.id == 0)
 #define DRAW_TEXTURE(texture, fx, fy, fw, fh, tx, ty, tw, th) \
     ::DrawTexturePro(texture,                                 \
                      ::Rectangle{fx, fy, fw, fh},             \

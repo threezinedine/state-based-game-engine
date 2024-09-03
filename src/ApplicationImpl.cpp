@@ -20,12 +20,15 @@ namespace ntt
         : m_screenWidth(screenWidth), m_screenHeight(screenHeight),
           m_title(title), m_phrases(phrases)
     {
+        LogInit();
         NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
         MemoryInit();
     }
 
     ApplicationImpl::~ApplicationImpl()
     {
+        MemoryShutdown();
+        LogShutdown();
     }
 
     void ApplicationImpl::Begin()
@@ -69,13 +72,11 @@ namespace ntt
         RendererShutdown();
         CloseWindow();
         NTT_ENGINE_INFO("The applicaiton is closed");
-        MemoryShutdown();
-        LogShutdown();
     }
 
     Scope<Application> CreateApplication(u16 screenWidth, u16 screenHeight, const char *title,
                                          const Phrases &phrases)
     {
-        return CreateScope<ApplicationImpl>(screenWidth, screenHeight, title, phrases);
+        return CREATE_SCOPE(ApplicationImpl, screenWidth, screenHeight, title, phrases);
     }
 } // namespace ntt

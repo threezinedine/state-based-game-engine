@@ -10,12 +10,12 @@ namespace ntt::log
 
         if (type & LOGGER_TESTING)
         {
-            handlers.push_back(CreateScope<TestingHandler>());
+            handlers.push_back(CREATE_SCOPE(TestingHandler));
         }
 
         if (type & LOGGER_CONSOLE)
         {
-            handlers.push_back(CreateScope<ConsoleHandler>());
+            handlers.push_back(CREATE_SCOPE(ConsoleHandler));
         }
     }
 } // namespace ntt::log

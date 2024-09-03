@@ -7,7 +7,6 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <cstring>
 #include <NTTEngine/dev/store.hpp>
-#include "audio_info.hpp"
 #include <NTTEngine/dev/store.hpp>
 
 #include "audio_platforms.hpp"
@@ -21,13 +20,20 @@ namespace ntt::audio
 
 #define MAX_AUDIO 100
 
+    struct AudioInfo
+    {
+        SOUND sound;
+        String path;
+
+        AudioInfo(SOUND sound, const String &path) : sound(sound), path(path) {}
+    };
     namespace
     {
         b8 s_isInitialized = FALSE;
 
         Store<audio_id_t, AudioInfo, String> s_audioStore(DEFAULT_AUDIO,
-                                                          MAX_AUDIO, [](const AudioInfo &audio)
-                                                          { return audio.path; });
+                                                          MAX_AUDIO, [](Ref<AudioInfo> audio)
+                                                          { return audio->path; });
 
         List<audio_id_t> s_playingAudios;
     } // namespace
@@ -65,7 +71,7 @@ namespace ntt::audio
 
         if (IS_LOADED_SUCCESS(sound))
         {
-            AudioInfo info = {sound, path};
+            auto info = CREATE_REF(AudioInfo, sound, path);
             return s_audioStore.Add(info);
         }
         else

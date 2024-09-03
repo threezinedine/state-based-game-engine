@@ -3,14 +3,16 @@
 #include <functional>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
+#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/assertion.hpp>
 
 namespace ntt::dev::store
 {
     template <typename data_t, typename unique_field_t>
-    using GetUniqueFieldFunc = std::function<unique_field_t(const data_t &)>;
+    using GetUniqueFieldFunc = std::function<unique_field_t(Ref<data_t>)>;
 
     template <typename id_t, typename data_t>
-    using ForEachFunc = std::function<void(data_t &, const id_t)>;
+    using ForEachFunc = std::function<void(Ref<data_t>, const id_t)>;
 
     /**
      * Provide a generic way to storing resources
@@ -44,6 +46,7 @@ namespace ntt::dev::store
             m_store.Clear();
             m_uniqueFieldToId.Clear();
             m_freedIds.Clear();
+            // NTT_ENGINE_DEBUG("The store is deleted");
         }
 
         /**
@@ -51,7 +54,7 @@ namespace ntt::dev::store
          *      which can be a completely new id or a reused id (if
          *      the unique_field is the same).
          */
-        id_t Add(data_t data)
+        id_t Add(Ref<data_t> data)
         {
             if (m_store.Length() >= m_max)
             {
@@ -66,19 +69,19 @@ namespace ntt::dev::store
                 return m_uniqueFieldToId.Get(uniqueField);
             }
 
-            auto dataPtr = CreateRef<data_t>(data);
             m_uniqueFieldToId.Insert(uniqueField, m_currentId);
 
             if (m_freedIds.Length() > 0)
             {
                 auto id = m_freedIds[0];
-                m_store.Set(id, dataPtr);
+                m_store.Set(id, data);
+                m_freedIds.Remove(0);
 
                 return id;
             }
             else
             {
-                m_store.Add(dataPtr);
+                m_store.Add(data);
                 return m_currentId++;
             }
         }
@@ -119,7 +122,7 @@ namespace ntt::dev::store
         /**
          * Check if the unique field is already stored in the store.
          */
-        u8 Contains(data_t data)
+        u8 Contains(Ref<data_t> data)
         {
             unique_field_t uniqueField = m_getUniqueFieldFunc(data);
             return m_uniqueFieldToId.Contains(uniqueField);
@@ -140,13 +143,15 @@ namespace ntt::dev::store
          */
         void Release(id_t id)
         {
-            Ref<data_t> data = Get(id);
+            auto data = Get(id);
 
             if (data != nullptr)
             {
-                m_uniqueFieldToId.Remove(m_getUniqueFieldFunc(*data));
+                m_uniqueFieldToId.Remove(m_getUniqueFieldFunc(data));
                 m_store.Set(id, nullptr);
-                data.reset();
+                // data.reset();
+
+                // ASSERT_M(data == nullptr, "The object is not deleted properly");
 
                 for (auto i = 0; i < m_freedIds.Length(); i++)
                 {
@@ -186,7 +191,7 @@ namespace ntt::dev::store
             {
                 if (m_store[i] != nullptr)
                 {
-                    func(*m_store[i], i);
+                    func(m_store[i], i);
                 }
             }
         }
