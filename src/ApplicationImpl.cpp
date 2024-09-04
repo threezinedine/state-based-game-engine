@@ -6,6 +6,7 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/audio/audio.hpp>
+#include <NTTEngine/ecs/ecs.hpp>
 
 namespace ntt
 {
@@ -21,7 +22,7 @@ namespace ntt
           m_title(title), m_phrases(phrases)
     {
         LogInit();
-        NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
+        NTT_ENGINE_CONFIG(LogLevel::TRACE, LOGGER_CONSOLE);
         MemoryInit();
     }
 
@@ -40,6 +41,7 @@ namespace ntt
         SetTargetFPS(60);
         RendererInit();
         AudioInit();
+        ecs::ECSInit();
         m_phrases.Begin();
         NTT_ENGINE_INFO("The application is started.");
 
@@ -60,6 +62,7 @@ namespace ntt
         AudioUpdate(delta);
         BeginDrawing();
         ClearBackground(BLACK);
+        ecs::ECSUpdate(delta);
         m_phrases.MainLoop(delta);
         EndDrawing();
     }
@@ -68,6 +71,7 @@ namespace ntt
     {
         NTT_ENGINE_INFO("The applicaiton is closing ...");
         m_phrases.Close();
+        ecs::ECSShutdown();
         AudioShutdown();
         RendererShutdown();
         CloseWindow();

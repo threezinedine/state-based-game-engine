@@ -33,13 +33,16 @@
     }
 
 #define CHECK_MOUSE_STATE(button)                                                  \
+    ctx.u8_data[0] = MouseButton::NTT_BUTTON_##button;                             \
     if (IsMouseButtonPressed(MOUSE_BUTTON_##button))                               \
     {                                                                              \
         s_mouseStates[MouseButton::NTT_BUTTON_##button] = InputState::NTT_PRESS;   \
+        TriggerEvent(EventCode::MOUSE_PRESS, nullptr, ctx);                        \
     }                                                                              \
-    else if (IsMouseButtonDown(MOUSE_BUTTON_##button))                             \
+    else if (IsMouseButtonReleased(MOUSE_BUTTON_##button))                         \
     {                                                                              \
-        s_mouseStates[MouseButton::NTT_BUTTON_##button] = InputState::NTT_DOWN;    \
+        s_mouseStates[MouseButton::NTT_BUTTON_##button] = InputState::NTT_RELEASE; \
+        TriggerEvent(EventCode::MOUSE_RELEASE, nullptr, ctx);                      \
     }                                                                              \
     else if (IsMouseButtonUp(MOUSE_BUTTON_##button))                               \
     {                                                                              \
@@ -47,7 +50,7 @@
     }                                                                              \
     else                                                                           \
     {                                                                              \
-        s_mouseStates[MouseButton::NTT_BUTTON_##button] = InputState::NTT_RELEASE; \
+        s_mouseStates[MouseButton::NTT_BUTTON_##button] = InputState::NTT_DOWN;    \
     }
 #else
 #error "Not support other system"
@@ -124,6 +127,10 @@ namespace ntt::input
         CHECK_KEY_STATE(RIGHT_ALT);
         CHECK_KEY_STATE(SPACE);
         CHECK_KEY_STATE(ENTER);
+        CHECK_KEY_STATE(UP);
+        CHECK_KEY_STATE(DOWN);
+        CHECK_KEY_STATE(LEFT);
+        CHECK_KEY_STATE(RIGHT);
 
         CHECK_MOUSE_STATE(LEFT);
         CHECK_MOUSE_STATE(RIGHT);
@@ -131,8 +138,8 @@ namespace ntt::input
 
         s_mousePrePos.x = s_mousePos.x;
         s_mousePrePos.y = s_mousePos.y;
-        s_mousePos.x = GetMouseX();
-        s_mousePos.y = GetMouseY();
+        s_mousePos.x = static_cast<position_t>(::GetMouseX());
+        s_mousePos.y = static_cast<position_t>(::GetMouseY());
     }
 
     const char *GetKeyName(Key key)
@@ -184,6 +191,10 @@ namespace ntt::input
             GET_KEY_NAME(RIGHT_ALT);
             GET_KEY_NAME(SPACE);
             GET_KEY_NAME(ENTER);
+            GET_KEY_NAME(UP);
+            GET_KEY_NAME(DOWN);
+            GET_KEY_NAME(LEFT);
+            GET_KEY_NAME(RIGHT);
         default:
             return "Key is not supported string version";
         }

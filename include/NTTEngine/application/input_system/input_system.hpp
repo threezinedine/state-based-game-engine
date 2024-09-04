@@ -71,6 +71,10 @@ namespace ntt::input
         KEY_DEFINE(RIGHT_ALT, 0x2A),
         KEY_DEFINE(SPACE, 0x2B),
         KEY_DEFINE(ENTER, 0x2C),
+        KEY_DEFINE(UP, 0x2D),
+        KEY_DEFINE(DOWN, 0x2E),
+        KEY_DEFINE(LEFT, 0x2F),
+        KEY_DEFINE(RIGHT, 0x30),
 
         /**
          * Add new key here and update the `GetKeyName`

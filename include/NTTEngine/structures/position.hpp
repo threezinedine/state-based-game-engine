@@ -7,7 +7,7 @@ namespace ntt
      * If need to change the type of the position, then
      *      does not need to change any code in the engine
      */
-    using position_t = u32;
+    using position_t = f32;
 
     /**
      * This is used for representing a position

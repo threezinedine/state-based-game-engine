@@ -81,7 +81,7 @@ namespace ntt::renderer
      *      if the cell is out of the grid, then the warning will be printed and the
      *      maximum cell will be used.
      */
-    void DrawTexture(texture_id_t texture_id,
+    Size DrawTexture(texture_id_t texture_id,
                      const RectContext &context = RectContext(),
                      const Grid &cell = Grid{0, 0});
 

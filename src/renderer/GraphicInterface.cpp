@@ -94,18 +94,18 @@ namespace ntt::renderer
         return s_textureStore->Add(textureInfo);
     }
 
-    void DrawTexture(texture_id_t texture_id, const RectContext &context, const Grid &cell)
+    Size DrawTexture(texture_id_t texture_id, const RectContext &context, const Grid &cell)
     {
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The renderer is not initialized yet");
-            return;
+            return {};
         }
 
         auto textureInfo = s_textureStore->Get(texture_id);
         if (textureInfo == nullptr)
         {
-            return;
+            return {};
         }
 
         auto grid = textureInfo->grid;
@@ -154,6 +154,8 @@ namespace ntt::renderer
                      static_cast<f32>(context.position.y),
                      width,
                      height);
+
+        return {static_cast<size_t>(width), static_cast<size_t>(height)};
     }
 
     void UnloadTexture(texture_id_t texture_id)

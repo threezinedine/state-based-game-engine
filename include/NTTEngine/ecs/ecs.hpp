@@ -1,0 +1,120 @@
+#pragma once
+#include <NTTEngine/defines.hpp>
+#include <typeindex>
+#include <NTTEngine/core/memory.hpp>
+#include <NTTEngine/structures/list.hpp>
+#include <NTTEngine/structures/dictionary.hpp>
+#include <NTTEngine/structures/string.hpp>
+
+/**
+ * Manage all the entity inside the game. This module has 3 main components:
+ *      - Entity: The object in the world and is defined by a unique ID and
+ *          contains a list of components.
+ *      - Component: The group of generic data that can be attached to any
+ *          entity. The component contains the data only, no logic.
+ *      - System: The Updatable system will automatically received the needed
+ *          component from the entity and the system can update that component.
+ *          The system has the logic only, no data.
+ */
+namespace ntt::ecs
+{
+    /**
+     * Each entity is represented by a unique ID only, there's no actual
+     *      visible object in the user's perspective.
+     */
+    using entity_id_t = u32;
+    // constexpr entity_id_t INVALID_ENTITY_ID =
+
+    /**
+     * Component Base contains only the data, no logic, so the struct is used
+     *      rather than class. Other component should inherit from this struct.
+     */
+    struct ComponentBase
+    {
+        entity_id_t entity_id; ///< Each time a component is created, then
+                               ///< it must be attached to an entity.
+    };
+
+    /**
+     * The logic part of the system which need to be attached to this ECS system.
+     * The system will be automatically called when the ECS system is updated. All
+     *      the entities who have the needed components will be passed to the system.
+     */
+    class System
+    {
+    public:
+        virtual ~System() = default;
+
+        /**
+         * Handle the logic of each game loop, this method will be called
+         *      multiple times with each entity which has the needed components.
+         *
+         * @param delta The time between 2 frames
+         * @param id The ID of the entity which has the needed components
+         */
+        virtual void Update(f32 delta, entity_id_t id) = 0;
+    };
+
+    /**
+     * Start the ECS system. This function must be called before any other
+     */
+    void ECSInit();
+
+    using CreateSystemFunc = std::function<Scope<System>()>;
+
+    /**
+     * Add new system to the ECS, the order of adding the system is the order
+     *      of the system will be updated.
+     *
+     * @param system The system to be added to the ECS
+     * @param componentTypes The list of component types that the system needs
+     */
+    void ECSRegister(String name, CreateSystemFunc createSystemFunc, List<std::type_index> componentTypes);
+
+    /**
+     * When a new entity is created with attached components, the entity will
+     *      be passed to the system which needs the components.
+     *
+     * @param components The list of components to be attached to the entity
+     *
+     * @return The ID of the created entity, if there's an error, then return
+     *      INVALID_ENTITY_ID
+     */
+    entity_id_t ECSCreateEntity(String name, Dictionary<std::type_index, Ref<ComponentBase>> components);
+
+    /**
+     * Query the component based on the entity ID and the type of the component.
+     * Each entity has only 1 instance of each type of component.
+     *
+     * @param id The ID of the entity
+     * @param type The type of the component
+     *
+     * @return The component which is attached to the entity, if the id
+     *      is invalid or not found or the component type is not included
+     *      then return nullptr
+     */
+    Ref<ComponentBase> ECSGetComponent(entity_id_t id, std::type_index type);
+
+    /**
+     * Delete the entity and all the components attached to the entity.
+     *
+     * @param id The ID of the entity to be deleted
+     *      if the id is invalid, then nothing will be deleted
+     *      and the warning will be logged
+     */
+    void ECSDeleteEntity(entity_id_t id);
+
+    /**
+     * Update the ECS system. This function must be called every frame for
+     *      having updated for each registered system.
+     */
+    void ECSUpdate(f32 delta);
+
+    /**
+     * Destroy the ECS system. This function must be called when the ECS system
+     *      is no longer needed.
+     */
+    void ECSShutdown();
+} // namespace ntt::ecs
+
+#define ECS_GET_COMPONENT(id, type) std::static_pointer_cast<type>(ECSGetComponent(id, typeid(type)))

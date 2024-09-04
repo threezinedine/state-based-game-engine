@@ -59,6 +59,9 @@ namespace ntt::event
         WINDOW_RESIZED = 0x03, ///< When the window is resized
 
         AUDIO_FINISHED = 0x04, ///< When the audio is finished playing
+
+        MOUSE_PRESS = 0x05,   ///< When the mouse button is pressed
+        MOUSE_RELEASE = 0x06, ///< When the mouse button is released
     };
     /**
      * Can add more event code here

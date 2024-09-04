@@ -36,12 +36,12 @@ namespace ntt
 
         inline bool Contains(K key) { return m_Dict.find(key) != m_Dict.end(); }
         inline u32 Count() { return m_Dict.size(); }
-        inline List<V> Keys()
+        inline List<K> Keys()
         {
-            List<V> keys;
+            List<K> keys;
             for (auto &pair : m_Dict)
             {
-                keys.PushBack(pair.first);
+                keys.Add(pair.first);
             }
             return keys;
         }
@@ -51,7 +51,7 @@ namespace ntt
             List<V> values;
             for (auto &pair : m_Dict)
             {
-                values.PushBack(pair.second);
+                values.Add(pair.second);
             }
             return values;
         }
