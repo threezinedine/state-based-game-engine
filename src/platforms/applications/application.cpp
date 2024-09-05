@@ -53,12 +53,23 @@ namespace ntt
 
         RendererInit();
         AudioInit();
+        CollisionInit();
         ECSInit();
+
+        ECSRegister(
+            "Collision System",
+            CollisionFunc,
+            {typeid(Geometry)});
 
         ECSRegister(
             "Mass System",
             MassFunc,
             {typeid(Mass), typeid(Geometry)});
+
+        ECSRegister(
+            "Sprite Render System",
+            SpriteRenderFunc,
+            {typeid(Sprite), typeid(Texture)});
 
         ECSRegister(
             "Render System",
@@ -102,6 +113,7 @@ namespace ntt
         s_phrases.Close();
 
         ECSShutdown();
+        CollisionShutdown();
         AudioShutdown();
         RendererShutdown();
 

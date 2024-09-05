@@ -1,5 +1,5 @@
 #include <NTTEngine/main.hpp>
-#include "bird.hpp"
+#include "game.hpp"
 
 using namespace ntt;
 using namespace ntt::log;
@@ -8,23 +8,28 @@ using namespace ntt::event;
 using namespace ntt::renderer;
 using namespace ntt::audio;
 using namespace ntt::ecs;
+using namespace ntt::physics;
 
 AdditionalData CreateAdditionalData()
 {
     return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Hero/assets"};
 }
 
+Scope<Game> game;
+
 void Begin()
 {
-    Bird bird;
+    NTT_APP_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
 
-    bird.CreateBird();
+    game = CreateScope<Game>();
 }
 
 void MainLoop(f32 delta)
 {
+    game->Update(delta);
 }
 
 void Close()
 {
+    game.reset();
 }

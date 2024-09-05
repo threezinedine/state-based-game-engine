@@ -23,3 +23,4 @@ namespace ntt::renderer
 
 #include "Geometry.hpp"
 #include "Texture.hpp"
+#include "Sprite.hpp"

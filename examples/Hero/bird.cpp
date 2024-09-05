@@ -31,8 +31,10 @@ struct BirdState : public ComponentBase
 
 void BirdSystemFunc(f32 delta, entity_id_t id, List<entity_id_t> others);
 void MarginFunc(f32 data, entity_id_t id, List<entity_id_t> others);
+static entity_id_t birdId;
+void OnBirdCollision(List<entity_id_t> others);
 
-Bird::Bird()
+void InitBird()
 {
     m_birdTexture = LoadTexture(RelativePath("images/game-objects/bird.png"), {3, 1});
 
@@ -44,23 +46,25 @@ Bird::Bird()
         "MarginSystem",
         MarginFunc,
         {typeid(Geometry)});
-}
 
-Bird::~Bird()
-{
-}
-
-void Bird::CreateBird()
-{
     auto mass = CreateRef<Mass>(1.0f);
     mass->AddForceConst(0, force);
 
-    ECSCreateEntity(
+    birdId = ECSCreateEntity(
         "Bird",
         {ECS_CREATE_COMPONENT(Geometry, 200, 200, 70),
          ECS_CREATE_COMPONENT(Texture, m_birdTexture),
          {typeid(Mass), mass},
+         ECS_CREATE_COMPONENT(Collision),
          ECS_CREATE_COMPONENT(BirdState, BirdStateType::BIRD_STATE_IDLE)});
+
+    CollisionRegister(birdId, OnBirdCollision);
+}
+
+void ReleaseBird()
+{
+    ECSDeleteEntity(birdId);
+    UnloadTexture(m_birdTexture);
 }
 
 void BirdSystemFunc(f32 delta, entity_id_t id, List<entity_id_t> others)
@@ -69,8 +73,6 @@ void BirdSystemFunc(f32 delta, entity_id_t id, List<entity_id_t> others)
     auto texture = ECS_GET_COMPONENT(id, Texture);
     auto geo = ECS_GET_COMPONENT(id, Geometry);
     auto mass = ECS_GET_COMPONENT(id, Mass);
-
-    NTT_APP_DEBUG("Running bird State");
 
     if (state->timer.GetMilliseconds() >= 200)
     {
@@ -118,8 +120,6 @@ void MarginFunc(f32 data, entity_id_t id, List<entity_id_t> others)
     auto geo = ECS_GET_COMPONENT(id, Geometry);
     auto windowSize = GetWindowSize();
 
-    NTT_APP_DEBUG("Current position: x: {}, y: {}", geo->x, geo->y);
-
     if (geo->y - geo->height / 2 < 0)
     {
         ECSSetComponentActive(id, typeid(Mass), FALSE);
@@ -128,4 +128,9 @@ void MarginFunc(f32 data, entity_id_t id, List<entity_id_t> others)
     {
         ECSSetComponentActive(id, typeid(Mass), FALSE);
     }
+}
+
+void OnBirdCollision(List<entity_id_t> others)
+{
+    ECSSetComponentActive(birdId, typeid(Mass), FALSE);
 }

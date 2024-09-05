@@ -9,3 +9,4 @@ namespace ntt::physics
 } // namespace ntt::physics
 
 #include "Mass.hpp"
+#include "Collision.hpp"

@@ -21,10 +21,13 @@ namespace ntt::physics
 
         f32 mass;
 
-        Mass(f32 mass)
-            : mass(mass), velocity_x(0),
-              velocity_y(0), acc_x(0),
-              acc_y(0)
+        Mass(f32 mass = 1.0f, position_t velocity_x = 0,
+             position_t velocity_y = 0, position_t acc_x = 0,
+             position_t acc_y = 0)
+            : mass(mass), velocity_x(velocity_x),
+              velocity_y(velocity_y), acc_x(acc_x),
+              acc_y(acc_y),
+              force_x(0), force_y(0)
         {
         }
 

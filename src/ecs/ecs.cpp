@@ -212,7 +212,14 @@ namespace ntt::ecs
                 {
                     if (entityContained)
                     {
-                        system->entities.Remove(id);
+                        for (auto j = 0; j < system->entities.Length(); j++)
+                        {
+                            if (system->entities[j] == id)
+                            {
+                                system->entities.Remove(j);
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -248,8 +255,7 @@ namespace ntt::ecs
             {
                 if (entities[j] == id)
                 {
-                    entities.Remove(j);
-                    break;
+                    system->entities.Remove(j);
                 }
             }
         }
@@ -279,9 +285,27 @@ namespace ntt::ecs
 
             for (auto j = 0; j < entities.Length(); j++)
             {
+                if (!s_entityStore->Contains(entities[j]))
+                {
+                    continue;
+                }
+
+                auto restEntities = List<entity_id_t>();
+                entities.Reduce<List<entity_id_t>>(
+                    [&entities, &j](List<entity_id_t> &acc, const entity_id_t &element, ...)
+                    {
+                        if (element != entities[j])
+                        {
+                            acc.Add(element);
+                        }
+
+                        return acc;
+                    },
+                    restEntities);
+
                 try
                 {
-                    system->systemFunc(delta, entities[j], entities);
+                    system->systemFunc(delta, entities[j], restEntities);
                 }
                 catch (const std::exception &e)
                 {

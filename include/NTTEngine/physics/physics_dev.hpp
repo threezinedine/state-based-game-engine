@@ -1,4 +1,4 @@
 #pragma once
 
-#include "Mass.hpp"
+#include "physics.hpp"
 #include "MassSystem.hpp"

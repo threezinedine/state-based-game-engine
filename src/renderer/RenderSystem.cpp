@@ -2,7 +2,9 @@
 #include <NTTEngine/renderer/Texture.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/renderer/RenderSystem.hpp>
+#include <NTTEngine/renderer/Sprite.hpp>
 #include <NTTEngine/platforms/application.hpp>
+#include <NTTEngine/core/assertion.hpp>
 
 namespace ntt::renderer
 {
@@ -32,5 +34,28 @@ namespace ntt::renderer
         auto size = DrawTexture(texture->id, context, cell);
         geometry->width = size.width;
         geometry->height = size.height;
+    }
+
+    void SpriteRenderFunc(f32 delta, entity_id_t id, List<entity_id_t> others)
+    {
+        auto sprite = ECS_GET_COMPONENT(id, Sprite);
+        auto texture = ECS_GET_COMPONENT(id, Texture);
+
+        auto colIndex = texture->colIndex;
+        auto rowIndex = texture->rowIndex;
+
+        auto currentCell = sprite->cells[sprite->currentCell];
+
+        if (sprite->timer.GetMilliseconds() > sprite->changePerMilis)
+        {
+            sprite->timer.Reset();
+            sprite->currentCell = (sprite->currentCell + 1) % sprite->cells.Length();
+        }
+
+        if (colIndex != currentCell.first || rowIndex != currentCell.second)
+        {
+            texture->rowIndex = currentCell.first;
+            texture->colIndex = currentCell.second;
+        }
     }
 } // namespace ntt::renderer

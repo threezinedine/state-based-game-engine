@@ -268,6 +268,8 @@ namespace ntt
         inline const char *ToString()
         {
             static std::string buffer = "[";
+
+            buffer = "[";
             for (u32 i = 0; i < Length(); i++)
             {
                 buffer += std::to_string(m_List[i]);
