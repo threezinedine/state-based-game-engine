@@ -6,3 +6,4 @@
 
 #include "stream.hpp"
 #include "path.hpp"
+#include "application.hpp"

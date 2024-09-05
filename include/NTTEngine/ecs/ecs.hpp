@@ -33,6 +33,7 @@ namespace ntt::ecs
     {
         entity_id_t entity_id; ///< Each time a component is created, then
                                ///< it must be attached to an entity.
+        b8 active = TRUE;
     };
 
     /**
@@ -40,27 +41,12 @@ namespace ntt::ecs
      * The system will be automatically called when the ECS system is updated. All
      *      the entities who have the needed components will be passed to the system.
      */
-    class System
-    {
-    public:
-        virtual ~System() = default;
-
-        /**
-         * Handle the logic of each game loop, this method will be called
-         *      multiple times with each entity which has the needed components.
-         *
-         * @param delta The time between 2 frames
-         * @param id The ID of the entity which has the needed components
-         */
-        virtual void Update(f32 delta, entity_id_t id) = 0;
-    };
+    using SystemFunc = std::function<void(f32, entity_id_t, List<entity_id_t>)>;
 
     /**
      * Start the ECS system. This function must be called before any other
      */
     void ECSInit();
-
-    using CreateSystemFunc = std::function<Scope<System>()>;
 
     /**
      * Add new system to the ECS, the order of adding the system is the order
@@ -69,7 +55,7 @@ namespace ntt::ecs
      * @param system The system to be added to the ECS
      * @param componentTypes The list of component types that the system needs
      */
-    void ECSRegister(String name, CreateSystemFunc createSystemFunc, List<std::type_index> componentTypes);
+    void ECSRegister(String name, SystemFunc systemFunc, List<std::type_index> componentTypes);
 
     /**
      * When a new entity is created with attached components, the entity will
@@ -96,6 +82,19 @@ namespace ntt::ecs
     Ref<ComponentBase> ECSGetComponent(entity_id_t id, std::type_index type);
 
     /**
+     * Changing the state of the component, if the component is not active,
+     *      then it does not affect the supported systems.
+     *
+     * If the id or the component type is not found, then nothing will be changed
+     *      the warning will be logged.
+     *
+     * @param id The ID of the entity
+     * @param type The type of the component
+     * @param active The state of the component
+     */
+    void ECSSetComponentActive(entity_id_t id, std::type_index type, b8 active = TRUE);
+
+    /**
      * Delete the entity and all the components attached to the entity.
      *
      * @param id The ID of the entity to be deleted
@@ -118,3 +117,4 @@ namespace ntt::ecs
 } // namespace ntt::ecs
 
 #define ECS_GET_COMPONENT(id, type) std::static_pointer_cast<type>(ECSGetComponent(id, typeid(type)))
+#define ECS_CREATE_COMPONENT(type, ...) {typeid(type), std::make_shared<type>(__VA_ARGS__)}

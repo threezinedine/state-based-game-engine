@@ -120,7 +120,7 @@ namespace ntt::input
      *
      * @param delta The time between the last frame
      */
-    void Update(f32 delta);
+    void InputUpdate(f32 delta);
 
     /**
      * Check whether the key is in

@@ -153,7 +153,8 @@ namespace ntt::renderer
                      static_cast<f32>(context.position.x),
                      static_cast<f32>(context.position.y),
                      width,
-                     height);
+                     height,
+                     static_cast<f32>(context.rotate));
 
         return {static_cast<size_t>(width), static_cast<size_t>(height)};
     }

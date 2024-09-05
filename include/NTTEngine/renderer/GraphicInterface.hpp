@@ -63,6 +63,7 @@ namespace ntt::renderer
     {
         Position position; ///< The position of the object
         Size size;         ///< The size of the object
+        f32 rotate;
 
         RectContext() = default;
     };

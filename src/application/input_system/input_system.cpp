@@ -77,7 +77,7 @@ namespace ntt::input
         InputState s_mouseStates[MOUSE_BUTTON_SIZE];
     } // namespace
 
-    void Update(f32 delta)
+    void InputUpdate(f32 delta)
     {
         EventContext ctx;
         memset(&ctx, 0, sizeof(EventContext));

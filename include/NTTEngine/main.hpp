@@ -13,19 +13,21 @@ using namespace ntt::event;
 using namespace ntt::renderer;
 using namespace ntt::memory;
 
+AdditionalData CreateAdditionalData();
+
 int main()
 {
     ntt::Phrases phrases = {Begin, MainLoop, Close};
-    auto game = ntt::CreateApplication(800, 600, "Hero", phrases);
+    ApplicationInit(800, 600, "Hero", phrases, CreateAdditionalData());
 
-    game->Begin();
+    b8 running = true;
 
-    while (!game->ShouldClose())
+    while (running)
     {
-        game->Update();
+        ApplicationUpdate(running);
     }
 
-    game->End();
+    ApplicationShutdown();
 
     return 0;
 }

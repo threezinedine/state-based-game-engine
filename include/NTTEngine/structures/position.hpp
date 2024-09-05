@@ -8,6 +8,7 @@ namespace ntt
      *      does not need to change any code in the engine
      */
     using position_t = f32;
+    constexpr position_t POSITION_DEFAULT = 0.0f;
 
     /**
      * This is used for representing a position
@@ -18,7 +19,6 @@ namespace ntt
         position_t x; ///< The x position in pixel
         position_t y; ///< The y position in pixel
 
-        Position() : x(0), y(0) {}
-        Position(position_t x, position_t y) : x(x), y(y) {}
+        Position(position_t x = POSITION_DEFAULT, position_t y = POSITION_DEFAULT) : x(x), y(y) {}
     };
 } // namespace ntt

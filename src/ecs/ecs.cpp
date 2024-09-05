@@ -13,13 +13,14 @@ namespace ntt::ecs
     struct SystemInfo
     {
         String name;
-        Scope<System> system;
+        SystemFunc systemFunc;
         List<std::type_index> componentTypes;
+        List<entity_id_t> entities;
 
         SystemInfo(String name,
-                   Scope<System> system,
+                   SystemFunc systemFunc,
                    List<std::type_index> componentTypes)
-            : name(name), system(std::move(system)),
+            : name(name), systemFunc(systemFunc),
               componentTypes(componentTypes)
         {
         }
@@ -69,7 +70,7 @@ namespace ntt::ecs
         s_isInitialized = TRUE;
     }
 
-    void ECSRegister(String name, CreateSystemFunc createSystemFunc, List<std::type_index> componentTypes)
+    void ECSRegister(String name, SystemFunc systemFunc, List<std::type_index> componentTypes)
     {
         if (!s_isInitialized)
         {
@@ -79,13 +80,35 @@ namespace ntt::ecs
         s_systemsStore->Add(CREATE_REF(
             SystemInfo,
             name,
-            createSystemFunc(),
+            systemFunc,
             componentTypes));
 
         for (auto i = 0; i < componentTypes.Length(); i++)
         {
             std::type_index type = componentTypes[i];
         }
+    }
+
+    b8 _IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)
+    {
+        auto system = s_systemsStore->Get(system_id);
+        auto entities = system->entities;
+        auto systemTypes = system->componentTypes;
+
+        auto components = s_entityStore->Get(entity_id)->components;
+
+        b8 isValid = TRUE;
+        for (auto j = 0; j < systemTypes.Length(); j++)
+        {
+            auto type = systemTypes[j];
+
+            if (!components.Contains(type))
+            {
+                return FALSE;
+            }
+        }
+
+        return isValid;
     }
 
     entity_id_t ECSCreateEntity(String name, Dictionary<std::type_index, Ref<ComponentBase>> components)
@@ -100,6 +123,17 @@ namespace ntt::ecs
 
         components.ForEach([&entityId](const std::type_index &, const Ref<ComponentBase> &component)
                            { component->entity_id = entityId; });
+
+        auto availableSystems = s_systemsStore->GetAvailableIds();
+
+        for (auto i = 0; i < availableSystems.Length(); i++)
+        {
+            if (_IsEntityInSystem(availableSystems[i], entityId))
+            {
+                auto system = s_systemsStore->Get(availableSystems[i]);
+                system->entities.Add(entityId);
+            }
+        }
 
         return entityId;
     }
@@ -126,6 +160,65 @@ namespace ntt::ecs
         return entityInfo->components.Get(type);
     }
 
+    void ECSSetComponentActive(entity_id_t id, std::type_index type, b8 active)
+    {
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
+        if (!s_entityStore->Contains(id))
+        {
+            NTT_ENGINE_WARN("The entity with ID {} is not existed", id);
+            return;
+        }
+
+        auto entityInfo = s_entityStore->Get(id);
+
+        if (!entityInfo->components.Contains(type))
+        {
+            NTT_ENGINE_WARN("The component with type {} is not existed in the entity", type.name());
+            return;
+        }
+
+        auto component = entityInfo->components.Get(type);
+        component->active = active;
+
+        auto availableSystems = s_systemsStore->GetAvailableIds();
+        for (auto i = 0; i < availableSystems.Length(); i++)
+        {
+            auto system = s_systemsStore->Get(availableSystems[i]);
+            auto systemTypes = system->componentTypes;
+
+            b8 typeContained = systemTypes.Any([&type](const std::type_index &element, ...)
+                                               { return element == type; });
+
+            b8 entityContained = system->entities.Any([&id](const entity_id_t &element, ...)
+                                                      { return element == id; });
+
+            if (typeContained)
+            {
+                if (active)
+                {
+                    if (typeContained && !entityContained)
+                    {
+                        if (_IsEntityInSystem(availableSystems[i], id))
+                        {
+                            system->entities.Add(id);
+                        }
+                    }
+                }
+                else
+                {
+                    if (entityContained)
+                    {
+                        system->entities.Remove(id);
+                    }
+                }
+            }
+        }
+    }
+
     void ECSDeleteEntity(entity_id_t id)
     {
         if (!s_isInitialized)
@@ -143,6 +236,23 @@ namespace ntt::ecs
         NTT_ENGINE_TRACE("Deleting entity: {}", id);
 
         auto keyComponents = entityInfo->components.Keys();
+
+        auto availabeSystems = s_systemsStore->GetAvailableIds();
+
+        for (auto i = 0; i < availabeSystems.Length(); i++)
+        {
+            auto system = s_systemsStore->Get(availabeSystems[i]);
+            auto entities = system->entities;
+
+            for (auto j = 0; j < entities.Length(); j++)
+            {
+                if (entities[j] == id)
+                {
+                    entities.Remove(j);
+                    break;
+                }
+            }
+        }
 
         for (auto i = 0; i < keyComponents.Length(); i++)
         {
@@ -164,38 +274,18 @@ namespace ntt::ecs
 
         for (auto i = 0; i < availableSystems.Length(); i++)
         {
-            auto systemInfo = s_systemsStore->Get(availableSystems[i]);
-            auto systemTypes = systemInfo->componentTypes;
-            List<entity_id_t> entities = {};
+            auto system = s_systemsStore->Get(availableSystems[i]);
+            auto entities = system->entities;
 
-            for (auto j = 0; j < availableIds.Length(); j++)
+            for (auto j = 0; j < entities.Length(); j++)
             {
-                b8 isValid = FALSE;
-                auto entity_id = availableIds[j];
-                auto entityInfo = s_entityStore->Get(entity_id);
-                for (auto k = 0; k < systemTypes.Length(); k++)
+                try
                 {
-                    auto type = systemTypes[k];
-                    if (!entityInfo->components.Contains(type))
-                    {
-                        isValid = FALSE;
-                        break;
-                    }
-                    isValid = TRUE;
+                    system->systemFunc(delta, entities[j], entities);
                 }
-
-                if (isValid)
+                catch (const std::exception &e)
                 {
-                    try
-                    {
-                        systemInfo->system->Update(delta, entity_id);
-                    }
-                    catch (std::exception &e)
-                    {
-                        NTT_ENGINE_ERROR(
-                            "Error when updating system: {} in system: {}",
-                            e.what(), systemInfo->name);
-                    }
+                    NTT_ENGINE_ERROR("Error in system: {} - System: {}", e.what(), system->name);
                 }
             }
         }

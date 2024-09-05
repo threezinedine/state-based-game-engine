@@ -21,4 +21,5 @@ namespace ntt::renderer
 
 } // namespace ntt::renderer
 
-#include "GraphicInterface.hpp"
+#include "Geometry.hpp"
+#include "Texture.hpp"
