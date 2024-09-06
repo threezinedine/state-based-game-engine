@@ -146,7 +146,11 @@ namespace ntt::audio
             {
                 EventContext context;
                 context.u32_data[0] = tempPlayingAudios[i];
-                s_playingAudios.Remove(tempPlayingAudios[i]);
+
+                if (s_playingAudios.Contains(tempPlayingAudios[i]))
+                {
+                    s_playingAudios.RemoveItem(tempPlayingAudios[i]);
+                }
                 TriggerEvent(EventCode::AUDIO_FINISHED, nullptr, context);
             }
         }

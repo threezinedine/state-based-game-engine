@@ -89,6 +89,11 @@ namespace ntt
 
         inline void Clear() { m_List.clear(); }
 
+        b8 Contains(T item) const
+        {
+            return std::find(m_List.begin(), m_List.end(), item) != m_List.end();
+        }
+
         /**
          * @param index: Can be positive or negative
          *      if positive: index from the start of the list

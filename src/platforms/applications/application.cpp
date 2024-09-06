@@ -102,6 +102,8 @@ namespace ntt
         END_DRAWING();
 
         running = !WINDOW_SHOULD_CLOSE();
+
+        NTT_ENGINE_DEBUG("FPS: {0}", 1000.0f / delta);
     }
 
     Size &GetWindowSize()

@@ -6,6 +6,7 @@ using namespace ntt::renderer;
 using namespace ntt::physics;
 using namespace ntt::input;
 using namespace ntt::log;
+using namespace ntt::audio;
 
 #define BIRD_ANGLE 35
 #define SAFETY_GAP (1 / 16)
@@ -21,6 +22,9 @@ static texture_id_t s_gameOver;
 static texture_id_t s_background;
 static texture_id_t s_message;
 static texture_id_t s_numbers;
+static audio_id_t s_wing;
+static audio_id_t s_die;
+static audio_id_t s_point;
 
 static u8 s_backgroundCount = 0;
 static u8 s_backgroundRange = 0;
@@ -58,6 +62,9 @@ Game::Game()
     s_background = LoadTexture(RelativePath("images/game-objects/background-day.png"), {1, 1});
     s_message = LoadTexture(RelativePath("images/ui/message.png"), {1, 1});
     s_numbers = LoadTexture(RelativePath("images/ui/numbers.png"), {1, 10});
+    s_wing = LoadAudio(RelativePath("audios/wing.wav"));
+    s_die = LoadAudio(RelativePath("audios/die.wav"));
+    s_point = LoadAudio(RelativePath("audios/point.wav"));
 
     ECSRegister(
         "PipeHandler",
@@ -231,6 +238,7 @@ void Game::Update(f32 delta)
         else
         {
             mass->velocity_y = -0.3;
+            PlayAudio(s_wing);
         }
     }
 
@@ -359,6 +367,7 @@ void Game::PipeHandling(f32 delta, entity_id_t id, List<entity_id_t> others)
         {
             pipe->pass = TRUE;
             s_score++;
+            PlayAudio(s_point);
         }
     }
 
@@ -384,6 +393,11 @@ void Game::OnBirdCollide(List<entity_id_t> others)
     }
 
     ECSSetComponentActive(s_gameOver, typeid(Geometry), TRUE);
+    if (m_start)
+    {
+        PlayAudio(s_die);
+    }
+
     m_start = FALSE;
 }
 
