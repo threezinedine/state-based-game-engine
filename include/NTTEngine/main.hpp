@@ -13,12 +13,17 @@ using namespace ntt::event;
 using namespace ntt::renderer;
 using namespace ntt::memory;
 
+WindowInfo CreateWindowInfoFunction();
+
 AdditionalData CreateAdditionalData();
 
 int main()
 {
     ntt::Phrases phrases = {Begin, MainLoop, Close};
-    ApplicationInit(800, 600, "Hero", phrases, CreateAdditionalData());
+    WindowInfo windowInfo = CreateWindowInfoFunction();
+    ApplicationInit(windowInfo.width, windowInfo.height, windowInfo.title,
+                    phrases,
+                    CreateAdditionalData());
 
     b8 running = true;
 

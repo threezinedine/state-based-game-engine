@@ -59,7 +59,7 @@ namespace ntt
         ECSRegister(
             "Collision System",
             CollisionFunc,
-            {typeid(Geometry)});
+            {typeid(Geometry), typeid(Collision)});
 
         ECSRegister(
             "Mass System",

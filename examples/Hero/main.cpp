@@ -15,6 +15,11 @@ AdditionalData CreateAdditionalData()
     return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Hero/assets"};
 }
 
+WindowInfo CreateWindowInfoFunction()
+{
+    return WindowInfo(static_cast<u16>(400), static_cast<u16>(600), "Flappy Bird");
+}
+
 Scope<Game> game;
 
 void Begin()

@@ -26,6 +26,19 @@ namespace ntt
             : assetsPath(assetsPath) {}
     };
 
+    struct WindowInfo
+    {
+        u16 width;
+        u16 height;
+        const char *title;
+
+        WindowInfo(u16 width, u16 height, const char *title)
+            : width(width), height(height), title(title) {}
+
+        WindowInfo(const WindowInfo &other)
+            : width(other.width), height(other.height), title(other.title) {}
+    };
+
     /**
      * Making an window of application with certain width, height and title
      *
