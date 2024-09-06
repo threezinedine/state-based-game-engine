@@ -1,1 +1,0 @@
-b.bat && e.bat

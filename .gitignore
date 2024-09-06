@@ -36,3 +36,4 @@ docs/html/*
 docs/latex/*
 
 *-design.txt
+*.bat
