@@ -59,18 +59,6 @@ Game::Game()
     s_message = LoadTexture(RelativePath("images/ui/message.png"), {1, 1});
     s_numbers = LoadTexture(RelativePath("images/ui/numbers.png"), {1, 10});
 
-    NTT_ENGINE_DEBUG(
-        "Bird Texture: {}\n"
-        "Pipe Texture: {}\n"
-        "Base Texture: {}\n"
-        "Game Over Texture: {}\n"
-        "Background Texture: {}",
-        s_birdTexture,
-        s_pipeTexture,
-        s_base,
-        s_gameOver,
-        s_background);
-
     ECSRegister(
         "PipeHandler",
         std::bind(&Game::PipeHandling, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
@@ -103,7 +91,7 @@ Game::Game()
                                  windowSize.width,
                                  windowSize.height / 10,
                                  180),
-            ECS_CREATE_COMPONENT(Texture, s_base),
+            ECS_CREATE_COMPONENT(Texture, s_base, 0, 0, TRUE),
             ECS_CREATE_COMPONENT(Collision),
         });
 
@@ -115,7 +103,7 @@ Game::Game()
                                  windowSize.height / 20 * 19,
                                  windowSize.width,
                                  windowSize.height / 10),
-            ECS_CREATE_COMPONENT(Texture, s_base),
+            ECS_CREATE_COMPONENT(Texture, s_base, 0, 0, TRUE),
             ECS_CREATE_COMPONENT(Collision),
         });
 
@@ -149,21 +137,21 @@ Game::Game()
         "Hundered",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 - 50, 50, 20, 20),
-            ECS_CREATE_COMPONENT(Texture, s_numbers),
+            ECS_CREATE_COMPONENT(Texture, s_numbers, 0, 0, TRUE),
         });
 
     auto ten = ECSCreateEntity(
         "Ten",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, 50, 20, 20),
-            ECS_CREATE_COMPONENT(Texture, s_numbers),
+            ECS_CREATE_COMPONENT(Texture, s_numbers, 0, 0, TRUE),
         });
 
     auto one = ECSCreateEntity(
         "One",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 + 50, 50, 20, 20),
-            ECS_CREATE_COMPONENT(Texture, s_numbers),
+            ECS_CREATE_COMPONENT(Texture, s_numbers, 0, 0, TRUE),
         });
 
     s_scoreEnt = ECSCreateEntity(
@@ -191,7 +179,6 @@ void Game::Update(f32 delta)
         ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
     }
 
-    // NTT_APP_DEBUG("Game State: is-started: {}", m_start);
     auto birdGeo = ECS_GET_COMPONENT(m_bird, Geometry);
     auto mass = ECS_GET_COMPONENT(m_bird, Mass);
 
@@ -210,7 +197,6 @@ void Game::Update(f32 delta)
 
     if (CheckState(Key::NTT_KEY_SPACE, InputState::NTT_PRESS))
     {
-        NTT_APP_DEBUG("Space Pressed");
         if (!m_start)
         {
             m_start = TRUE;
@@ -373,7 +359,6 @@ void Game::PipeHandling(f32 delta, entity_id_t id, List<entity_id_t> others)
         {
             pipe->pass = TRUE;
             s_score++;
-            NTT_APP_DEBUG("Score: {}", s_score);
         }
     }
 
@@ -410,4 +395,6 @@ Game::~Game()
     UnloadTexture(s_base);
     UnloadTexture(s_gameOver);
     UnloadTexture(s_background);
+    UnloadTexture(s_message);
+    UnloadTexture(s_numbers);
 }

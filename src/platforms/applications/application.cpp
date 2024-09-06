@@ -41,7 +41,7 @@ namespace ntt
         s_phrases = phrases;
 
         LogInit();
-        NTT_ENGINE_CONFIG(LogLevel::TRACE, LOGGER_CONSOLE);
+        NTT_ENGINE_CONFIG(LogLevel::INFO, LOGGER_CONSOLE);
         MemoryInit();
 
         CREATE_WINDOW(screenWidth, screenHeight, title);
@@ -98,6 +98,7 @@ namespace ntt
 
         s_phrases.MainLoop(delta);
 
+        GraphicUpdate();
         END_DRAWING();
 
         running = !WINDOW_SHOULD_CLOSE();

@@ -34,11 +34,27 @@ namespace ntt::renderer
             : texture(texture), grid(grid), path(path) {}
     };
 
+    struct DrawInfo
+    {
+        texture_id_t texture_id;
+        f32 fromX;
+        f32 fromY;
+        f32 fromWidth;
+        f32 fromHeight;
+        f32 toX;
+        f32 toY;
+        f32 toWidth;
+        f32 toHeight;
+        f32 rotate;
+    };
+
     namespace
     {
         b8 s_isInitialized = FALSE;
-
         Scope<Store<texture_id_t, TextureInfo, String>> s_textureStore;
+
+        List<DrawInfo> s_drawList;
+        List<DrawInfo> s_priorityDrawList;
     } // namespace
 
     void RendererInit()
@@ -94,7 +110,10 @@ namespace ntt::renderer
         return s_textureStore->Add(textureInfo);
     }
 
-    Size DrawTexture(texture_id_t texture_id, const RectContext &context, const Grid &cell)
+    Size DrawTexture(texture_id_t texture_id,
+                     const RectContext &context,
+                     const Grid &cell,
+                     const DrawContext &drawContext)
     {
         if (!s_isInitialized)
         {
@@ -145,18 +164,82 @@ namespace ntt::renderer
             height = static_cast<f32>(frameHeight);
         }
 
-        DRAW_TEXTURE(texture,
-                     frameWidth * frame.col,
-                     frameHeight * frame.row,
-                     frameWidth,
-                     frameHeight,
-                     static_cast<f32>(context.position.x),
-                     static_cast<f32>(context.position.y),
-                     width,
-                     height,
-                     static_cast<f32>(context.rotate));
+        if (drawContext.priority)
+        {
+            s_priorityDrawList.Add(
+                {texture_id,
+                 frameWidth * frame.col,
+                 frameHeight * frame.row,
+                 frameWidth,
+                 frameHeight,
+                 static_cast<f32>(context.position.x),
+                 static_cast<f32>(context.position.y),
+                 width,
+                 height,
+                 static_cast<f32>(context.rotate)});
+        }
+        else
+        {
+            s_drawList.Add(
+                {texture_id,
+                 frameWidth * frame.col,
+                 frameHeight * frame.row,
+                 frameWidth,
+                 frameHeight,
+                 static_cast<f32>(context.position.x),
+                 static_cast<f32>(context.position.y),
+                 width,
+                 height,
+                 static_cast<f32>(context.rotate)});
+        }
+        // DRAW_TEXTURE(texture,
+        //              frameWidth * frame.col,
+        //              frameHeight * frame.row,
+        //              frameWidth,
+        //              frameHeight,
+        //              static_cast<f32>(context.position.x),
+        //              static_cast<f32>(context.position.y),
+        //              width,
+        //              height,
+        //              static_cast<f32>(context.rotate));
 
         return {static_cast<size_t>(width), static_cast<size_t>(height)};
+    }
+
+    void GraphicUpdate()
+    {
+        for (auto i = 0; i < s_drawList.Length(); i++)
+        {
+            auto drawInfo = s_drawList[i];
+            DRAW_TEXTURE(s_textureStore->Get(drawInfo.texture_id)->texture,
+                         drawInfo.fromX,
+                         drawInfo.fromY,
+                         drawInfo.fromWidth,
+                         drawInfo.fromHeight,
+                         drawInfo.toX,
+                         drawInfo.toY,
+                         drawInfo.toWidth,
+                         drawInfo.toHeight,
+                         drawInfo.rotate);
+        }
+
+        for (auto i = 0; i < s_priorityDrawList.Length(); i++)
+        {
+            auto drawInfo = s_priorityDrawList[i];
+            DRAW_TEXTURE(s_textureStore->Get(drawInfo.texture_id)->texture,
+                         drawInfo.fromX,
+                         drawInfo.fromY,
+                         drawInfo.fromWidth,
+                         drawInfo.fromHeight,
+                         drawInfo.toX,
+                         drawInfo.toY,
+                         drawInfo.toWidth,
+                         drawInfo.toHeight,
+                         drawInfo.rotate);
+        }
+
+        s_drawList.Clear();
+        s_priorityDrawList.Clear();
     }
 
     void UnloadTexture(texture_id_t texture_id)

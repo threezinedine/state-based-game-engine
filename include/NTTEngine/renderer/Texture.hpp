@@ -16,9 +16,13 @@ namespace ntt::renderer
         texture_id_t id;
         u8 rowIndex;
         u8 colIndex;
+        b8 priority;
 
-        Texture(texture_id_t id = DEFAULT_TEXTURE, u8 rowIndex = 0, u8 colIndex = 0)
-            : id(id), rowIndex(rowIndex), colIndex(colIndex)
+        Texture(texture_id_t id = DEFAULT_TEXTURE, u8 rowIndex = 0,
+                u8 colIndex = 0, b8 priority = FALSE)
+            : id(id), rowIndex(rowIndex),
+              colIndex(colIndex),
+              priority(priority)
         {
         }
     };

@@ -68,9 +68,20 @@ namespace ntt::renderer
         RectContext() = default;
     };
 
+    // Additional information for the drawing context
+    struct DrawContext
+    {
+        b8 priority; ///< If the object should be drawn in the priority list
+
+        DrawContext() : priority(FALSE) {}
+        DrawContext(b8 priority) : priority(priority) {}
+    };
+
     /**
      * Draw the texture, if the Size in the context is default
-     *      then the size of the texture will be used.
+     *      then the size of the texture will be used. The object
+     *      will not be drawn immediately, it will be drawn
+     *      at the end of the frame (when the GraphicUpdate is called).
      *
      * @param texture_id: The ID of the texture which is loaded
      *      if the texture ID is not found, then nothing will
@@ -84,7 +95,13 @@ namespace ntt::renderer
      */
     Size DrawTexture(texture_id_t texture_id,
                      const RectContext &context = RectContext(),
-                     const Grid &cell = Grid{0, 0});
+                     const Grid &cell = Grid{0, 0},
+                     const DrawContext &drawContext = DrawContext{});
+
+    /**
+     * Actually draw the objects on the screen
+     */
+    void GraphicUpdate();
 
     /**
      * Unload the texture with the given texture ID, if

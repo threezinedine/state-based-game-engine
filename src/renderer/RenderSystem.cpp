@@ -31,7 +31,7 @@ namespace ntt::renderer
             return;
         }
 
-        auto size = DrawTexture(texture->id, context, cell);
+        auto size = DrawTexture(texture->id, context, cell, DrawContext(texture->priority));
         geometry->width = size.width;
         geometry->height = size.height;
     }
