@@ -1,6 +1,7 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/structures/string.hpp>
+#include <NTTEngine/resources/resource_common.h>
 
 /**
  * Provide all functionalities related to audio.
@@ -15,14 +16,6 @@
  */
 namespace ntt::audio
 {
-    /**
-     * Change the code under this part does not affect other parts
-     *      of the code.
-     */
-
-    using audio_id_t = u32;
-    constexpr audio_id_t DEFAULT_AUDIO = 0;
-
     /**
      * Start the audio system. If not be called, other functions
      *      will call this function automatically.
@@ -41,7 +34,7 @@ namespace ntt::audio
      *      the previous audio id is returned else a new audio id
      *      is returned.
      */
-    audio_id_t LoadAudio(const String &path);
+    resource_id_t LoadAudio(const String &path);
 
     /**
      * Run the audio with the given audio id.
@@ -50,7 +43,7 @@ namespace ntt::audio
      *      existed or unloaded, the warning is logged and nothing
      *      is played.
      */
-    void PlayAudio(audio_id_t audio_id);
+    void PlayAudio(resource_id_t audio_id);
 
     /**
      * Stop the audio and reset the progress to the beginning.
@@ -60,7 +53,7 @@ namespace ntt::audio
      *      stopped.
      *      With the paused audio, the state is also reset to the beginning.
      */
-    void StopAudio(audio_id_t audio_id);
+    void StopAudio(resource_id_t audio_id);
 
     /**
      * Unload the audio file from the given audio id.
@@ -71,7 +64,7 @@ namespace ntt::audio
      *      be unloaded automatically when the application is closed.
      *      (Print warning if the default audio is tried to unload)
      */
-    void UnloadAudio(audio_id_t audio_id);
+    void UnloadAudio(resource_id_t audio_id);
 
     /**
      * Use in the game loop only. Use must not call this function

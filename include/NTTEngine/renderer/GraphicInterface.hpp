@@ -3,6 +3,7 @@
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/structures/position.hpp>
 #include <NTTEngine/structures/size.hpp>
+#include <NTTEngine/resources/resource_common.h>
 
 namespace ntt::renderer
 {
@@ -12,10 +13,6 @@ namespace ntt::renderer
      *      or it is an animated object or not, it just receives the data
      *      and draws it on the screen.
      */
-
-    // When changing this type, does not need to change any code in the engine
-    using texture_id_t = u32;
-    constexpr texture_id_t DEFAULT_TEXTURE = 0;
 
     /**
      * Initialize the graphic interface if it is not initialized yet
@@ -53,7 +50,7 @@ namespace ntt::renderer
      *      rows and columns in the texture, if the grid is not provided
      *      then the default grid will be used (only 1 row and 1 column).
      */
-    texture_id_t LoadTexture(const String &path, const Grid &grid = Grid{1, 1});
+    resource_id_t LoadTexture(const String &path, const Grid &grid = Grid{1, 1});
 
     /**
      * The context which the renderer used for drawing
@@ -93,7 +90,7 @@ namespace ntt::renderer
      *      if the cell is out of the grid, then the warning will be printed and the
      *      maximum cell will be used.
      */
-    Size DrawTexture(texture_id_t texture_id,
+    Size DrawTexture(resource_id_t texture_id,
                      const RectContext &context = RectContext(),
                      const Grid &cell = Grid{0, 0},
                      const DrawContext &drawContext = DrawContext{});
@@ -110,7 +107,7 @@ namespace ntt::renderer
      *
      * @param texture_id: The ID of the texture which is loaded
      */
-    void UnloadTexture(texture_id_t texture_id);
+    void UnloadTexture(resource_id_t texture_id);
 
     /**
      * Unload all the textures which are loaded by the renderer

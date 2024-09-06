@@ -14,13 +14,7 @@
  */
 namespace ntt::resource
 {
-    /**
-     * All supported resource types.
-     */
-    enum ResourceType
-    {
-        IMAGE = 0, ///< Image resource type (.png only)
-        AUDIO = 1, ///< Audio resource type (.wav only)
-        FONT = 2,  ///< Font resource type (.ttf only)
-    };
+
 } // namespace ntt::resource
+
+#include "ResourceManager.hpp"

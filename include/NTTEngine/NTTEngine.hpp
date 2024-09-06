@@ -9,3 +9,4 @@
 #include "audio/audio.hpp"
 #include "ecs/ecs.hpp"
 #include "physics/physics.hpp"
+#include "resources/resources.hpp"

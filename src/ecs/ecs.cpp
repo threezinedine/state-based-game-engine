@@ -169,7 +169,7 @@ namespace ntt::ecs
 
         if (!s_entityStore->Contains(id))
         {
-            NTT_ENGINE_WARN("The entity with ID {} is not existed", id);
+            // NTT_ENGINE_WARN("The entity with ID {} is not existed", id);
             return;
         }
 
@@ -177,7 +177,7 @@ namespace ntt::ecs
 
         if (!entityInfo->components.Contains(type))
         {
-            NTT_ENGINE_WARN("The component with type {} is not existed in the entity", type.name());
+            // NTT_ENGINE_WARN("The component with type {} is not existed in the entity", type.name());
             return;
         }
 
@@ -235,7 +235,7 @@ namespace ntt::ecs
 
         if (!s_entityStore->Contains(id))
         {
-            NTT_ENGINE_WARN("The entity with ID {} is not existed", id);
+            // NTT_ENGINE_WARN("The entity with ID {} is not existed", id);
             return;
         }
 

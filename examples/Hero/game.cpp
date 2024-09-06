@@ -15,23 +15,9 @@ using namespace ntt::audio;
 #define BIRD_POS_X 150
 #define SCORE_DIGIT_GAP 1
 
-static texture_id_t s_birdTexture;
-static texture_id_t s_pipeTexture;
-static texture_id_t s_base;
-static texture_id_t s_gameOver;
-static texture_id_t s_background;
-static texture_id_t s_message;
-static texture_id_t s_numbers;
-static audio_id_t s_wing;
-static audio_id_t s_die;
-static audio_id_t s_point;
-
-static u8 s_backgroundCount = 0;
-static u8 s_backgroundRange = 0;
-
 static u16 s_score = 0;
 
-static entity_id_t m_gameOver;
+static entity_id_t s_gameOver;
 static entity_id_t s_messageEnt;
 static entity_id_t s_scoreEnt;
 
@@ -55,17 +41,6 @@ struct Score : public ComponentBase
 Game::Game()
     : m_createdPipeCount(0), m_state(GameState::GAME_STATE_IDLE)
 {
-    s_birdTexture = LoadTexture(RelativePath("images/game-objects/bird.png"), {3, 1});
-    s_pipeTexture = LoadTexture(RelativePath("images/game-objects/pipe-green.png"), {1, 1});
-    s_base = LoadTexture(RelativePath("images/game-objects/base.png"), {1, 1});
-    s_gameOver = LoadTexture(RelativePath("images/ui/gameover.png"), {1, 1});
-    s_background = LoadTexture(RelativePath("images/game-objects/background-day.png"), {1, 1});
-    s_message = LoadTexture(RelativePath("images/ui/message.png"), {1, 1});
-    s_numbers = LoadTexture(RelativePath("images/ui/numbers.png"), {1, 10});
-    s_wing = LoadAudio(RelativePath("audios/wing.wav"));
-    s_die = LoadAudio(RelativePath("audios/die.wav"));
-    s_point = LoadAudio(RelativePath("audios/point.wav"));
-
     ECSRegister(
         "PipeHandler",
         std::bind(&Game::PipeHandling, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
@@ -86,7 +61,7 @@ Game::Game()
                                  windowSize.height / 2,
                                  windowSize.width,
                                  windowSize.height),
-            ECS_CREATE_COMPONENT(Texture, s_background),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("background")),
         });
 
     ECSCreateEntity(
@@ -98,7 +73,7 @@ Game::Game()
                                  windowSize.width,
                                  windowSize.height / 10,
                                  180),
-            ECS_CREATE_COMPONENT(Texture, s_base, 0, 0, TRUE),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("base"), 0, 0, TRUE),
             ECS_CREATE_COMPONENT(Collision),
         });
 
@@ -110,7 +85,7 @@ Game::Game()
                                  windowSize.height / 20 * 19,
                                  windowSize.width,
                                  windowSize.height / 10),
-            ECS_CREATE_COMPONENT(Texture, s_base, 0, 0, TRUE),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("base"), 0, 0, TRUE),
             ECS_CREATE_COMPONENT(Collision),
         });
 
@@ -118,14 +93,14 @@ Game::Game()
         "Game Over",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 300, 100),
-            ECS_CREATE_COMPONENT(Texture, s_gameOver),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("gameover")),
         });
 
     m_bird = ECSCreateEntity(
         "Bird",
         {
             ECS_CREATE_COMPONENT(Geometry, BIRD_POS_X, windowSize.height / 2, 70),
-            ECS_CREATE_COMPONENT(Texture, s_birdTexture),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("bird")),
             {typeid(Mass), CreateRef<Mass>(1.0f)},
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(Sprite,
@@ -137,28 +112,28 @@ Game::Game()
         "Message",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 200),
-            ECS_CREATE_COMPONENT(Texture, s_message),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("message")),
         });
 
     auto hundered = ECSCreateEntity(
         "Hundered",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 - 50, 50, 20, 20),
-            ECS_CREATE_COMPONENT(Texture, s_numbers, 0, 0, TRUE),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
 
     auto ten = ECSCreateEntity(
         "Ten",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, 50, 20, 20),
-            ECS_CREATE_COMPONENT(Texture, s_numbers, 0, 0, TRUE),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
 
     auto one = ECSCreateEntity(
         "One",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 + 50, 50, 20, 20),
-            ECS_CREATE_COMPONENT(Texture, s_numbers, 0, 0, TRUE),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
 
     s_scoreEnt = ECSCreateEntity(
@@ -238,7 +213,7 @@ void Game::Update(f32 delta)
         else
         {
             mass->velocity_y = -0.3;
-            PlayAudio(s_wing);
+            PlayAudio(GetResourceID("wing"));
         }
     }
 
@@ -271,7 +246,7 @@ void Game::RandomizePipe(position_t posX)
         pipeNameUp,
         {
             ECS_CREATE_COMPONENT(Geometry, posX, posY, 100, halfHeight * 2),
-            ECS_CREATE_COMPONENT(Texture, s_pipeTexture),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
             ECS_CREATE_COMPONENT(Mass, 1.0f, -MOVE_SPEED, 0, 0, 0),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(Pipe),
@@ -281,7 +256,7 @@ void Game::RandomizePipe(position_t posX)
         pipeNameDown,
         {
             ECS_CREATE_COMPONENT(Geometry, posX, posDownY, 100, downHeight, 180),
-            ECS_CREATE_COMPONENT(Texture, s_pipeTexture),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
             ECS_CREATE_COMPONENT(Mass, 1.0f, -.1, 0, 0, 0),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(Pipe),
@@ -367,7 +342,7 @@ void Game::PipeHandling(f32 delta, entity_id_t id, List<entity_id_t> others)
         {
             pipe->pass = TRUE;
             s_score++;
-            PlayAudio(s_point);
+            PlayAudio(GetResourceID("point"));
         }
     }
 
@@ -395,7 +370,7 @@ void Game::OnBirdCollide(List<entity_id_t> others)
     ECSSetComponentActive(s_gameOver, typeid(Geometry), TRUE);
     if (m_start)
     {
-        PlayAudio(s_die);
+        PlayAudio(GetResourceID("die"));
     }
 
     m_start = FALSE;
@@ -404,11 +379,4 @@ void Game::OnBirdCollide(List<entity_id_t> others)
 Game::~Game()
 {
     ECSDeleteEntity(m_bird);
-    UnloadTexture(s_birdTexture);
-    UnloadTexture(s_pipeTexture);
-    UnloadTexture(s_base);
-    UnloadTexture(s_gameOver);
-    UnloadTexture(s_background);
-    UnloadTexture(s_message);
-    UnloadTexture(s_numbers);
 }

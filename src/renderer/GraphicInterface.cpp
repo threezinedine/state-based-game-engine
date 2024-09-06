@@ -36,7 +36,7 @@ namespace ntt::renderer
 
     struct DrawInfo
     {
-        texture_id_t texture_id;
+        resource_id_t texture_id;
         f32 fromX;
         f32 fromY;
         f32 fromWidth;
@@ -51,7 +51,7 @@ namespace ntt::renderer
     namespace
     {
         b8 s_isInitialized = FALSE;
-        Scope<Store<texture_id_t, TextureInfo, String>> s_textureStore;
+        Scope<Store<resource_id_t, TextureInfo, String>> s_textureStore;
 
         List<DrawInfo> s_drawList;
         List<DrawInfo> s_priorityDrawList;
@@ -64,8 +64,8 @@ namespace ntt::renderer
             return;
         }
 
-        s_textureStore = CreateScope<Store<texture_id_t, TextureInfo, String>>(
-            DEFAULT_TEXTURE,
+        s_textureStore = CreateScope<Store<resource_id_t, TextureInfo, String>>(
+            RESOURCE_ID_DEFAULT,
             TEXTURE_MAX,
             [](Ref<TextureInfo> texture)
             { return texture->path; });
@@ -74,25 +74,25 @@ namespace ntt::renderer
         // memset(s_loadedTextures, 0, sizeof(s_loadedTextures));
     }
 
-    texture_id_t LoadTexture(const String &path, const Grid &grid)
+    resource_id_t LoadTexture(const String &path, const Grid &grid)
     {
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The renderer is not initialized yet");
-            return DEFAULT_TEXTURE;
+            return RESOURCE_ID_DEFAULT;
         }
 
         if (s_textureStore->ContainsUnique(path))
         {
             NTT_ENGINE_WARN("The texture is already loaded",
                             GetFileName(path, true));
-            return DEFAULT_TEXTURE;
+            return RESOURCE_ID_DEFAULT;
         }
 
         if (IsExist(path) == FALSE)
         {
             NTT_ENGINE_WARN("The texture is not found: {}", GetFileName(path, true));
-            return DEFAULT_TEXTURE;
+            return RESOURCE_ID_DEFAULT;
         }
 
         auto texture = LOAD_TEXTURE(path);
@@ -100,17 +100,19 @@ namespace ntt::renderer
         if (IS_LOADED_SUCCESS(texture) == TRUE)
         {
             NTT_ENGINE_WARN("Loading the texture {} error", GetFileName(path, true));
-            return DEFAULT_TEXTURE;
+            return RESOURCE_ID_DEFAULT;
         }
 
         auto textureInfo = CREATE_REF(TextureInfo, texture, grid, path);
+
+        NTT_ENGINE_DEBUG("The texture {} is loaded", GetFileName(path, true));
 
         textureInfo->frameWith = static_cast<f32>(texture.width) / grid.col;
         textureInfo->frameHeight = static_cast<f32>(texture.height) / grid.row;
         return s_textureStore->Add(textureInfo);
     }
 
-    Size DrawTexture(texture_id_t texture_id,
+    Size DrawTexture(resource_id_t texture_id,
                      const RectContext &context,
                      const Grid &cell,
                      const DrawContext &drawContext)
@@ -118,6 +120,12 @@ namespace ntt::renderer
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The renderer is not initialized yet");
+            return {};
+        }
+
+        if (!s_textureStore->Contains(texture_id))
+        {
+            NTT_ENGINE_WARN("The texture with the ID {} is not found", texture_id);
             return {};
         }
 
@@ -192,17 +200,6 @@ namespace ntt::renderer
                  height,
                  static_cast<f32>(context.rotate)});
         }
-        // DRAW_TEXTURE(texture,
-        //              frameWidth * frame.col,
-        //              frameHeight * frame.row,
-        //              frameWidth,
-        //              frameHeight,
-        //              static_cast<f32>(context.position.x),
-        //              static_cast<f32>(context.position.y),
-        //              width,
-        //              height,
-        //              static_cast<f32>(context.rotate));
-
         return {static_cast<size_t>(width), static_cast<size_t>(height)};
     }
 
@@ -242,7 +239,7 @@ namespace ntt::renderer
         s_priorityDrawList.Clear();
     }
 
-    void UnloadTexture(texture_id_t texture_id)
+    void UnloadTexture(resource_id_t texture_id)
     {
         if (!s_isInitialized)
         {
@@ -256,7 +253,6 @@ namespace ntt::renderer
             return;
         }
 
-        NTT_ENGINE_DEBUG("Unloading the texture with the ID {} ...", texture_id);
         try
         {
             UNLOAD_TEXTURE(s_textureStore->Get(texture_id)->texture);
@@ -276,7 +272,7 @@ namespace ntt::renderer
             return;
         }
 
-        ForEachFunc<texture_id_t, TextureInfo> func = [&](Ref<TextureInfo> texture, texture_id_t id)
+        ForEachFunc<resource_id_t, TextureInfo> func = [&](Ref<TextureInfo> texture, resource_id_t id)
         {
             NTT_ENGINE_WARN("The texture with the ID {} is not unloaded, unloading ...", id);
             UnloadTexture(id);

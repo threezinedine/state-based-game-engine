@@ -31,11 +31,11 @@ namespace ntt::audio
     {
         b8 s_isInitialized = FALSE;
 
-        Store<audio_id_t, AudioInfo, String> s_audioStore(DEFAULT_AUDIO,
-                                                          MAX_AUDIO, [](Ref<AudioInfo> audio)
-                                                          { return audio->path; });
+        Store<resource_id_t, AudioInfo, String> s_audioStore(RESOURCE_ID_DEFAULT,
+                                                             MAX_AUDIO, [](Ref<AudioInfo> audio)
+                                                             { return audio->path; });
 
-        List<audio_id_t> s_playingAudios;
+        List<resource_id_t> s_playingAudios;
     } // namespace
 
     void AudioInit()
@@ -54,17 +54,17 @@ namespace ntt::audio
         s_isInitialized = TRUE;
     }
 
-    audio_id_t LoadAudio(const String &path)
+    resource_id_t LoadAudio(const String &path)
     {
         if (!s_isInitialized)
         {
-            return DEFAULT_AUDIO;
+            return RESOURCE_ID_DEFAULT;
         }
 
         if (s_audioStore.ContainsUnique(path))
         {
             NTT_ENGINE_WARN("The audio file is already loaded: {}", GetFileName(path, true));
-            return DEFAULT_AUDIO;
+            return RESOURCE_ID_DEFAULT;
         }
 
         LOAD_SOUND(sound, path);
@@ -77,11 +77,11 @@ namespace ntt::audio
         else
         {
             NTT_ENGINE_WARN("Loading Audio {} Error", GetFileName(path, true));
-            return DEFAULT_AUDIO;
+            return RESOURCE_ID_DEFAULT;
         }
     }
 
-    void PlayAudio(audio_id_t audio_id)
+    void PlayAudio(resource_id_t audio_id)
     {
         if (!s_isInitialized)
         {
@@ -101,7 +101,7 @@ namespace ntt::audio
         PLAY_SOUND(audioInfo->sound);
     }
 
-    void StopAudio(audio_id_t audio_id)
+    void StopAudio(resource_id_t audio_id)
     {
         if (!s_isInitialized)
         {
@@ -156,7 +156,7 @@ namespace ntt::audio
         }
     }
 
-    void UnloadAudio(audio_id_t audio_id)
+    void UnloadAudio(resource_id_t audio_id)
     {
         if (!s_isInitialized)
         {

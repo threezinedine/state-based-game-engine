@@ -1,0 +1,62 @@
+{
+	"default": [
+		{
+			"name": "numbers",
+			"type": 0,
+			"relPath": "images/ui/numbers.png",
+			"grid": {
+				"row": 1,
+				"col": 10
+			}
+		},
+		{
+			"name": "bird",
+			"type": 0,
+			"relPath": "images/game-objects/bird.png",
+			"grid": {
+				"row": 3,
+				"col": 1
+			}
+		},
+		{
+			"name": "pipe",
+			"type": 0,
+			"relPath": "images/game-objects/pipe-green.png"
+		},
+		{
+			"name": "base",
+			"type": 0,
+			"relPath": "images/game-objects/base.png"
+		},
+		{
+			"name": "gameover",
+			"type": 0,
+			"relPath": "images/ui/gameover.png"
+		},
+		{
+			"name": "background",
+			"type": 0,
+			"relPath": "images/game-objects/background-day.png"
+		},
+		{
+			"name": "message",
+			"type": 0,
+			"relPath": "images/ui/message.png"
+		},
+		{
+			"name": "wing",
+			"type": 1,
+			"relPath": "audios/wing.wav"
+		},
+		{
+			"name": "die",
+			"type": 1,
+			"relPath": "audios/die.wav"
+		},
+		{
+			"name": "point",
+			"type": 1,
+			"relPath": "audios/point.wav"
+		}
+	]
+}

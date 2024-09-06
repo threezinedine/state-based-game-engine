@@ -21,6 +21,7 @@ int main()
 {
     ntt::Phrases phrases = {Begin, MainLoop, Close};
     WindowInfo windowInfo = CreateWindowInfoFunction();
+
     ApplicationInit(windowInfo.width, windowInfo.height, windowInfo.title,
                     phrases,
                     CreateAdditionalData());

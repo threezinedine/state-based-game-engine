@@ -13,7 +13,6 @@ namespace ntt
     JSON::JSON()
         : m_Impl(new Impl())
     {
-        NTT_ENGINE_DEBUG("Creating the JSON object");
     }
 
     JSON::JSON(String data)
@@ -32,7 +31,6 @@ namespace ntt
     {
         if (m_Impl != nullptr)
         {
-            NTT_ENGINE_DEBUG("Destroying the JSON object");
             delete m_Impl;
             m_Impl = nullptr;
         }
@@ -177,6 +175,16 @@ namespace ntt
         }
 
         return result;
+    }
+
+    List<String> JSON::GetKeys() const
+    {
+        List<String> keys;
+        for (auto &item : m_Impl->data.items())
+        {
+            keys.Add(item.key());
+        }
+        return keys;
     }
 
     String GetStringFrom(const nlohmann::json &data);

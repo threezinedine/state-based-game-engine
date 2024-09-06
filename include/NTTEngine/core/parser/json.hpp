@@ -28,6 +28,11 @@ namespace ntt
         ~JSON();
 
         /**
+         * Get Keys of the JSON object.
+         */
+        List<String> GetKeys() const;
+
+        /**
          * Check whether the JSON object has the key or not.
          *
          * @param key The key to check in the JSON object.

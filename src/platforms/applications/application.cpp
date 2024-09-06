@@ -15,6 +15,8 @@
 
 #include <NTTEngine/physics/physics_dev.hpp>
 
+#include <NTTEngine/resources/ResourceManager.hpp>
+
 namespace ntt
 {
     using namespace memory;
@@ -41,7 +43,7 @@ namespace ntt
         s_phrases = phrases;
 
         LogInit();
-        NTT_ENGINE_CONFIG(LogLevel::INFO, LOGGER_CONSOLE);
+        NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
         MemoryInit();
 
         CREATE_WINDOW(screenWidth, screenHeight, title);
@@ -54,6 +56,16 @@ namespace ntt
         RendererInit();
         AudioInit();
         CollisionInit();
+        ResourceInit();
+
+        String resourceConfig = ReadFile(RelativePath("configs/resources.json"));
+        if (resourceConfig == "")
+        {
+            resourceConfig = "{}";
+        }
+
+        ResourceLoadConfig(JSON(resourceConfig));
+
         ECSInit();
 
         ECSRegister(
@@ -103,7 +115,7 @@ namespace ntt
 
         running = !WINDOW_SHOULD_CLOSE();
 
-        NTT_ENGINE_DEBUG("FPS: {0}", 1000.0f / delta);
+        NTT_ENGINE_TRACE("FPS: {0}", 1000.0f / delta);
     }
 
     Size &GetWindowSize()
@@ -116,6 +128,7 @@ namespace ntt
         s_phrases.Close();
 
         ECSShutdown();
+        ResourceShutdown();
         CollisionShutdown();
         AudioShutdown();
         RendererShutdown();
