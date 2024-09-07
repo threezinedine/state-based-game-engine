@@ -70,7 +70,8 @@ namespace ntt::ecs
         s_isInitialized = TRUE;
     }
 
-    void ECSRegister(String name, SystemFunc systemFunc, List<std::type_index> componentTypes)
+    void ECSRegister(String name, SystemFunc systemFunc,
+                     List<std::type_index> componentTypes)
     {
         if (!s_isInitialized)
         {
@@ -83,7 +84,7 @@ namespace ntt::ecs
             systemFunc,
             componentTypes));
 
-        for (auto i = 0; i < componentTypes.Length(); i++)
+        for (auto i = 0; i < componentTypes.size(); i++)
         {
             std::type_index type = componentTypes[i];
         }
@@ -98,7 +99,7 @@ namespace ntt::ecs
         auto components = s_entityStore->Get(entity_id)->components;
 
         b8 isValid = TRUE;
-        for (auto j = 0; j < systemTypes.Length(); j++)
+        for (auto j = 0; j < systemTypes.size(); j++)
         {
             auto type = systemTypes[j];
 
@@ -126,12 +127,12 @@ namespace ntt::ecs
 
         auto availableSystems = s_systemsStore->GetAvailableIds();
 
-        for (auto i = 0; i < availableSystems.Length(); i++)
+        for (auto i = 0; i < availableSystems.size(); i++)
         {
             if (_IsEntityInSystem(availableSystems[i], entityId))
             {
                 auto system = s_systemsStore->Get(availableSystems[i]);
-                system->entities.Add(entityId);
+                system->entities.push_back(entityId);
             }
         }
 
@@ -157,7 +158,7 @@ namespace ntt::ecs
             return nullptr;
         }
 
-        return entityInfo->components.Get(type);
+        return entityInfo->components[type];
     }
 
     void ECSSetComponentActive(entity_id_t id, std::type_index type, b8 active)
@@ -181,11 +182,11 @@ namespace ntt::ecs
             return;
         }
 
-        auto component = entityInfo->components.Get(type);
+        auto component = entityInfo->components[type];
         component->active = active;
 
         auto availableSystems = s_systemsStore->GetAvailableIds();
-        for (auto i = 0; i < availableSystems.Length(); i++)
+        for (auto i = 0; i < availableSystems.size(); i++)
         {
             auto system = s_systemsStore->Get(availableSystems[i]);
             auto systemTypes = system->componentTypes;
@@ -204,7 +205,7 @@ namespace ntt::ecs
                     {
                         if (_IsEntityInSystem(availableSystems[i], id))
                         {
-                            system->entities.Add(id);
+                            system->entities.push_back(id);
                         }
                     }
                 }
@@ -212,7 +213,7 @@ namespace ntt::ecs
                 {
                     if (entityContained)
                     {
-                        for (auto j = 0; j < system->entities.Length(); j++)
+                        for (auto j = 0; j < system->entities.size(); j++)
                         {
                             if (system->entities[j] == id)
                             {
@@ -246,12 +247,12 @@ namespace ntt::ecs
 
         auto availabeSystems = s_systemsStore->GetAvailableIds();
 
-        for (auto i = 0; i < availabeSystems.Length(); i++)
+        for (auto i = 0; i < availabeSystems.size(); i++)
         {
             auto system = s_systemsStore->Get(availabeSystems[i]);
             auto entities = system->entities;
 
-            for (auto j = 0; j < entities.Length(); j++)
+            for (auto j = 0; j < entities.size(); j++)
             {
                 if (entities[j] == id)
                 {
@@ -260,9 +261,9 @@ namespace ntt::ecs
             }
         }
 
-        for (auto i = 0; i < keyComponents.Length(); i++)
+        for (auto i = 0; i < keyComponents.size(); i++)
         {
-            entityInfo->components.Get(keyComponents[i]).reset();
+            entityInfo->components[keyComponents[i]].reset();
         }
 
         s_entityStore->Release(id);
@@ -278,12 +279,12 @@ namespace ntt::ecs
         auto availableIds = s_entityStore->GetAvailableIds();
         auto availableSystems = s_systemsStore->GetAvailableIds();
 
-        for (auto i = 0; i < availableSystems.Length(); i++)
+        for (auto i = 0; i < availableSystems.size(); i++)
         {
             auto system = s_systemsStore->Get(availableSystems[i]);
             auto entities = system->entities;
 
-            for (auto j = 0; j < entities.Length(); j++)
+            for (auto j = 0; j < entities.size(); j++)
             {
                 if (!s_entityStore->Contains(entities[j]))
                 {
@@ -291,17 +292,14 @@ namespace ntt::ecs
                 }
 
                 auto restEntities = List<entity_id_t>();
-                entities.Reduce<List<entity_id_t>>(
-                    [&entities, &j](List<entity_id_t> &acc, const entity_id_t &element, ...)
-                    {
-                        if (element != entities[j])
-                        {
-                            acc.Add(element);
-                        }
 
-                        return acc;
-                    },
-                    restEntities);
+                for (auto item : entities)
+                {
+                    if (item != entities[j])
+                    {
+                        restEntities.push_back(item);
+                    }
+                }
 
                 try
                 {
@@ -324,7 +322,7 @@ namespace ntt::ecs
 
         auto availableIds = s_entityStore->GetAvailableIds();
 
-        for (auto i = 0; i < availableIds.Length(); i++)
+        for (auto i = 0; i < availableIds.size(); i++)
         {
             ECSDeleteEntity(availableIds[i]);
         }

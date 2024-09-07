@@ -174,7 +174,7 @@ namespace ntt::renderer
 
         if (drawContext.priority)
         {
-            s_priorityDrawList.Add(
+            s_priorityDrawList.push_back(
                 {texture_id,
                  frameWidth * frame.col,
                  frameHeight * frame.row,
@@ -188,7 +188,7 @@ namespace ntt::renderer
         }
         else
         {
-            s_drawList.Add(
+            s_drawList.push_back(
                 {texture_id,
                  frameWidth * frame.col,
                  frameHeight * frame.row,
@@ -205,38 +205,36 @@ namespace ntt::renderer
 
     void GraphicUpdate()
     {
-        for (auto i = 0; i < s_drawList.Length(); i++)
+        for (auto info : s_drawList)
         {
-            auto drawInfo = s_drawList[i];
-            DRAW_TEXTURE(s_textureStore->Get(drawInfo.texture_id)->texture,
-                         drawInfo.fromX,
-                         drawInfo.fromY,
-                         drawInfo.fromWidth,
-                         drawInfo.fromHeight,
-                         drawInfo.toX,
-                         drawInfo.toY,
-                         drawInfo.toWidth,
-                         drawInfo.toHeight,
-                         drawInfo.rotate);
+            DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
+                         info.fromX,
+                         info.fromY,
+                         info.fromWidth,
+                         info.fromHeight,
+                         info.toX,
+                         info.toY,
+                         info.toWidth,
+                         info.toHeight,
+                         info.rotate);
         }
 
-        for (auto i = 0; i < s_priorityDrawList.Length(); i++)
+        for (auto info : s_priorityDrawList)
         {
-            auto drawInfo = s_priorityDrawList[i];
-            DRAW_TEXTURE(s_textureStore->Get(drawInfo.texture_id)->texture,
-                         drawInfo.fromX,
-                         drawInfo.fromY,
-                         drawInfo.fromWidth,
-                         drawInfo.fromHeight,
-                         drawInfo.toX,
-                         drawInfo.toY,
-                         drawInfo.toWidth,
-                         drawInfo.toHeight,
-                         drawInfo.rotate);
+            DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
+                         info.fromX,
+                         info.fromY,
+                         info.fromWidth,
+                         info.fromHeight,
+                         info.toX,
+                         info.toY,
+                         info.toWidth,
+                         info.toHeight,
+                         info.rotate);
         }
 
-        s_drawList.Clear();
-        s_priorityDrawList.Clear();
+        s_drawList.clear();
+        s_priorityDrawList.clear();
     }
 
     void UnloadTexture(resource_id_t texture_id)
@@ -282,7 +280,7 @@ namespace ntt::renderer
 
         s_isInitialized = FALSE;
 
-        ASSERT_M(s_textureStore->GetAvailableIds().Length() == 0,
+        ASSERT_M(s_textureStore->GetAvailableIds().size() == 0,
                  "The texture store is not empty");
 
         s_textureStore.reset();

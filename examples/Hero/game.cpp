@@ -188,14 +188,14 @@ void Game::Update(f32 delta)
             ECSSetComponentActive(m_bird, typeid(Mass), TRUE);
             ECSSetComponentActive(m_bird, typeid(Sprite), TRUE);
 
-            for (auto i = 0; i < m_backgrounds.Length(); i++)
+            for (auto i = 0; i < m_backgrounds.size(); i++)
             {
                 ECSSetComponentActive(m_backgrounds[i], typeid(Mass), TRUE);
             }
 
             m_pipeTimer.Reset();
 
-            for (auto i = 0; i < m_pipes.Length(); i++)
+            for (auto i = 0; i < m_pipes.size(); i++)
             {
                 ECSDeleteEntity(m_pipes[i]);
             }
@@ -206,7 +206,7 @@ void Game::Update(f32 delta)
                 m_firstTime = FALSE;
             }
 
-            m_pipes.Clear();
+            m_pipes.clear();
             ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
             s_score = 0;
         }
@@ -262,8 +262,8 @@ void Game::RandomizePipe(position_t posX)
             ECS_CREATE_COMPONENT(Pipe),
         });
 
-    m_pipes.Add(upPipe);
-    m_pipes.Add(downPipe);
+    m_pipes.push_back(upPipe);
+    m_pipes.push_back(downPipe);
 }
 
 void Game::HandleScore(f32 delta, entity_id_t id, List<entity_id_t> others)
@@ -357,12 +357,12 @@ void Game::OnBirdCollide(List<entity_id_t> others)
     ECSSetComponentActive(m_bird, typeid(Mass), FALSE);
     ECSSetComponentActive(m_bird, typeid(Sprite), FALSE);
 
-    for (auto i = 0; i < m_pipes.Length(); i++)
+    for (auto i = 0; i < m_pipes.size(); i++)
     {
         ECSSetComponentActive(m_pipes[i], typeid(Mass), FALSE);
     }
 
-    for (auto i = 0; i < m_backgrounds.Length(); i++)
+    for (auto i = 0; i < m_backgrounds.size(); i++)
     {
         ECSSetComponentActive(m_backgrounds[i], typeid(Mass), FALSE);
     }

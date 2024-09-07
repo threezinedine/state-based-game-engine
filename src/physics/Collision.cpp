@@ -58,7 +58,7 @@ namespace ntt::physics
         auto halfWidth = geo->width / 2;
         auto halfHeight = geo->height / 2;
 
-        for (auto i = 0; i < others.Length(); i++)
+        for (auto i = 0; i < others.size(); i++)
         {
             auto other = others[i];
             auto otherGeo = ECS_GET_COMPONENT(other, Geometry);
@@ -71,11 +71,11 @@ namespace ntt::physics
 
             if (overlapX && overlapY)
             {
-                colliedEntities.Add(other);
+                colliedEntities.push_back(other);
             }
         }
 
-        if (colliedEntities.Length() == 0)
+        if (colliedEntities.size() == 0)
         {
             return;
         }
@@ -91,7 +91,7 @@ namespace ntt::physics
             return;
         }
 
-        s_collisionCallbacks.Clear();
+        s_collisionCallbacks.clear();
         s_initialized = FALSE;
     }
 } // namespace ntt::physics

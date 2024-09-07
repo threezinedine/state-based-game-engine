@@ -65,7 +65,7 @@ namespace ntt::memory
             return;
         }
 
-        s_pointersInfo.Insert(ptr, info);
+        s_pointersInfo[ptr] = info;
     }
 
     void UnregisterPointer(void *ptr)
@@ -82,7 +82,7 @@ namespace ntt::memory
             return;
         }
 
-        s_pointersInfo.Remove(ptr);
+        s_pointersInfo.erase(ptr);
     }
 
     MemoryChecker::MemoryChecker()

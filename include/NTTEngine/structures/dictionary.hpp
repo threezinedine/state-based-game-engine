@@ -14,44 +14,30 @@ namespace ntt
     using namespace exception;
 
     template <typename K, typename V>
-    class Dictionary
+    class Dictionary : public std::map<K, V>
     {
     public:
-        Dictionary() = default;
-        Dictionary(std::initializer_list<std::pair<const K, V>> list) : m_Dict(list) {}
+        Dictionary() : std::map<K, V>() {}
+        Dictionary(std::initializer_list<std::pair<const K, V>> list) : std::map<K, V>(list) {}
 
-        inline V &Get(K key)
-        {
-            if (!Contains(key))
-            {
-                throw KeyNotFound();
-            }
+        inline bool Contains(K key) { return this->find(key) != this->end(); }
 
-            return m_Dict[key];
-        }
-        inline V &operator[](K key) { return m_Dict[key]; }
-
-        inline void Insert(K key, V value) { m_Dict[key] = value; }
-        inline void Remove(K key) { m_Dict.erase(key); }
-
-        inline bool Contains(K key) { return m_Dict.find(key) != m_Dict.end(); }
-        inline u32 Count() { return m_Dict.size(); }
-        inline List<K> Keys()
+        List<K> Keys()
         {
             List<K> keys;
-            for (auto &pair : m_Dict)
+            for (auto &pair : (*this))
             {
-                keys.Add(pair.first);
+                keys.push_back(pair.first);
             }
             return keys;
         }
 
-        inline List<V> Values()
+        List<V> Values()
         {
             List<V> values;
-            for (auto &pair : m_Dict)
+            for (auto &pair : (*this))
             {
-                values.Add(pair.second);
+                values.push_back(pair.second);
             }
             return values;
         }
@@ -59,9 +45,9 @@ namespace ntt
         /**
          * The callback will be called with each key-value pair in the dictionary
          */
-        inline void ForEach(std::function<void(const K &, V &)> callback)
+        void ForEach(std::function<void(const K &, V &)> callback)
         {
-            for (auto &pair : m_Dict)
+            for (auto &pair : (*this))
             {
                 callback(pair.first, pair.second);
             }
@@ -72,23 +58,21 @@ namespace ntt
          *      update the passed value reference with the new value
          */
         template <typename U>
-        inline void Reduce(std::function<void(const K &, V &, U &)> callback, U &initialValue)
+        void Reduce(std::function<void(const K &, V &, U &)> callback, U &initialValue)
         {
-            for (auto &pair : m_Dict)
+            for (auto &pair : (*this))
             {
                 callback(pair.first, pair.second, initialValue);
             }
         }
 
-        inline void Clear() { m_Dict.clear(); }
-
         const char *ToString()
         {
             static std::string str = "{";
-            for (auto &pair : m_Dict)
+            for (auto &pair : (*this))
             {
                 str += "\n\t" + pair.first + ": " + pair.second;
-                if (pair != m_Dict.end() - 1)
+                if (pair != this->end() - 1)
                 {
                     str += ",";
                 }
@@ -96,8 +80,5 @@ namespace ntt
             str += "}";
             return str.c_str();
         }
-
-    private:
-        std::map<K, V> m_Dict;
     };
 } // namespace ntt

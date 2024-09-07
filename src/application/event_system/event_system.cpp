@@ -33,7 +33,7 @@ namespace ntt::event
     event_id_t RegisterEvent(EventCode event_code, EventCallback callback)
     {
         // TODO: Handle problem when the event code is reach the maximum
-        s_eventCallbacks[event_code].Add({s_currentId, callback});
+        s_eventCallbacks[event_code].push_back({s_currentId, callback});
         return s_currentId++;
     }
 

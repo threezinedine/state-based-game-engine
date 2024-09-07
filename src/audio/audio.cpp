@@ -97,7 +97,7 @@ namespace ntt::audio
         }
 
         s_playingAudios.RemoveItem(audio_id);
-        s_playingAudios.Add(audio_id);
+        s_playingAudios.push_back(audio_id);
         PLAY_SOUND(audioInfo->sound);
     }
 
@@ -131,7 +131,7 @@ namespace ntt::audio
 
         auto tempPlayingAudios = s_playingAudios.Copy();
 
-        for (auto i = 0; i < tempPlayingAudios.Length(); i++)
+        for (auto i = 0; i < tempPlayingAudios.size(); i++)
         {
             auto audioInfo = s_audioStore.Get(tempPlayingAudios[i]);
 
@@ -185,7 +185,7 @@ namespace ntt::audio
 
         auto availableIds = s_audioStore.GetAvailableIds();
 
-        for (auto i = 0; i < availableIds.Length(); i++)
+        for (auto i = 0; i < availableIds.size(); i++)
         {
             UnloadAudio(availableIds[i]);
         }

@@ -106,6 +106,6 @@ TEST_F(JSONTest, TestGetList)
     EXPECT_EQ(list2, List<f32>({1.0f, 2.0f, 3.0f}));
 
     auto scenes = json.GetList<JSON>("scenes");
-    EXPECT_EQ(scenes.Length(), 2);
+    EXPECT_EQ(scenes.size(), 2);
     EXPECT_EQ(scenes[0].Get<String>("name", "Unknown"), "Scene 1");
 }

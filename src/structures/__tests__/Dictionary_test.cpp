@@ -21,8 +21,8 @@ TEST_F(DictionaryTest, TestAssignment)
 {
     Dictionary<String, u32> dict;
 
-    dict.Insert("key1", 1);
-    EXPECT_EQ(dict.Get("key1"), 1);
+    dict["key1"] = 1;
+    EXPECT_EQ(dict["key1"], 1);
 
     dict["key2"] = 2;
     EXPECT_EQ(dict["key2"], 2);

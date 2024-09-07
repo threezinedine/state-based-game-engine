@@ -59,7 +59,7 @@ namespace ntt
         auto index = m_Str.find(str.RawString());
         while (index != std::string::npos)
         {
-            indexes.Add(index);
+            indexes.push_back(index);
             index = m_Str.find(str.RawString(), index + 1);
         }
 
@@ -116,12 +116,12 @@ namespace ntt
         u32 lastIndex = 0;
         while (index != std::string::npos)
         {
-            res.Add(m_Str.substr(lastIndex, index - lastIndex));
+            res.push_back(m_Str.substr(lastIndex, index - lastIndex));
             lastIndex = index + delimiter.Length();
             index = m_Str.find(delimiter.RawString(), lastIndex);
         }
 
-        res.Add(m_Str.substr(lastIndex, m_Str.length() - lastIndex));
+        res.push_back(m_Str.substr(lastIndex, m_Str.length() - lastIndex));
         return res;
     }
 
@@ -131,12 +131,12 @@ namespace ntt
         b8 isMatch = TRUE;
         auto segment = pattern.Split("@");
 
-        if (segment.Length() == 0)
+        if (segment.size() == 0)
         {
             return *this == pattern;
         }
 
-        for (u32 i = 0; i < segment.Length(); i++)
+        for (u32 i = 0; i < segment.size(); i++)
         {
             auto str = segment[i];
             if (str.Length() == 0)

@@ -182,7 +182,7 @@ namespace ntt
         List<String> keys;
         for (auto &item : m_Impl->data.items())
         {
-            keys.Add(item.key());
+            keys.push_back(item.key());
         }
         return keys;
     }
@@ -223,15 +223,15 @@ namespace ntt
             {
                 if constexpr (IsString<T>::value)
                 {
-                    result.Add(GetStringFrom(item));
+                    result.push_back(GetStringFrom(item));
                 }
                 else if constexpr (IsJSON<T>::value)
                 {
-                    result.Add(JSON(item.dump()));
+                    result.push_back(JSON(item.dump()));
                 }
                 else
                 {
-                    result.Add(item.get<T>());
+                    result.push_back(item.get<T>());
                 }
             }
 

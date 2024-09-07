@@ -49,7 +49,7 @@ namespace ntt::renderer
         if (sprite->timer.GetMilliseconds() > sprite->changePerMilis)
         {
             sprite->timer.Reset();
-            sprite->currentCell = (sprite->currentCell + 1) % sprite->cells.Length();
+            sprite->currentCell = (sprite->currentCell + 1) % sprite->cells.size();
         }
 
         if (colIndex != currentCell.first || rowIndex != currentCell.second)

@@ -6,6 +6,7 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/time.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
+#include <NTTEngine/structures/list.hpp>
 
 #include <NTTEngine/platforms/path.hpp>
 

@@ -59,19 +59,9 @@ TEST_F(ListTest, SubListTest)
 
     auto subList = lst.SubList(1, 3);
     EXPECT_LIST_EQ(subList, List({2, 3}));
-    EXPECT_THAT(subList.Get(0), testing::Eq(2));
-    EXPECT_THAT(subList.Get(1), testing::Eq(3));
     EXPECT_THAT(subList[0], testing::Eq(2));
-
-    EXPECT_THROW(subList.Get(2), IndexOutOfRange);
-    EXPECT_THROW(subList.Get(3), IndexOutOfRange);
-    EXPECT_THROW(subList[3], IndexOutOfRange);
-
-    EXPECT_THAT(subList.Get(-1), testing::Eq(3));
-    EXPECT_THAT(subList[-1], testing::Eq(3));
-    EXPECT_THAT(subList.Get(-2), testing::Eq(2));
-    EXPECT_THROW(subList.Get(-3), IndexOutOfRange);
-    EXPECT_THROW(subList.Get(-4), IndexOutOfRange);
+    EXPECT_THAT(subList[1], testing::Eq(3));
+    EXPECT_THAT(subList[0], testing::Eq(2));
 
     EXPECT_LIST_EQ(lst.SubList(2, 1), List<i32>({}));
     EXPECT_LIST_EQ(lst.SubList(1, 1), List<i32>({}));
@@ -90,8 +80,8 @@ TEST_F(ListTest, TestWithPremitiveData)
 {
     List<int> lst = {1, 2, 3, 4, 5};
 
-    lst.Add(6);
-    lst.Add(7);
+    lst.push_back(6);
+    lst.push_back(7);
     EXPECT_LIST_EQ(lst, List({1, 2, 3, 4, 5, 6, 7}));
 
     lst.Remove(2);
@@ -139,11 +129,11 @@ TEST_F(ListTest, WithOtherObject)
     TestObject obj2(2);
     TestObject obj3(3);
 
-    lst.Add(obj1);
-    lst.Add(obj2);
-    lst.Add(obj3);
+    lst.push_back(obj1);
+    lst.push_back(obj2);
+    lst.push_back(obj3);
 
-    EXPECT_TRUE(lst.Length() == 3);
+    EXPECT_TRUE(lst.size() == 3);
 
     auto compareCallback = [](const TestObject &a, const TestObject &b)
     { return a.Equals(b); };
@@ -160,9 +150,9 @@ TEST_F(ListTest, CheckRemoveItemWithComparableObject)
     ComparableObject obj2(2);
     ComparableObject obj3(3);
 
-    lst.Add(obj1);
-    lst.Add(obj2);
-    lst.Add(obj3);
+    lst.push_back(obj1);
+    lst.push_back(obj2);
+    lst.push_back(obj3);
 
     lst.RemoveItem(obj2);
     EXPECT_TRUE(lst.Equals({obj1, obj3}));
@@ -170,18 +160,7 @@ TEST_F(ListTest, CheckRemoveItemWithComparableObject)
 
 TEST_F(ListTest, TestReducing)
 {
-    List<u32> lst = {1, 2, 3, 4, 5};
-
     u32 sum = 0;
-    lst.Reduce<u32>([](u32 &sum, const u32 &element, ...)
-                    { sum += element; }, sum);
-    EXPECT_THAT(sum, testing::Eq(15));
-
-    u32 factorial = 1;
-    lst.Reduce<u32>([](u32 &fac, const u32 &element, ...)
-                    { fac *= element; }, factorial);
-    EXPECT_THAT(factorial, testing::Eq(120));
-
     List<u32> lst2 = {2, 4, 6, 8};
     EXPECT_TRUE(lst2.All([](const u32 &element, ...)
                          { return element % 2 == 0; }));

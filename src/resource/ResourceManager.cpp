@@ -58,7 +58,7 @@ namespace ntt
         void UnloadCurrentScene()
         {
             NTT_ENGINE_DEBUG("Unload all resources in the scene {}", s_currentScene);
-            s_resourcesDictionary.Clear();
+            s_resourcesDictionary.clear();
 
             if (!s_resources.Contains(s_currentScene) || s_currentScene == EMPTY_SCENE)
             {
@@ -134,13 +134,13 @@ namespace ntt
 
         auto keys = config.GetKeys();
 
-        for (auto i = 0; i < keys.Length(); i++)
+        for (auto i = 0; i < keys.size(); i++)
         {
             auto sceneName = keys[i];
 
             List<JSON> resources = config.GetList<JSON>(sceneName);
 
-            for (auto j = 0; j < resources.Length(); j++)
+            for (auto j = 0; j < resources.size(); j++)
             {
                 auto resource = resources[j];
                 ResourceInfo resourceInfo;
@@ -233,10 +233,10 @@ namespace ntt
             resource->Unload();
         }
 
-        s_resources.Clear();
-        s_resourcesDictionary.Clear();
+        s_resources.clear();
+        s_resourcesDictionary.clear();
         s_defaultResourcesObjects.clear();
-        s_defaultResourcesDict.Clear();
+        s_defaultResourcesDict.clear();
         s_initialized = FALSE;
     }
 } // namespace ntt

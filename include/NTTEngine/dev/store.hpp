@@ -43,9 +43,9 @@ namespace ntt::dev::store
 
         ~Store()
         {
-            m_store.Clear();
-            m_uniqueFieldToId.Clear();
-            m_freedIds.Clear();
+            m_store.clear();
+            m_uniqueFieldToId.clear();
+            m_freedIds.clear();
             // NTT_ENGINE_DEBUG("The store is deleted");
         }
 
@@ -56,7 +56,7 @@ namespace ntt::dev::store
          */
         id_t Add(Ref<data_t> data)
         {
-            if (m_store.Length() >= m_max)
+            if (m_store.size() >= m_max)
             {
                 NTT_ENGINE_WARN("The store is full, cannot add more elements");
                 return m_defaultId;
@@ -66,22 +66,22 @@ namespace ntt::dev::store
 
             if (m_uniqueFieldToId.Contains(uniqueField))
             {
-                return m_uniqueFieldToId.Get(uniqueField);
+                return m_uniqueFieldToId[uniqueField];
             }
 
-            m_uniqueFieldToId.Insert(uniqueField, m_currentId);
+            m_uniqueFieldToId[uniqueField] = m_currentId;
 
-            if (m_freedIds.Length() > 0)
+            if (m_freedIds.size() > 0)
             {
                 auto id = m_freedIds[0];
-                m_store.Set(id, data);
+                m_store[id] = data;
                 m_freedIds.Remove(0);
 
                 return id;
             }
             else
             {
-                m_store.Add(data);
+                m_store.push_back(data);
                 return m_currentId++;
             }
         }
@@ -147,13 +147,13 @@ namespace ntt::dev::store
 
             if (data != nullptr)
             {
-                m_uniqueFieldToId.Remove(m_getUniqueFieldFunc(data));
-                m_store.Set(id, nullptr);
+                m_uniqueFieldToId.erase(m_getUniqueFieldFunc(data));
+                m_store[id] = nullptr;
                 // data.reset();
 
                 // ASSERT_M(data == nullptr, "The object is not deleted properly");
 
-                for (auto i = 0; i < m_freedIds.Length(); i++)
+                for (auto i = 0; i < m_freedIds.size(); i++)
                 {
                     if (m_freedIds[i] > id)
                     {
@@ -162,7 +162,7 @@ namespace ntt::dev::store
                     }
                 }
 
-                m_freedIds.Add(id);
+                m_freedIds.push_back(id);
             }
         }
 
@@ -176,7 +176,7 @@ namespace ntt::dev::store
             {
                 if (m_store[i] != nullptr)
                 {
-                    availableIds.Add(i);
+                    availableIds.push_back(i);
                 }
             }
             return availableIds;
