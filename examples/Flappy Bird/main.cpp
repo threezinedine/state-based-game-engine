@@ -12,7 +12,7 @@ using namespace ntt::physics;
 
 AdditionalData CreateAdditionalData()
 {
-    return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Hero/assets"};
+    return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird/assets"};
 }
 
 WindowInfo CreateWindowInfoFunction()

@@ -89,8 +89,6 @@ Game::Game()
             ECS_CREATE_COMPONENT(Collision),
         });
 
-    NTT_APP_DEBUG("Background id: {} - Base id: {}", GetResourceID("background"), GetResourceID("base"));
-
     s_gameOver = ECSCreateEntity(
         "Game Over",
         {
@@ -145,9 +143,6 @@ Game::Game()
             ECS_CREATE_COMPONENT(Score, hundered, ten, one),
         });
 
-    ECSSetComponentActive(m_bird, typeid(Mass), FALSE);
-    ECSSetComponentActive(m_bird, typeid(Sprite), FALSE);
-
     auto mass = ECS_GET_COMPONENT(m_bird, Mass);
     mass->AddForceConst(0, 0.001);
 
@@ -161,6 +156,8 @@ void Game::Update(f32 delta)
     if (m_firstTime)
     {
         ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
+        ECSSetComponentActive(m_bird, typeid(Mass), FALSE);
+        ECSSetComponentActive(m_bird, typeid(Sprite), FALSE);
     }
 
     auto birdGeo = ECS_GET_COMPONENT(m_bird, Geometry);

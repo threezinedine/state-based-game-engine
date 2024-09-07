@@ -1,5 +1,5 @@
 project(
-    Hero
+    FlappyBird
 )
 
 file(
@@ -9,11 +9,11 @@ file(
 )
 
 add_executable(
-    Hero
+    ${PROJECT_NAME}
     ${SOURCES}
 )
 
 target_link_libraries(
-    Hero
+    ${PROJECT_NAME}
     NTTEngine
 )
