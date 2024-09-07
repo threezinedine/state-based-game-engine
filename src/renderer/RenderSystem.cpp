@@ -10,15 +10,15 @@ namespace ntt::renderer
 {
     void RenderFunc(f32 delta, entity_id_t id)
     {
-        auto geometry = ECS_GET_COMPONENT(id, Geometry);
+        auto geo = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, Texture);
 
         auto windowSize = GetWindowSize();
 
         RectContext context;
-        context.position = {geometry->x, geometry->y};
-        context.size = {geometry->width, geometry->height};
-        context.rotate = geometry->rotatation;
+        context.position = {geo->x, geo->y};
+        context.size = {geo->width, geo->height};
+        context.rotate = geo->rotatation;
 
         Grid cell;
         cell.row = texture->rowIndex;
@@ -26,14 +26,14 @@ namespace ntt::renderer
 
         // check if the texture is in the window or not
         // if not, then don't draw it
-        if (geometry->x < 0 || geometry->x > windowSize.width || geometry->y < 0 || geometry->y > windowSize.height)
+        if (geo->x + geo->width / 2 < 0 || geo->x - geo->width / 2 > windowSize.width || geo->y + geo->height / 2 < 0 || geo->y - geo->height / 2 > windowSize.height)
         {
             return;
         }
 
         auto size = DrawTexture(texture->id, context, cell, DrawContext(texture->priority));
-        geometry->width = size.width;
-        geometry->height = size.height;
+        geo->width = size.width;
+        geo->height = size.height;
     }
 
     void SpriteRenderFunc(f32 delta, entity_id_t id)

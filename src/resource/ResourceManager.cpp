@@ -112,6 +112,12 @@ namespace ntt
 
         if (sceneName == "default")
         {
+            if (s_defaultResourcesDict.Contains(info.name))
+            {
+                NTT_ENGINE_WARN("The default resource {} is already loaded.", info.name);
+                return;
+            }
+
             s_defaultResourcesDict[info.name] = resource->Load();
             s_defaultResourcesObjects.push_back(std::move(resource));
         }

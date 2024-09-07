@@ -89,6 +89,8 @@ Game::Game()
             ECS_CREATE_COMPONENT(Collision),
         });
 
+    NTT_APP_DEBUG("Background id: {} - Base id: {}", GetResourceID("background"), GetResourceID("base"));
+
     s_gameOver = ECSCreateEntity(
         "Game Over",
         {

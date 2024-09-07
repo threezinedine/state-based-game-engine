@@ -27,6 +27,28 @@ namespace ntt::audio
 
         AudioInfo(SOUND sound, const String &path) : sound(sound), path(path) {}
     };
+
+    struct PlayingAudioInfo
+    {
+        resource_id_t id;
+        AudioContext context;
+        u32 playedTimes = 0;
+
+        PlayingAudioInfo(resource_id_t id)
+            : id(id), context(AudioContext()), playedTimes(0) {}
+
+        PlayingAudioInfo(resource_id_t id, const AudioContext &context)
+            : id(id), context(context), playedTimes(0) {}
+
+        PlayingAudioInfo(const PlayingAudioInfo &audio)
+            : id(audio.id), context(audio.context), playedTimes(audio.playedTimes) {}
+
+        b8 operator==(const PlayingAudioInfo &audio) const
+        {
+            return id == audio.id;
+        }
+    };
+
     namespace
     {
         b8 s_isInitialized = FALSE;
@@ -35,7 +57,7 @@ namespace ntt::audio
                                                              MAX_AUDIO, [](Ref<AudioInfo> audio)
                                                              { return audio->path; });
 
-        List<resource_id_t> s_playingAudios;
+        List<PlayingAudioInfo> s_playingAudios;
     } // namespace
 
     void AudioInit()
@@ -52,6 +74,27 @@ namespace ntt::audio
         // LoadAudio(RelativePath("assets/audios/default.wav"));
 
         s_isInitialized = TRUE;
+    }
+
+    void SetVolume(resource_id_t audio_id, f32 volume)
+    {
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
+        volume = volume < 0 ? 0 : volume;
+        volume = volume > 1 ? 1 : volume;
+
+        auto audioInfo = s_audioStore.Get(audio_id);
+
+        if (audioInfo == nullptr)
+        {
+            NTT_ENGINE_WARN("The audio id {} is not existed or unloaded", audio_id);
+            return;
+        }
+
+        SET_VOLUME(audioInfo->sound, volume);
     }
 
     resource_id_t LoadAudio(const String &path)
@@ -81,7 +124,7 @@ namespace ntt::audio
         }
     }
 
-    void PlayAudio(resource_id_t audio_id)
+    void PlayAudio(resource_id_t audio_id, const AudioContext &context)
     {
         if (!s_isInitialized)
         {
@@ -96,8 +139,8 @@ namespace ntt::audio
             return;
         }
 
-        s_playingAudios.RemoveItem(audio_id);
-        s_playingAudios.push_back(audio_id);
+        s_playingAudios.RemoveItem({audio_id, context});
+        s_playingAudios.push_back({audio_id, context});
         PLAY_SOUND(audioInfo->sound);
     }
 
@@ -120,6 +163,8 @@ namespace ntt::audio
         {
             STOP_SOUND(audioInfo->sound);
         }
+
+        s_playingAudios.RemoveItem({audio_id});
     }
 
     void AudioUpdate(f32 delta)
@@ -129,29 +174,41 @@ namespace ntt::audio
             return;
         }
 
-        auto tempPlayingAudios = s_playingAudios.Copy();
-
-        for (auto audio : tempPlayingAudios)
+        for (auto &playingAudioInfo : s_playingAudios)
         {
-            auto audioInfo = s_audioStore.Get(audio);
+            auto id = playingAudioInfo.id;
+            auto audioInfo = s_audioStore.Get(id);
 
             if (audioInfo == nullptr)
             {
-                NTT_ENGINE_WARN("The audio {} was unloaded", audio);
-                s_playingAudios.RemoveItem(audio);
+                NTT_ENGINE_WARN("The audio {} was unloaded", id);
+                s_playingAudios.RemoveItem(playingAudioInfo);
                 continue;
             }
 
             if (!IS_SOUND_PLAYING(audioInfo->sound))
             {
-                EventContext context;
-                context.u32_data[0] = audio;
+                playingAudioInfo.playedTimes++;
 
-                if (s_playingAudios.Contains(audio))
+                if (playingAudioInfo.playedTimes < playingAudioInfo.context.desiredPlayedTimes ||
+                    playingAudioInfo.context.desiredPlayedTimes == 0)
                 {
-                    s_playingAudios.RemoveItem(audio);
+                    if (s_playingAudios.Contains(playingAudioInfo))
+                    {
+                        PLAY_SOUND(audioInfo->sound);
+                    }
                 }
-                TriggerEvent(EventCode::AUDIO_FINISHED, nullptr, context);
+                else
+                {
+                    EventContext context;
+                    context.u32_data[0] = id;
+
+                    if (s_playingAudios.Contains(playingAudioInfo))
+                    {
+                        s_playingAudios.RemoveItem(playingAudioInfo);
+                    }
+                    TriggerEvent(EventCode::AUDIO_FINISHED, nullptr, context);
+                }
             }
         }
     }

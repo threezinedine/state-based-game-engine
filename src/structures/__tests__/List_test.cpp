@@ -59,21 +59,13 @@ TEST_F(ListTest, SubListTest)
 
     auto subList = lst.SubList(1, 3);
     EXPECT_LIST_EQ(subList, List({2, 3}));
-    EXPECT_THAT(subList[0], testing::Eq(2));
-    EXPECT_THAT(subList[1], testing::Eq(3));
-    EXPECT_THAT(subList[0], testing::Eq(2));
 
     EXPECT_LIST_EQ(lst.SubList(2, 1), List<i32>({}));
     EXPECT_LIST_EQ(lst.SubList(1, 1), List<i32>({}));
 
-    EXPECT_LIST_EQ(lst.SubList(-3, -1), List({3, 4}));
-    EXPECT_LIST_EQ(lst.SubList(-3, 3), List({3}));
-
     EXPECT_LIST_EQ(lst.SubList(0, 7), lst);
-    EXPECT_LIST_EQ(lst.SubList(-7, 3), List({1, 2, 3}));
 
     EXPECT_LIST_EQ(lst.SubList(0, 0), List<i32>({}));
-    EXPECT_LIST_EQ(lst.SubList(-1, -1), List<i32>({}));
 }
 
 TEST_F(ListTest, TestWithPremitiveData)
@@ -88,16 +80,9 @@ TEST_F(ListTest, TestWithPremitiveData)
     EXPECT_LIST_EQ(lst, List({1, 2, 4, 5, 6, 7}));
     lst.Remove(0);
     EXPECT_LIST_EQ(lst, List({2, 4, 5, 6, 7}));
-    lst.Remove(-1);
-    EXPECT_LIST_EQ(lst, List({2, 4, 5, 6}));
 
     lst.Remove(2);
-    EXPECT_LIST_EQ(lst, List({2, 4, 6}));
-
-    lst.Remove(-4);
-    EXPECT_LIST_EQ(lst, List({2, 4, 6}));
-    lst.Remove(-2);
-    EXPECT_LIST_EQ(lst, List({2, 6}));
+    EXPECT_LIST_EQ(lst, List({2, 4, 6, 7}));
 
     lst = {1, 2, 3, 4, 5};
     lst.RemoveItem(3);

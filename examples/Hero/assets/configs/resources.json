@@ -46,7 +46,8 @@
 		{
 			"name": "wing",
 			"type": 1,
-			"relPath": "audios/wing.wav"
+			"relPath": "audios/wing.wav",
+			"volume": 0.4
 		},
 		{
 			"name": "die",
@@ -57,6 +58,14 @@
 			"name": "point",
 			"type": 1,
 			"relPath": "audios/point.wav"
+		},
+		{
+			"name": "background-audio",
+			"type": 1,
+			"relPath": "audios/sunflower-street.wav",
+			"runAtStart": true,
+			"forever": true,
+			"volume": 0.3
 		}
 	]
 }

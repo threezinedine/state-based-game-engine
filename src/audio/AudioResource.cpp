@@ -11,6 +11,9 @@ namespace ntt::audio
         JSON additionalInfo;
 
         b8 isLoaded = FALSE;
+        b8 forever = FALSE;
+        b8 runAtStart = FALSE;
+        f32 volume = 1.0f;
         resource_id_t audioId = RESOURCE_ID_DEFAULT;
     };
 
@@ -20,6 +23,10 @@ namespace ntt::audio
         m_Impl->path = info.path;
         m_Impl->name = info.name;
         m_Impl->additionalInfo = info.addintionalInfo;
+
+        m_Impl->forever = info.addintionalInfo.Get<b8>("forever", m_Impl->forever);
+        m_Impl->volume = info.addintionalInfo.Get<f32>("volume", m_Impl->volume);
+        m_Impl->runAtStart = info.addintionalInfo.Get<b8>("runAtStart", m_Impl->runAtStart);
     }
 
     AudioResource::~AudioResource()
@@ -40,6 +47,20 @@ namespace ntt::audio
         }
 
         m_Impl->audioId = LoadAudio(m_Impl->path);
+
+        SetVolume(m_Impl->audioId, m_Impl->volume);
+
+        if (m_Impl->runAtStart)
+        {
+            AudioContext context;
+
+            if (m_Impl->forever)
+            {
+                context.desiredPlayedTimes = 0;
+            }
+
+            PlayAudio(m_Impl->audioId, context);
+        }
 
         m_Impl->isLoaded = TRUE;
 

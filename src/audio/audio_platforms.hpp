@@ -7,6 +7,7 @@
 #define SOUND Sound
 #define LOAD_SOUND(sound, path) SOUND sound = LoadSound(path.RawString().c_str())
 #define IS_LOADED_SUCCESS(sound) sound.stream.buffer != nullptr
+#define SET_VOLUME(sound, volume) SetSoundVolume(sound, volume)
 #define PLAY_SOUND(sound) PlaySound(sound)
 #define IS_SOUND_PLAYING(sound) IsSoundPlaying(sound)
 #define PAUSE_SOUND(sound) PauseSound(sound)

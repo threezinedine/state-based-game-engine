@@ -37,13 +37,39 @@ namespace ntt::audio
     resource_id_t LoadAudio(const String &path);
 
     /**
+     * Configure the audio volume.
+     *
+     * @param audio_id The audio id to configure, if the audio id is not
+     *      existed or unloaded, the warning is logged and nothing is
+     *
+     * @param volume The volume to set, the volumn is in the range [0, 1]
+     *      if not then the maximum or minimum volume is set.
+     */
+    void SetVolume(resource_id_t audio_id, f32 volume);
+
+    /**
+     * Store needed information about the audio running
+     *      like the played times (if stopped, it's 0),
+     */
+    struct AudioContext
+    {
+        u32 desiredPlayedTimes = 1; ///< The desired played times of the audio if (0, then play forever)
+
+        AudioContext() = default;
+        AudioContext(u32 desiredPlayedTimes)
+            : desiredPlayedTimes(desiredPlayedTimes) {}
+    };
+
+    /**
      * Run the audio with the given audio id.
      *
      * @param audio_id The audio id to run, if the audio id is not
      *      existed or unloaded, the warning is logged and nothing
      *      is played.
+     *
+     * @param context The additional information to run the audio
      */
-    void PlayAudio(resource_id_t audio_id);
+    void PlayAudio(resource_id_t audio_id, const AudioContext &context = AudioContext());
 
     /**
      * Stop the audio and reset the progress to the beginning.
