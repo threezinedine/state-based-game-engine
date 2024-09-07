@@ -2,6 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <functional>
 #include <NTTEngine/structures/size.hpp>
+#include <NTTEngine/core/parser/json.hpp>
 
 namespace ntt
 {
@@ -18,27 +19,6 @@ namespace ntt
         std::function<void()> Close;
     };
 
-    struct AdditionalData
-    {
-        const char *assetsPath;
-
-        AdditionalData(const char *assetsPath = ".")
-            : assetsPath(assetsPath) {}
-    };
-
-    struct WindowInfo
-    {
-        u16 width;
-        u16 height;
-        const char *title;
-
-        WindowInfo(u16 width, u16 height, const char *title)
-            : width(width), height(height), title(title) {}
-
-        WindowInfo(const WindowInfo &other)
-            : width(other.width), height(other.height), title(other.title) {}
-    };
-
     /**
      * Making an window of application with certain width, height and title
      *
@@ -50,8 +30,23 @@ namespace ntt
     void ApplicationInit(u16 screenWidth,
                          u16 screenHeight,
                          const char *title,
-                         const Phrases &phrases,
-                         const AdditionalData &additionalData);
+                         const Phrases &phrases);
+
+    /**
+     * Storing the JSON configuration data for the
+     *      whole application should be called right
+     *      after setting the source dir in the main
+     *
+     * @param path: the path to the configuration file if the file is not found
+     *     or not json file then the default configuration will be loaded "{}"
+     */
+    void LoadConfiguration(const String &path);
+
+    /**
+     * Get the configuration data of the application
+     *      if not loaded then it will return an empty JSON object
+     */
+    JSON &GetConfiguration();
 
     /**
      * Main game loop

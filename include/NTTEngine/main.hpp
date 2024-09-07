@@ -13,18 +13,24 @@ using namespace ntt::event;
 using namespace ntt::renderer;
 using namespace ntt::memory;
 
-WindowInfo CreateWindowInfoFunction();
-
-AdditionalData CreateAdditionalData();
+String GetSourceDir();
 
 int main()
 {
+    LogInit();
+    NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
     ntt::Phrases phrases = {Begin, MainLoop, Close};
-    WindowInfo windowInfo = CreateWindowInfoFunction();
 
-    ApplicationInit(windowInfo.width, windowInfo.height, windowInfo.title,
-                    phrases,
-                    CreateAdditionalData());
+    ConfigureSourcePath(GetSourceDir());
+
+    LoadConfiguration(RelativePath("configs/config.json"));
+    auto config = GetConfiguration();
+
+    ApplicationInit(
+        config.Get<u16>("screenWidth", 800),
+        config.Get<u16>("screenHeight", 600),
+        config.Get<String>("title", "NTT Engine").RawString().c_str(),
+        phrases);
 
     b8 running = true;
 
@@ -35,6 +41,7 @@ int main()
 
     ApplicationShutdown();
 
+    LogShutdown();
     return 0;
 }
 #endif

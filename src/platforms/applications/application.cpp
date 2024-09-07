@@ -33,26 +33,23 @@ namespace ntt
         Phrases s_phrases;
         Timer s_timer;
         Size s_windowSize = {0, 0};
+
+        JSON s_config("{}");
     } // namespace
 
     void ApplicationInit(u16 screenWidth,
                          u16 screenHeight,
                          const char *title,
-                         const Phrases &phrases,
-                         const AdditionalData &additionalData)
+                         const Phrases &phrases)
     {
         s_phrases = phrases;
 
-        LogInit();
-        NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
         MemoryInit();
 
         CREATE_WINDOW(screenWidth, screenHeight, title);
 
         s_windowSize.width = static_cast<size_t>(screenWidth);
         s_windowSize.height = static_cast<size_t>(screenHeight);
-
-        ConfigureSourcePath(additionalData.assetsPath);
 
         RendererInit();
         AudioInit();
@@ -94,6 +91,25 @@ namespace ntt
         NTT_ENGINE_INFO("The application is started.");
 
         s_timer.Reset();
+    }
+
+    void LoadConfiguration(const String &path)
+    {
+        auto data = ReadFile(path);
+        try
+        {
+            s_config = JSON(data);
+        }
+        catch (...)
+        {
+            NTT_ENGINE_WARN("The configuration file is not found or not a JSON file.");
+            s_config = JSON("{}");
+        }
+    }
+
+    JSON &GetConfiguration()
+    {
+        return s_config;
     }
 
     void ApplicationUpdate(b8 &running)
@@ -138,6 +154,5 @@ namespace ntt
         NTT_ENGINE_INFO("The application is closed.");
 
         MemoryShutdown();
-        LogShutdown();
     }
 } // namespace ntt

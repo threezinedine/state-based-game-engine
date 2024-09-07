@@ -1,0 +1,12 @@
+{
+	"screenWidth": 500,
+	"screenHeight": 600,
+	"title": "Flappy Bird",
+	"speedup-after": 5,
+	"pipe-speed": 0.1,
+	"pipe-distance": 300,
+	"pipe-increase": 0.02,
+	"pipe-start-range": 0.25,
+	"pipe-end-range": 0.75,
+	"pipe-gap": 130
+}

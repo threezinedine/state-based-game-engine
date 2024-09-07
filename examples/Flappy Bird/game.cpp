@@ -11,9 +11,10 @@ using namespace ntt::audio;
 #define BIRD_ANGLE 35
 #define SAFETY_GAP (1 / 16)
 #define BACKGROUND_PIECE_WIDTH 300
-#define MOVE_SPEED (0.1)
 #define BIRD_POS_X 150
 #define SCORE_DIGIT_GAP 1
+
+#define SPEEDUP_AFTER_DEFAULT 10
 
 static u16 s_score = 0;
 
@@ -21,11 +22,15 @@ static entity_id_t s_gameOver;
 static entity_id_t s_messageEnt;
 static entity_id_t s_scoreEnt;
 
+static JSON s_config = GetConfiguration();
+
 struct Pipe : public ComponentBase
 {
     b8 pass = FALSE;
+    b8 hasAfter = FALSE;
 
-    Pipe() = default;
+    Pipe()
+        : pass(FALSE), hasAfter(FALSE) {}
 };
 
 struct Score : public ComponentBase
@@ -38,9 +43,17 @@ struct Score : public ComponentBase
         : hunderedNumber(hundered), tenNumber(ten), oneNumber(one) {}
 };
 
+static f32 GetPipeSpeed()
+{
+    return s_config.Get<f32>("pipe-speed", 0.1) +
+           static_cast<u8>(s_score / s_config.Get<u8>("speedup-after", SPEEDUP_AFTER_DEFAULT)) *
+               s_config.Get<f32>("pipe-increase", 0.01);
+}
+
 Game::Game()
     : m_createdPipeCount(0), m_state(GameState::GAME_STATE_IDLE)
 {
+    s_config = GetConfiguration();
     ECSRegister(
         "PipeHandler",
         std::bind(&Game::PipeHandling, this, std::placeholders::_1, std::placeholders::_2),
@@ -158,6 +171,7 @@ void Game::Update(f32 delta)
         ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
         ECSSetComponentActive(m_bird, typeid(Mass), FALSE);
         ECSSetComponentActive(m_bird, typeid(Sprite), FALSE);
+        ECSSetComponentActive(m_bird, typeid(Geometry), FALSE);
     }
 
     auto birdGeo = ECS_GET_COMPONENT(m_bird, Geometry);
@@ -186,6 +200,7 @@ void Game::Update(f32 delta)
             mass->velocity_y = 0;
             ECSSetComponentActive(m_bird, typeid(Mass), TRUE);
             ECSSetComponentActive(m_bird, typeid(Sprite), TRUE);
+            ECSSetComponentActive(m_bird, typeid(Geometry), TRUE);
 
             for (auto background : m_backgrounds)
             {
@@ -208,21 +223,13 @@ void Game::Update(f32 delta)
             m_pipes.clear();
             ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
             s_score = 0;
+            auto windowSize = GetWindowSize();
+            RandomizePipe(windowSize.width + 100);
         }
         else
         {
             mass->velocity_y = -0.3;
             PlayAudio(GetResourceID("wing"));
-        }
-    }
-
-    if (m_start)
-    {
-        if (m_pipeTimer.GetMilliseconds() >= 3000)
-        {
-            auto windowSize = GetWindowSize();
-            RandomizePipe(windowSize.width + 10);
-            m_pipeTimer.Reset();
         }
     }
 }
@@ -233,20 +240,22 @@ void Game::RandomizePipe(position_t posX)
     auto pipeNameDown = String("Pipe %d down", m_createdPipeCount++);
     auto windowSize = GetWindowSize();
 
-    auto posY = Random(windowSize.height * 3 / 4, windowSize.height * 7 / 8);
-    auto halfHeight = windowSize.height - posY;
+    auto posYStart = windowSize.height * s_config.Get<f32>("pipe-start-range", 3.0f / 4);
+    auto posYEnd = windowSize.height * s_config.Get<f32>("pipe-end-range", 7.0f / 8);
+    auto posGapY = Random(posYStart, posYEnd);
+    auto gap = s_config.Get<f32>("pipe-gap", 100);
 
-    auto gap = 150;
+    auto highPipeY = (posGapY - gap / 2) / 2;
 
-    auto downHeight = posY - halfHeight - gap;
-    auto posDownY = posY - gap - halfHeight - downHeight / 2;
+    auto lowPipeHeight = windowSize.height - posGapY - gap / 2;
+    auto lowPipeY = windowSize.height - lowPipeHeight / 2;
 
     auto upPipe = ECSCreateEntity(
         pipeNameUp,
         {
-            ECS_CREATE_COMPONENT(Geometry, posX, posY, 100, halfHeight * 2),
+            ECS_CREATE_COMPONENT(Geometry, posX, highPipeY, 100, highPipeY * 2, 180),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
-            ECS_CREATE_COMPONENT(Mass, 1.0f, -MOVE_SPEED, 0, 0, 0),
+            ECS_CREATE_COMPONENT(Mass, 1.0f, -GetPipeSpeed(), 0, 0, 0),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(Pipe),
         });
@@ -254,9 +263,9 @@ void Game::RandomizePipe(position_t posX)
     auto downPipe = ECSCreateEntity(
         pipeNameDown,
         {
-            ECS_CREATE_COMPONENT(Geometry, posX, posDownY, 100, downHeight, 180),
+            ECS_CREATE_COMPONENT(Geometry, posX, lowPipeY, 100, lowPipeHeight),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
-            ECS_CREATE_COMPONENT(Mass, 1.0f, -.1, 0, 0, 0),
+            ECS_CREATE_COMPONENT(Mass, 1.0f, -GetPipeSpeed(), 0, 0, 0),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(Pipe),
         });
@@ -331,23 +340,43 @@ void Game::HandleScore(f32 delta, entity_id_t id)
 void Game::PipeHandling(f32 delta, entity_id_t id)
 {
     auto geo = ECS_GET_COMPONENT(id, Geometry);
-
     auto mass = ECS_GET_COMPONENT(id, Mass);
+    auto pipe = ECS_GET_COMPONENT(id, Pipe);
+
+    auto windowSize = GetWindowSize();
+
+    if (geo->x <= windowSize.width & !pipe->hasAfter)
+    {
+        if (geo->rotatation == 0)
+        {
+            pipe->hasAfter = TRUE;
+            RandomizePipe(windowSize.width + s_config.Get<f32>("pipe-distance", 300));
+        }
+    }
 
     if (geo->x + geo->width / 2 < BIRD_POS_X)
     {
-        auto pipe = ECS_GET_COMPONENT(id, Pipe);
         if (!pipe->pass && geo->rotatation == 0)
         {
             pipe->pass = TRUE;
             s_score++;
             PlayAudio(GetResourceID("point"));
+
+            if (s_score % s_config.Get<u8>("speedup-after", SPEEDUP_AFTER_DEFAULT) == 0)
+            {
+                for (auto pipeId : m_pipes)
+                {
+                    auto pipeMass = ECS_GET_COMPONENT(pipeId, Mass);
+                    pipeMass->velocity_x = -GetPipeSpeed();
+                }
+            }
         }
     }
 
     if (geo->x + geo->width < 0)
     {
         ECSDeleteEntity(id);
+        m_pipes.RemoveItem(id);
     }
 }
 

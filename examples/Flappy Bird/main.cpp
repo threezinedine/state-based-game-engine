@@ -10,14 +10,9 @@ using namespace ntt::audio;
 using namespace ntt::ecs;
 using namespace ntt::physics;
 
-AdditionalData CreateAdditionalData()
+String GetSourceDir()
 {
     return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird/assets"};
-}
-
-WindowInfo CreateWindowInfoFunction()
-{
-    return WindowInfo(static_cast<u16>(400), static_cast<u16>(600), "Flappy Bird");
 }
 
 Scope<Game> game;

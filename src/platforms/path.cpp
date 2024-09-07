@@ -40,7 +40,7 @@ namespace ntt
     {
         if (!IsExist(path))
         {
-            NTT_ENGINE_WARN("The file {} does not exist", path);
+            NTT_ENGINE_DEBUG("The file {} does not exist", path);
             return "";
         }
 
