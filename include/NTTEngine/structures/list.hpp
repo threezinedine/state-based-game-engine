@@ -27,6 +27,7 @@ namespace ntt
     public:
         List() : std::vector<T>() {}
         List(std::initializer_list<T> list) : std::vector<T>(list) {}
+        List(const List<T> &list) : std::vector<T>(list) {}
 
         /**
          * Add the item at the specific index
@@ -62,7 +63,7 @@ namespace ntt
         {
             if (index >= this->size() || index < 0)
             {
-                NTT_ENGINE_WARN("The index is out of range, nothing will be removed");
+                // NTT_ENGINE_WARN("The index is out of range, nothing will be removed");
                 return;
             }
 

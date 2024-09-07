@@ -18,6 +18,7 @@ namespace ntt::audio
     {
         m_Impl = CreateScope<Impl>();
         m_Impl->path = info.path;
+        m_Impl->name = info.name;
         m_Impl->additionalInfo = info.addintionalInfo;
     }
 

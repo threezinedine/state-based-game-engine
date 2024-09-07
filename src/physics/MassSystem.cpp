@@ -8,7 +8,7 @@ using namespace ntt::renderer;
 
 namespace ntt::physics
 {
-    void MassFunc(f32 delta, entity_id_t id, List<entity_id_t> others)
+    void MassFunc(f32 delta, entity_id_t id)
     {
         auto mass = ECS_GET_COMPONENT(id, Mass);
         auto geo = ECS_GET_COMPONENT(id, Geometry);

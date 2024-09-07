@@ -7,5 +7,5 @@ using namespace ntt::ecs;
 
 namespace ntt::physics
 {
-    void MassFunc(f32 delta, entity_id_t id, List<entity_id_t> others);
+    void MassFunc(f32 delta, entity_id_t id);
 } // namespace ntt

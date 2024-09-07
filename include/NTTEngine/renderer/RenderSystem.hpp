@@ -7,6 +7,6 @@ namespace ntt::renderer
 {
     using namespace ecs;
 
-    void RenderFunc(f32 delta, entity_id_t id, List<entity_id_t> others);
-    void SpriteRenderFunc(f32 delta, entity_id_t id, List<entity_id_t> others);
+    void RenderFunc(f32 delta, entity_id_t id);
+    void SpriteRenderFunc(f32 delta, entity_id_t id);
 } // namespace ntt::renderer

@@ -70,7 +70,7 @@ namespace ntt
         ECSInit();
 
         ECSRegister(
-            "Collision System",
+            COLLISION_NAME,
             CollisionFunc,
             {typeid(Geometry), typeid(Collision)});
 

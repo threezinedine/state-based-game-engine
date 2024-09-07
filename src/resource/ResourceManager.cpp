@@ -81,6 +81,11 @@ namespace ntt
             return;
         }
 
+        s_resources.clear();
+        s_resourcesDictionary.clear();
+        s_defaultResourcesDict.clear();
+        s_defaultResourcesObjects.clear();
+
         s_initialized = TRUE;
     }
 
@@ -134,15 +139,12 @@ namespace ntt
 
         auto keys = config.GetKeys();
 
-        for (auto i = 0; i < keys.size(); i++)
+        for (auto sceneName : keys)
         {
-            auto sceneName = keys[i];
-
             List<JSON> resources = config.GetList<JSON>(sceneName);
 
-            for (auto j = 0; j < resources.size(); j++)
+            for (auto resource : resources)
             {
-                auto resource = resources[j];
                 ResourceInfo resourceInfo;
 
                 if (!resource.Contains<String>("name"))
@@ -189,7 +191,7 @@ namespace ntt
 
         if (s_currentScene == sceneName)
         {
-            NTT_ENGINE_DEBUG("The scene is already loaded.");
+            NTT_ENGINE_WARN("The scene is already loaded.");
             return;
         }
 
@@ -228,9 +230,19 @@ namespace ntt
             return;
         }
 
+        for (auto &resources : s_resources)
+        {
+            for (auto &resource : resources.second)
+            {
+                resource->Unload();
+                NTT_ENGINE_DEBUG("Unloaded the resource {}", resource->GetName());
+            }
+        }
+
         for (auto &resource : s_defaultResourcesObjects)
         {
             resource->Unload();
+            NTT_ENGINE_DEBUG("Unloaded the default resource {}", resource->GetName());
         }
 
         s_resources.clear();

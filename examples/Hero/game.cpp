@@ -43,12 +43,12 @@ Game::Game()
 {
     ECSRegister(
         "PipeHandler",
-        std::bind(&Game::PipeHandling, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+        std::bind(&Game::PipeHandling, this, std::placeholders::_1, std::placeholders::_2),
         {typeid(Geometry), typeid(Pipe)});
 
     ECSRegister(
         "ScoreHandler",
-        std::bind(&Game::HandleScore, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
+        std::bind(&Game::HandleScore, this, std::placeholders::_1, std::placeholders::_2),
         {typeid(Geometry), typeid(Score)});
 
     auto windowSize = GetWindowSize();
@@ -188,16 +188,16 @@ void Game::Update(f32 delta)
             ECSSetComponentActive(m_bird, typeid(Mass), TRUE);
             ECSSetComponentActive(m_bird, typeid(Sprite), TRUE);
 
-            for (auto i = 0; i < m_backgrounds.size(); i++)
+            for (auto background : m_backgrounds)
             {
-                ECSSetComponentActive(m_backgrounds[i], typeid(Mass), TRUE);
+                ECSSetComponentActive(background, typeid(Mass), TRUE);
             }
 
             m_pipeTimer.Reset();
 
-            for (auto i = 0; i < m_pipes.size(); i++)
+            for (auto pipe : m_pipes)
             {
-                ECSDeleteEntity(m_pipes[i]);
+                ECSDeleteEntity(pipe);
             }
 
             if (m_firstTime)
@@ -266,7 +266,7 @@ void Game::RandomizePipe(position_t posX)
     m_pipes.push_back(downPipe);
 }
 
-void Game::HandleScore(f32 delta, entity_id_t id, List<entity_id_t> others)
+void Game::HandleScore(f32 delta, entity_id_t id)
 {
     auto geo = ECS_GET_COMPONENT(id, Geometry);
 
@@ -329,7 +329,7 @@ void Game::HandleScore(f32 delta, entity_id_t id, List<entity_id_t> others)
     }
 }
 
-void Game::PipeHandling(f32 delta, entity_id_t id, List<entity_id_t> others)
+void Game::PipeHandling(f32 delta, entity_id_t id)
 {
     auto geo = ECS_GET_COMPONENT(id, Geometry);
 
@@ -357,14 +357,14 @@ void Game::OnBirdCollide(List<entity_id_t> others)
     ECSSetComponentActive(m_bird, typeid(Mass), FALSE);
     ECSSetComponentActive(m_bird, typeid(Sprite), FALSE);
 
-    for (auto i = 0; i < m_pipes.size(); i++)
+    for (auto pipe : m_pipes)
     {
-        ECSSetComponentActive(m_pipes[i], typeid(Mass), FALSE);
+        ECSSetComponentActive(pipe, typeid(Mass), FALSE);
     }
 
-    for (auto i = 0; i < m_backgrounds.size(); i++)
+    for (auto background : m_backgrounds)
     {
-        ECSSetComponentActive(m_backgrounds[i], typeid(Mass), FALSE);
+        ECSSetComponentActive(background, typeid(Mass), FALSE);
     }
 
     ECSSetComponentActive(s_gameOver, typeid(Geometry), TRUE);

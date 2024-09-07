@@ -8,7 +8,7 @@
 
 namespace ntt::renderer
 {
-    void RenderFunc(f32 delta, entity_id_t id, List<entity_id_t> others)
+    void RenderFunc(f32 delta, entity_id_t id)
     {
         auto geometry = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, Texture);
@@ -36,7 +36,7 @@ namespace ntt::renderer
         geometry->height = size.height;
     }
 
-    void SpriteRenderFunc(f32 delta, entity_id_t id, List<entity_id_t> others)
+    void SpriteRenderFunc(f32 delta, entity_id_t id)
     {
         auto sprite = ECS_GET_COMPONENT(id, Sprite);
         auto texture = ECS_GET_COMPONENT(id, Texture);

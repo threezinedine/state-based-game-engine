@@ -23,8 +23,8 @@ public:
     void RandomizePipe(position_t posX);
 
 protected:
-    void HandleScore(f32 delta, entity_id_t id, List<entity_id_t> others);
-    void PipeHandling(f32 delta, entity_id_t id, List<entity_id_t> others);
+    void HandleScore(f32 delta, entity_id_t id);
+    void PipeHandling(f32 delta, entity_id_t id);
     void OnBirdCollide(List<entity_id_t> others);
 
 private:

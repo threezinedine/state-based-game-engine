@@ -41,7 +41,7 @@ namespace ntt::ecs
      * The system will be automatically called when the ECS system is updated. All
      *      the entities who have the needed components will be passed to the system.
      */
-    using SystemFunc = std::function<void(f32, entity_id_t, List<entity_id_t>)>;
+    using SystemFunc = std::function<void(f32, entity_id_t)>;
 
     /**
      * Start the ECS system. This function must be called before any other
@@ -56,6 +56,15 @@ namespace ntt::ecs
      * @param componentTypes The list of component types that the system needs
      */
     void ECSRegister(String name, SystemFunc systemFunc, List<std::type_index> componentTypes);
+
+    /**
+     * Get all list of entities which are attached to the system.
+     *
+     * @param name The name of the system which
+     *      is registered in the ECS system
+     *
+     */
+    List<entity_id_t> ECSGetEntitiesWithSystem(String name);
 
     /**
      * When a new entity is created with attached components, the entity will

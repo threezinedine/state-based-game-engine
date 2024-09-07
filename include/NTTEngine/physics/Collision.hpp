@@ -2,6 +2,8 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 
+#define COLLISION_NAME "Collision"
+
 namespace ntt::physics
 {
     using namespace ecs;
@@ -29,7 +31,7 @@ namespace ntt::physics
     /**
      * The system function which is used for regsitering with the ECS.
      */
-    void CollisionFunc(f32 delta, entity_id_t entity_id, List<entity_id_t> others);
+    void CollisionFunc(f32 delta, entity_id_t entity_id);
 
     /**
      * Delete the collision system.

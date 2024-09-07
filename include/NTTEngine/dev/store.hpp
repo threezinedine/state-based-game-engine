@@ -102,6 +102,23 @@ namespace ntt::dev::store
         }
 
         /**
+         * Retrieve the object with the unique field.
+         *
+         * If the object is not found, it will return nullptr.
+         *
+         * @param uniqueField The unique field to query the object.
+         */
+        Ref<data_t> GetByUnique(unique_field_t uniqueField)
+        {
+            if (!ContainsUnique(uniqueField))
+            {
+                return nullptr;
+            }
+
+            return Get(m_uniqueFieldToId[uniqueField]);
+        }
+
+        /**
          * Check if the object is currently available in the store.
          */
         u8 Contains(id_t id)

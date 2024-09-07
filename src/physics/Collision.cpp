@@ -40,7 +40,7 @@ namespace ntt::physics
         s_collisionCallbacks[entity_id] = callback;
     }
 
-    void CollisionFunc(f32 delta, entity_id_t entity_id, List<entity_id_t> others)
+    void CollisionFunc(f32 delta, entity_id_t entity_id)
     {
         if (!s_initialized)
         {
@@ -58,9 +58,22 @@ namespace ntt::physics
         auto halfWidth = geo->width / 2;
         auto halfHeight = geo->height / 2;
 
-        for (auto i = 0; i < others.size(); i++)
+        auto entities = ECSGetEntitiesWithSystem(COLLISION_NAME);
+
+        List<entity_id_t> others;
+
+        for (auto entity : entities)
         {
-            auto other = others[i];
+            if (entity == entity_id)
+            {
+                continue;
+            }
+
+            others.push_back(entity);
+        }
+
+        for (auto other : others)
+        {
             auto otherGeo = ECS_GET_COMPONENT(other, Geometry);
 
             auto halfOtherWidth = otherGeo->width / 2;

@@ -131,25 +131,25 @@ namespace ntt::audio
 
         auto tempPlayingAudios = s_playingAudios.Copy();
 
-        for (auto i = 0; i < tempPlayingAudios.size(); i++)
+        for (auto audio : tempPlayingAudios)
         {
-            auto audioInfo = s_audioStore.Get(tempPlayingAudios[i]);
+            auto audioInfo = s_audioStore.Get(audio);
 
             if (audioInfo == nullptr)
             {
-                NTT_ENGINE_WARN("The audio {} was unloaded", tempPlayingAudios[i]);
-                s_playingAudios.RemoveItem(tempPlayingAudios[i]);
+                NTT_ENGINE_WARN("The audio {} was unloaded", audio);
+                s_playingAudios.RemoveItem(audio);
                 continue;
             }
 
             if (!IS_SOUND_PLAYING(audioInfo->sound))
             {
                 EventContext context;
-                context.u32_data[0] = tempPlayingAudios[i];
+                context.u32_data[0] = audio;
 
-                if (s_playingAudios.Contains(tempPlayingAudios[i]))
+                if (s_playingAudios.Contains(audio))
                 {
-                    s_playingAudios.RemoveItem(tempPlayingAudios[i]);
+                    s_playingAudios.RemoveItem(audio);
                 }
                 TriggerEvent(EventCode::AUDIO_FINISHED, nullptr, context);
             }
@@ -185,9 +185,9 @@ namespace ntt::audio
 
         auto availableIds = s_audioStore.GetAvailableIds();
 
-        for (auto i = 0; i < availableIds.size(); i++)
+        for (auto audioId : availableIds)
         {
-            UnloadAudio(availableIds[i]);
+            UnloadAudio(audioId);
         }
 
         s_isInitialized = FALSE;

@@ -19,6 +19,7 @@ namespace ntt
     public:
         Dictionary() : std::map<K, V>() {}
         Dictionary(std::initializer_list<std::pair<const K, V>> list) : std::map<K, V>(list) {}
+        Dictionary(const Dictionary<K, V> &dict) : std::map<K, V>(dict) {}
 
         inline bool Contains(K key) { return this->find(key) != this->end(); }
 
