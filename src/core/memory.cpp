@@ -2,8 +2,10 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/defines.hpp>
-#include "memplumber.h"
 #include <fmt/core.h>
+
+#if defined(_DEBUG) && not defined(NTTENGINE_SHARED)
+#include "memplumber.h"
 
 namespace ntt::memory
 {
@@ -15,8 +17,6 @@ namespace ntt::memory
     };
 } // namespace ntt::memory
 
-#ifdef _DEBUG
-#include <NTTEngine/core/memory.hpp>
 static ntt::memory::MemoryChecker memoryChecker;
 #endif
 
@@ -85,6 +85,7 @@ namespace ntt::memory
         s_pointersInfo.erase(ptr);
     }
 
+#if defined(_DEBUG) && not defined(NTTENGINE_SHARED)
     MemoryChecker::MemoryChecker()
     {
         MemPlumber::start();
@@ -113,4 +114,5 @@ namespace ntt::memory
 
         s_pointersInfo.ForEach(forEach);
     }
+#endif
 } // namespace ntt::memory

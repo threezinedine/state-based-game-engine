@@ -9,6 +9,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(_DEBUG)
 endif()
 
+option(NTT_BUILD_SHARED "Build shared library" ON)
+
 # TODO: fix later
 # add_compile_definitions(_WIN32)
 # add_compile_definitions(_MSC_VER)
@@ -33,7 +35,7 @@ endforeach()
 
 add_library(
     ${PROJECT_NAME}
-    STATIC
+    SHARED
     ${SOURCES}
 )
 
@@ -43,14 +45,25 @@ target_include_directories(
     ./include
 )
 
-target_link_libraries(
+target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
-    raylib
-    nlohmann_json
-    memplumber 
-    fmt
+    vendors/fmt/include
+    # vendors/nlohmann_json/include
 )
+
+target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE
+    raylib
+    fmt::fmt
+    nlohmann_json
+)
+
+if (NTT_BUILD_SHARED)
+    add_compile_definitions(NTTENGINE_SHARED)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE memplumber)
+endif()
 
 add_executable(
     ${PROJECT_NAME}_Test

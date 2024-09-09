@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <nlohmann/json.hpp>
 #include <NTTEngine/core/parser/json.hpp>
 
 using namespace ntt;

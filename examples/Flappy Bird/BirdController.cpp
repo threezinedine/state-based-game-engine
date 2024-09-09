@@ -16,6 +16,7 @@ void BirdController::OnCreate()
     SetComponentState<Texture>(FALSE);
 
     GetComponent<Geometry>()->x = GetConfiguration().Get<position_t>("start-bird-x", 200);
+    GetComponent<Mass>()->AddForceConst(0, 0.001);
 }
 
 void BirdController::OnUpdate(f32 deltaTime)

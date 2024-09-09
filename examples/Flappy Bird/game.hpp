@@ -25,8 +25,6 @@ private:
     u32 m_createdPipeCount;
 
     entity_id_t m_bird;
-    List<entity_id_t> m_pipes;
-    List<entity_id_t> m_backgrounds;
 
     Timer m_pipeTimer;
     b8 m_start = FALSE;

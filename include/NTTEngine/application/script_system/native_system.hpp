@@ -17,6 +17,7 @@ namespace ntt::script
 
         inline void SetEntity(entity_id_t id) { entity_id = id; }
         inline b8 IsInitialized() const { return entity_id != INVALID_ENTITY_ID; }
+        inline entity_id_t GetEntity() const { return entity_id; }
 
     protected:
         template <typename T>
