@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "BirdController.hpp"
 
 using namespace ntt;
 using namespace ntt::ecs;
@@ -8,7 +9,6 @@ using namespace ntt::input;
 using namespace ntt::log;
 using namespace ntt::audio;
 
-#define BIRD_ANGLE 35
 #define SAFETY_GAP (1 / 16)
 #define BACKGROUND_PIECE_WIDTH 300
 #define BIRD_POS_X 150
@@ -51,17 +51,18 @@ static f32 GetPipeSpeed()
 }
 
 Game::Game()
-    : m_createdPipeCount(0), m_state(GameState::GAME_STATE_IDLE)
+    : m_createdPipeCount(0)
 {
     s_config = GetConfiguration();
+
     ECSRegister(
         "PipeHandler",
-        std::bind(&Game::PipeHandling, this, std::placeholders::_1, std::placeholders::_2),
+        {std::bind(&Game::PipeHandling, this, std::placeholders::_1, std::placeholders::_2)},
         {typeid(Geometry), typeid(Pipe)});
 
     ECSRegister(
         "ScoreHandler",
-        std::bind(&Game::HandleScore, this, std::placeholders::_1, std::placeholders::_2),
+        {std::bind(&Game::HandleScore, this, std::placeholders::_1, std::placeholders::_2)},
         {typeid(Geometry), typeid(Score)});
 
     auto windowSize = GetWindowSize();
@@ -119,6 +120,7 @@ Game::Game()
             ECS_CREATE_COMPONENT(Sprite,
                                  List<std::pair<u8, u8>>{{0, 0}, {1, 0}, {2, 0}},
                                  200),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<BirdController>()),
         });
 
     s_messageEnt = ECSCreateEntity(
@@ -169,25 +171,6 @@ void Game::Update(f32 delta)
     if (m_firstTime)
     {
         ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
-        ECSSetComponentActive(m_bird, typeid(Mass), FALSE);
-        ECSSetComponentActive(m_bird, typeid(Sprite), FALSE);
-        ECSSetComponentActive(m_bird, typeid(Geometry), FALSE);
-    }
-
-    auto birdGeo = ECS_GET_COMPONENT(m_bird, Geometry);
-    auto mass = ECS_GET_COMPONENT(m_bird, Mass);
-
-    if (mass->velocity_y > 0)
-    {
-        birdGeo->rotatation = BIRD_ANGLE;
-    }
-    else if (mass->velocity_y == 0)
-    {
-        birdGeo->rotatation = 0;
-    }
-    else
-    {
-        birdGeo->rotatation = -BIRD_ANGLE;
     }
 
     if (CheckState(Key::NTT_KEY_SPACE, InputState::NTT_PRESS))
@@ -195,13 +178,6 @@ void Game::Update(f32 delta)
         if (!m_start)
         {
             m_start = TRUE;
-            birdGeo->x = 200;
-            birdGeo->y = 200;
-            mass->velocity_y = 0;
-            ECSSetComponentActive(m_bird, typeid(Mass), TRUE);
-            ECSSetComponentActive(m_bird, typeid(Sprite), TRUE);
-            ECSSetComponentActive(m_bird, typeid(Geometry), TRUE);
-
             for (auto background : m_backgrounds)
             {
                 ECSSetComponentActive(background, typeid(Mass), TRUE);
@@ -220,16 +196,20 @@ void Game::Update(f32 delta)
                 m_firstTime = FALSE;
             }
 
+            auto birdMass = ECS_GET_COMPONENT(m_bird, Mass);
+            birdMass->velocity_y = -0.3;
+            auto birdGeo = ECS_GET_COMPONENT(m_bird, Geometry);
+            birdGeo->y = GetConfiguration().Get<position_t>("start-bird-y", 200);
+            ECSSetComponentActive(m_bird, typeid(NativeScriptComponent), TRUE);
+            ECSSetComponentActive(m_bird, typeid(Mass), TRUE);
+            ECSSetComponentActive(m_bird, typeid(Sprite), TRUE);
+            ECSSetComponentActive(m_bird, typeid(Geometry), TRUE);
+
             m_pipes.clear();
             ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
             s_score = 0;
             auto windowSize = GetWindowSize();
             RandomizePipe(windowSize.width + 100);
-        }
-        else
-        {
-            mass->velocity_y = -0.3;
-            PlayAudio(GetResourceID("wing"));
         }
     }
 }
@@ -388,11 +368,6 @@ void Game::OnBirdCollide(List<entity_id_t> others)
     for (auto pipe : m_pipes)
     {
         ECSSetComponentActive(pipe, typeid(Mass), FALSE);
-    }
-
-    for (auto background : m_backgrounds)
-    {
-        ECSSetComponentActive(background, typeid(Mass), FALSE);
     }
 
     ECSSetComponentActive(s_gameOver, typeid(Geometry), TRUE);

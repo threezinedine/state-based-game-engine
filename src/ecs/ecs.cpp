@@ -13,14 +13,14 @@ namespace ntt::ecs
     struct SystemInfo
     {
         String name;
-        SystemFunc systemFunc;
+        System system;
         List<std::type_index> componentTypes;
         List<entity_id_t> entities;
 
         SystemInfo(String name,
-                   SystemFunc systemFunc,
+                   System system,
                    List<std::type_index> componentTypes)
-            : name(name), systemFunc(systemFunc),
+            : name(name), system(system),
               componentTypes(componentTypes)
         {
         }
@@ -70,7 +70,7 @@ namespace ntt::ecs
         s_isInitialized = TRUE;
     }
 
-    void ECSRegister(String name, SystemFunc systemFunc,
+    void ECSRegister(String name, System system,
                      List<std::type_index> componentTypes)
     {
         if (!s_isInitialized)
@@ -81,7 +81,7 @@ namespace ntt::ecs
         s_systemsStore->Add(CREATE_REF(
             SystemInfo,
             name,
-            systemFunc,
+            system,
             componentTypes));
 
         for (auto i = 0; i < componentTypes.size(); i++)
@@ -292,7 +292,7 @@ namespace ntt::ecs
 
                 try
                 {
-                    system->systemFunc(delta, entityId);
+                    system->system.update(delta, entityId);
                 }
                 catch (const std::exception &e)
                 {

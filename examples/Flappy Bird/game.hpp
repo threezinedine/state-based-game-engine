@@ -1,17 +1,11 @@
 #pragma once
 
 #include <NTTEngine/NTTEngine.hpp>
+#include "game_data.hpp"
 
 using namespace ntt;
 using namespace ntt::ecs;
 using namespace ntt::renderer;
-
-enum GameState
-{
-    GAME_STATE_IDLE,
-    GAME_STATE_PLAYING,
-    GAME_STATE_OVER,
-};
 
 class Game
 {
@@ -33,7 +27,6 @@ private:
     entity_id_t m_bird;
     List<entity_id_t> m_pipes;
     List<entity_id_t> m_backgrounds;
-    GameState m_state;
 
     Timer m_pipeTimer;
     b8 m_start = FALSE;

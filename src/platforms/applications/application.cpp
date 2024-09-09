@@ -15,7 +15,7 @@
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 
 #include <NTTEngine/physics/physics_dev.hpp>
-
+#include <NTTEngine/application/script_system/native_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
 
 namespace ntt
@@ -27,6 +27,7 @@ namespace ntt
     using namespace input;
     using namespace ecs;
     using namespace physics;
+    using namespace script;
 
     namespace
     {
@@ -67,23 +68,28 @@ namespace ntt
         ECSInit();
 
         ECSRegister(
+            "Native Script System",
+            {ScriptUpdate},
+            {typeid(NativeScriptComponent)});
+
+        ECSRegister(
             COLLISION_NAME,
-            CollisionFunc,
+            {CollisionFunc},
             {typeid(Geometry), typeid(Collision)});
 
         ECSRegister(
             "Mass System",
-            MassFunc,
+            {MassFunc},
             {typeid(Mass), typeid(Geometry)});
 
         ECSRegister(
             "Sprite Render System",
-            SpriteRenderFunc,
+            {SpriteRenderFunc},
             {typeid(Sprite), typeid(Texture)});
 
         ECSRegister(
             "Render System",
-            RenderFunc,
+            {RenderFunc},
             {typeid(Geometry), typeid(Texture)});
 
         s_phrases.Begin();

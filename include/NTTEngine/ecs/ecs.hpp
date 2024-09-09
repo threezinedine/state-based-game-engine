@@ -24,6 +24,7 @@ namespace ntt::ecs
      */
     using entity_id_t = u32;
     // constexpr entity_id_t INVALID_ENTITY_ID =
+    constexpr entity_id_t INVALID_ENTITY_ID = -1;
 
     /**
      * Component Base contains only the data, no logic, so the struct is used
@@ -37,16 +38,28 @@ namespace ntt::ecs
     };
 
     /**
-     * The logic part of the system which need to be attached to this ECS system.
-     * The system will be automatically called when the ECS system is updated. All
-     *      the entities who have the needed components will be passed to the system.
-     */
-    using SystemFunc = std::function<void(f32, entity_id_t)>;
-
-    /**
      * Start the ECS system. This function must be called before any other
      */
     void ECSInit();
+
+    /**
+     * Store all lifetime functionalitiy of a system.
+     */
+    struct System
+    {
+        std::function<void()> init;
+        std::function<void(f32, entity_id_t)> update;
+        std::function<void()> shutdown;
+
+        System()
+            : init([]() {}), update([](f32, entity_id_t) {}), shutdown([]() {}) {}
+
+        System(std::function<void(f32, entity_id_t)> update)
+            : init([]() {}), update(update), shutdown([]() {}) {}
+
+        System(const System &other)
+            : init(other.init), update(other.update), shutdown(other.shutdown) {}
+    };
 
     /**
      * Add new system to the ECS, the order of adding the system is the order
@@ -55,7 +68,7 @@ namespace ntt::ecs
      * @param system The system to be added to the ECS
      * @param componentTypes The list of component types that the system needs
      */
-    void ECSRegister(String name, SystemFunc systemFunc, List<std::type_index> componentTypes);
+    void ECSRegister(String name, System system, List<std::type_index> componentTypes);
 
     /**
      * Get all list of entities which are attached to the system.
