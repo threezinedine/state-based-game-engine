@@ -7,20 +7,19 @@ using namespace ntt::memory;
 
 enum GameState
 {
-    GAME_STATE_IDLE,
-    GAME_STATE_PLAYING,
-    GAME_STATE_OVER,
+    START,
+    PLAYING,
+    GAME_OVER,
 };
 
-struct GameData : public ComponentBase
+#define START_STATE "Start"
+#define PLAYING_STATE "Playing"
+#define GAME_OVER_STATE "GameOver"
+
+struct GameData
 {
-    GameState state;
-
-    GameData()
-        : state(GameState::GAME_STATE_IDLE) {}
-
-    GameData(GameState state)
-        : state(state) {}
+    GameState state = START;
+    u16 score = 0;
 };
 
 void InitGameData();

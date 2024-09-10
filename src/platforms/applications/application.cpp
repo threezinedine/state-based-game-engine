@@ -16,6 +16,7 @@
 
 #include <NTTEngine/physics/physics_dev.hpp>
 #include <NTTEngine/application/script_system/native_system.hpp>
+#include <NTTEngine/application/state_system/state_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
 
 namespace ntt
@@ -71,6 +72,11 @@ namespace ntt
             "Native Script System",
             {ScriptUpdate},
             {typeid(NativeScriptComponent)});
+
+        ECSRegister(
+            "State System",
+            {StateUpdate},
+            {typeid(StateComponent)});
 
         ECSRegister(
             COLLISION_NAME,

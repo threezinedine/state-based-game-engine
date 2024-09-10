@@ -1,14 +1,8 @@
 #include "game.hpp"
 #include "BirdController.hpp"
 #include "PipeController.hpp"
-
-using namespace ntt;
-using namespace ntt::ecs;
-using namespace ntt::renderer;
-using namespace ntt::physics;
-using namespace ntt::input;
-using namespace ntt::log;
-using namespace ntt::audio;
+#include "game_state/game_state.hpp"
+#include "bird_state/bird_state.hpp"
 
 #define SAFETY_GAP (1 / 16)
 #define BACKGROUND_PIECE_WIDTH 300
@@ -19,8 +13,6 @@ using namespace ntt::audio;
 
 static u16 s_score = 0;
 
-static entity_id_t s_gameOver;
-static entity_id_t s_messageEnt;
 static entity_id_t s_scoreEnt;
 
 static JSON s_config = GetConfiguration();
@@ -46,7 +38,6 @@ Game::Game()
     : m_createdPipeCount(0)
 {
     s_config = GetConfiguration();
-
     ECSRegister(
         "ScoreHandler",
         {std::bind(&Game::HandleScore, this, std::placeholders::_1, std::placeholders::_2)},
@@ -90,32 +81,26 @@ Game::Game()
             ECS_CREATE_COMPONENT(Collision),
         });
 
-    s_gameOver = ECSCreateEntity(
-        "Game Over",
-        {
-            ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 300, 100),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("gameover")),
-        });
+    auto birdState = CreateRef<State>();
+    birdState->AddChild(BIRD_START, CreateRef<BirdStart>());
+
+    auto birdPlay = CreateRef<BirdPlay>();
+    birdPlay->AddChild(BIRD_JUMP, CreateRef<BirdJump>());
+    birdPlay->AddChild(BIRD_FALL, CreateRef<BirdFall>());
+    birdState->AddChild(BIRD_PLAY, birdPlay);
+    birdState->AddChild(BIRD_DEAD, CreateRef<BirdDead>());
 
     m_bird = ECSCreateEntity(
         "Bird",
-        {
-            ECS_CREATE_COMPONENT(Geometry, BIRD_POS_X, windowSize.height / 2, 70),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("bird")),
-            {typeid(Mass), CreateRef<Mass>(1.0f)},
-            ECS_CREATE_COMPONENT(Collision),
-            ECS_CREATE_COMPONENT(Sprite,
-                                 List<std::pair<u8, u8>>{{0, 0}, {1, 0}, {2, 0}},
-                                 200),
-            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<BirdController>()),
-        });
-
-    s_messageEnt = ECSCreateEntity(
-        "Message",
-        {
-            ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 200),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("message")),
-        });
+        {ECS_CREATE_COMPONENT(Geometry, BIRD_POS_X, windowSize.height / 2, 70),
+         ECS_CREATE_COMPONENT(Texture, GetResourceID("bird")),
+         {typeid(Mass), CreateRef<Mass>(1.0f)},
+         ECS_CREATE_COMPONENT(Collision),
+         ECS_CREATE_COMPONENT(Sprite,
+                              List<std::pair<u8, u8>>{{0, 0}, {1, 0}, {2, 0}},
+                              200),
+         // ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<BirdController>()),
+         ECS_CREATE_COMPONENT(StateComponent, birdState)});
 
     auto hundered = ECSCreateEntity(
         "Hundered",
@@ -145,6 +130,17 @@ Game::Game()
             ECS_CREATE_COMPONENT(Score, hundered, ten, one),
         });
 
+    auto gameState = CreateRef<State>();
+    gameState->AddChild(START_STATE, CreateRef<GameStart>());
+    gameState->AddChild(PLAYING_STATE, CreateRef<GamePlaying>());
+    gameState->AddChild(GAME_OVER_STATE, CreateRef<GameOver>());
+
+    ECSCreateEntity(
+        "Game-State",
+        {
+            ECS_CREATE_COMPONENT(StateComponent, gameState),
+        });
+
     CollisionRegister(
         m_bird,
         std::bind(&Game::OnBirdCollide, this, std::placeholders::_1));
@@ -152,36 +148,25 @@ Game::Game()
 
 void Game::Update(f32 delta)
 {
-    if (m_firstTime)
-    {
-        ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
-    }
-
     if (CheckState(Key::NTT_KEY_SPACE, InputState::NTT_PRESS))
     {
         if (!m_start)
         {
             m_start = TRUE;
-            m_pipeTimer.Reset();
 
             ResetPipe();
 
-            if (m_firstTime)
-            {
-                ECSDeleteEntity(s_messageEnt);
-                m_firstTime = FALSE;
-            }
+            // auto birdMass = ECS_GET_COMPONENT(m_bird, Mass);
+            // birdMass->velocity_y = -0.3;
+            // auto birdGeo = ECS_GET_COMPONENT(m_bird, Geometry);
+            // birdGeo->y = GetConfiguration().Get<position_t>("start-bird-y", 200);
+            // ECSSetComponentActive(m_bird, typeid(NativeScriptComponent), TRUE);
+            // ECSSetComponentActive(m_bird, typeid(Mass), TRUE);
+            // ECSSetComponentActive(m_bird, typeid(Sprite), TRUE);
+            // ECSSetComponentActive(m_bird, typeid(Geometry), TRUE);
 
-            auto birdMass = ECS_GET_COMPONENT(m_bird, Mass);
-            birdMass->velocity_y = -0.3;
-            auto birdGeo = ECS_GET_COMPONENT(m_bird, Geometry);
-            birdGeo->y = GetConfiguration().Get<position_t>("start-bird-y", 200);
-            ECSSetComponentActive(m_bird, typeid(NativeScriptComponent), TRUE);
-            ECSSetComponentActive(m_bird, typeid(Mass), TRUE);
-            ECSSetComponentActive(m_bird, typeid(Sprite), TRUE);
-            ECSSetComponentActive(m_bird, typeid(Geometry), TRUE);
+            GetGameData()->state = PLAYING;
 
-            ECSSetComponentActive(s_gameOver, typeid(Geometry), FALSE);
             s_score = 0;
             auto windowSize = GetWindowSize();
             CreatePipe(
@@ -260,13 +245,13 @@ void Game::OnBirdCollide(List<entity_id_t> others)
 
     StopPipe();
 
-    ECSSetComponentActive(s_gameOver, typeid(Geometry), TRUE);
     if (m_start)
     {
         PlayAudio(GetResourceID("die"));
     }
 
     m_start = FALSE;
+    GetGameData()->state = GAME_OVER;
 }
 
 Game::~Game()

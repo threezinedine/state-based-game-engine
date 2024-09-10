@@ -8,5 +8,6 @@
 	"pipe-increase": 0.02,
 	"pipe-start-range": 0.25,
 	"pipe-end-range": 0.75,
-	"pipe-gap": 130
+	"pipe-gap": 130,
+	"bird-gravity": 0.001
 }

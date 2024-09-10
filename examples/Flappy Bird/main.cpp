@@ -1,5 +1,6 @@
 #include <NTTEngine/main.hpp>
 #include "game.hpp"
+#include "game_data.hpp"
 
 using namespace ntt;
 using namespace ntt::log;
@@ -19,6 +20,8 @@ Scope<Game> game;
 
 void Begin()
 {
+    InitGameData();
+    GetGameData()->state = START;
     NTT_APP_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
 
     game = CreateScope<Game>();

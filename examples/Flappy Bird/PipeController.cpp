@@ -63,6 +63,7 @@ void PipeController::OnUpdate(f32 delta)
         {
             m_isPassed = TRUE;
             ++m_score;
+            audio::PlayAudio(GetResourceID("point"));
         }
 
         if (geo->x < GetWindowSize().width && m_hasAfter == FALSE)
