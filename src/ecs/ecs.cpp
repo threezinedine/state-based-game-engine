@@ -28,11 +28,10 @@ namespace ntt::ecs
 
     struct EntityInfo
     {
-        String name;
         Dictionary<std::type_index, Ref<ComponentBase>> components;
 
-        EntityInfo(String name, Dictionary<std::type_index, Ref<ComponentBase>> components)
-            : name(name), components(components)
+        EntityInfo(Dictionary<std::type_index, Ref<ComponentBase>> components)
+            : components(components)
         {
         }
     };
@@ -58,7 +57,7 @@ namespace ntt::ecs
             0,
             1000,
             [](Ref<EntityInfo> a, Ref<EntityInfo> b) -> b8
-            { return a->name == b->name; });
+            { return FALSE; });
 
         s_systemsStore = CreateScope<Store<system_id_t, SystemInfo>>(
             0,
@@ -109,7 +108,7 @@ namespace ntt::ecs
         return system[0]->entities;
     }
 
-    b8 _IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)
+    static b8 _IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)
     {
         auto system = s_systemsStore->Get(system_id);
         auto entities = system->entities;
@@ -131,15 +130,14 @@ namespace ntt::ecs
         return isValid;
     }
 
-    entity_id_t ECSCreateEntity(String name, Dictionary<std::type_index, Ref<ComponentBase>> components)
+    entity_id_t ECSCreateEntity(Dictionary<std::type_index, Ref<ComponentBase>> components)
     {
         if (!s_isInitialized)
         {
             return 0;
         }
 
-        auto entityId = s_entityStore->Add(CREATE_REF(EntityInfo, name, components));
-        NTT_ENGINE_TRACE("Creating entity: {}", entityId);
+        auto entityId = s_entityStore->Add(CREATE_REF(EntityInfo, components));
 
         components.ForEach([&entityId](const std::type_index &, const Ref<ComponentBase> &component)
                            { component->entity_id = entityId; });

@@ -18,7 +18,6 @@ private:
 
 namespace
 {
-    entity_id_t s_createdPipeCount = 0;
     List<entity_id_t> s_pipes;
     f32 s_pipeSpeed = 0.1;
 
@@ -82,8 +81,6 @@ void PipeController::OnUpdate(f32 delta)
 
 void CreatePipe(position_t posX)
 {
-    auto pipeNameUp = String("Pipe %d up", s_createdPipeCount);
-    auto pipeNameDown = String("Pipe %d down", s_createdPipeCount++);
     auto windowSize = GetWindowSize();
     auto config = GetConfiguration();
 
@@ -100,7 +97,6 @@ void CreatePipe(position_t posX)
     auto lowPipeY = windowSize.height - lowPipeHeight / 2;
 
     auto upPipe = ECSCreateEntity(
-        pipeNameUp,
         {
             ECS_CREATE_COMPONENT(Geometry, posX, highPipeY, 100, highPipeY * 2, 180),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
@@ -111,7 +107,6 @@ void CreatePipe(position_t posX)
         });
 
     auto downPipe = ECSCreateEntity(
-        pipeNameDown,
         {
             ECS_CREATE_COMPONENT(Geometry, posX, lowPipeY, 100, lowPipeHeight),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
@@ -133,7 +128,6 @@ void ResetPipe()
     }
 
     s_pipes.clear();
-    s_createdPipeCount = 0;
 }
 
 void StopPipe()

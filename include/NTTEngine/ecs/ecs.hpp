@@ -88,7 +88,7 @@ namespace ntt::ecs
      * @return The ID of the created entity, if there's an error, then return
      *      INVALID_ENTITY_ID
      */
-    entity_id_t ECSCreateEntity(String name, Dictionary<std::type_index, Ref<ComponentBase>> components);
+    entity_id_t ECSCreateEntity(Dictionary<std::type_index, Ref<ComponentBase>> components);
 
     /**
      * Query the component based on the entity ID and the type of the component.

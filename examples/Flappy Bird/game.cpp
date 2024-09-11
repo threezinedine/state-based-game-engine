@@ -35,7 +35,6 @@ Game::Game()
     auto windowSize = GetWindowSize();
 
     ECSCreateEntity(
-        "background",
         {
             ECS_CREATE_COMPONENT(Geometry,
                                  windowSize.width / 2,
@@ -46,7 +45,6 @@ Game::Game()
         });
 
     ECSCreateEntity(
-        "Base-up",
         {
             ECS_CREATE_COMPONENT(Geometry,
                                  windowSize.width / 2,
@@ -59,7 +57,6 @@ Game::Game()
         });
 
     ECSCreateEntity(
-        "Base-down",
         {
             ECS_CREATE_COMPONENT(Geometry,
                                  windowSize.width / 2,
@@ -80,7 +77,6 @@ Game::Game()
     birdState->AddChild(BIRD_DEAD, CreateRef<BirdDead>());
 
     auto bird = ECSCreateEntity(
-        "Bird",
         {ECS_CREATE_COMPONENT(Geometry, BIRD_POS_X, windowSize.height / 2, 70),
          ECS_CREATE_COMPONENT(Texture, GetResourceID("bird")),
          {typeid(Mass), CreateRef<Mass>(1.0f)},
@@ -92,28 +88,24 @@ Game::Game()
          ECS_CREATE_COMPONENT(StateComponent, birdState)});
 
     auto hundered = ECSCreateEntity(
-        "Hundered",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 - 50, 50, 20, 20),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
 
     auto ten = ECSCreateEntity(
-        "Ten",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, 50, 20, 20),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
 
     auto one = ECSCreateEntity(
-        "One",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 + 50, 50, 20, 20),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
 
     s_scoreEnt = ECSCreateEntity(
-        "Score",
         {
             ECS_CREATE_COMPONENT(Geometry, 20, 20),
             ECS_CREATE_COMPONENT(Score, hundered, ten, one),
@@ -125,7 +117,6 @@ Game::Game()
     gameState->AddChild(GAME_OVER_STATE, CreateRef<GameOver>());
 
     ECSCreateEntity(
-        "Game-State",
         {
             ECS_CREATE_COMPONENT(StateComponent, gameState),
         });

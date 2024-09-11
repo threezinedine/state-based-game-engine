@@ -11,7 +11,6 @@ void GameOver::OnEnterImpl()
     if (m_gameOverMessage == INVALID_ENTITY_ID)
     {
         m_gameOverMessage = ECSCreateEntity(
-            "Game Over",
             {
                 ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 300, 100),
                 ECS_CREATE_COMPONENT(Texture, GetResourceID("gameover")),
