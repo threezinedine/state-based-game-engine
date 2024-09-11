@@ -94,6 +94,7 @@
 		"queue": "cpp",
 		"source_location": "cpp",
 		"stack": "cpp",
-		"typeindex": "cpp"
+		"typeindex": "cpp",
+		"*.rh": "cpp"
 	}
 }

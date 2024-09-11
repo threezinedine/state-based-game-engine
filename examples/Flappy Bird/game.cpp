@@ -11,8 +11,6 @@
 
 #define SPEEDUP_AFTER_DEFAULT 10
 
-static u16 s_score = 0;
-
 static entity_id_t s_scoreEnt;
 
 static JSON s_config = GetConfiguration();
@@ -27,15 +25,7 @@ struct Score : public ComponentBase
         : hunderedNumber(hundered), tenNumber(ten), oneNumber(one) {}
 };
 
-static f32 GetPipeSpeed()
-{
-    return s_config.Get<f32>("pipe-speed", 0.1) +
-           static_cast<u8>(s_score / s_config.Get<u8>("speedup-after", SPEEDUP_AFTER_DEFAULT)) *
-               s_config.Get<f32>("pipe-increase", 0.01);
-}
-
 Game::Game()
-    : m_createdPipeCount(0)
 {
     s_config = GetConfiguration();
     ECSRegister(
@@ -90,7 +80,7 @@ Game::Game()
     birdState->AddChild(BIRD_PLAY, birdPlay);
     birdState->AddChild(BIRD_DEAD, CreateRef<BirdDead>());
 
-    m_bird = ECSCreateEntity(
+    auto bird = ECSCreateEntity(
         "Bird",
         {ECS_CREATE_COMPONENT(Geometry, BIRD_POS_X, windowSize.height / 2, 70),
          ECS_CREATE_COMPONENT(Texture, GetResourceID("bird")),
@@ -142,7 +132,7 @@ Game::Game()
         });
 
     CollisionRegister(
-        m_bird,
+        bird,
         std::bind(&Game::OnBirdCollide, this, std::placeholders::_1));
 }
 
@@ -156,21 +146,11 @@ void Game::Update(f32 delta)
 
             ResetPipe();
 
-            // auto birdMass = ECS_GET_COMPONENT(m_bird, Mass);
-            // birdMass->velocity_y = -0.3;
-            // auto birdGeo = ECS_GET_COMPONENT(m_bird, Geometry);
-            // birdGeo->y = GetConfiguration().Get<position_t>("start-bird-y", 200);
-            // ECSSetComponentActive(m_bird, typeid(NativeScriptComponent), TRUE);
-            // ECSSetComponentActive(m_bird, typeid(Mass), TRUE);
-            // ECSSetComponentActive(m_bird, typeid(Sprite), TRUE);
-            // ECSSetComponentActive(m_bird, typeid(Geometry), TRUE);
-
             GetGameData()->state = PLAYING;
 
-            s_score = 0;
             auto windowSize = GetWindowSize();
-            CreatePipe(
-                windowSize.width + 100, s_score);
+            GetGameData()->score = 0;
+            CreatePipe(windowSize.width + 100);
         }
     }
 }
@@ -195,7 +175,9 @@ void Game::HandleScore(f32 delta, entity_id_t id)
     tenGeo->y = geo->y;
     oneGeo->y = geo->y;
 
-    if (s_score < 100)
+    auto score = GetGameData()->score;
+
+    if (score < 100)
     {
         ECSSetComponentActive(
             ECS_GET_COMPONENT(id, Score)->hunderedNumber, typeid(Texture), FALSE);
@@ -209,18 +191,18 @@ void Game::HandleScore(f32 delta, entity_id_t id)
         tenGeo->x = geo->x + hundredGeo->width + SCORE_DIGIT_GAP;
         oneGeo->x = geo->x + hundredGeo->width + tenGeo->width + SCORE_DIGIT_GAP * 2;
 
-        hunderedText->colIndex = static_cast<u8>(s_score / 100);
-        tenText->colIndex = static_cast<u8>((s_score % 100) / 10);
-        oneText->colIndex = s_score % 10;
+        hunderedText->colIndex = static_cast<u8>(score / 100);
+        tenText->colIndex = static_cast<u8>((score % 100) / 10);
+        oneText->colIndex = score % 10;
     }
 
-    if (s_score < 10)
+    if (score < 10)
     {
         ECSSetComponentActive(
             ECS_GET_COMPONENT(id, Score)->tenNumber, typeid(Texture), FALSE);
 
         oneGeo->x = geo->x;
-        oneText->colIndex = s_score;
+        oneText->colIndex = score;
     }
     else
     {
@@ -228,21 +210,18 @@ void Game::HandleScore(f32 delta, entity_id_t id)
             ECS_GET_COMPONENT(id, Score)->tenNumber, typeid(Texture), TRUE);
     }
 
-    if (s_score < 100 && s_score >= 10)
+    if (score < 100 && score >= 10)
     {
         tenGeo->x = geo->x;
         oneGeo->x = geo->x + tenGeo->width + SCORE_DIGIT_GAP;
 
-        oneText->colIndex = s_score % 10;
-        tenText->colIndex = static_cast<u8>(s_score / 10);
+        oneText->colIndex = score % 10;
+        tenText->colIndex = static_cast<u8>(score / 10);
     }
 }
 
 void Game::OnBirdCollide(List<entity_id_t> others)
 {
-    ECSSetComponentActive(m_bird, typeid(Mass), FALSE);
-    ECSSetComponentActive(m_bird, typeid(Sprite), FALSE);
-
     StopPipe();
 
     if (m_start)
@@ -256,5 +235,4 @@ void Game::OnBirdCollide(List<entity_id_t> others)
 
 Game::~Game()
 {
-    ECSDeleteEntity(m_bird);
 }

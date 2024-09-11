@@ -17,7 +17,6 @@ void GameStart::OnEnterImpl()
 
 void GameStart::OnUpdateImpl(f32 delta)
 {
-    // NTT_APP_INFO("In game start state.");
 }
 
 void GameStart::OnExitImpl()
@@ -25,7 +24,7 @@ void GameStart::OnExitImpl()
     ECSDeleteEntity(m_messageEntity);
 }
 
-String GameStart::OnNavigateImpl() 
+String GameStart::OnNavigateImpl()
 {
     if (GetGameData()->state == GameState::PLAYING)
     {

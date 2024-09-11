@@ -23,9 +23,12 @@ namespace ntt
         String m_currentState;
     };
 
-    State::State()
+    State::State(Dictionary<String, Ref<State>> children, String defaultState)
         : m_impl(CreateScope<Impl>())
     {
+        THIS(m_children) = children;
+        THIS(m_defaultState) = defaultState;
+        THIS(m_currentState) = defaultState;
     }
 
     State::~State()

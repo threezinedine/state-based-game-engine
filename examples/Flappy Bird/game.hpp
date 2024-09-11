@@ -22,11 +22,5 @@ protected:
     void OnBirdCollide(List<entity_id_t> others);
 
 private:
-    u32 m_createdPipeCount;
-
-    entity_id_t m_bird;
-
-    Timer m_pipeTimer;
     b8 m_start = FALSE;
-    b8 m_firstTime = TRUE;
 };

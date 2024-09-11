@@ -53,8 +53,10 @@ namespace ntt::renderer
         b8 s_isInitialized = FALSE;
         Scope<Store<resource_id_t, TextureInfo, String>> s_textureStore;
 
-        List<DrawInfo> s_drawList;
-        List<DrawInfo> s_priorityDrawList;
+        // List<DrawInfo> s_drawList;
+        // List<DrawInfo> s_priorityDrawList;
+
+        Scope<List<DrawInfo>> s_drawLists[256];
     } // namespace
 
     void RendererInit()
@@ -69,6 +71,8 @@ namespace ntt::renderer
             TEXTURE_MAX,
             [](Ref<TextureInfo> texture)
             { return texture->path; });
+
+        memset(s_drawLists, 0, sizeof(s_drawLists));
 
         s_isInitialized = TRUE;
         // memset(s_loadedTextures, 0, sizeof(s_loadedTextures));
@@ -172,69 +176,109 @@ namespace ntt::renderer
             height = static_cast<f32>(frameHeight);
         }
 
-        if (drawContext.priority)
+        if (s_drawLists[drawContext.priority] == nullptr)
         {
-            s_priorityDrawList.push_back(
-                {texture_id,
-                 frameWidth * frame.col,
-                 frameHeight * frame.row,
-                 frameWidth,
-                 frameHeight,
-                 static_cast<f32>(context.position.x),
-                 static_cast<f32>(context.position.y),
-                 width,
-                 height,
-                 static_cast<f32>(context.rotate)});
+            s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
         }
-        else
-        {
-            s_drawList.push_back(
-                {texture_id,
-                 frameWidth * frame.col,
-                 frameHeight * frame.row,
-                 frameWidth,
-                 frameHeight,
-                 static_cast<f32>(context.position.x),
-                 static_cast<f32>(context.position.y),
-                 width,
-                 height,
-                 static_cast<f32>(context.rotate)});
-        }
+
+        s_drawLists[drawContext.priority]->push_back(
+            {texture_id,
+             frameWidth * frame.col,
+             frameHeight * frame.row,
+             frameWidth,
+             frameHeight,
+             static_cast<f32>(context.position.x),
+             static_cast<f32>(context.position.y),
+             width,
+             height,
+             static_cast<f32>(context.rotate)});
+
+        // if (drawContext.priority)
+        // {
+        //     s_priorityDrawList.push_back(
+        //         {texture_id,
+        //          frameWidth * frame.col,
+        //          frameHeight * frame.row,
+        //          frameWidth,
+        //          frameHeight,
+        //          static_cast<f32>(context.position.x),
+        //          static_cast<f32>(context.position.y),
+        //          width,
+        //          height,
+        //          static_cast<f32>(context.rotate)});
+        // }
+        // else
+        // {
+        //     s_drawList.push_back(
+        //         {texture_id,
+        //          frameWidth * frame.col,
+        //          frameHeight * frame.row,
+        //          frameWidth,
+        //          frameHeight,
+        //          static_cast<f32>(context.position.x),
+        //          static_cast<f32>(context.position.y),
+        //          width,
+        //          height,
+        //          static_cast<f32>(context.rotate)});
+        // }
         return {static_cast<size_t>(width), static_cast<size_t>(height)};
     }
 
     void GraphicUpdate()
     {
-        for (auto info : s_drawList)
+        for (auto &drawList : s_drawLists)
         {
-            DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
-                         info.fromX,
-                         info.fromY,
-                         info.fromWidth,
-                         info.fromHeight,
-                         info.toX,
-                         info.toY,
-                         info.toWidth,
-                         info.toHeight,
-                         info.rotate);
-        }
+            if (drawList == nullptr)
+            {
+                continue;
+            }
 
-        for (auto info : s_priorityDrawList)
-        {
-            DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
-                         info.fromX,
-                         info.fromY,
-                         info.fromWidth,
-                         info.fromHeight,
-                         info.toX,
-                         info.toY,
-                         info.toWidth,
-                         info.toHeight,
-                         info.rotate);
-        }
+            for (auto info : *drawList)
+            {
+                DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
+                             info.fromX,
+                             info.fromY,
+                             info.fromWidth,
+                             info.fromHeight,
+                             info.toX,
+                             info.toY,
+                             info.toWidth,
+                             info.toHeight,
+                             info.rotate);
+            }
 
-        s_drawList.clear();
-        s_priorityDrawList.clear();
+            drawList->clear();
+        }
+        // for (auto info : s_drawLists)
+        // {
+        //     DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
+        //                  info.fromX,
+        //                  info.fromY,
+        //                  info.fromWidth,
+        //                  info.fromHeight,
+        //                  info.toX,
+        //                  info.toY,
+        //                  info.toWidth,
+        //                  info.toHeight,
+        //                  info.rotate);
+        // }
+
+        // for (auto info : s_priorityDrawList)
+        // {
+        //     DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
+        //                  info.fromX,
+        //                  info.fromY,
+        //                  info.fromWidth,
+        //                  info.fromHeight,
+        //                  info.toX,
+        //                  info.toY,
+        //                  info.toWidth,
+        //                  info.toHeight,
+        //                  info.rotate);
+        // }
+
+        // s_drawList.clear();
+        // s_priorityDrawList.clear();
     }
 
     void UnloadTexture(resource_id_t texture_id)

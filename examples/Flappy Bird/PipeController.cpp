@@ -1,18 +1,16 @@
 #include "PipeController.hpp"
-using namespace ntt::renderer;
-using namespace ntt::physics;
+#include "game_data.hpp"
 
 #define SPEEDUP_AFTER_DEFAULT 10
 
 class PipeController : public Script
 {
 public:
-    PipeController(u16 &score);
+    PipeController();
 
     void OnUpdate(f32 delta) override;
 
 private:
-    u16 &m_score;
     position_t m_getScoreX;
     b8 m_hasAfter = FALSE;
     b8 m_isPassed = FALSE;
@@ -46,8 +44,7 @@ namespace
 
 #define variable (m_impl->variable)
 
-PipeController::PipeController(u16 &score)
-    : m_score(score)
+PipeController::PipeController()
 {
     m_getScoreX = GetConfiguration().Get<position_t>("bird-x", 200);
 }
@@ -62,7 +59,7 @@ void PipeController::OnUpdate(f32 delta)
         if (geo->x < m_getScoreX && m_isPassed == FALSE)
         {
             m_isPassed = TRUE;
-            ++m_score;
+            GetGameData()->score++;
             audio::PlayAudio(GetResourceID("point"));
         }
 
@@ -72,7 +69,7 @@ void PipeController::OnUpdate(f32 delta)
 
             auto pos = GetWindowSize().width + config.Get<position_t>("pipe-distance", 300);
 
-            CreatePipe(pos, m_score);
+            CreatePipe(pos);
         }
     }
 
@@ -83,9 +80,7 @@ void PipeController::OnUpdate(f32 delta)
     }
 }
 
-void CreatePipe(
-    position_t posX,
-    u16 &score)
+void CreatePipe(position_t posX)
 {
     auto pipeNameUp = String("Pipe %d up", s_createdPipeCount);
     auto pipeNameDown = String("Pipe %d down", s_createdPipeCount++);
@@ -112,7 +107,7 @@ void CreatePipe(
             ECS_CREATE_COMPONENT(Mass, 1.0f, -s_pipeSpeed, 0, 0, 0),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(NativeScriptComponent,
-                                 CreateRef<PipeController>(score)),
+                                 CreateRef<PipeController>()),
         });
 
     auto downPipe = ECSCreateEntity(
@@ -123,7 +118,7 @@ void CreatePipe(
             ECS_CREATE_COMPONENT(Mass, 1.0f, -s_pipeSpeed, 0, 0, 0),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(NativeScriptComponent,
-                                 CreateRef<PipeController>(score)),
+                                 CreateRef<PipeController>()),
         });
 
     s_pipes.push_back(upPipe);

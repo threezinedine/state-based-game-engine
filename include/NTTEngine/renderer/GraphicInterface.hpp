@@ -68,10 +68,11 @@ namespace ntt::renderer
     // Additional information for the drawing context
     struct DrawContext
     {
-        b8 priority; ///< If the object should be drawn in the priority list
+        u8 priority; ///< The priority of the object, the higher priority will be drawn
+                     ///< on the top of the lower priority objects
 
-        DrawContext() : priority(FALSE) {}
-        DrawContext(b8 priority) : priority(priority) {}
+        DrawContext() : priority(0) {}
+        DrawContext(u8 priority) : priority(priority) {}
     };
 
     /**
@@ -89,6 +90,7 @@ namespace ntt::renderer
      *      if the cell is not provided then the default grid will be used (0, 0).
      *      if the cell is out of the grid, then the warning will be printed and the
      *      maximum cell will be used.
+     * @param drawContext: (Optional) The additional information for the drawing context
      */
     Size DrawTexture(resource_id_t texture_id,
                      const RectContext &context = RectContext(),

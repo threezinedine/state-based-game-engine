@@ -18,7 +18,7 @@ namespace ntt
     class State
     {
     public:
-        State();
+        State(Dictionary<String, Ref<State>> children = {}, String defaultState = "");
         ~State();
 
         /**
@@ -83,6 +83,11 @@ namespace ntt
 
         StateComponent(Ref<State> fsm)
             : fsm(fsm)
+        {
+        }
+
+        StateComponent(Dictionary<String, Ref<State>> children, String defaultState)
+            : fsm(CreateRef<State>(children, defaultState))
         {
         }
     };
