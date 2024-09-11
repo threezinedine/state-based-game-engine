@@ -25,8 +25,9 @@ void GameStart::OnExitImpl()
 
 String GameStart::OnNavigateImpl()
 {
-    if (GetGameData()->state == GameState::PLAYING)
+    if (CheckState(NTT_KEY_ENTER, NTT_DOWN))
     {
+        GetGameData()->state = GameState::PLAYING;
         return PLAYING_STATE;
     }
 

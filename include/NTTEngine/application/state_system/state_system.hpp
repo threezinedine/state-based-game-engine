@@ -19,7 +19,7 @@ namespace ntt
     {
     public:
         State(Dictionary<String, Ref<State>> children = {}, String defaultState = "");
-        ~State();
+        virtual ~State();
 
         /**
          * This method will be called when the state is entered (the previous state is exited).

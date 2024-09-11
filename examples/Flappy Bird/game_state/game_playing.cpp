@@ -1,10 +1,6 @@
 #include "game_playing.hpp"
 #include "game_data.hpp"
-
-void GamePlaying::OnUpdateImpl(f32 delta)
-{
-    // NTT_APP_INFO("In game playing state.");
-}
+#include "PipeController.hpp"
 
 String GamePlaying::OnNavigateImpl()
 {
@@ -14,4 +10,13 @@ String GamePlaying::OnNavigateImpl()
     }
 
     return KEEP_STATE;
+}
+
+void GamePlaying::OnEnterImpl()
+{
+    ResetPipe();
+
+    auto windowSize = GetWindowSize();
+    GetGameData()->score = 0;
+    CreatePipe(windowSize.width + 100);
 }

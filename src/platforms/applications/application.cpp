@@ -69,6 +69,11 @@ namespace ntt
         ECSInit();
 
         ECSRegister(
+            "Render System",
+            {RenderFunc},
+            {typeid(Geometry), typeid(Texture)});
+
+        ECSRegister(
             "Native Script System",
             {ScriptUpdate},
             {typeid(NativeScriptComponent)});
@@ -92,11 +97,6 @@ namespace ntt
             "Sprite Render System",
             {SpriteRenderFunc},
             {typeid(Sprite), typeid(Texture)});
-
-        ECSRegister(
-            "Render System",
-            {RenderFunc},
-            {typeid(Geometry), typeid(Texture)});
 
         s_phrases.Begin();
 

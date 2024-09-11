@@ -1,5 +1,6 @@
 #include "game_over.hpp"
 #include "game_data.hpp"
+#include "PipeController.hpp"
 
 using namespace ntt::input;
 using namespace ntt::log;
@@ -7,6 +8,7 @@ using namespace ntt::log;
 void GameOver::OnEnterImpl()
 {
     auto windowSize = GetWindowSize();
+    StopPipe();
 
     if (m_gameOverMessage == INVALID_ENTITY_ID)
     {
@@ -31,8 +33,9 @@ void GameOver::OnExitImpl()
 
 String GameOver::OnNavigateImpl()
 {
-    if (GetGameData()->state == GameState::PLAYING)
+    if (CheckState(NTT_KEY_ENTER, NTT_DOWN))
     {
+        GetGameData()->state = GameState::PLAYING;
         return PLAYING_STATE;
     }
 

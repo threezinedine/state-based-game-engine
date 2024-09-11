@@ -19,15 +19,6 @@ public:
         SetComponentActive<Mass>(TRUE);
     }
 
-    void OnUpdateImpl(f32 delta) override
-    {
-        if (CheckState(Key::NTT_KEY_SPACE, InputState::NTT_PRESS))
-        {
-            GetComponent<Mass>()->velocity_y = -0.3f;
-            PlayAudio(GetResourceID("wing"));
-        }
-    }
-
     String OnNavigateImpl() override
     {
         if (GetGameData()->state == GameState::GAME_OVER)
