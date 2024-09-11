@@ -16,12 +16,12 @@
     if (IsKeyPressed(KEY_##key))                                   \
     {                                                              \
         s_keyStates[Key::NTT_KEY_##key] = InputState::NTT_PRESS;   \
-        TriggerEvent(EventCode::KEY_PRESSED, nullptr, ctx);        \
+        TriggerEvent(NTT_EVENT_KEY_PRESSED, nullptr, ctx);         \
     }                                                              \
     else if (IsKeyReleased(KEY_##key))                             \
     {                                                              \
         s_keyStates[Key::NTT_KEY_##key] = InputState::NTT_RELEASE; \
-        TriggerEvent(EventCode::KEY_RELEASED, nullptr, ctx);       \
+        TriggerEvent(NTT_EVENT_KEY_RELEASED, nullptr, ctx);        \
     }                                                              \
     else if (IsKeyUp(KEY_##key))                                   \
     {                                                              \
@@ -37,12 +37,12 @@
     if (IsMouseButtonPressed(MOUSE_BUTTON_##button))                               \
     {                                                                              \
         s_mouseStates[MouseButton::NTT_BUTTON_##button] = InputState::NTT_PRESS;   \
-        TriggerEvent(EventCode::MOUSE_PRESS, nullptr, ctx);                        \
+        TriggerEvent(NTT_EVENT_MOUSE_PRESS, nullptr, ctx);                         \
     }                                                                              \
     else if (IsMouseButtonReleased(MOUSE_BUTTON_##button))                         \
     {                                                                              \
         s_mouseStates[MouseButton::NTT_BUTTON_##button] = InputState::NTT_RELEASE; \
-        TriggerEvent(EventCode::MOUSE_RELEASE, nullptr, ctx);                      \
+        TriggerEvent(NTT_EVENT_MOUSE_RELEASE, nullptr, ctx);                       \
     }                                                                              \
     else if (IsMouseButtonUp(MOUSE_BUTTON_##button))                               \
     {                                                                              \

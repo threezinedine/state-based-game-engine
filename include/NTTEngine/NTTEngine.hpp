@@ -20,3 +20,4 @@ using namespace ntt::input;
 using namespace ntt::ecs;
 using namespace ntt::physics;
 using namespace ntt::script;
+using namespace ntt::event;

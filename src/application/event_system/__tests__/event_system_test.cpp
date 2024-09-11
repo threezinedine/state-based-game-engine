@@ -19,22 +19,22 @@ protected:
 TEST_F(EventSystemTest, NormalWorkflow)
 {
     u8 callTimes = 0;
-    EventCallback callback = [&callTimes](ntt::event::EventCode code,
+    EventCallback callback = [&callTimes](event_code_t code,
                                           void *data,
                                           const ntt::event::EventContext &context)
     {
         callTimes++;
     };
 
-    auto id = RegisterEvent(EventCode::TEST, callback);
+    auto id = RegisterEvent(NTT_EVENT_TEST, callback);
 
-    TriggerEvent(EventCode::TEST, nullptr, {});
+    TriggerEvent(NTT_EVENT_TEST, nullptr, {});
 
     EXPECT_EQ(callTimes, 1);
 
     UnregisterEvent(id);
 
-    TriggerEvent(EventCode::TEST, nullptr, {});
+    TriggerEvent(NTT_EVENT_TEST, nullptr, {});
 
     EXPECT_EQ(callTimes, 1);
 }

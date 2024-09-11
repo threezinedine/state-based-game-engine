@@ -6,4 +6,5 @@ class GamePlaying : public State
 protected:
     void OnEnterImpl() override;
     String OnNavigateImpl() override;
+    void OnScoreChanged();
 };

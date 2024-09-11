@@ -213,7 +213,7 @@ namespace ntt::audio
                     {
                         s_playingAudios.RemoveItem(playingAudioInfo);
                     }
-                    TriggerEvent(EventCode::AUDIO_FINISHED, nullptr, context);
+                    TriggerEvent(NTT_EVENT_AUDIO_FINISHED, nullptr, context);
                 }
             }
         }

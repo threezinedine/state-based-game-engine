@@ -1,54 +1,20 @@
 #include "PipeController.hpp"
-#include "game_data.hpp"
+#include "defs.hpp"
 
 #define SPEEDUP_AFTER_DEFAULT 10
 
-class PipeController : public Script
-{
-public:
-    PipeController();
-
-    void OnUpdate(f32 delta) override;
-
-private:
-    position_t m_getScoreX;
-    b8 m_hasAfter = FALSE;
-    b8 m_isPassed = FALSE;
-};
-
 namespace
 {
-    List<entity_id_t> s_pipes;
-    f32 s_pipeSpeed = 0.1;
-
-    f32 GetPipeSpeed(u16 score)
-    {
-        auto config = GetConfiguration();
-        return config.Get<f32>("pipe-speed", 0.1) +
-               static_cast<u8>(score / config.Get<u8>("speedup-after", SPEEDUP_AFTER_DEFAULT)) *
-                   config.Get<f32>("pipe-increase", 0.01);
-    }
-
-    void UpdatePipeSpeed(u16 score)
-    {
-        s_pipeSpeed = GetPipeSpeed(score);
-        for (auto pipe : s_pipes)
-        {
-            auto mass = ECS_GET_COMPONENT(pipe, Mass);
-            mass->velocity_x = -s_pipeSpeed;
-        }
-    }
-
 }
 
 #define variable (m_impl->variable)
 
 PipeController::PipeController()
 {
-    m_getScoreX = GetConfiguration().Get<position_t>("bird-x", 200);
+    m_getScoreX = GetConfiguration().Get<position_t>("bird-start-x", 200);
 }
 
-void PipeController::OnUpdate(f32 delta)
+void PipeController::OnUpdateImpl(f32 delta)
 {
     auto geo = GetComponent<Geometry>();
     auto config = GetConfiguration();
@@ -58,28 +24,53 @@ void PipeController::OnUpdate(f32 delta)
         if (geo->x < m_getScoreX && m_isPassed == FALSE)
         {
             m_isPassed = TRUE;
-            GetGameData()->score++;
+            TriggerEvent(ADD_SCORE);
             audio::PlayAudio(GetResourceID("point"));
         }
 
         if (geo->x < GetWindowSize().width && m_hasAfter == FALSE)
         {
             m_hasAfter = TRUE;
-
-            auto pos = GetWindowSize().width + config.Get<position_t>("pipe-distance", 300);
-
-            CreatePipe(pos);
+            auto context = EventContext();
+            context.f32_data[0] = GetComponent<Geometry>()->x + config.Get<position_t>("pipe-distance", 200);
+            TriggerEvent(NEW_PIPE_EVENT, this, context);
         }
     }
 
     if (geo->x + geo->width < 0)
     {
-        s_pipes.RemoveItem(GetEntity());
-        ECSDeleteEntity(GetEntity());
+        Delete();
     }
 }
 
-void CreatePipe(position_t posX)
+void PipeController::OnCreateImpl()
+{
+    Subscribe(
+        GAME_OVER_EVENT,
+        [&](...)
+        {
+            SetComponentState<Mass>(FALSE);
+        });
+
+    Subscribe(
+        PLAY_AGAIN_EVENT,
+        [&](...)
+        { Delete(); });
+
+    Subscribe(
+        SPEED_UP_EVENT,
+        [&](auto id, auto sender, EventContext context)
+        {
+            auto speed = context.f32_data[0];
+            GetComponent<Mass>()->velocity_x = -speed;
+        });
+}
+
+void PipeController::OnDestroyImpl()
+{
+}
+
+void CreatePipe(position_t posX, f32 speed)
 {
     auto windowSize = GetWindowSize();
     auto config = GetConfiguration();
@@ -100,7 +91,7 @@ void CreatePipe(position_t posX)
         {
             ECS_CREATE_COMPONENT(Geometry, posX, highPipeY, 100, highPipeY * 2, 180),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
-            ECS_CREATE_COMPONENT(Mass, 1.0f, -s_pipeSpeed, 0, 0, 0),
+            ECS_CREATE_COMPONENT(Mass, 1.0f, -speed, 0, 0, 0),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(NativeScriptComponent,
                                  CreateRef<PipeController>()),
@@ -110,31 +101,9 @@ void CreatePipe(position_t posX)
         {
             ECS_CREATE_COMPONENT(Geometry, posX, lowPipeY, 100, lowPipeHeight),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
-            ECS_CREATE_COMPONENT(Mass, 1.0f, -s_pipeSpeed, 0, 0, 0),
+            ECS_CREATE_COMPONENT(Mass, 1.0f, -speed, 0, 0, 0),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(NativeScriptComponent,
                                  CreateRef<PipeController>()),
         });
-
-    s_pipes.push_back(upPipe);
-    s_pipes.push_back(downPipe);
-}
-
-void ResetPipe()
-{
-    for (auto pipe : s_pipes)
-    {
-        ECSDeleteEntity(pipe);
-    }
-
-    s_pipes.clear();
-}
-
-void StopPipe()
-{
-    for (auto pipe : s_pipes)
-    {
-        ECSSetComponentActive(pipe, typeid(Mass), FALSE);
-        ECSSetComponentActive(pipe, typeid(Collision), FALSE);
-    }
 }

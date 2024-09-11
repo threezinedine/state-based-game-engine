@@ -27,10 +27,10 @@ namespace ntt::event
 
         // The dictionary which stores the event code and the
         //     list of callbacks which are registered to the event
-        Dictionary<EventCode, List<EventCallbackContext>> s_eventCallbacks;
+        Dictionary<event_code_t, List<EventCallbackContext>> s_eventCallbacks;
     } // namespace
 
-    event_id_t RegisterEvent(EventCode event_code, EventCallback callback)
+    event_id_t RegisterEvent(event_code_t event_code, EventCallback callback)
     {
         // TODO: Handle problem when the event code is reach the maximum
         s_eventCallbacks[event_code].push_back({s_currentId, callback});
@@ -39,15 +39,16 @@ namespace ntt::event
 
     void UnregisterEvent(event_id_t event_id)
     {
-        s_eventCallbacks.ForEach(
-            [&](const EventCode &event_code, List<EventCallbackContext> &callbacks)
-            {
-                callbacks.RemoveItem({event_id}, [](const EventCallbackContext &a, const EventCallbackContext &b)
-                                     { return a.id == b.id; });
-            });
+        for (auto &event : s_eventCallbacks)
+        {
+            event.second.RemoveItem(
+                {event_id},
+                [](const EventCallbackContext &a, const EventCallbackContext &b)
+                { return a.id == b.id; });
+        }
     }
 
-    void TriggerEvent(EventCode event_code, void *sender, const EventContext &context)
+    void TriggerEvent(event_code_t event_code, void *sender, const EventContext &context)
     {
         if (!s_eventCallbacks.Contains(event_code))
         {

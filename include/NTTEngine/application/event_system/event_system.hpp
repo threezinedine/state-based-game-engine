@@ -46,23 +46,23 @@ namespace ntt::event
         b32 b32_data[4];
     };
 
+    using event_code_t = u8;
+
     /**
      * All the event codes that this engine supports
      */
-    enum EventCode
-    {
-        TEST = 0x00,         ///< Test event code which is used for testing purpose (can be used
-                             ///<      as reversed event code)
-        KEY_PRESSED = 0x01,  ///< When a keyboard button or mouse button is pressed
-        KEY_RELEASED = 0x02, ///< When a keyboard button or mouse button is released
+#define NTT_EVENT_TEST 0x00         ///< Test event code which is used for testing purpose (can be used
+                                    ///<      as reversed event code)
+#define NTT_EVENT_KEY_PRESSED 0x01  ///< When a keyboard button or mouse button is pressed
+#define NTT_EVENT_KEY_RELEASED 0x02 ///< When a keyboard button or mouse button is released
 
-        WINDOW_RESIZED = 0x03, ///< When the window is resized
+#define NTT_EVENT_WINDOW_RESIZED 0x03 ///< When the window is resized
 
-        AUDIO_FINISHED = 0x04, ///< When the audio is finished playing
+#define NTT_EVENT_AUDIO_FINISHED 0x04 ///< When the audio is finished playing
 
-        MOUSE_PRESS = 0x05,   ///< When the mouse button is pressed
-        MOUSE_RELEASE = 0x06, ///< When the mouse button is released
-    };
+#define NTT_EVENT_MOUSE_PRESS 0x05   ///< When the mouse button is pressed
+#define NTT_EVENT_MOUSE_RELEASE 0x06 ///< When the mouse button is released
+
     /**
      * Can add more event code here
      *      without changing any other
@@ -73,7 +73,7 @@ namespace ntt::event
      * The type of the callback function which
      *      is used in the event bus system
      */
-    using EventCallback = std::function<void(const EventCode, void *, const EventContext &)>;
+    using EventCallback = std::function<void(const event_code_t, void *, const EventContext &)>;
 
     /**
      * When any callback is registered to the event bus
@@ -87,7 +87,7 @@ namespace ntt::event
      *      to unregister the event (can be ignored
      *      if the event is not needed to be unregistered)
      */
-    event_id_t RegisterEvent(EventCode event_code,
+    event_id_t RegisterEvent(event_code_t event_code,
                              EventCallback callback);
 
     /**
@@ -108,5 +108,7 @@ namespace ntt::event
     /**
      * Pass the event with data context to the event bus
      */
-    void TriggerEvent(EventCode event_code, void *sender, const EventContext &context);
+    void TriggerEvent(event_code_t event_code,
+                      void *sender = nullptr,
+                      const EventContext &context = {0});
 } // namespace ntt::event

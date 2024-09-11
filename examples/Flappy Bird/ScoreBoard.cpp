@@ -1,9 +1,9 @@
 #include "ScoreBoard.hpp"
-#include "game_data.hpp"
+#include "defs.hpp"
 
 #define SCORE_DIGIT_GAP 1
 
-void ScoreBoard::OnCreate()
+void ScoreBoard::OnCreateImpl()
 {
     auto windowSize = GetWindowSize();
 
@@ -24,9 +24,18 @@ void ScoreBoard::OnCreate()
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 + 50, 50, 20, 20),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
+
+    Subscribe(
+        SCORE_CHANGED_EVENT,
+        [&](event_id_t id, void *sender, EventContext context)
+        {
+            OnScoreChanged(context.u16_data[0]);
+        });
+
+    TriggerEvent(SCORE_CHANGED_EVENT, nullptr, {0});
 }
 
-void ScoreBoard::OnUpdate(f32 delta)
+void ScoreBoard::OnScoreChanged(u16 score)
 {
     auto geo = GetComponent<Geometry>();
     auto hundredGeo = ECS_GET_COMPONENT(m_hunderedNumber, Geometry);
@@ -40,8 +49,6 @@ void ScoreBoard::OnUpdate(f32 delta)
     hundredGeo->y = geo->y;
     tenGeo->y = geo->y;
     oneGeo->y = geo->y;
-
-    auto score = GetGameData()->score;
 
     if (score < 100)
     {
@@ -82,7 +89,7 @@ void ScoreBoard::OnUpdate(f32 delta)
     }
 }
 
-void ScoreBoard::OnDestroy()
+void ScoreBoard::OnDestroyImpl()
 {
     ECSDeleteEntity(m_hunderedNumber);
     ECSDeleteEntity(m_tenNumber);

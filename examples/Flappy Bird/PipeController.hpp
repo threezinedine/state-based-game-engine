@@ -2,11 +2,19 @@
 
 #include <NTTEngine/NTTEngine.hpp>
 
-using namespace ntt;
-using namespace ntt::ecs;
-using namespace ntt::script;
+class PipeController : public Script
+{
+public:
+    PipeController();
 
-void CreatePipe(position_t posX);
+    void OnCreateImpl() override;
+    void OnUpdateImpl(f32 delta) override;
+    void OnDestroyImpl() override;
 
-void ResetPipe();
-void StopPipe();
+private:
+    position_t m_getScoreX;
+    b8 m_hasAfter = FALSE;
+    b8 m_isPassed = FALSE;
+};
+
+void CreatePipe(position_t posX, f32 speed);

@@ -3,10 +3,10 @@
 
 class ScoreBoard : public Script
 {
-public:
-    void OnCreate();
-    void OnUpdate(f32 deltaTime);
-    void OnDestroy();
+protected:
+    void OnCreateImpl();
+    void OnDestroyImpl();
+    void OnScoreChanged(u16 score);
 
 private:
     entity_id_t m_hunderedNumber;

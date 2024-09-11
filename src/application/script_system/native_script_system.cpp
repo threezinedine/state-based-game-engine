@@ -23,6 +23,47 @@ namespace ntt::script
         Dictionary<entity_id_t, ScriptLifetime> s_scripts;
     } // namespace
 
+    void Script::OnCreate()
+    {
+        OnCreateImpl();
+    }
+
+    void Script::OnDestroy()
+    {
+        if (m_deleted)
+        {
+            return;
+        }
+
+        for (auto id : events)
+        {
+            UnregisterEvent(id);
+        }
+        OnDestroyImpl();
+    }
+
+    void Script::OnUpdate(f32 deltaTime)
+    {
+        OnUpdateImpl(deltaTime);
+    }
+
+    void Script::Subscribe(event_code_t eventCode, EventCallback callback)
+    {
+        auto id = RegisterEvent(eventCode, callback);
+        events.push_back(id);
+    }
+
+    void Script::Delete()
+    {
+        for (auto id : events)
+        {
+            UnregisterEvent(id);
+        }
+        OnDestroyImpl();
+        m_deleted = TRUE;
+        ECSDeleteEntity(entity_id);
+    }
+
     void ScriptInit()
     {
         if (s_initialized)

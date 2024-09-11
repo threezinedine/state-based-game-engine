@@ -1,25 +1,31 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/application/event_system/event_system.hpp>
 
 namespace ntt::script
 {
     using namespace ecs;
+    using namespace event;
 
     struct NativeScriptComponent;
 
     class Script
     {
     public:
-        virtual void OnCreate() {}
-        virtual void OnDestroy() {}
-        virtual void OnUpdate(f32 deltaTime) {}
+        void OnCreate();
+        void OnDestroy();
+        void OnUpdate(f32 deltaTime);
 
         inline void SetEntity(entity_id_t id) { entity_id = id; }
         inline b8 IsInitialized() const { return entity_id != INVALID_ENTITY_ID; }
         inline entity_id_t GetEntity() const { return entity_id; }
 
     protected:
+        virtual void OnCreateImpl() {}
+        virtual void OnDestroyImpl() {}
+        virtual void OnUpdateImpl(f32 deltaTime) {}
+
         template <typename T>
         Ref<T> GetComponent()
         {
@@ -32,9 +38,13 @@ namespace ntt::script
             ECSSetComponentActive(entity_id, typeid(T), state);
         }
 
+        void Subscribe(event_code_t eventCode, EventCallback callback);
+        void Delete();
+
     private:
         entity_id_t entity_id = INVALID_ENTITY_ID;
-        friend struct NativeScriptComponent;
+        List<event_id_t> events;
+        b8 m_deleted = FALSE;
     };
 
     struct NativeScriptComponent : public ComponentBase

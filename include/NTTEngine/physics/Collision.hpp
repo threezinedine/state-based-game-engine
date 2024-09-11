@@ -7,12 +7,15 @@
 namespace ntt::physics
 {
     using namespace ecs;
+    using CollisionCallback = std::function<void(List<entity_id_t>)>;
 
     /**
      * Collision component with no data (at least for now).
      */
     struct Collision : public ComponentBase
     {
+        CollisionCallback callback = nullptr;
+
         Collision() = default;
     };
 
@@ -20,13 +23,6 @@ namespace ntt::physics
      * Startup the collision system.
      */
     void CollisionInit();
-
-    using CollisionCallback = std::function<void(List<entity_id_t>)>;
-
-    /**
-     * Register which callbacks should be called when a collision occurs.
-     */
-    void CollisionRegister(entity_id_t, CollisionCallback callback);
 
     /**
      * The system function which is used for regsitering with the ECS.

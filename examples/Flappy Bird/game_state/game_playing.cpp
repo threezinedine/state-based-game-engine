@@ -1,10 +1,13 @@
 #include "game_playing.hpp"
-#include "game_data.hpp"
 #include "PipeController.hpp"
+#include "defs.hpp"
+#include "GameController.hpp"
+
+#define CHANGE_PER (5)
 
 String GamePlaying::OnNavigateImpl()
 {
-    if (GetGameData()->state == GameState::GAME_OVER)
+    if (GetComponent<GameData>()->isPlaying == FALSE)
     {
         return GAME_OVER_STATE;
     }
@@ -14,9 +17,8 @@ String GamePlaying::OnNavigateImpl()
 
 void GamePlaying::OnEnterImpl()
 {
-    ResetPipe();
-
     auto windowSize = GetWindowSize();
-    GetGameData()->score = 0;
-    CreatePipe(windowSize.width + 100);
+    GetComponent<GameData>()->score = FALSE;
+
+    TriggerEvent(PLAY_AGAIN_EVENT, nullptr, {0});
 }

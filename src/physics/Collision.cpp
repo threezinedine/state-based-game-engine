@@ -14,8 +14,6 @@ namespace ntt::physics
     namespace
     {
         b8 s_initialized = FALSE;
-
-        Dictionary<entity_id_t, CollisionCallback> s_collisionCallbacks;
     } // namespace
 
     void CollisionInit()
@@ -29,17 +27,6 @@ namespace ntt::physics
         s_initialized = TRUE;
     }
 
-    void CollisionRegister(entity_id_t entity_id, CollisionCallback callback)
-    {
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Collision system not initialized.");
-            return;
-        }
-
-        s_collisionCallbacks[entity_id] = callback;
-    }
-
     void CollisionFunc(f32 delta, entity_id_t entity_id)
     {
         if (!s_initialized)
@@ -48,7 +35,9 @@ namespace ntt::physics
             return;
         }
 
-        if (s_collisionCallbacks.Contains(entity_id) == FALSE)
+        auto collisionComponent = ECS_GET_COMPONENT(entity_id, Collision);
+
+        if (collisionComponent->callback == nullptr)
         {
             return;
         }
@@ -93,7 +82,7 @@ namespace ntt::physics
             return;
         }
 
-        s_collisionCallbacks[entity_id](colliedEntities);
+        collisionComponent->callback(colliedEntities);
     }
 
     void CollisionShutdown()
@@ -104,7 +93,6 @@ namespace ntt::physics
             return;
         }
 
-        s_collisionCallbacks.clear();
         s_initialized = FALSE;
     }
 } // namespace ntt::physics

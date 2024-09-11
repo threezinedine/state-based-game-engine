@@ -1,5 +1,5 @@
 #include "game_start.hpp"
-#include "game_data.hpp"
+#include "GameController.hpp"
 
 void GameStart::OnEnterImpl()
 {
@@ -27,7 +27,6 @@ String GameStart::OnNavigateImpl()
 {
     if (CheckState(NTT_KEY_ENTER, NTT_DOWN))
     {
-        GetGameData()->state = GameState::PLAYING;
         return PLAYING_STATE;
     }
 
