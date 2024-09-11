@@ -8,11 +8,14 @@
 
 namespace ntt::dev::store
 {
-    template <typename data_t, typename unique_field_t>
-    using GetUniqueFieldFunc = std::function<unique_field_t(Ref<data_t>)>;
-
     template <typename id_t, typename data_t>
     using ForEachFunc = std::function<void(Ref<data_t>, const id_t)>;
+
+    template <typename data_t>
+    using CompareFunc = std::function<b8(Ref<data_t>, Ref<data_t>)>;
+
+    template <typename data_t, typename field_t>
+    using GetFieldFunc = std::function<field_t(Ref<data_t>)>;
 
     /**
      * Provide a generic way to storing resources
@@ -25,28 +28,27 @@ namespace ntt::dev::store
      * @tparam unique_field_t The additional field to ensure the uniqueness of the object.
      *      (ex: a file should only be loaded once)
      */
-    template <typename id_t, typename data_t, typename unique_field_t>
+    template <typename id_t, typename data_t>
     class Store
     {
     public:
-        Store(id_t defaultId, id_t maxElement,
-              GetUniqueFieldFunc<data_t, unique_field_t> getUniqueFieldFunc = nullptr)
-            : m_defaultId(defaultId),
-              m_currentId(defaultId),
-              m_max(maxElement),
-              m_getUniqueFieldFunc(getUniqueFieldFunc),
-              m_store({}),
-              m_uniqueFieldToId({}),
-              m_freedIds({})
+        Store(
+            id_t defaultId,
+            id_t maxElement,
+            CompareFunc<data_t> compareFunc = [](Ref<data_t> a, Ref<data_t> b)
+            { return *a == *b; })
+            : m_defaultId(defaultId), m_currentId(defaultId),
+              m_max(maxElement), m_compareFunc(compareFunc),
+              m_store({}), m_freedIds({})
         {
+            NTT_ENGINE_TRACE("The store is created");
         }
 
         ~Store()
         {
             m_store.clear();
-            m_uniqueFieldToId.clear();
             m_freedIds.clear();
-            // NTT_ENGINE_DEBUG("The store is deleted");
+            NTT_ENGINE_TRACE("The store is deleted");
         }
 
         /**
@@ -58,18 +60,25 @@ namespace ntt::dev::store
         {
             if (m_store.size() >= m_max)
             {
-                NTT_ENGINE_WARN("The store is full, cannot add more elements");
+                NTT_ENGINE_TRACE("The store is full, cannot add more elements");
                 return m_defaultId;
             }
 
-            unique_field_t uniqueField = m_getUniqueFieldFunc(data);
-
-            if (m_uniqueFieldToId.Contains(uniqueField))
+            if (Contains(data))
             {
-                return m_uniqueFieldToId[uniqueField];
-            }
+                NTT_ENGINE_TRACE("The object is already stored in the store");
 
-            m_uniqueFieldToId[uniqueField] = m_currentId;
+                auto availableIds = GetAvailableIds();
+
+                for (auto id : availableIds)
+                {
+                    if (m_compareFunc(data, m_store[id]))
+                    {
+                        return id;
+                    }
+                }
+                return m_defaultId;
+            }
 
             if (m_freedIds.size() > 0)
             {
@@ -87,6 +96,27 @@ namespace ntt::dev::store
         }
 
         /**
+         * Query the object which has the field value which
+         *      matches the given value.
+         */
+        template <typename field_t>
+        List<Ref<data_t>> GetByField(field_t value, GetFieldFunc<data_t, field_t> getField)
+        {
+            List<Ref<data_t>> result = {};
+            auto availableIds = GetAvailableIds();
+
+            for (auto id : availableIds)
+            {
+                if (getField(Get(id)) == value)
+                {
+                    result.push_back(Get(id));
+                }
+            }
+
+            return result;
+        }
+
+        /**
          * Query the object with the id.
          *      if the object is not found, it will return nullptr.
          */
@@ -99,23 +129,6 @@ namespace ntt::dev::store
             }
 
             return m_store[id];
-        }
-
-        /**
-         * Retrieve the object with the unique field.
-         *
-         * If the object is not found, it will return nullptr.
-         *
-         * @param uniqueField The unique field to query the object.
-         */
-        Ref<data_t> GetByUnique(unique_field_t uniqueField)
-        {
-            if (!ContainsUnique(uniqueField))
-            {
-                return nullptr;
-            }
-
-            return Get(m_uniqueFieldToId[uniqueField]);
         }
 
         /**
@@ -141,16 +154,15 @@ namespace ntt::dev::store
          */
         u8 Contains(Ref<data_t> data)
         {
-            unique_field_t uniqueField = m_getUniqueFieldFunc(data);
-            return m_uniqueFieldToId.Contains(uniqueField);
-        }
+            for (auto i = 0; i < m_currentId; i++)
+            {
+                if (m_store[i] != nullptr && m_compareFunc(data, m_store[i]))
+                {
+                    return TRUE;
+                }
+            }
 
-        /**
-         * Check if the unique field is already stored in the store.
-         */
-        u8 ContainsUnique(unique_field_t uniqueField)
-        {
-            return m_uniqueFieldToId.Contains(uniqueField);
+            return FALSE;
         }
 
         /**
@@ -164,7 +176,6 @@ namespace ntt::dev::store
 
             if (data != nullptr)
             {
-                m_uniqueFieldToId.erase(m_getUniqueFieldFunc(data));
                 m_store[id] = nullptr;
                 // data.reset();
 
@@ -218,8 +229,7 @@ namespace ntt::dev::store
         id_t m_currentId;
         id_t m_max;
         List<Ref<data_t>> m_store;
-        GetUniqueFieldFunc<data_t, unique_field_t> m_getUniqueFieldFunc;
-        Dictionary<unique_field_t, id_t> m_uniqueFieldToId;
+        CompareFunc<data_t> m_compareFunc;
         List<id_t> m_freedIds;
     };
 } // namespace ntt::dev::store

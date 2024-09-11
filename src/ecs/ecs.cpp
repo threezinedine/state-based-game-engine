@@ -37,15 +37,14 @@ namespace ntt::ecs
         }
     };
 
-    using ComponentStore = Store<component_id_t, ComponentBase, entity_id_t>;
     using system_id_t = u32;
 
     namespace
     {
         b8 s_isInitialized = FALSE;
 
-        Scope<Store<system_id_t, SystemInfo, String>> s_systemsStore;
-        Scope<Store<entity_id_t, EntityInfo, String>> s_entityStore;
+        Scope<Store<system_id_t, SystemInfo>> s_systemsStore;
+        Scope<Store<entity_id_t, EntityInfo>> s_entityStore;
     } // namespace
 
     void ECSInit()
@@ -55,17 +54,17 @@ namespace ntt::ecs
             return;
         }
 
-        s_entityStore = CreateScope<Store<entity_id_t, EntityInfo, String>>(
+        s_entityStore = CreateScope<Store<entity_id_t, EntityInfo>>(
             0,
             1000,
-            [](Ref<EntityInfo> entity) -> String
-            { return entity->name; });
+            [](Ref<EntityInfo> a, Ref<EntityInfo> b) -> b8
+            { return a->name == b->name; });
 
-        s_systemsStore = CreateScope<Store<system_id_t, SystemInfo, String>>(
+        s_systemsStore = CreateScope<Store<system_id_t, SystemInfo>>(
             0,
             1000,
-            [](Ref<SystemInfo> system) -> String
-            { return system->name; });
+            [](Ref<SystemInfo> a, Ref<SystemInfo> b) -> b8
+            { return a->name == b->name; });
 
         s_isInitialized = TRUE;
     }
@@ -97,14 +96,17 @@ namespace ntt::ecs
             return {};
         }
 
-        auto system = s_systemsStore->GetByUnique(name);
+        auto system = s_systemsStore->GetByField<String>(
+            name,
+            [](Ref<SystemInfo> system) -> String
+            { return system->name; });
 
-        if (system == nullptr)
+        if (system.size() != 1)
         {
             return {};
         }
 
-        return system->entities;
+        return system[0]->entities;
     }
 
     b8 _IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)

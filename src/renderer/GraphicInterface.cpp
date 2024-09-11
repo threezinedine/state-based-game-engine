@@ -51,7 +51,7 @@ namespace ntt::renderer
     namespace
     {
         b8 s_isInitialized = FALSE;
-        Scope<Store<resource_id_t, TextureInfo, String>> s_textureStore;
+        Scope<Store<resource_id_t, TextureInfo>> s_textureStore;
 
         // List<DrawInfo> s_drawList;
         // List<DrawInfo> s_priorityDrawList;
@@ -66,11 +66,11 @@ namespace ntt::renderer
             return;
         }
 
-        s_textureStore = CreateScope<Store<resource_id_t, TextureInfo, String>>(
+        s_textureStore = CreateScope<Store<resource_id_t, TextureInfo>>(
             RESOURCE_ID_DEFAULT,
             TEXTURE_MAX,
-            [](Ref<TextureInfo> texture)
-            { return texture->path; });
+            [](Ref<TextureInfo> texture, Ref<TextureInfo> other) -> b8
+            { return texture->path == other->path; });
 
         memset(s_drawLists, 0, sizeof(s_drawLists));
 
@@ -86,7 +86,12 @@ namespace ntt::renderer
             return RESOURCE_ID_DEFAULT;
         }
 
-        if (s_textureStore->ContainsUnique(path))
+        auto existedTexturePaths = s_textureStore->GetByField<String>(
+            path,
+            [](Ref<TextureInfo> texture) -> String
+            { return texture->path; });
+
+        if (existedTexturePaths.size() > 0)
         {
             NTT_ENGINE_WARN("The texture is already loaded",
                             GetFileName(path, true));

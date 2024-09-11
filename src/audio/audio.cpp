@@ -53,9 +53,10 @@ namespace ntt::audio
     {
         b8 s_isInitialized = FALSE;
 
-        Store<resource_id_t, AudioInfo, String> s_audioStore(RESOURCE_ID_DEFAULT,
-                                                             MAX_AUDIO, [](Ref<AudioInfo> audio)
-                                                             { return audio->path; });
+        Store<resource_id_t, AudioInfo> s_audioStore(
+            RESOURCE_ID_DEFAULT,
+            MAX_AUDIO, [](Ref<AudioInfo> audio, Ref<AudioInfo> other) -> b8
+            { return audio->path == other->path; });
 
         List<PlayingAudioInfo> s_playingAudios;
     } // namespace
@@ -104,7 +105,12 @@ namespace ntt::audio
             return RESOURCE_ID_DEFAULT;
         }
 
-        if (s_audioStore.ContainsUnique(path))
+        auto existedAudioPaths = s_audioStore.GetByField<String>(
+            path,
+            [](Ref<AudioInfo> audio) -> String
+            { return audio->path; });
+
+        if (existedAudioPaths.size() > 0)
         {
             NTT_ENGINE_WARN("The audio file is already loaded: {}", GetFileName(path, true));
             return RESOURCE_ID_DEFAULT;

@@ -25,16 +25,16 @@ protected:
         // Setup code
     }
 
-    Store<u32, TestObj, u32> store{0, 10,
-                                   [](Ref<TestObj> obj)
-                                   { return obj->data; }};
+    Store<u32, TestObj> store{0, 10,
+                              [](Ref<TestObj> obj, Ref<TestObj> other) -> b8
+                              { return obj->data == other->data; }};
 };
 
 TEST_F(StoreTest, HappyPath)
 {
     auto obj1 = CREATE_REF(TestObj, 1, "obj1");
     auto obj2 = CREATE_REF(TestObj, 3, "obj2");
-    auto obj3 = CREATE_REF(TestObj, 3, "obj2");
+    auto obj3 = CREATE_REF(TestObj, 3, "obj3");
     auto obj4 = CREATE_REF(TestObj, 4, "obj4");
     auto obj5 = CREATE_REF(TestObj, 5, "obj5");
     auto obj6 = CREATE_REF(TestObj, 6, "obj6");

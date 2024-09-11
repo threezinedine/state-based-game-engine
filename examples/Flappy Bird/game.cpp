@@ -1,5 +1,4 @@
 #include "game.hpp"
-#include "BirdController.hpp"
 #include "PipeController.hpp"
 #include "game_state/game_state.hpp"
 #include "bird_state/bird_state.hpp"
