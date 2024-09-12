@@ -68,6 +68,16 @@ namespace ntt
         T Get(const String &key, T defaultValue = T()) const;
 
         /**
+         * Assign value to the JSON object with the key.
+         *
+         * If the key is not existed, then the new key will be created.
+         * If the key is existed, then the value will be replaced and
+         *      a warning will be logged.
+         */
+        template <typename T>
+        void Set(const String &key, T value);
+
+        /**
          * Get all list of values from the JSON object and if the key is not
          *      visible or the JSON is not an array, then the default value
          *      Can get list of JSON objects.
@@ -75,8 +85,16 @@ namespace ntt
         template <typename T>
         List<T> GetList(const String &key) const;
 
+        /**
+         * Assign the list of values to the JSON object with the key.
+         */
+        template <typename T>
+        void Set(const String &key, List<T> value);
+
         void operator=(const JSON &other);
         void operator=(String data);
+
+        String ToString() const;
 
     private:
         class Impl;

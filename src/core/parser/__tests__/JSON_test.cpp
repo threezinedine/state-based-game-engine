@@ -108,3 +108,21 @@ TEST_F(JSONTest, TestGetList)
     EXPECT_EQ(scenes.size(), 2);
     EXPECT_EQ(scenes[0].Get<String>("name", "Unknown"), "Scene 1");
 }
+
+TEST_F(JSONTest, TestSet)
+{
+    json.Set<u32>("test-set", 20);
+    EXPECT_EQ(json.Get<u32>("test-set"), 20);
+
+    json.Set<i32>("test-set", 30);
+    EXPECT_EQ(json.Get<i32>("test-set"), 30);
+
+    json.Set<String>("test-set", "Hello");
+    EXPECT_EQ(json.Get<String>("test-set"), "Hello");
+
+    json.Set<u32>("test-set", List<u32>({1, 2, 3}));
+    EXPECT_EQ(json.GetList<u32>("test-set"), List<u32>({1, 2, 3}));
+
+    json.Set<JSON>("test-object", JSON(R"({"name": "Object"})"));
+    EXPECT_EQ(json.Get<JSON>("test-object").Get<String>("name"), "Object");
+}

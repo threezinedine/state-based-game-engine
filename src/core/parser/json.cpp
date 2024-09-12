@@ -240,6 +240,57 @@ namespace ntt
         return result;
     }
 
+    String JSON::ToString() const
+    {
+        return String(m_Impl->data.dump());
+    }
+
+    template <typename T>
+    void JSON::Set(const String &key, T value)
+    {
+        if constexpr (IsString<T>::value)
+        {
+            if (m_Impl->data.contains(key.RawString()) && !m_Impl->data[key.RawString()].is_string())
+            {
+                NTT_ENGINE_WARN("The key {} is existed and has the type {}, the value will be replaced",
+                                key, m_Impl->data[key.RawString()].type_name());
+            }
+
+            m_Impl->data[key.RawString()] = value.RawString();
+        }
+        else if constexpr (IsJSON<T>::value)
+        {
+            m_Impl->data[key.RawString()] = nlohmann::json::parse(value.ToString().RawString());
+        }
+        else
+        {
+            m_Impl->data[key.RawString()] = value;
+        }
+    }
+
+    template <typename T>
+    void JSON::Set(const String &key, List<T> value)
+    {
+        nlohmann::json arr = nlohmann::json::array();
+        for (auto item : value)
+        {
+            if constexpr (IsString<T>::value)
+            {
+                arr.push_back(item.RawString());
+            }
+            else if constexpr (IsJSON<T>::value)
+            {
+                arr.push_back(nlohmann::json::parse(item.ToString().RawString()));
+            }
+            else
+            {
+                arr.push_back(item);
+            }
+        }
+
+        m_Impl->data[key.RawString()] = arr;
+    }
+
     String GetStringFrom(const nlohmann::json &data)
     {
         return String(data.get<std::string>());
@@ -249,7 +300,9 @@ namespace ntt
     template b8 JSON::Contains<type>(const String &key) const;                 \
     template b8 JSON::ContainsList<type>(const String &key) const;             \
     template type JSON::Get<type>(const String &key, type defaultValue) const; \
-    template List<type> JSON::GetList<type>(const String &key) const;
+    template List<type> JSON::GetList<type>(const String &key) const;          \
+    template void JSON::Set<type>(const String &key, type value);              \
+    template void JSON::Set<type>(const String &key, List<type> value);
 
     INSTANTIATE_GET_METHODS(u8);
     INSTANTIATE_GET_METHODS(u16);
