@@ -3,6 +3,7 @@
 
 void GameStart::OnEnterImpl()
 {
+    NTT_APP_INFO("Start Game");
     auto windowSize = GetWindowSize();
 
     m_messageEntity = ECSCreateEntity(

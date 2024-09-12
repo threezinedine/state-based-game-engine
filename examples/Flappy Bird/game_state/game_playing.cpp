@@ -17,6 +17,7 @@ String GamePlaying::OnNavigateImpl()
 
 void GamePlaying::OnEnterImpl()
 {
+    NTT_APP_INFO("Playing game");
     auto windowSize = GetWindowSize();
     GetData().Set<u32>("score", 0);
 

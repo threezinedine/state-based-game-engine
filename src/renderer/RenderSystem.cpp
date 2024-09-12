@@ -43,9 +43,7 @@ namespace ntt::renderer
             return;
         }
 
-        auto size = DrawTexture(texture->id, context, cell, DrawContext(texture->priority));
-        geo->width = size.width;
-        geo->height = size.height;
+        DrawTexture(texture->id, context, cell, DrawContext(texture->priority));
     }
 
     void RenderShutdownFunc(entity_id_t id)

@@ -162,7 +162,7 @@ namespace ntt::renderer
         return {width, height};
     }
 
-    Size DrawTexture(resource_id_t texture_id,
+    void DrawTexture(resource_id_t texture_id,
                      const RectContext &context,
                      const Grid &cell,
                      const DrawContext &drawContext)
@@ -170,19 +170,19 @@ namespace ntt::renderer
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The renderer is not initialized yet");
-            return {};
+            return;
         }
 
         if (!s_textureStore->Contains(texture_id))
         {
             NTT_ENGINE_WARN("The texture with the ID {} is not found", texture_id);
-            return {};
+            return;
         }
 
         auto textureInfo = s_textureStore->Get(texture_id);
         if (textureInfo == nullptr)
         {
-            return {};
+            return;
         }
 
         auto grid = textureInfo->grid;
@@ -214,8 +214,6 @@ namespace ntt::renderer
              static_cast<f32>(actualSize.width),
              static_cast<f32>(actualSize.height),
              static_cast<f32>(context.rotate)});
-
-        return actualSize;
     }
 
     void GraphicUpdate()
@@ -243,36 +241,6 @@ namespace ntt::renderer
 
             drawList->clear();
         }
-        // for (auto info : s_drawLists)
-        // {
-        //     DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
-        //                  info.fromX,
-        //                  info.fromY,
-        //                  info.fromWidth,
-        //                  info.fromHeight,
-        //                  info.toX,
-        //                  info.toY,
-        //                  info.toWidth,
-        //                  info.toHeight,
-        //                  info.rotate);
-        // }
-
-        // for (auto info : s_priorityDrawList)
-        // {
-        //     DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
-        //                  info.fromX,
-        //                  info.fromY,
-        //                  info.fromWidth,
-        //                  info.fromHeight,
-        //                  info.toX,
-        //                  info.toY,
-        //                  info.toWidth,
-        //                  info.toHeight,
-        //                  info.rotate);
-        // }
-
-        // s_drawList.clear();
-        // s_priorityDrawList.clear();
     }
 
     void UnloadTexture(resource_id_t texture_id)

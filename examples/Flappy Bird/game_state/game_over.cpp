@@ -8,6 +8,7 @@ using namespace ntt::log;
 
 void GameOver::OnEnterImpl()
 {
+    NTT_APP_INFO("Game Over");
     auto windowSize = GetWindowSize();
     TriggerEvent(GAME_OVER_EVENT, nullptr, {0});
 

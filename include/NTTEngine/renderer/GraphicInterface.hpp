@@ -99,7 +99,7 @@ namespace ntt::renderer
      *      maximum cell will be used.
      * @param drawContext: (Optional) The additional information for the drawing context
      */
-    Size DrawTexture(resource_id_t texture_id,
+    void DrawTexture(resource_id_t texture_id,
                      const RectContext &context = RectContext(),
                      const Grid &cell = Grid{0, 0},
                      const DrawContext &drawContext = DrawContext{});
