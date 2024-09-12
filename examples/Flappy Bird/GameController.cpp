@@ -55,6 +55,7 @@ void GameController::OnCreateImpl()
         [&](...)
         {
             GetData().Set<u16>("score", 0);
+            TriggerEvent(SCORE_CHANGED_EVENT, this, {0});
             GetData().Set<b8>("isPlaying", TRUE);
             CreatePipe(GetWindowSize().width + 100, GetSpeed(0));
         });

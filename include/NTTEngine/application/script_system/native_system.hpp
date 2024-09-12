@@ -11,21 +11,21 @@ namespace ntt::script
 
     struct NativeScriptComponent;
 
-    class Script
+    class Scriptable
     {
     public:
-        void OnCreate();
-        void OnDestroy();
-        void OnUpdate(f32 deltaTime);
+        virtual ~Scriptable() = default;
 
-        inline void SetEntity(entity_id_t id) { entity_id = id; }
-        inline b8 IsInitialized() const { return entity_id != INVALID_ENTITY_ID; }
-        inline entity_id_t GetEntity() const { return entity_id; }
+        virtual void OnCreate() = 0;
+        virtual void OnDestroy() = 0;
+
+        void SetEntity(entity_id_t id) { entity_id = id; }
+        entity_id_t GetEntity() const { return entity_id; }
+        b8 IsInitialized() const { return entity_id != INVALID_ENTITY_ID; }
 
     protected:
         virtual void OnCreateImpl() {}
         virtual void OnDestroyImpl() {}
-        virtual void OnUpdateImpl(f32 deltaTime) {}
 
         template <typename T>
         Ref<T> GetComponent()
@@ -45,13 +45,37 @@ namespace ntt::script
             return data->data;
         }
 
-        void Subscribe(event_code_t eventCode, EventCallback callback);
-        void Delete();
+        void Subscribe(event_code_t eventCode, EventCallback callback)
+        {
+            auto id = RegisterEvent(eventCode, callback);
+            events.push_back(id);
+        }
+
+        void Delete()
+        {
+            for (auto id : events)
+            {
+                UnregisterEvent(id);
+            }
+            OnDestroyImpl();
+            ECSDeleteEntity(entity_id);
+        }
 
     private:
         entity_id_t entity_id = INVALID_ENTITY_ID;
         List<event_id_t> events;
         b8 m_deleted = FALSE;
+    };
+
+    class Script : public Scriptable
+    {
+    public:
+        virtual void OnCreate();
+        virtual void OnDestroy();
+        void OnUpdate(f32 deltaTime);
+
+    protected:
+        virtual void OnUpdateImpl(f32 deltaTime) {}
     };
 
     struct NativeScriptComponent : public ComponentBase

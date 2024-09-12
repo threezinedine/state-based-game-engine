@@ -5,6 +5,7 @@
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/ecs/data_com.hpp>
+#include <NTTEngine/application/script_system/native_system.hpp>
 
 #define KEEP_STATE ""
 
