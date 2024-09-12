@@ -16,16 +16,16 @@ namespace ntt::script
     public:
         virtual ~Scriptable() = default;
 
-        virtual void OnCreate() = 0;
-        virtual void OnDestroy() = 0;
+        virtual void OnEnter() = 0;
+        virtual void OnExit() = 0;
 
-        void SetEntity(entity_id_t id) { entity_id = id; }
+        virtual void SetEntity(entity_id_t id) { entity_id = id; }
         entity_id_t GetEntity() const { return entity_id; }
         b8 IsInitialized() const { return entity_id != INVALID_ENTITY_ID; }
 
     protected:
-        virtual void OnCreateImpl() {}
-        virtual void OnDestroyImpl() {}
+        virtual void OnEnterImpl() {}
+        virtual void OnExitImpl() {}
 
         template <typename T>
         Ref<T> GetComponent()
@@ -57,12 +57,13 @@ namespace ntt::script
             {
                 UnregisterEvent(id);
             }
-            OnDestroyImpl();
+            OnExitImpl();
             ECSDeleteEntity(entity_id);
         }
 
-    private:
         entity_id_t entity_id = INVALID_ENTITY_ID;
+
+    private:
         List<event_id_t> events;
         b8 m_deleted = FALSE;
     };
@@ -70,8 +71,8 @@ namespace ntt::script
     class Script : public Scriptable
     {
     public:
-        virtual void OnCreate();
-        virtual void OnDestroy();
+        virtual void OnEnter();
+        virtual void OnExit();
         void OnUpdate(f32 deltaTime);
 
     protected:
@@ -92,9 +93,21 @@ namespace ntt::script
     void ScriptInit();
 
     /**
+     * Initializing for the script component when the entity is created
+     *      this will be called right after the entity is created
+     */
+    void ScriptInitFunc(entity_id_t entity_id);
+
+    /**
      * Handling all Script which is passed to the system
      */
     void ScriptUpdate(f32 deltaTime, entity_id_t entity_id);
+
+    /**
+     * Shut down the Script component of a system when the entity is destroyed
+     *      (not deactive)
+     */
+    void ScriptShutdownFunc(entity_id_t entity_id);
 
     /**
      * Shutdown the Script system

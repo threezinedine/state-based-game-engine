@@ -11,7 +11,7 @@ static f32 GetSpeed(u16 score)
                       0.01f;
 }
 
-void GameController::OnCreateImpl()
+void GameController::OnEnterImpl()
 {
     GetData().Set<u16>("score", 0);
     GetData().Set<b8>("isPlaying", FALSE);

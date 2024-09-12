@@ -76,6 +76,13 @@ namespace ntt::renderer
     };
 
     /**
+     * Use for validating the size of the texture with some texture which
+     *      use the default size (auto ratio size). The function will be
+     *      call at the begging of the creation of the object.
+     */
+    Size ValidateSize(resource_id_t textureId, const RectContext &context);
+
+    /**
      * Draw the texture, if the Size in the context is default
      *      then the size of the texture will be used. The object
      *      will not be drawn immediately, it will be drawn

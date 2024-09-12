@@ -8,7 +8,7 @@
 class GameController : public Script
 {
 protected:
-    void OnCreateImpl() override;
+    void OnEnterImpl() override;
 
     void AddNewPipe(position_t posX);
 

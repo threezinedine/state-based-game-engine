@@ -4,8 +4,8 @@
 class ScoreBoard : public Script
 {
 protected:
-    void OnCreateImpl();
-    void OnDestroyImpl();
+    void OnEnterImpl();
+    void OnExitImpl();
     void OnScoreChanged(u16 score);
 
 private:

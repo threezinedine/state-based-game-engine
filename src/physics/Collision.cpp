@@ -47,6 +47,11 @@ namespace ntt::physics
         auto halfWidth = geo->width / 2;
         auto halfHeight = geo->height / 2;
 
+        if (geo->active == FALSE)
+        {
+            return;
+        }
+
         auto entities = ECSGetEntitiesWithSystem(COLLISION_NAME);
 
         List<entity_id_t> others;

@@ -2,7 +2,7 @@
 #include "defs.hpp"
 #include <algorithm>
 
-void BirdController::OnCreateImpl()
+void BirdController::OnEnterImpl()
 {
     GetComponent<Collision>()->callback =
         std::bind(&BirdController::OnCollide, this, std::placeholders::_1);

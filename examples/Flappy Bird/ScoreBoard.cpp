@@ -3,7 +3,7 @@
 
 #define SCORE_DIGIT_GAP 1
 
-void ScoreBoard::OnCreateImpl()
+void ScoreBoard::OnEnterImpl()
 {
     auto windowSize = GetWindowSize();
 
@@ -89,7 +89,7 @@ void ScoreBoard::OnScoreChanged(u16 score)
     }
 }
 
-void ScoreBoard::OnDestroyImpl()
+void ScoreBoard::OnExitImpl()
 {
     ECSDeleteEntity(m_hunderedNumber);
     ECSDeleteEntity(m_tenNumber);

@@ -121,6 +121,47 @@ namespace ntt::renderer
         return s_textureStore->Add(textureInfo);
     }
 
+    Size ValidateSize(resource_id_t texture_id,
+                      const RectContext &context)
+    {
+        auto textureInfo = s_textureStore->Get(texture_id);
+        if (textureInfo == nullptr)
+        {
+            return {};
+        }
+
+        auto texture = textureInfo->texture;
+        f32 textureWidth = static_cast<f32>(textureInfo->texture.width);
+        f32 textureHeight = static_cast<f32>(textureInfo->texture.height);
+        f32 frameWidth = textureInfo->frameWith;
+        f32 frameHeight = textureInfo->frameHeight;
+        f32 width = 0.0f;
+        f32 height = 0.0f;
+
+        if (context.size.width != SIZE_DEFAULT && context.size.height != SIZE_DEFAULT)
+        {
+            width = static_cast<f32>(context.size.width);
+            height = static_cast<f32>(context.size.height);
+        }
+        else if (context.size.width != SIZE_DEFAULT)
+        {
+            width = static_cast<f32>(context.size.width);
+            height = (f32)(frameHeight * context.size.width / frameWidth);
+        }
+        else if (context.size.height != SIZE_DEFAULT)
+        {
+            width = (f32)(frameWidth * context.size.height / frameHeight);
+            height = static_cast<f32>(frameHeight);
+        }
+        else
+        {
+            width = static_cast<f32>(frameWidth);
+            height = static_cast<f32>(frameHeight);
+        }
+
+        return {width, height};
+    }
+
     Size DrawTexture(resource_id_t texture_id,
                      const RectContext &context,
                      const Grid &cell,
@@ -153,33 +194,9 @@ namespace ntt::renderer
                         ? static_cast<u8>(grid.col - 1)
                         : static_cast<u8>(cell.col);
         auto texture = textureInfo->texture;
-        f32 textureWidth = static_cast<f32>(textureInfo->texture.width);
-        f32 textureHeight = static_cast<f32>(textureInfo->texture.height);
         f32 frameWidth = textureInfo->frameWith;
         f32 frameHeight = textureInfo->frameHeight;
-        f32 width = 0.0f;
-        f32 height = 0.0f;
-
-        if (context.size.width != SIZE_DEFAULT && context.size.height != SIZE_DEFAULT)
-        {
-            width = static_cast<f32>(context.size.width);
-            height = static_cast<f32>(context.size.height);
-        }
-        else if (context.size.width != SIZE_DEFAULT)
-        {
-            width = static_cast<f32>(context.size.width);
-            height = (f32)(frameHeight * context.size.width / frameWidth);
-        }
-        else if (context.size.height != SIZE_DEFAULT)
-        {
-            width = (f32)(frameWidth * context.size.height / frameHeight);
-            height = static_cast<f32>(frameHeight);
-        }
-        else
-        {
-            width = static_cast<f32>(frameWidth);
-            height = static_cast<f32>(frameHeight);
-        }
+        auto actualSize = ValidateSize(texture_id, context);
 
         if (s_drawLists[drawContext.priority] == nullptr)
         {
@@ -194,39 +211,11 @@ namespace ntt::renderer
              frameHeight,
              static_cast<f32>(context.position.x),
              static_cast<f32>(context.position.y),
-             width,
-             height,
+             static_cast<f32>(actualSize.width),
+             static_cast<f32>(actualSize.height),
              static_cast<f32>(context.rotate)});
 
-        // if (drawContext.priority)
-        // {
-        //     s_priorityDrawList.push_back(
-        //         {texture_id,
-        //          frameWidth * frame.col,
-        //          frameHeight * frame.row,
-        //          frameWidth,
-        //          frameHeight,
-        //          static_cast<f32>(context.position.x),
-        //          static_cast<f32>(context.position.y),
-        //          width,
-        //          height,
-        //          static_cast<f32>(context.rotate)});
-        // }
-        // else
-        // {
-        //     s_drawList.push_back(
-        //         {texture_id,
-        //          frameWidth * frame.col,
-        //          frameHeight * frame.row,
-        //          frameWidth,
-        //          frameHeight,
-        //          static_cast<f32>(context.position.x),
-        //          static_cast<f32>(context.position.y),
-        //          width,
-        //          height,
-        //          static_cast<f32>(context.rotate)});
-        // }
-        return {static_cast<size_t>(width), static_cast<size_t>(height)};
+        return actualSize;
     }
 
     void GraphicUpdate()

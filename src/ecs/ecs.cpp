@@ -152,6 +152,7 @@ namespace ntt::ecs
             {
                 auto system = s_systemsStore->Get(systemId);
                 system->entities.push_back(entityId);
+                system->system.init(entityId);
             }
         }
 
@@ -259,7 +260,11 @@ namespace ntt::ecs
         for (auto systemId : availabeSystems)
         {
             auto system = s_systemsStore->Get(systemId);
-            system->entities.RemoveItem(id);
+            if (system->entities.Contains(id))
+            {
+                system->system.shutdown(id);
+                system->entities.RemoveItem(id);
+            }
         }
 
         for (auto component : entityInfo->components)

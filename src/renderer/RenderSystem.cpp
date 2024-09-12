@@ -8,6 +8,18 @@
 
 namespace ntt::renderer
 {
+    void RenderInitFunc(entity_id_t id)
+    {
+        auto geo = ECS_GET_COMPONENT(id, Geometry);
+        auto texture = ECS_GET_COMPONENT(id, Texture);
+
+        auto size = ValidateSize(texture->id,
+                                 {{geo->x, geo->y}, {geo->width, geo->height}, geo->rotatation});
+
+        geo->width = size.width;
+        geo->height = size.height;
+    }
+
     void RenderFunc(f32 delta, entity_id_t id)
     {
         auto geo = ECS_GET_COMPONENT(id, Geometry);
@@ -34,6 +46,10 @@ namespace ntt::renderer
         auto size = DrawTexture(texture->id, context, cell, DrawContext(texture->priority));
         geo->width = size.width;
         geo->height = size.height;
+    }
+
+    void RenderShutdownFunc(entity_id_t id)
+    {
     }
 
     void SpriteRenderFunc(f32 delta, entity_id_t id)

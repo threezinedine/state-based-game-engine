@@ -67,20 +67,19 @@ namespace ntt
         ResourceLoadConfig(JSON(resourceConfig));
 
         ECSInit();
-
         ECSRegister(
             "Render System",
-            {RenderFunc},
+            {RenderInitFunc, RenderFunc, RenderShutdownFunc},
             {typeid(Geometry), typeid(Texture)});
 
         ECSRegister(
             "Native Script System",
-            {ScriptUpdate},
+            {ScriptInitFunc, ScriptUpdate, ScriptShutdownFunc},
             {typeid(NativeScriptComponent)});
 
         ECSRegister(
             "State System",
-            {StateUpdate},
+            {StateInitFunc, StateUpdate, StateShutdownFunc},
             {typeid(StateComponent)});
 
         ECSRegister(

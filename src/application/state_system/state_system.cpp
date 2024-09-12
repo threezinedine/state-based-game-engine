@@ -35,9 +35,9 @@ namespace ntt
     {
     }
 
-    void State::SetId(entity_id_t id)
+    void State::SetEntity(entity_id_t id)
     {
-        m_id = id;
+        entity_id = id;
 
         if (THIS(m_children).empty())
         {
@@ -46,7 +46,7 @@ namespace ntt
 
         for (auto &child : THIS(m_children))
         {
-            child.second->SetId(id);
+            child.second->SetEntity(id);
         }
     }
 
@@ -127,17 +127,42 @@ namespace ntt
         s_initialized = TRUE;
     }
 
-    void StateUpdate(f32 delta, entity_id_t id)
+    void StateInitFunc(entity_id_t id)
     {
         auto machine = ECS_GET_COMPONENT(id, StateComponent);
 
-        if (machine->fsm->GetId() == INVALID_ENTITY_ID)
+        if (machine == nullptr)
         {
-            machine->fsm->SetId(id);
-            machine->fsm->OnEnter();
+            NTT_ENGINE_WARN("State component not found.");
+            return;
+        }
+
+        machine->fsm->SetEntity(id);
+        machine->fsm->OnEnter();
+    }
+
+    void StateUpdate(f32 delta, entity_id_t id)
+    {
+        auto machine = ECS_GET_COMPONENT(id, StateComponent);
+        if (machine == nullptr)
+        {
+            NTT_ENGINE_WARN("State component not found.");
+            return;
         }
 
         machine->fsm->OnUpdate(delta);
+    }
+
+    void StateShutdownFunc(entity_id_t id)
+    {
+        auto machine = ECS_GET_COMPONENT(id, StateComponent);
+        if (machine == nullptr)
+        {
+            NTT_ENGINE_WARN("State component not found.");
+            return;
+        }
+
+        machine->fsm->OnExit();
     }
 
     void StateShutdown()

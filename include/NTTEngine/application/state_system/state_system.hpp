@@ -6,6 +6,7 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/ecs/data_com.hpp>
 #include <NTTEngine/application/script_system/native_system.hpp>
+#include <NTTEngine/application/script_system/native_system.hpp>
 
 #define KEEP_STATE ""
 
@@ -13,11 +14,12 @@ namespace ntt
 {
     using namespace memory;
     using namespace ecs;
+    using namespace script;
 
     /**
      * The base of the state class.
      */
-    class State
+    class State : public Scriptable
     {
     public:
         State(Dictionary<String, Ref<State>> children = {}, String defaultState = "");
@@ -49,37 +51,13 @@ namespace ntt
          */
         void AddChild(const String &name, Ref<State> state);
 
-        void SetId(entity_id_t id);
-        entity_id_t GetId() const { return m_id; }
+        void SetEntity(entity_id_t id) override;
 
     protected:
-        virtual void OnEnterImpl() {}
-        virtual void OnExitImpl() {}
-
         virtual void OnUpdateImpl(f32 delta) {}
         virtual String OnNavigateImpl() { return KEEP_STATE; }
 
-        template <typename T>
-        Ref<T> GetComponent()
-        {
-            return ECS_GET_COMPONENT(m_id, T);
-        }
-
-        template <typename T>
-        void SetComponentActive(b8 active = TRUE)
-        {
-            ECSSetComponentActive(m_id, typeid(T), active);
-        }
-
-        JSON &GetData()
-        {
-            auto data = GetComponent<DataComponent>();
-            return data->data;
-        }
-
     private:
-        entity_id_t m_id = INVALID_ENTITY_ID;
-
         class Impl;
         Scope<Impl> m_impl;
     };
@@ -106,9 +84,20 @@ namespace ntt
     void StateInit();
 
     /**
+     * @brief Initialize the state component when the entity is created.
+     *      This will be called right after the entity is created.
+     */
+    void StateInitFunc(entity_id_t entity_id);
+
+    /**
      * @brief Update the state system.
      */
     void StateUpdate(f32 delta, entity_id_t entity_id_t);
+
+    /**
+     * @brief Shutdown the state component of a system when the entity is destroyed.
+     */
+    void StateShutdownFunc(entity_id_t entity_id);
 
     /**
      * @brief Shutdown the state system.

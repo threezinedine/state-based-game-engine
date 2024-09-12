@@ -4,13 +4,18 @@
 class BirdController : public Script
 {
 protected:
-    void OnCreateImpl() override;
+    void OnEnterImpl() override;
     void OnUpdateImpl(f32 delta) override;
 
     void OnCollide(List<entity_id_t> others);
 
     void StopBird();
     void StartBird();
+
+    void OnExitImpl() override
+    {
+        NTT_APP_INFO("Yah, see you later!");
+    }
 
 private:
     b8 m_isPlaying = FALSE;

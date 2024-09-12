@@ -43,7 +43,7 @@ void PipeController::OnUpdateImpl(f32 delta)
     }
 }
 
-void PipeController::OnCreateImpl()
+void PipeController::OnEnterImpl()
 {
     Subscribe(
         GAME_OVER_EVENT,
@@ -66,7 +66,7 @@ void PipeController::OnCreateImpl()
         });
 }
 
-void PipeController::OnDestroyImpl()
+void PipeController::OnExitImpl()
 {
 }
 

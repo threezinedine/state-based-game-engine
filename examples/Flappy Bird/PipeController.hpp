@@ -7,9 +7,9 @@ class PipeController : public Script
 public:
     PipeController();
 
-    void OnCreateImpl() override;
+    void OnEnterImpl() override;
     void OnUpdateImpl(f32 delta) override;
-    void OnDestroyImpl() override;
+    void OnExitImpl() override;
 
 private:
     position_t m_getScoreX;

@@ -47,15 +47,24 @@ namespace ntt::ecs
      */
     struct System
     {
-        std::function<void()> init;
+        std::function<void(entity_id_t)> init;
         std::function<void(f32, entity_id_t)> update;
-        std::function<void()> shutdown;
+        std::function<void(entity_id_t)> shutdown;
 
         System()
-            : init([]() {}), update([](f32, entity_id_t) {}), shutdown([]() {}) {}
+            : init([](entity_id_t) {}),
+              update([](f32, entity_id_t) {}),
+              shutdown([](entity_id_t) {}) {}
 
         System(std::function<void(f32, entity_id_t)> update)
-            : init([]() {}), update(update), shutdown([]() {}) {}
+            : init([](entity_id_t) {}),
+              update(update),
+              shutdown([](entity_id_t) {}) {}
+
+        System(std::function<void(entity_id_t)> init,
+               std::function<void(f32, entity_id_t)> update,
+               std::function<void(entity_id_t)> shutdown)
+            : init(init), update(update), shutdown(shutdown) {}
 
         System(const System &other)
             : init(other.init), update(other.update), shutdown(other.shutdown) {}

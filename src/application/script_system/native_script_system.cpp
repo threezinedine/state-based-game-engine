@@ -23,14 +23,14 @@ namespace ntt::script
         Dictionary<entity_id_t, ScriptLifetime> s_scripts;
     } // namespace
 
-    void Script::OnCreate()
+    void Script::OnEnter()
     {
-        OnCreateImpl();
+        OnEnterImpl();
     }
 
-    void Script::OnDestroy()
+    void Script::OnExit()
     {
-        OnDestroyImpl();
+        OnExitImpl();
     }
 
     void Script::OnUpdate(f32 deltaTime)
@@ -49,6 +49,20 @@ namespace ntt::script
         s_initialized = TRUE;
     }
 
+    void ScriptInitFunc(entity_id_t entity_id)
+    {
+        auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
+
+        if (script == nullptr)
+        {
+            NTT_ENGINE_WARN("The Script component is not found");
+            return;
+        }
+
+        script->ins->SetEntity(entity_id);
+        script->ins->OnEnter();
+    }
+
     void ScriptUpdate(f32 deltaTime, entity_id_t entity_id)
     {
         auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
@@ -59,13 +73,20 @@ namespace ntt::script
             return;
         }
 
-        if (!script->ins->IsInitialized())
+        script->ins->OnUpdate(deltaTime);
+    }
+
+    void ScriptShutdownFunc(entity_id_t entity_id)
+    {
+        auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
+
+        if (script == nullptr)
         {
-            script->ins->SetEntity(entity_id);
-            script->ins->OnCreate();
+            NTT_ENGINE_WARN("The Script component is not found");
+            return;
         }
 
-        script->ins->OnUpdate(deltaTime);
+        script->ins->OnExit();
     }
 
     void ScriptShutdown()
