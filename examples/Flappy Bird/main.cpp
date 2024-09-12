@@ -56,7 +56,6 @@ void Begin()
 
     ECSCreateEntity(
         {
-            ECS_CREATE_COMPONENT(GameData),
             ECS_CREATE_COMPONENT(StateComponent, gameState),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<GameController>()),
         });

@@ -2,6 +2,7 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/dev/store.hpp>
+#include <NTTEngine/ecs/data_com.hpp>
 
 namespace ntt::ecs
 {
@@ -136,6 +137,7 @@ namespace ntt::ecs
         {
             return 0;
         }
+        components[typeid(DataComponent)] = CreateRef<DataComponent>();
 
         auto entityId = s_entityStore->Add(CREATE_REF(EntityInfo, components));
 

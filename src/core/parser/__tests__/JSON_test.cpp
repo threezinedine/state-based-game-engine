@@ -126,3 +126,10 @@ TEST_F(JSONTest, TestSet)
     json.Set<JSON>("test-object", JSON(R"({"name": "Object"})"));
     EXPECT_EQ(json.Get<JSON>("test-object").Get<String>("name"), "Object");
 }
+
+TEST_F(JSONTest, EmptyJSONSet)
+{
+    JSON empty;
+    empty.Set<u32>("test-set", 20);
+    EXPECT_EQ(empty.Get<u32>("test-set"), 20);
+}

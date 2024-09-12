@@ -4,6 +4,7 @@
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/ecs/data_com.hpp>
 
 #define KEEP_STATE ""
 
@@ -67,6 +68,12 @@ namespace ntt
         void SetComponentActive(b8 active = TRUE)
         {
             ECSSetComponentActive(m_id, typeid(T), active);
+        }
+
+        JSON &GetData()
+        {
+            auto data = GetComponent<DataComponent>();
+            return data->data;
         }
 
     private:

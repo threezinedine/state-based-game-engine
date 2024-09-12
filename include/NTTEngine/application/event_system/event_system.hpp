@@ -110,5 +110,5 @@ namespace ntt::event
      */
     void TriggerEvent(event_code_t event_code,
                       void *sender = nullptr,
-                      const EventContext &context = {0});
+                      const EventContext &context = {});
 } // namespace ntt::event

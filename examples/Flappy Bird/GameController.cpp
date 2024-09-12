@@ -13,6 +13,9 @@ static f32 GetSpeed(u16 score)
 
 void GameController::OnCreateImpl()
 {
+    GetData().Set<u16>("score", 0);
+    GetData().Set<b8>("isPlaying", FALSE);
+
     Subscribe(
         NEW_PIPE_EVENT,
         [&](event_id_t id, void *sender, EventContext context)
@@ -25,14 +28,17 @@ void GameController::OnCreateImpl()
         ADD_SCORE,
         [&](event_id_t id, void *sender, EventContext context)
         {
-            GetComponent<GameData>()->score++;
+            auto score = GetData().Get<u16>("score") + 1;
+            GetData().Set<u16>("score", score);
 
-            TriggerEvent(SCORE_CHANGED_EVENT, this, {GetComponent<GameData>()->score});
+            auto scoreChangedContext = EventContext();
+            scoreChangedContext.u16_data[0] = score;
+            TriggerEvent(SCORE_CHANGED_EVENT, this, scoreChangedContext);
 
-            if (GetComponent<GameData>()->score % SPEEDUP_AFTER_DEFAULT == 0)
+            if (score % SPEEDUP_AFTER_DEFAULT == 0)
             {
                 auto context = EventContext();
-                context.f32_data[0] = GetSpeed(GetComponent<GameData>()->score);
+                context.f32_data[0] = GetSpeed(score);
                 TriggerEvent(SPEED_UP_EVENT, this, context);
             }
         });
@@ -41,20 +47,20 @@ void GameController::OnCreateImpl()
         GAME_OVER_EVENT,
         [&](...)
         {
-            GetComponent<GameData>()->isPlaying = FALSE;
+            GetData().Set<b8>("isPlaying", FALSE);
         });
 
     Subscribe(
         PLAY_AGAIN_EVENT,
         [&](...)
         {
-            GetComponent<GameData>()->score = 0;
-            GetComponent<GameData>()->isPlaying = TRUE;
+            GetData().Set<u16>("score", 0);
+            GetData().Set<b8>("isPlaying", TRUE);
             CreatePipe(GetWindowSize().width + 100, GetSpeed(0));
         });
 }
 
 void GameController::AddNewPipe(position_t posX)
 {
-    CreatePipe(posX, GetSpeed(GetComponent<GameData>()->score));
+    CreatePipe(posX, GetSpeed(GetData().Get<u16>("score")));
 }

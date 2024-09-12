@@ -2,6 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/ecs/data_com.hpp>
 
 namespace ntt::script
 {
@@ -36,6 +37,12 @@ namespace ntt::script
         void SetComponentState(b8 state = FALSE)
         {
             ECSSetComponentActive(entity_id, typeid(T), state);
+        }
+
+        JSON &GetData()
+        {
+            auto data = GetComponent<DataComponent>();
+            return data->data;
         }
 
         void Subscribe(event_code_t eventCode, EventCallback callback);

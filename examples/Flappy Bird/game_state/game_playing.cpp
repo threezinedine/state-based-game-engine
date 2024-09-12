@@ -7,7 +7,7 @@
 
 String GamePlaying::OnNavigateImpl()
 {
-    if (GetComponent<GameData>()->isPlaying == FALSE)
+    if (GetData().Get<b8>("isPlaying") == FALSE)
     {
         return GAME_OVER_STATE;
     }
@@ -18,7 +18,7 @@ String GamePlaying::OnNavigateImpl()
 void GamePlaying::OnEnterImpl()
 {
     auto windowSize = GetWindowSize();
-    GetComponent<GameData>()->score = FALSE;
+    GetData().Set<u32>("score", 0);
 
     TriggerEvent(PLAY_AGAIN_EVENT, nullptr, {0});
 }
