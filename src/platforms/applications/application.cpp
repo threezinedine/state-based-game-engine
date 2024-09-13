@@ -59,6 +59,8 @@ namespace ntt
         CollisionInit();
         ResourceInit();
 
+        MouseHoveringSystemInit();
+
         String resourceConfig = ReadFile(RelativePath("configs/resources.json"));
         if (resourceConfig == "")
         {
@@ -89,9 +91,9 @@ namespace ntt
             {typeid(Geometry), typeid(Collision)});
 
         ECSRegister(
-            "Mouse Hovering System",
+            "Hovering System",
             {MouseHoveringSystemFunc},
-            {typeid(Geometry), typeid(Texture), typeid(HoveringComponent)});
+            {typeid(Hovering), typeid(Texture), typeid(Geometry)});
 
         ECSRegister(
             "Mass System",
@@ -145,6 +147,7 @@ namespace ntt
         s_phrases.MainLoop(delta);
 
         GraphicUpdate();
+        MouseHoveringSystemUpdate(delta);
         END_DRAWING();
 
         running = !WINDOW_SHOULD_CLOSE();
@@ -162,6 +165,7 @@ namespace ntt
         s_phrases.Close();
 
         ECSShutdown();
+        MouseHoveringSystemShutdown();
         ResourceShutdown();
         CollisionShutdown();
         AudioShutdown();

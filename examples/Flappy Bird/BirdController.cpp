@@ -7,8 +7,8 @@ void BirdController::OnEnterImpl()
     GetComponent<Collision>()->callback =
         std::bind(&BirdController::OnCollide, this, std::placeholders::_1);
 
-    GetComponent<HoveringComponent>()->callback =
-        std::bind(&BirdController::OnHover, this);
+    GetComponent<Hovering>()->callback =
+        std::bind(&BirdController::OnHover, this, std::placeholders::_1);
 
     StopBird();
 

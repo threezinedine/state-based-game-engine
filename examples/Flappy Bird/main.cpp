@@ -25,6 +25,7 @@ void Begin()
                                  windowSize.width,
                                  windowSize.height),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("background")),
+            ECS_CREATE_COMPONENT(Hovering),
         });
 
     ECSCreateEntity(
@@ -75,7 +76,7 @@ void Begin()
             ECS_CREATE_COMPONENT(Sprite,
                                  List<std::pair<u8, u8>>{{0, 0}, {1, 0}, {2, 0}},
                                  200),
-            ECS_CREATE_COMPONENT(HoveringComponent),
+            ECS_CREATE_COMPONENT(Hovering),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<BirdController>()),
         });
 

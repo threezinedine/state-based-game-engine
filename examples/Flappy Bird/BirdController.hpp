@@ -17,7 +17,7 @@ protected:
         NTT_APP_INFO("Yah, see you later!");
     }
 
-    void OnHover()
+    void OnHover(HoveringContext &context)
     {
         NTT_APP_INFO("Bird is hovering!");
     }

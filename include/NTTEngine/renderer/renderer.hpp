@@ -24,4 +24,4 @@ namespace ntt::renderer
 #include "Geometry.hpp"
 #include "Texture.hpp"
 #include "Sprite.hpp"
-#include "HoveringComponent.hpp"
+#include "Hovering.hpp"
