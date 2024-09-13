@@ -17,6 +17,11 @@ protected:
         NTT_APP_INFO("Yah, see you later!");
     }
 
+    void OnHover()
+    {
+        NTT_APP_INFO("Bird is hovering!");
+    }
+
 private:
     b8 m_isPlaying = FALSE;
 };

@@ -8,18 +8,21 @@ void ScoreBoard::OnEnterImpl()
     auto windowSize = GetWindowSize();
 
     m_hunderedNumber = ECSCreateEntity(
+        "hundered",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 - 50, 50, 20, 20),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
 
     m_tenNumber = ECSCreateEntity(
+        "ten",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, 50, 20, 20),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
         });
 
     m_oneNumber = ECSCreateEntity(
+        "one",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 + 50, 50, 20, 20),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),

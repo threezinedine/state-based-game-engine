@@ -7,6 +7,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <cstring>
 #include <NTTEngine/dev/store.hpp>
+#include <NTTEngine/application/input_system/input_system.hpp>
 
 #include "GraphicInterface_platforms.hpp"
 
@@ -56,7 +57,17 @@ namespace ntt::renderer
         // List<DrawInfo> s_drawList;
         // List<DrawInfo> s_priorityDrawList;
 
+        // Store all the priorities draw with maximum 256 priorities
+        // The higher priority will be drawn on the top of the lower priority
+        // It should be cleared after each frame
         Scope<List<DrawInfo>> s_drawLists[256];
+
+        // Stack of all texture ID which is hovered by the mouse
+        // It also be cleared after each frame
+        // The higher priority texture will be on the top of the stack
+        // If the same priority, the last hovered texture will be on the top
+        List<resource_id_t> s_hoveredTextures;
+
     } // namespace
 
     void RendererInit()
@@ -218,6 +229,10 @@ namespace ntt::renderer
 
     void GraphicUpdate()
     {
+        s_hoveredTextures.clear();
+
+        auto mouse = input::GetMousePosition();
+
         for (auto &drawList : s_drawLists)
         {
             if (drawList == nullptr)
@@ -227,6 +242,14 @@ namespace ntt::renderer
 
             for (auto info : *drawList)
             {
+                if (info.toX - info.toWidth / 2 <= mouse.x &&
+                    mouse.x <= info.toX + info.toWidth / 2 &&
+                    info.toY - info.toHeight / 2 <= mouse.y &&
+                    mouse.y <= info.toY + info.toHeight / 2)
+                {
+                    s_hoveredTextures.push_back(info.texture_id);
+                }
+
                 DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
                              info.fromX,
                              info.fromY,
@@ -241,6 +264,11 @@ namespace ntt::renderer
 
             drawList->clear();
         }
+    }
+
+    const List<resource_id_t> &GetHoveredTexture()
+    {
+        return s_hoveredTextures;
     }
 
     void UnloadTexture(resource_id_t texture_id)

@@ -88,6 +88,7 @@ void CreatePipe(position_t posX, f32 speed)
     auto lowPipeY = windowSize.height - lowPipeHeight / 2;
 
     auto upPipe = ECSCreateEntity(
+        "pipe-up",
         {
             ECS_CREATE_COMPONENT(Geometry, posX, highPipeY, 100, highPipeY * 2, 180),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
@@ -98,6 +99,7 @@ void CreatePipe(position_t posX, f32 speed)
         });
 
     auto downPipe = ECSCreateEntity(
+        "pipe-down",
         {
             ECS_CREATE_COMPONENT(Geometry, posX, lowPipeY, 100, lowPipeHeight),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),

@@ -13,6 +13,7 @@
 #include <NTTEngine/renderer/renderer.hpp>
 #include <NTTEngine/renderer/RenderSystem.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
+#include <NTTEngine/renderer/MouseHoveringSystem.hpp>
 
 #include <NTTEngine/physics/physics_dev.hpp>
 #include <NTTEngine/application/script_system/native_system.hpp>
@@ -86,6 +87,11 @@ namespace ntt
             COLLISION_NAME,
             {CollisionFunc},
             {typeid(Geometry), typeid(Collision)});
+
+        ECSRegister(
+            "Mouse Hovering System",
+            {MouseHoveringSystemFunc},
+            {typeid(Geometry), typeid(Texture), typeid(HoveringComponent)});
 
         ECSRegister(
             "Mass System",

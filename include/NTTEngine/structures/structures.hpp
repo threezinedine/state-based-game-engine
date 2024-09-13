@@ -16,3 +16,4 @@
 #include "position.hpp"
 #include "size.hpp"
 #include "string.hpp"
+#include "stack.hpp"

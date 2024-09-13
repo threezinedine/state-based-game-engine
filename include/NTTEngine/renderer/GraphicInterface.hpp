@@ -4,6 +4,7 @@
 #include <NTTEngine/structures/position.hpp>
 #include <NTTEngine/structures/size.hpp>
 #include <NTTEngine/resources/resource_common.h>
+#include <NTTEngine/structures/stack.hpp>
 
 namespace ntt::renderer
 {
@@ -103,6 +104,17 @@ namespace ntt::renderer
                      const RectContext &context = RectContext(),
                      const Grid &cell = Grid{0, 0},
                      const DrawContext &drawContext = DrawContext{});
+
+    /**
+     * Each texture which is hovered by the mouse will be returned
+     *      in the list of the texture ID. If the mouse is not hovered
+     *      on any texture, then the empty  list will be returned.
+     * This result is the result from the previouse Update call.
+     *
+     * @return The list of the texture ID which is hovered by the mouse
+     *      the higher priority texture will be on the top of the list
+     */
+    const List<resource_id_t> &GetHoveredTexture();
 
     /**
      * Actually draw the objects on the screen

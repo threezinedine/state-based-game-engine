@@ -63,6 +63,8 @@ namespace ntt::event
 #define NTT_EVENT_MOUSE_PRESS 0x05   ///< When the mouse button is pressed
 #define NTT_EVENT_MOUSE_RELEASE 0x06 ///< When the mouse button is released
 
+    // TODO: Change the default event < 255 and the user's event >= 255
+
     /**
      * Can add more event code here
      *      without changing any other

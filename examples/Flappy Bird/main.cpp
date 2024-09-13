@@ -17,6 +17,7 @@ void Begin()
 
     auto windowSize = GetWindowSize();
     ECSCreateEntity(
+        "background",
         {
             ECS_CREATE_COMPONENT(Geometry,
                                  windowSize.width / 2,
@@ -27,6 +28,7 @@ void Begin()
         });
 
     ECSCreateEntity(
+        "base-high",
         {
             ECS_CREATE_COMPONENT(Geometry,
                                  windowSize.width / 2,
@@ -39,6 +41,7 @@ void Begin()
         });
 
     ECSCreateEntity(
+        "base-low",
         {
             ECS_CREATE_COMPONENT(Geometry,
                                  windowSize.width / 2,
@@ -55,12 +58,14 @@ void Begin()
     gameState->AddChild(GAME_OVER_STATE, CreateRef<GameOver>());
 
     ECSCreateEntity(
+        "game-play",
         {
             ECS_CREATE_COMPONENT(StateComponent, gameState),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<GameController>()),
         });
 
     auto bird = ECSCreateEntity(
+        "bird",
         {
             ECS_CREATE_COMPONENT(Geometry, GetConfiguration().Get<position_t>("bird-start-x", 200),
                                  windowSize.height / 2, 70),
@@ -70,10 +75,12 @@ void Begin()
             ECS_CREATE_COMPONENT(Sprite,
                                  List<std::pair<u8, u8>>{{0, 0}, {1, 0}, {2, 0}},
                                  200),
+            ECS_CREATE_COMPONENT(HoveringComponent),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<BirdController>()),
         });
 
     ECSCreateEntity(
+        "score-board",
         {
             ECS_CREATE_COMPONENT(Geometry, 20, 20),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ScoreBoard>()),

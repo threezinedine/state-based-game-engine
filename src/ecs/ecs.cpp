@@ -131,7 +131,9 @@ namespace ntt::ecs
         return isValid;
     }
 
-    entity_id_t ECSCreateEntity(Dictionary<std::type_index, Ref<ComponentBase>> components)
+    entity_id_t ECSCreateEntity(
+        const String &name,
+        Dictionary<std::type_index, Ref<ComponentBase>> components)
     {
         if (!s_isInitialized)
         {
@@ -152,9 +154,21 @@ namespace ntt::ecs
             {
                 auto system = s_systemsStore->Get(systemId);
                 system->entities.push_back(entityId);
+            }
+        }
+
+        // the entity must be added to all the systems which need the components
+        //     before the init function is called
+        for (auto systemId : availableSystems)
+        {
+            auto system = s_systemsStore->Get(systemId);
+            if (system->entities.Contains(entityId))
+            {
                 system->system.init(entityId);
             }
         }
+
+        NTT_ENGINE_TRACE("Entit {} has id {}", name, entityId);
 
         return entityId;
     }
@@ -190,7 +204,7 @@ namespace ntt::ecs
 
         if (!s_entityStore->Contains(id))
         {
-            // NTT_ENGINE_WARN("The entity with ID {} is not existed", id);
+            NTT_ENGINE_TRACE("The entity with ID {} is not existed", id);
             return;
         }
 
@@ -198,7 +212,7 @@ namespace ntt::ecs
 
         if (!entityInfo->components.Contains(type))
         {
-            // NTT_ENGINE_WARN("The component with type {} is not existed in the entity", type.name());
+            NTT_ENGINE_TRACE("The component with type {} is not existed in the entity", type.name());
             return;
         }
 

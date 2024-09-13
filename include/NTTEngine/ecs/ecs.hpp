@@ -74,6 +74,7 @@ namespace ntt::ecs
      * Add new system to the ECS, the order of adding the system is the order
      *      of the system will be updated.
      *
+     * @param name The name of the system, use for debugging only
      * @param system The system to be added to the ECS
      * @param componentTypes The list of component types that the system needs
      */
@@ -92,12 +93,15 @@ namespace ntt::ecs
      * When a new entity is created with attached components, the entity will
      *      be passed to the system which needs the components.
      *
+     * @param name The name of the entity (use for debugging only)
      * @param components The list of components to be attached to the entity
      *
      * @return The ID of the created entity, if there's an error, then return
      *      INVALID_ENTITY_ID
      */
-    entity_id_t ECSCreateEntity(Dictionary<std::type_index, Ref<ComponentBase>> components);
+    entity_id_t ECSCreateEntity(
+        const String &name,
+        Dictionary<std::type_index, Ref<ComponentBase>> components);
 
     /**
      * Query the component based on the entity ID and the type of the component.
