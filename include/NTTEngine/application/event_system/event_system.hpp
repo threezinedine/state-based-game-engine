@@ -63,6 +63,9 @@ namespace ntt::event
 #define NTT_EVENT_MOUSE_PRESS 0x05   ///< When the mouse button is pressed
 #define NTT_EVENT_MOUSE_RELEASE 0x06 ///< When the mouse button is released
 
+#define NTT_ENTITY_CREATED 0x07   ///< When an entity is created
+#define NTT_ENTITY_DESTROYED 0x08 ///< When an entity is destroyed
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

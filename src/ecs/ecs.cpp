@@ -2,12 +2,14 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/dev/store.hpp>
+#include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/ecs/data_com.hpp>
 
 namespace ntt::ecs
 {
     using namespace log;
     using namespace dev::store;
+    using namespace event;
 
     using component_id_t = entity_id_t;
 
@@ -169,6 +171,10 @@ namespace ntt::ecs
         }
 
         NTT_ENGINE_TRACE("Entit {} has id {}", name, entityId);
+        EventContext context;
+        // must be changed when the entity_id_t is changed
+        context.u32_data[0] = entityId;
+        TriggerEvent(NTT_ENTITY_CREATED, nullptr, context);
 
         return entityId;
     }
@@ -287,6 +293,11 @@ namespace ntt::ecs
         }
 
         s_entityStore->Release(id);
+
+        EventContext context;
+        // must be changed when the entity_id_t is changed
+        context.u32_data[0] = id;
+        TriggerEvent(NTT_ENTITY_DESTROYED, nullptr, context);
     }
 
     void ECSUpdate(f32 delta)

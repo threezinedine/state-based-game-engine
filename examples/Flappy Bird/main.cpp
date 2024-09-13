@@ -94,6 +94,22 @@ void Begin()
             auto speed = context.f32_data[0];
             NTT_APP_INFO("New Speed {} for all pipes", speed);
         });
+
+    RegisterEvent(
+        NTT_ENTITY_CREATED,
+        [](auto id, void *sender, EventContext context)
+        {
+            auto entityId = context.u32_data[0];
+            NTT_APP_DEBUG("Entity {} is created", entityId);
+        });
+
+    RegisterEvent(
+        NTT_ENTITY_DESTROYED,
+        [](auto id, void *sender, EventContext context)
+        {
+            auto entityId = context.u32_data[0];
+            NTT_APP_DEBUG("Entity {} is destroyed", entityId);
+        });
 }
 
 void MainLoop(f32 delta)

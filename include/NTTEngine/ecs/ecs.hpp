@@ -21,6 +21,8 @@ namespace ntt::ecs
     /**
      * Each entity is represented by a unique ID only, there's no actual
      *      visible object in the user's perspective.
+     * If the type is changed, then must change the system trigger context
+     *      of CreateEntity, DeleteEntity
      */
     using entity_id_t = u32;
     // constexpr entity_id_t INVALID_ENTITY_ID =
