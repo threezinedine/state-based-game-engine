@@ -56,10 +56,7 @@ namespace ntt
 
         RendererInit();
         AudioInit();
-        CollisionInit();
         ResourceInit();
-
-        MouseHoveringSystemInit();
 
         String resourceConfig = ReadFile(RelativePath("configs/resources.json"));
         if (resourceConfig == "")
@@ -72,37 +69,37 @@ namespace ntt
         ECSInit();
         ECSRegister(
             "Render System",
-            {RenderInitFunc, RenderFunc, RenderShutdownFunc},
+            CreateRef<RenderSystem>(),
             {typeid(Geometry), typeid(Texture)});
 
         ECSRegister(
             "Native Script System",
-            {ScriptInitFunc, ScriptUpdate, ScriptShutdownFunc},
+            CreateRef<ScriptSystem>(),
             {typeid(NativeScriptComponent)});
 
         ECSRegister(
             "State System",
-            {StateInitFunc, StateUpdate, StateShutdownFunc},
+            CreateRef<StateSystem>(),
             {typeid(StateComponent)});
 
         ECSRegister(
             COLLISION_NAME,
-            {CollisionFunc},
+            CreateRef<CollisionSystem>(),
             {typeid(Geometry), typeid(Collision)});
 
         ECSRegister(
             "Hovering System",
-            {MouseHoveringSystemFunc},
+            CreateRef<MouseHoveringSystem>(),
             {typeid(Hovering), typeid(Texture), typeid(Geometry)});
 
         ECSRegister(
             "Mass System",
-            {MassFunc},
+            CreateRef<MassSystem>(),
             {typeid(Mass), typeid(Geometry)});
 
         ECSRegister(
             "Sprite Render System",
-            {SpriteRenderFunc},
+            CreateRef<SpriteRenderSystem>(),
             {typeid(Sprite), typeid(Texture)});
 
         s_phrases.Begin();
@@ -165,9 +162,7 @@ namespace ntt
         s_phrases.Close();
 
         ECSShutdown();
-        MouseHoveringSystemShutdown();
         ResourceShutdown();
-        CollisionShutdown();
         AudioShutdown();
         RendererShutdown();
 

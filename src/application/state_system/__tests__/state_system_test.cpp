@@ -91,7 +91,6 @@ protected:
         s_state2_OnEnter = 0;
         s_state2_OnExit = 0;
         s_state2_OnUpdate = 0;
-        StateInit();
 
         m_machine = CreateScope<State>();
 
@@ -103,7 +102,6 @@ protected:
 
     void TearDown() override
     {
-        StateShutdown();
     }
 
     Scope<State> m_machine;

@@ -47,29 +47,54 @@ namespace ntt::ecs
     /**
      * Store all lifetime functionalitiy of a system.
      */
-    struct System
+    class System
     {
-        std::function<void(entity_id_t)> init;
-        std::function<void(f32, entity_id_t)> update;
-        std::function<void(entity_id_t)> shutdown;
+    public:
+        System();
+        virtual ~System();
 
-        System()
-            : init([](entity_id_t) {}),
-              update([](f32, entity_id_t) {}),
-              shutdown([](entity_id_t) {}) {}
+        // virtual const String GetName() const = 0;
 
-        System(std::function<void(f32, entity_id_t)> update)
-            : init([](entity_id_t) {}),
-              update(update),
-              shutdown([](entity_id_t) {}) {}
+        /**
+         * The function which is called at the begginning of the game (once)
+         *      for initializing the system.
+         */
+        void InitSystem();
 
-        System(std::function<void(entity_id_t)> init,
-               std::function<void(f32, entity_id_t)> update,
-               std::function<void(entity_id_t)> shutdown)
-            : init(init), update(update), shutdown(shutdown) {}
+        /**
+         * The function which is called for every entity which are registered
+         *      (related to this system) in the ECS system.
+         */
+        void InitEntity(entity_id_t id);
 
-        System(const System &other)
-            : init(other.init), update(other.update), shutdown(other.shutdown) {}
+        /**
+         * The function which is called for every entity which are registered
+         *      (related to this system) in the ECS system.
+         */
+        void Update(f32 delta, entity_id_t id);
+
+        /**
+         * The function which is called for every entity which are registered
+         *      (related to this system) in the ECS system.
+         */
+        void ShutdownEntity(entity_id_t id);
+
+        /**
+         * The function which is called at the end of the game (once)
+         *      for cleaning up the system.
+         */
+        void ShutdownSystem();
+
+    protected:
+        virtual void InitSystemImpl() {}
+        virtual void InitEntityImpl(entity_id_t id) {}
+        virtual void UpdateImpl(f32 delta, entity_id_t id) {}
+        virtual void ShutdownEntityImpl(entity_id_t id) {}
+        virtual void ShutdownSystemImpl() {}
+
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
     };
 
     /**
@@ -80,7 +105,7 @@ namespace ntt::ecs
      * @param system The system to be added to the ECS
      * @param componentTypes The list of component types that the system needs
      */
-    void ECSRegister(String name, System system, List<std::type_index> componentTypes);
+    void ECSRegister(String name, Ref<System> system, List<std::type_index> componentTypes);
 
     /**
      * Get all list of entities which are attached to the system.

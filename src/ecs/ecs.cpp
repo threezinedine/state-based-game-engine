@@ -16,12 +16,12 @@ namespace ntt::ecs
     struct SystemInfo
     {
         String name;
-        System system;
+        Ref<System> system;
         List<std::type_index> componentTypes;
         List<entity_id_t> entities;
 
         SystemInfo(String name,
-                   System system,
+                   Ref<System> system,
                    List<std::type_index> componentTypes)
             : name(name), system(system),
               componentTypes(componentTypes)
@@ -71,7 +71,7 @@ namespace ntt::ecs
         s_isInitialized = TRUE;
     }
 
-    void ECSRegister(String name, System system,
+    void ECSRegister(String name, Ref<System> system,
                      List<std::type_index> componentTypes)
     {
         if (!s_isInitialized)
@@ -89,6 +89,8 @@ namespace ntt::ecs
         {
             std::type_index type = componentTypes[i];
         }
+
+        system->InitSystem();
     }
 
     List<entity_id_t> ECSGetEntitiesWithSystem(String name)
@@ -166,7 +168,7 @@ namespace ntt::ecs
             auto system = s_systemsStore->Get(systemId);
             if (system->entities.Contains(entityId))
             {
-                system->system.init(entityId);
+                system->system->InitEntity(entityId);
             }
         }
 
@@ -282,7 +284,7 @@ namespace ntt::ecs
             auto system = s_systemsStore->Get(systemId);
             if (system->entities.Contains(id))
             {
-                system->system.shutdown(id);
+                system->system->ShutdownEntity(id);
                 system->entities.RemoveItem(id);
             }
         }
@@ -324,7 +326,7 @@ namespace ntt::ecs
 
                 try
                 {
-                    system->system.update(delta, entityId);
+                    system->system->Update(delta, entityId);
                 }
                 catch (const std::exception &e)
                 {
@@ -346,6 +348,13 @@ namespace ntt::ecs
         for (auto entityId : availableIds)
         {
             ECSDeleteEntity(entityId);
+        }
+
+        auto availableSystems = s_systemsStore->GetAvailableIds();
+        for (auto systemId : availableSystems)
+        {
+            auto system = s_systemsStore->Get(systemId);
+            system->system->ShutdownSystem();
         }
 
         s_entityStore.reset();

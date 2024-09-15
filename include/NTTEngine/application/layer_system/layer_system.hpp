@@ -1,6 +1,6 @@
 #pragma once
+#include <NTTEngine/defines.hpp>
 #include "layer_types.hpp"
-#include "layers.hpp"
 
 namespace ntt
 {
@@ -48,6 +48,32 @@ namespace ntt
      * Called every frame in the game loop, update all the layers
      */
     void LayerUpdate(f32 deltaTime);
+
+    /**
+     * Staring drawing the layers on the screen
+     *      if the layer is already visible then
+     *      the layer will be drawn on the screen
+     */
+    void LayerMakeVisible(LayerType type);
+
+    /**
+     * Stop drawing the layers on the screen
+     *      if the layer is already invisible then
+     *      the layer will not be drawn on the screen
+     */
+    void LayerMakeInvisible(LayerType type);
+
+    /**
+     * Run all the logic system of the layer like Physics,
+     *      Collision, ... of a certain layer
+     */
+    void LayerActivate(LayerType type);
+
+    /**
+     * Stop all the logic system of the layer like Physics,
+     *      Collision, ... of a certain layer
+     */
+    void LayerDeactivate(LayerType type);
 
     /**
      * Release all needed resources of the layer system

@@ -9,47 +9,28 @@ namespace ntt::script
     using namespace log;
     using namespace memory;
 
-    namespace
+#define THIS(exp) (m_impl->exp)
+
+    class ScriptSystem::Impl
     {
-        struct ScriptLifetime
-        {
-            std::function<void()> OnCreate;
-            std::function<void()> OnDestroy;
-            std::function<void(f32)> OnUpdate;
-        };
+    public:
+    };
 
-        b8 s_initialized = FALSE;
-
-        Dictionary<entity_id_t, ScriptLifetime> s_scripts;
-    } // namespace
-
-    void Script::OnEnter()
+    ScriptSystem::ScriptSystem()
+        : System()
     {
-        OnEnterImpl();
+        m_impl = CreateScope<Impl>();
     }
 
-    void Script::OnExit()
+    ScriptSystem::~ScriptSystem()
     {
-        OnExitImpl();
     }
 
-    void Script::OnUpdate(f32 deltaTime)
+    void ScriptSystem::InitSystemImpl()
     {
-        OnUpdateImpl(deltaTime);
     }
 
-    void ScriptInit()
-    {
-        if (s_initialized)
-        {
-            NTT_ENGINE_WARN("The Script system is already initialized");
-            return;
-        }
-
-        s_initialized = TRUE;
-    }
-
-    void ScriptInitFunc(entity_id_t entity_id)
+    void ScriptSystem::InitEntityImpl(entity_id_t entity_id)
     {
         auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
 
@@ -63,7 +44,7 @@ namespace ntt::script
         script->ins->OnEnter();
     }
 
-    void ScriptUpdate(f32 deltaTime, entity_id_t entity_id)
+    void ScriptSystem::UpdateImpl(f32 deltaTime, entity_id_t entity_id)
     {
         auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
 
@@ -76,7 +57,7 @@ namespace ntt::script
         script->ins->OnUpdate(deltaTime);
     }
 
-    void ScriptShutdownFunc(entity_id_t entity_id)
+    void ScriptSystem::ShutdownEntityImpl(entity_id_t entity_id)
     {
         auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
 
@@ -89,14 +70,7 @@ namespace ntt::script
         script->ins->OnExit();
     }
 
-    void ScriptShutdown()
+    void ScriptSystem::ShutdownSystemImpl()
     {
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("The Script system is already shutdown");
-            return;
-        }
-
-        s_initialized = FALSE;
     }
 } // namespace ntt::script

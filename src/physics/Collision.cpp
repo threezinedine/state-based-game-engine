@@ -11,30 +11,33 @@ namespace ntt::physics
     using namespace ecs;
     using namespace renderer;
 
-    namespace
-    {
-        b8 s_initialized = FALSE;
-    } // namespace
+#define THIS(exp) m_impl->exp
 
-    void CollisionInit()
+    class CollisionSystem::Impl
     {
-        if (s_initialized)
-        {
-            NTT_ENGINE_WARN("Collision system already initialized.");
-            return;
-        }
+    public:
+    };
 
-        s_initialized = TRUE;
+    CollisionSystem::CollisionSystem()
+        : System()
+    {
+        m_impl = CreateScope<Impl>();
     }
 
-    void CollisionFunc(f32 delta, entity_id_t entity_id)
+    CollisionSystem::~CollisionSystem()
     {
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Collision system not initialized.");
-            return;
-        }
+    }
 
+    void CollisionSystem::InitSystemImpl()
+    {
+    }
+
+    void CollisionSystem::InitEntityImpl(entity_id_t entity_id)
+    {
+    }
+
+    void CollisionSystem::UpdateImpl(f32 delta, entity_id_t entity_id)
+    {
         auto collisionComponent = ECS_GET_COMPONENT(entity_id, Collision);
 
         if (collisionComponent->callback == nullptr)
@@ -90,14 +93,11 @@ namespace ntt::physics
         collisionComponent->callback(colliedEntities);
     }
 
-    void CollisionShutdown()
+    void CollisionSystem::ShutdownEntityImpl(entity_id_t id)
     {
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Collision system not initialized.");
-            return;
-        }
+    }
 
-        s_initialized = FALSE;
+    void CollisionSystem::ShutdownSystemImpl()
+    {
     }
 } // namespace ntt::physics

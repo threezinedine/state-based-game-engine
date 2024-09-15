@@ -1,6 +1,7 @@
 #include <NTTEngine/renderer/MouseHoveringSystem.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/renderer/Texture.hpp>
 
 namespace ntt::renderer
 {
@@ -8,25 +9,35 @@ namespace ntt::renderer
 
     namespace
     {
-        b8 s_initialized = FALSE;
-
-        // Store the pair texture vs callback for later update
-        // Must be cleared after each update
         Dictionary<resource_id_t, HoveringCallback> s_callbacks;
     } // namespace
 
-    void MouseHoveringSystemInit()
-    {
-        if (s_initialized)
-        {
-            NTT_ENGINE_WARN("The Mouse Hovering System is already initialized.");
-            return;
-        }
+#define THIS(exp) (m_impl->exp)
 
-        s_initialized = TRUE;
+    class MouseHoveringSystem::Impl
+    {
+    public:
+    };
+
+    MouseHoveringSystem::MouseHoveringSystem()
+        : System()
+    {
+        m_impl = CreateScope<Impl>();
     }
 
-    void MouseHoveringSystemFunc(f32 delta, entity_id_t id)
+    MouseHoveringSystem::~MouseHoveringSystem()
+    {
+    }
+
+    void MouseHoveringSystem::InitSystemImpl()
+    {
+    }
+
+    void MouseHoveringSystem::InitEntityImpl(entity_id_t id)
+    {
+    }
+
+    void MouseHoveringSystem::UpdateImpl(f32 delta, entity_id_t id)
     {
         auto callback = ECS_GET_COMPONENT(id, Hovering)->callback;
         auto texture = ECS_GET_COMPONENT(id, Texture);
@@ -40,14 +51,16 @@ namespace ntt::renderer
         }
     }
 
+    void MouseHoveringSystem::ShutdownEntityImpl(entity_id_t id)
+    {
+    }
+
+    void MouseHoveringSystem::ShutdownSystemImpl()
+    {
+    }
+
     void MouseHoveringSystemUpdate(f32 delta)
     {
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("The Mouse Hovering System is not initialized.");
-            return;
-        }
-
         auto hovers = GetHoveredTexture();
         HoveringContext context;
 
@@ -68,14 +81,4 @@ namespace ntt::renderer
         s_callbacks.clear();
     }
 
-    void MouseHoveringSystemShutdown()
-    {
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("The Mouse Hovering System is not initialized.");
-            return;
-        }
-
-        s_initialized = FALSE;
-    }
 } // namespace ntt::renderer

@@ -8,19 +8,42 @@
 
 namespace ntt::renderer
 {
-    void RenderInitFunc(entity_id_t id)
+#define THIS(exp) (m_impl->exp)
+
+    class RenderSystem::Impl
+    {
+    public:
+    };
+
+    RenderSystem::RenderSystem()
+        : System()
+    {
+        m_impl = CreateScope<Impl>();
+    }
+
+    RenderSystem::~RenderSystem()
+    {
+    }
+
+    void RenderSystem::InitSystemImpl()
+    {
+    }
+
+    void RenderSystem::InitEntityImpl(entity_id_t id)
     {
         auto geo = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, Texture);
 
         auto size = ValidateSize(texture->id,
-                                 {{geo->x, geo->y}, {geo->width, geo->height}, geo->rotatation});
+                                 {{geo->x, geo->y},
+                                  {geo->width, geo->height},
+                                  geo->rotatation});
 
         geo->width = size.width;
         geo->height = size.height;
     }
 
-    void RenderFunc(f32 delta, entity_id_t id)
+    void RenderSystem::UpdateImpl(f32 delta, entity_id_t id)
     {
         auto geo = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, Texture);
@@ -46,30 +69,11 @@ namespace ntt::renderer
         DrawTexture(texture->id, context, cell, DrawContext(texture->priority));
     }
 
-    void RenderShutdownFunc(entity_id_t id)
+    void RenderSystem::ShutdownEntityImpl(entity_id_t id)
     {
     }
 
-    void SpriteRenderFunc(f32 delta, entity_id_t id)
+    void RenderSystem::ShutdownSystemImpl()
     {
-        auto sprite = ECS_GET_COMPONENT(id, Sprite);
-        auto texture = ECS_GET_COMPONENT(id, Texture);
-
-        auto colIndex = texture->colIndex;
-        auto rowIndex = texture->rowIndex;
-
-        auto currentCell = sprite->cells[sprite->currentCell];
-
-        if (sprite->timer.GetMilliseconds() > sprite->changePerMilis)
-        {
-            sprite->timer.Reset();
-            sprite->currentCell = (sprite->currentCell + 1) % sprite->cells.size();
-        }
-
-        if (colIndex != currentCell.first || rowIndex != currentCell.second)
-        {
-            texture->rowIndex = currentCell.first;
-            texture->colIndex = currentCell.second;
-        }
     }
 } // namespace ntt::renderer

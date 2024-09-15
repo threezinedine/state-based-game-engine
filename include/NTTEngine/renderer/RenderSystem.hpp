@@ -7,9 +7,41 @@ namespace ntt::renderer
 {
     using namespace ecs;
 
-    void RenderInitFunc(entity_id_t id);
-    void RenderFunc(f32 delta, entity_id_t id);
-    void RenderShutdownFunc(entity_id_t id);
+    class RenderSystem : public System
+    {
+    public:
+        RenderSystem();
+        ~RenderSystem();
+        // const String GetName() const override { return "Render System"; }
 
-    void SpriteRenderFunc(f32 delta, entity_id_t id);
+    protected:
+        void InitSystemImpl() override;
+        void InitEntityImpl(entity_id_t id) override;
+        void UpdateImpl(f32 delta, entity_id_t id) override;
+        void ShutdownEntityImpl(entity_id_t id) override;
+        void ShutdownSystemImpl() override;
+
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
+    };
+
+    class SpriteRenderSystem : public System
+    {
+    public:
+        SpriteRenderSystem();
+        ~SpriteRenderSystem();
+        // const String GetName() const override { return "Sprite Render System"; }
+
+    protected:
+        void InitSystemImpl() override;
+        void InitEntityImpl(entity_id_t id) override;
+        void UpdateImpl(f32 delta, entity_id_t id) override;
+        void ShutdownEntityImpl(entity_id_t id) override;
+        void ShutdownSystemImpl() override;
+
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
+    };
 } // namespace ntt::renderer

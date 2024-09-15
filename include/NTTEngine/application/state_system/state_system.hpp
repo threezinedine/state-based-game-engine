@@ -78,29 +78,21 @@ namespace ntt
         }
     };
 
-    /**
-     * @brief Initialize the state system.
-     */
-    void StateInit();
+    class StateSystem : public System
+    {
+    public:
+        StateSystem();
+        ~StateSystem();
 
-    /**
-     * @brief Initialize the state component when the entity is created.
-     *      This will be called right after the entity is created.
-     */
-    void StateInitFunc(entity_id_t entity_id);
+    protected:
+        void InitSystemImpl() override;
+        void InitEntityImpl(entity_id_t id) override;
+        void UpdateImpl(f32 delta, entity_id_t id) override;
+        void ShutdownEntityImpl(entity_id_t id) override;
+        void ShutdownSystemImpl() override;
 
-    /**
-     * @brief Update the state system.
-     */
-    void StateUpdate(f32 delta, entity_id_t entity_id_t);
-
-    /**
-     * @brief Shutdown the state component of a system when the entity is destroyed.
-     */
-    void StateShutdownFunc(entity_id_t entity_id);
-
-    /**
-     * @brief Shutdown the state system.
-     */
-    void StateShutdown();
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
+    };
 } // namespace ntt

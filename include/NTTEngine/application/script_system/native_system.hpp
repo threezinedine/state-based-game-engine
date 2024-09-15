@@ -87,30 +87,22 @@ namespace ntt::script
             : ins(instance) {}
     };
 
-    /**
-     * Starting the Script system
-     */
-    void ScriptInit();
+    class ScriptSystem : public System
+    {
+    public:
+        ScriptSystem();
+        ~ScriptSystem();
+        // const String GetName() const override { return "Script System"; }
 
-    /**
-     * Initializing for the script component when the entity is created
-     *      this will be called right after the entity is created
-     */
-    void ScriptInitFunc(entity_id_t entity_id);
+    protected:
+        void InitSystemImpl() override;
+        void InitEntityImpl(entity_id_t id) override;
+        void UpdateImpl(f32 delta, entity_id_t id) override;
+        void ShutdownEntityImpl(entity_id_t id) override;
+        void ShutdownSystemImpl() override;
 
-    /**
-     * Handling all Script which is passed to the system
-     */
-    void ScriptUpdate(f32 deltaTime, entity_id_t entity_id);
-
-    /**
-     * Shut down the Script component of a system when the entity is destroyed
-     *      (not deactive)
-     */
-    void ScriptShutdownFunc(entity_id_t entity_id);
-
-    /**
-     * Shutdown the Script system
-     */
-    void ScriptShutdown();
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
+    };
 } // namespace ntt::script

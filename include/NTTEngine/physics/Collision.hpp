@@ -19,18 +19,21 @@ namespace ntt::physics
         Collision() = default;
     };
 
-    /**
-     * Startup the collision system.
-     */
-    void CollisionInit();
+    class CollisionSystem : public System
+    {
+    public:
+        CollisionSystem();
+        ~CollisionSystem();
 
-    /**
-     * The system function which is used for regsitering with the ECS.
-     */
-    void CollisionFunc(f32 delta, entity_id_t entity_id);
+    protected:
+        void InitSystemImpl() override;
+        void InitEntityImpl(entity_id_t id) override;
+        void UpdateImpl(f32 delta, entity_id_t id) override;
+        void ShutdownEntityImpl(entity_id_t id) override;
+        void ShutdownSystemImpl() override;
 
-    /**
-     * Delete the collision system.
-     */
-    void CollisionShutdown();
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
+    };
 } // namespace ntt::physics

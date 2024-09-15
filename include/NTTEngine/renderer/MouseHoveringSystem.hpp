@@ -3,15 +3,28 @@
 
 namespace ntt::renderer
 {
-    void MouseHoveringSystemInit();
+    class MouseHoveringSystem : public System
+    {
+    public:
+        MouseHoveringSystem();
+        ~MouseHoveringSystem();
+        // const String GetName() const override { return "Mouse Hovering System"; }
 
-    void MouseHoveringSystemFunc(f32 delta, entity_id_t id);
+    protected:
+        void InitSystemImpl() override;
+        void InitEntityImpl(entity_id_t id) override;
+        void UpdateImpl(f32 delta, entity_id_t id) override;
+        void ShutdownEntityImpl(entity_id_t id) override;
+        void ShutdownSystemImpl() override;
+
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
+    };
 
     /**
      * Actually handle the mouse hovering system update.
      * Be called in the game loop.
      */
     void MouseHoveringSystemUpdate(f32 delta);
-
-    void MouseHoveringSystemShutdown();
 } // namespace ntt::renderer
