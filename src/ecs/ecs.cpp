@@ -32,9 +32,10 @@ namespace ntt::ecs
     struct EntityInfo
     {
         Dictionary<std::type_index, Ref<ComponentBase>> components;
+        b8 active = TRUE;
 
         EntityInfo(Dictionary<std::type_index, Ref<ComponentBase>> components)
-            : components(components)
+            : components(components), active(TRUE)
         {
         }
     };
@@ -179,6 +180,39 @@ namespace ntt::ecs
         TriggerEvent(NTT_ENTITY_CREATED, nullptr, context);
 
         return entityId;
+    }
+
+    void ECSSetEntityState(entity_id_t id, b8 active)
+    {
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
+        if (!s_entityStore->Contains(id))
+        {
+            NTT_ENGINE_TRACE("The entity with ID {} is not existed", id);
+            return;
+        }
+
+        auto entityInfo = s_entityStore->Get(id);
+        entityInfo->active = active;
+    }
+
+    b8 ECSIsEntityActive(entity_id_t id)
+    {
+        if (!s_isInitialized)
+        {
+            return FALSE;
+        }
+
+        if (!s_entityStore->Contains(id))
+        {
+            return FALSE;
+        }
+
+        auto entityInfo = s_entityStore->Get(id);
+        return entityInfo->active;
     }
 
     Ref<ComponentBase> ECSGetComponent(entity_id_t id, std::type_index type)

@@ -5,6 +5,7 @@
 #include "BirdController.hpp"
 #include "GameController.hpp"
 #include "defs.hpp"
+#include "SettingButtonController.hpp"
 
 String GetSourceDir()
 {
@@ -25,6 +26,15 @@ void Begin()
                                  windowSize.width,
                                  windowSize.height),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("background")),
+            ECS_CREATE_COMPONENT(Hovering),
+        });
+
+    ECSCreateEntity(
+        "menu-btn",
+        {
+            ECS_CREATE_COMPONENT(Geometry, windowSize.width * 0.95, windowSize.height * 0.05, 30),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("buttons"), 9, 11, 3),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<SettingButtonController>()),
             ECS_CREATE_COMPONENT(Hovering),
         });
 
@@ -110,6 +120,16 @@ void Begin()
             auto entityId = context.u32_data[0];
             NTT_APP_DEBUG("Entity {} is destroyed", entityId);
         });
+
+    BeginLayer(LayerType::UI_LAYER);
+    // ECSCreateEntity(
+    //     "game-over",
+    //     {
+    //         ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 100),
+    //         ECS_CREATE_COMPONENT(Texture, GetResourceID("game-over")),
+    //     });
+
+    LayerMakeVisible(LayerType::GAME_LAYER);
 }
 
 void MainLoop(f32 delta)

@@ -60,7 +60,7 @@ namespace ntt::renderer
         // Store all the priorities draw with maximum 256 priorities
         // The higher priority will be drawn on the top of the lower priority
         // It should be cleared after each frame
-        Scope<List<DrawInfo>> s_drawLists[256];
+        Scope<List<DrawInfo>> s_drawLists[20];
 
         // Stack of all texture ID which is hovered by the mouse
         // It also be cleared after each frame

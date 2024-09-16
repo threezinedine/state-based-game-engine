@@ -6,7 +6,8 @@ namespace ntt
 {
     /**
      * Staring of the layer system, should be called in the beginning
-     *      of the application
+     *      of the application, game layer will be the default layer
+     *      and be turned on automatically.
      */
     void LayerInit();
 
@@ -53,27 +54,9 @@ namespace ntt
      * Staring drawing the layers on the screen
      *      if the layer is already visible then
      *      the layer will be drawn on the screen
+     * Other layers will be hidden
      */
     void LayerMakeVisible(LayerType type);
-
-    /**
-     * Stop drawing the layers on the screen
-     *      if the layer is already invisible then
-     *      the layer will not be drawn on the screen
-     */
-    void LayerMakeInvisible(LayerType type);
-
-    /**
-     * Run all the logic system of the layer like Physics,
-     *      Collision, ... of a certain layer
-     */
-    void LayerActivate(LayerType type);
-
-    /**
-     * Stop all the logic system of the layer like Physics,
-     *      Collision, ... of a certain layer
-     */
-    void LayerDeactivate(LayerType type);
 
     /**
      * Release all needed resources of the layer system

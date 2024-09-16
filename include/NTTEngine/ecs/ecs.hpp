@@ -22,7 +22,7 @@ namespace ntt::ecs
      * Each entity is represented by a unique ID only, there's no actual
      *      visible object in the user's perspective.
      * If the type is changed, then must change the system trigger context
-     *      of CreateEntity, DeleteEntity
+     *      of CreateEntity, DeleteEntity, and the Layer system callback.
      */
     using entity_id_t = u32;
     // constexpr entity_id_t INVALID_ENTITY_ID =
@@ -92,6 +92,13 @@ namespace ntt::ecs
         virtual void ShutdownEntityImpl(entity_id_t id) {}
         virtual void ShutdownSystemImpl() {}
 
+        /**
+         * Use for filtering out which entity should be updated or not.
+         *      (useful for some cases where the entity can be drawn but
+         *      logic is not needed)
+         */
+        virtual b8 ShouldUpdate(entity_id_t id);
+
     private:
         class Impl;
         Scope<Impl> m_impl;
@@ -129,6 +136,27 @@ namespace ntt::ecs
     entity_id_t ECSCreateEntity(
         const String &name,
         Dictionary<std::type_index, Ref<ComponentBase>> components);
+
+    /**
+     * Make the entity should be passed to the system for updating or not.
+     *
+     * @param id The ID of the entity
+     * @param active The state of the entity, if active = FALSE, then the entity
+     *      the entity will not be passed to the systems for updating (but pass
+     *      to the rendering system for drawing)
+     *      if active = TRUE, then the entity will be passed to all systems
+     */
+    void ECSSetEntityState(entity_id_t id, b8 active = TRUE);
+
+    /**
+     * Check if the entity is active or not.
+     * If the entity is not active, then the entity will not be passed to the
+     *     systems for updating (but pass to the rendering system for drawing)
+     * If the entity is active, then the entity will be passed to all systems
+     *      for updating.
+     * If the entity is not found, then return FALSE
+     */
+    b8 ECSIsEntityActive(entity_id_t id);
 
     /**
      * Query the component based on the entity ID and the type of the component.

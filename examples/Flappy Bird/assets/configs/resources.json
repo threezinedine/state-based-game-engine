@@ -39,6 +39,15 @@
 			"relPath": "images/game-objects/background-day.png"
 		},
 		{
+			"name": "buttons",
+			"type": 0,
+			"relPath": "images/ui/buttons.png",
+			"grid": {
+				"row": 12,
+				"col": 12
+			}
+		},
+		{
 			"name": "message",
 			"type": 0,
 			"relPath": "images/ui/message.png"

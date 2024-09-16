@@ -43,11 +43,21 @@ namespace ntt::ecs
         InitEntityImpl(id);
     }
 
+    b8 System::ShouldUpdate(entity_id_t id)
+    {
+        return ECSIsEntityActive(id);
+    }
+
     void System::Update(f32 delta, entity_id_t id)
     {
         if (THIS(initialized) == FALSE)
         {
             NTT_ENGINE_WARN("The system is not initialized");
+            return;
+        }
+
+        if (!ShouldUpdate(id))
+        {
             return;
         }
 

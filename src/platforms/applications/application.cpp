@@ -19,6 +19,7 @@
 #include <NTTEngine/application/script_system/native_system.hpp>
 #include <NTTEngine/application/state_system/state_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
+#include <NTTEngine/application/layer_system/layer_system.hpp>
 
 namespace ntt
 {
@@ -102,11 +103,14 @@ namespace ntt
             CreateRef<SpriteRenderSystem>(),
             {typeid(Sprite), typeid(Texture)});
 
+        LayerInit();
+
         s_phrases.Begin();
 
         NTT_ENGINE_INFO("The application is started.");
 
         s_timer.Reset();
+        BeginLayer(LayerType::GAME_LAYER);
     }
 
     void LoadConfiguration(const String &path)
@@ -145,6 +149,7 @@ namespace ntt
 
         GraphicUpdate();
         MouseHoveringSystemUpdate(delta);
+        LayerUpdate(delta);
         END_DRAWING();
 
         running = !WINDOW_SHOULD_CLOSE();
@@ -161,6 +166,7 @@ namespace ntt
     {
         s_phrases.Close();
 
+        LayerShutdown();
         ECSShutdown();
         ResourceShutdown();
         AudioShutdown();
