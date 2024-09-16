@@ -66,7 +66,19 @@ namespace ntt::renderer
             return;
         }
 
-        DrawTexture(texture->id, context, cell, DrawContext(texture->priority));
+        auto drawContext = DrawContext(texture->priority);
+
+        if (ECSIsEntityActive(id))
+        {
+            drawContext.priority += 10;
+        }
+
+        DrawTexture(texture->id, context, cell, drawContext);
+    }
+
+    b8 RenderSystem::ShouldUpdate(entity_id_t id)
+    {
+        return TRUE;
     }
 
     void RenderSystem::ShutdownEntityImpl(entity_id_t id)

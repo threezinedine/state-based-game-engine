@@ -6,6 +6,7 @@
 #include "GameController.hpp"
 #include "defs.hpp"
 #include "SettingButtonController.hpp"
+#include "ResumeButtonController.hpp"
 
 String GetSourceDir()
 {
@@ -26,7 +27,6 @@ void Begin()
                                  windowSize.width,
                                  windowSize.height),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("background")),
-            ECS_CREATE_COMPONENT(Hovering),
         });
 
     ECSCreateEntity(
@@ -122,12 +122,14 @@ void Begin()
         });
 
     BeginLayer(LayerType::UI_LAYER);
-    // ECSCreateEntity(
-    //     "game-over",
-    //     {
-    //         ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 100),
-    //         ECS_CREATE_COMPONENT(Texture, GetResourceID("game-over")),
-    //     });
+    ECSCreateEntity(
+        "resume-btn",
+        {
+            ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 100),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("menu-btn"), 1, 1),
+            ECS_CREATE_COMPONENT(Hovering),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ResumeButtonController>()),
+        });
 
     LayerMakeVisible(LayerType::GAME_LAYER);
 }

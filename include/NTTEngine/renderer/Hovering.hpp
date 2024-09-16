@@ -25,12 +25,9 @@ namespace ntt::renderer
 
     struct Hovering : public ComponentBase
     {
+        HoveringCallback onEnterCallback;
         HoveringCallback callback;
-
-        Hovering(HoveringCallback callback)
-            : callback(callback)
-        {
-        }
+        HoveringCallback onExitCallback;
 
         Hovering() = default;
     };

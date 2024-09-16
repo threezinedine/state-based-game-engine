@@ -48,6 +48,15 @@
 			}
 		},
 		{
+			"name": "menu-btn",
+			"type": 0,
+			"relPath": "images/ui/menu-btn.png",
+			"grid": {
+				"row": 9,
+				"col": 3
+			}
+		},
+		{
 			"name": "message",
 			"type": 0,
 			"relPath": "images/ui/message.png"

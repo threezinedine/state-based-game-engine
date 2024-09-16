@@ -20,6 +20,7 @@ namespace ntt::renderer
         void UpdateImpl(f32 delta, entity_id_t id) override;
         void ShutdownEntityImpl(entity_id_t id) override;
         void ShutdownSystemImpl() override;
+        b8 ShouldUpdate(entity_id_t id) override;
 
     private:
         class Impl;
