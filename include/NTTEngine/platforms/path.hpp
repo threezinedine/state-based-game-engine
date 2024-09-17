@@ -40,15 +40,38 @@ namespace ntt
     String ReadFile(const String &path);
 
     /**
-     * Write the content to the file
+     * Open a file for writing new content or appending content
+     *      to the file
+     * Every Write operation after this OpenFile will be written
+     *      into to file
      * If the file does not exist then the file will be created
+     * When a file which is already opened (or another file) then
+     *      the new file will be opened and the old file will be closed
      *
      * @param path: The path of the file
-     * @param content: The content to be written to the file
      * @param append: If true then the content will be appended to the file
      *          else the content will be overwritten
      */
-    void WriteFile(const String &path, const String &content, b8 append = false);
+    void OpenFile(const String &path, b8 append = false);
+
+    /**
+     * The data will be appended to the file if the file is opened
+     * If no file is opened then the warning will be logged and
+     *      nothing will be written
+     *
+     * This Write function must be called after the OpenFile function
+     *      and before the CloseFile function
+     *
+     * @param content: The content to be written to the file
+     */
+    void Write(const String &content);
+
+    /**
+     * Close the file if the file is opened
+     * If no file is opened then the warning will be logged and
+     *      nothing will be closed
+     */
+    void CloseFile();
 
     /**
      * Get filename from the path of the file

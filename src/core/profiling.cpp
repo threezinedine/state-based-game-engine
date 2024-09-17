@@ -17,7 +17,7 @@ namespace ntt
     {
         String s_currentSection = DEFAULT_SECTION;
         String s_outputFolder = RelativePath(".");
-        b8 s_firstWrite = FALSE;
+        b8 s_hasWritten = FALSE;
         u8 s_indent = -1;
     } // namespace
 
@@ -53,15 +53,13 @@ namespace ntt
 
         String logFile = JoinPath({s_outputFolder, (s_currentSection + ".prof.txt")});
 
-        if (!s_firstWrite)
+        if (!s_hasWritten)
         {
-            s_firstWrite = TRUE;
-            WriteFile(logFile, data, FALSE);
+            s_hasWritten = TRUE;
+            OpenFile(logFile, FALSE);
         }
-        else
-        {
-            WriteFile(logFile, data, TRUE);
-        }
+
+        Write(data + "\n");
     }
 
     Profiling::~Profiling()
@@ -79,7 +77,7 @@ namespace ntt
             data = fmt::format("\t{}", data);
         }
 
-        WriteFile(JoinPath({s_outputFolder, (s_currentSection + ".prof.txt")}), data, TRUE);
+        Write(data + "\n");
 
         s_indent--;
     }
@@ -87,7 +85,7 @@ namespace ntt
     void ProfilingInit(String outputFolder)
     {
         s_outputFolder = outputFolder;
-        s_firstWrite = FALSE;
+        s_hasWritten = FALSE;
         s_indent = -1;
     }
 
@@ -100,13 +98,23 @@ namespace ntt
 
         NTT_ENGINE_TRACE("Begin Section {0}\n{1}", section, SEPARATOR);
 
-        s_firstWrite = FALSE;
+        if (s_hasWritten)
+        {
+            CloseFile();
+        }
+
+        s_hasWritten = FALSE;
         s_currentSection = section;
         s_indent = -1;
     }
 
     void ProfilingShutdown()
     {
+        if (s_hasWritten)
+        {
+            CloseFile();
+        }
+
         if (s_currentSection != DEFAULT_SECTION)
         {
             NTT_ENGINE_TRACE("End Section {0}\n{1}", s_currentSection, SEPARATOR);

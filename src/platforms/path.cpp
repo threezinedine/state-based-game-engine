@@ -12,6 +12,8 @@ namespace ntt
         String s_sourcePath = ::std::filesystem::current_path()
                                   .make_preferred()
                                   .string();
+
+        Scope<::std::ofstream> s_file = nullptr;
     } // namespace
 
     void ConfigureSourcePath(const String &path)
@@ -50,7 +52,7 @@ namespace ntt
         return content;
     }
 
-    void WriteFile(const String &path, const String &content, b8 append)
+    void OpenFile(const String &path, b8 append)
     {
         if (!IsExist(path))
         {
@@ -58,12 +60,48 @@ namespace ntt
                             path.RawString().c_str());
         }
 
-        ::std::ofstream file(path.RawString(), append ? ::std::ios::app : ::std::ios::trunc);
-        if (append)
+        if (s_file != nullptr)
         {
-            file << "\n";
+            if (s_file->is_open())
+            {
+                s_file->close();
+            }
         }
-        file << content.RawString();
+
+        s_file = CreateScope<::std::ofstream>(
+            path.RawString(),
+            append ? ::std::ios::app : ::std::ios::trunc);
+    }
+
+    void Write(const String &content)
+    {
+        if (s_file == nullptr)
+        {
+            NTT_ENGINE_WARN("No file is opened, nothing will be written");
+            return;
+        }
+
+        if (!s_file->is_open())
+        {
+            NTT_ENGINE_WARN("The file is not opened, nothing will be written");
+            return;
+        }
+
+        *s_file << content.RawString();
+    }
+
+    void CloseFile()
+    {
+        if (s_file == nullptr)
+        {
+            NTT_ENGINE_WARN("No file is opened, nothing will be closed");
+            return;
+        }
+
+        if (s_file->is_open())
+        {
+            s_file->close();
+        }
     }
 
     String GetFileName(const String &path, b8 containBase)
