@@ -2,6 +2,7 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -18,19 +19,23 @@ namespace ntt
     StateSystem::StateSystem()
         : System()
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
     }
 
     StateSystem::~StateSystem()
     {
+        PROFILE_FUNCTION();
     }
 
     void StateSystem::InitSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void StateSystem::InitEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto machine = ECS_GET_COMPONENT(id, StateComponent);
 
         if (machine == nullptr)
@@ -45,6 +50,7 @@ namespace ntt
 
     void StateSystem::UpdateImpl(f32 delta, entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto machine = ECS_GET_COMPONENT(id, StateComponent);
         if (machine == nullptr)
         {
@@ -57,6 +63,7 @@ namespace ntt
 
     void StateSystem::ShutdownEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto machine = ECS_GET_COMPONENT(id, StateComponent);
         if (machine == nullptr)
         {
@@ -69,5 +76,6 @@ namespace ntt
 
     void StateSystem::ShutdownSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 } // namespace ntt

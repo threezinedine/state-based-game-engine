@@ -5,6 +5,7 @@
 #include <NTTEngine/audio/audio.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/time.hpp>
+#include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/structures/list.hpp>
 
@@ -46,6 +47,7 @@ namespace ntt
                          const char *title,
                          const Phrases &phrases)
     {
+        PROFILE_FUNCTION();
         s_phrases = phrases;
 
         MemoryInit();
@@ -115,6 +117,7 @@ namespace ntt
 
     void LoadConfiguration(const String &path)
     {
+        PROFILE_FUNCTION();
         auto data = ReadFile(path);
         try
         {
@@ -134,6 +137,7 @@ namespace ntt
 
     void ApplicationUpdate(b8 &running)
     {
+        PROFILE_FUNCTION();
         auto delta = static_cast<f32>(s_timer.GetMilliseconds());
         s_timer.Reset();
 
@@ -163,6 +167,7 @@ namespace ntt
 
     void ApplicationShutdown()
     {
+        PROFILE_FUNCTION();
         s_phrases.Close();
 
         LayerShutdown();

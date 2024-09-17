@@ -1,4 +1,5 @@
 #include <NTTEngine/application/script_system/native_system.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::script
 {
@@ -8,16 +9,19 @@ namespace ntt::script
 
     void Script::OnEnter()
     {
+        PROFILE_FUNCTION();
         OnEnterImpl();
     }
 
     void Script::OnExit()
     {
+        PROFILE_FUNCTION();
         OnExitImpl();
     }
 
     void Script::OnUpdate(f32 deltaTime)
     {
+        PROFILE_FUNCTION();
         OnUpdateImpl(deltaTime);
     }
 

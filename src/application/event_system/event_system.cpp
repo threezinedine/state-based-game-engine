@@ -2,6 +2,7 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/structures/list.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::event
 {
@@ -32,6 +33,7 @@ namespace ntt::event
 
     event_id_t RegisterEvent(event_code_t event_code, EventCallback callback)
     {
+        PROFILE_FUNCTION();
         // TODO: Handle problem when the event code is reach the maximum
         s_eventCallbacks[event_code].push_back({s_currentId, callback});
         return s_currentId++;
@@ -39,6 +41,7 @@ namespace ntt::event
 
     void UnregisterEvent(event_id_t event_id)
     {
+        PROFILE_FUNCTION();
         for (auto &event : s_eventCallbacks)
         {
             event.second.RemoveItem(
@@ -50,6 +53,7 @@ namespace ntt::event
 
     void TriggerEvent(event_code_t event_code, void *sender, const EventContext &context)
     {
+        PROFILE_FUNCTION();
         if (!s_eventCallbacks.Contains(event_code))
         {
             return;

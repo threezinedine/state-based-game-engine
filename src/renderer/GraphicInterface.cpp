@@ -7,6 +7,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <cstring>
 #include <NTTEngine/dev/store.hpp>
+#include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
 
 #include "GraphicInterface_platforms.hpp"
@@ -72,6 +73,7 @@ namespace ntt::renderer
 
     void RendererInit()
     {
+        PROFILE_FUNCTION();
         if (s_isInitialized)
         {
             return;
@@ -91,6 +93,7 @@ namespace ntt::renderer
 
     resource_id_t LoadTexture(const String &path, const Grid &grid)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The renderer is not initialized yet");
@@ -135,6 +138,7 @@ namespace ntt::renderer
     Size ValidateSize(resource_id_t texture_id,
                       const RectContext &context)
     {
+        PROFILE_FUNCTION();
         auto textureInfo = s_textureStore->Get(texture_id);
         if (textureInfo == nullptr)
         {
@@ -178,6 +182,7 @@ namespace ntt::renderer
                      const Grid &cell,
                      const DrawContext &drawContext)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The renderer is not initialized yet");
@@ -229,6 +234,7 @@ namespace ntt::renderer
 
     void GraphicUpdate()
     {
+        PROFILE_FUNCTION();
         s_hoveredTextures.clear();
 
         auto mouse = input::GetMousePosition();
@@ -273,6 +279,7 @@ namespace ntt::renderer
 
     void UnloadTexture(resource_id_t texture_id)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The renderer is not initialized yet");
@@ -299,6 +306,7 @@ namespace ntt::renderer
 
     void RendererShutdown()
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;

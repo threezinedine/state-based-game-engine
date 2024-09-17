@@ -3,6 +3,7 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <cstring>
+#include <NTTEngine/core/profiling.hpp>
 
 #define KEY_SIZE 256
 #define MOUSE_BUTTON_SIZE 3
@@ -79,6 +80,7 @@ namespace ntt::input
 
     void InputUpdate(f32 delta)
     {
+        PROFILE_FUNCTION();
         EventContext ctx;
         memset(&ctx, 0, sizeof(EventContext));
 
@@ -144,6 +146,7 @@ namespace ntt::input
 
     const char *GetKeyName(Key key)
     {
+        PROFILE_FUNCTION();
         switch (key)
         {
             GET_KEY_NAME(A);
@@ -202,26 +205,31 @@ namespace ntt::input
 
     b8 CheckState(Key key, InputState state)
     {
+        PROFILE_FUNCTION();
         return s_keyStates[key] == state;
     }
 
     b8 CheckState(MouseButton button, InputState state)
     {
+        PROFILE_FUNCTION();
         return s_mouseStates[button] == state;
     }
 
     b8 IsMouseMoving()
     {
+        PROFILE_FUNCTION();
         return s_mousePrePos.x != s_mousePos.x || s_mousePrePos.y != s_mousePos.y;
     }
 
     Position &GetMousePosition()
     {
+        PROFILE_FUNCTION();
         return s_mousePos;
     }
 
     i16 GetMouseScroll()
     {
+        PROFILE_FUNCTION();
         return 0;
     }
 } // namespace ntt::input

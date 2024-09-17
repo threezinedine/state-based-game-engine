@@ -22,9 +22,12 @@ int main()
     ntt::Phrases phrases = {Begin, MainLoop, Close};
 
     ConfigureSourcePath(GetSourceDir());
+    ProfilingInit("profiling");
 
     LoadConfiguration(RelativePath("configs/config.json"));
     auto config = GetConfiguration();
+
+    ProfilingBegin("Initialization");
 
     ApplicationInit(
         config.Get<u16>("screenWidth", 800),
@@ -34,13 +37,17 @@ int main()
 
     b8 running = true;
 
+    ProfilingBegin("Loop");
+
     while (running)
     {
         ApplicationUpdate(running);
     }
 
+    ProfilingBegin("Shutdown");
     ApplicationShutdown();
 
+    ProfilingShutdown();
     LogShutdown();
     return 0;
 }

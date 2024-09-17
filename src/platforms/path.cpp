@@ -50,11 +50,20 @@ namespace ntt
         return content;
     }
 
-    String WriteFile(const String &path, const String &content, b8 append)
+    void WriteFile(const String &path, const String &content, b8 append)
     {
+        if (!IsExist(path))
+        {
+            NTT_ENGINE_WARN("The path {} does not exist - create new",
+                            path.RawString().c_str());
+        }
+
         ::std::ofstream file(path.RawString(), append ? ::std::ios::app : ::std::ios::trunc);
+        if (append)
+        {
+            file << "\n";
+        }
         file << content.RawString();
-        return path;
     }
 
     String GetFileName(const String &path, b8 containBase)
@@ -87,7 +96,7 @@ namespace ntt
                       {
             if (!isFinished)
             {
-                if (index != 0)
+                if (index != 0 || useBase)
                 {
                     path += "/";
                 }

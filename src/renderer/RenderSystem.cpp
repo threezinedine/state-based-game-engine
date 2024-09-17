@@ -7,6 +7,7 @@
 #include <NTTEngine/core/assertion.hpp>
 #include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::renderer
 {
@@ -21,19 +22,23 @@ namespace ntt::renderer
     RenderSystem::RenderSystem()
         : System()
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
     }
 
     RenderSystem::~RenderSystem()
     {
+        PROFILE_FUNCTION();
     }
 
     void RenderSystem::InitSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void RenderSystem::InitEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto geo = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, Texture);
 
@@ -48,6 +53,7 @@ namespace ntt::renderer
 
     void RenderSystem::UpdateImpl(f32 delta, entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto geo = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, Texture);
 
@@ -81,15 +87,18 @@ namespace ntt::renderer
 
     b8 RenderSystem::ShouldUpdate(entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto entities = DrawedEntities();
         return entities.Contains(id);
     }
 
     void RenderSystem::ShutdownEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void RenderSystem::ShutdownSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 } // namespace ntt::renderer

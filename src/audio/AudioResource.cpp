@@ -1,5 +1,6 @@
 #include <NTTEngine/audio/AudioResource.hpp>
 #include <NTTEngine/audio/audio.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::audio
 {
@@ -19,6 +20,7 @@ namespace ntt::audio
 
     AudioResource::AudioResource(const ResourceInfo &info)
     {
+        PROFILE_FUNCTION();
         m_Impl = CreateScope<Impl>();
         m_Impl->path = info.path;
         m_Impl->name = info.name;
@@ -31,15 +33,18 @@ namespace ntt::audio
 
     AudioResource::~AudioResource()
     {
+        PROFILE_FUNCTION();
     }
 
     const String &AudioResource::GetName() const
     {
+        PROFILE_FUNCTION();
         return m_Impl->name;
     }
 
     resource_id_t AudioResource::Load()
     {
+        PROFILE_FUNCTION();
         if (m_Impl->isLoaded)
         {
             NTT_ENGINE_WARN("The audio resource is already loaded.");
@@ -69,6 +74,7 @@ namespace ntt::audio
 
     void AudioResource::Unload()
     {
+        PROFILE_FUNCTION();
         if (!m_Impl->isLoaded)
         {
             NTT_ENGINE_WARN("The audio resource is already unloaded.");

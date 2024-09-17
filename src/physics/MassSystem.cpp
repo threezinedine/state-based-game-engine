@@ -1,6 +1,7 @@
 #include <NTTEngine/physics/MassSystem.hpp>
 #include <NTTEngine/physics/Mass.hpp>
 #include <NTTEngine/renderer/Geometry.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 using namespace ntt;
 using namespace ntt::ecs;
@@ -18,23 +19,28 @@ namespace ntt::physics
     MassSystem::MassSystem()
         : System()
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
     }
 
     MassSystem::~MassSystem()
     {
+        PROFILE_FUNCTION();
     }
 
     void MassSystem::InitSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void MassSystem::InitEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void MassSystem::UpdateImpl(f32 delta, entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto mass = ECS_GET_COMPONENT(id, Mass);
         auto geo = ECS_GET_COMPONENT(id, Geometry);
 
@@ -47,9 +53,11 @@ namespace ntt::physics
 
     void MassSystem::ShutdownEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void MassSystem::ShutdownSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 } // namespace ntt::physics

@@ -3,6 +3,7 @@
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/defines.hpp>
 #include <fmt/core.h>
+#include <NTTEngine/core/profiling.hpp>
 
 #if defined(_DEBUG) && not defined(NTTENGINE_SHARED)
 #include "memplumber.h"
@@ -33,6 +34,7 @@ namespace ntt::memory
 
     void MemoryInit()
     {
+        PROFILE_FUNCTION();
         if (s_isInitialized)
         {
             return;
@@ -43,6 +45,8 @@ namespace ntt::memory
 
     void MemoryShutdown()
     {
+        PROFILE_FUNCTION();
+
         if (!s_isInitialized)
         {
             return;
@@ -53,6 +57,8 @@ namespace ntt::memory
 
     void RegisterPointer(void *ptr, const PointerInfo &info)
     {
+        PROFILE_FUNCTION();
+
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The memory module is not initialized yet");
@@ -70,6 +76,8 @@ namespace ntt::memory
 
     void UnregisterPointer(void *ptr)
     {
+        PROFILE_FUNCTION();
+
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The memory module is not initialized yet");

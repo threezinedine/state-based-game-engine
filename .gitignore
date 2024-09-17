@@ -37,3 +37,4 @@ docs/latex/*
 
 *-design.txt
 *.bat
+*.prof.txt

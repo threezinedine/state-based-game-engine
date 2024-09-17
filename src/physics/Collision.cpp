@@ -3,6 +3,7 @@
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/renderer/Geometry.hpp>
+#include <NTTEngine/core/profiling.hpp>
 #include <cmath>
 
 namespace ntt::physics
@@ -21,23 +22,28 @@ namespace ntt::physics
     CollisionSystem::CollisionSystem()
         : System()
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
     }
 
     CollisionSystem::~CollisionSystem()
     {
+        PROFILE_FUNCTION();
     }
 
     void CollisionSystem::InitSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void CollisionSystem::InitEntityImpl(entity_id_t entity_id)
     {
+        PROFILE_FUNCTION();
     }
 
     void CollisionSystem::UpdateImpl(f32 delta, entity_id_t entity_id)
     {
+        PROFILE_FUNCTION();
         auto collisionComponent = ECS_GET_COMPONENT(entity_id, Collision);
 
         if (collisionComponent->callback == nullptr)
@@ -95,9 +101,11 @@ namespace ntt::physics
 
     void CollisionSystem::ShutdownEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void CollisionSystem::ShutdownSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 } // namespace ntt::physics

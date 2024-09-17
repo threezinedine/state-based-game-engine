@@ -2,6 +2,7 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/renderer/Texture.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::renderer
 {
@@ -24,24 +25,29 @@ namespace ntt::renderer
     MouseHoveringSystem::MouseHoveringSystem()
         : System()
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
     }
 
     MouseHoveringSystem::~MouseHoveringSystem()
     {
+        PROFILE_FUNCTION();
     }
 
     void MouseHoveringSystem::InitSystemImpl()
     {
+        PROFILE_FUNCTION();
         s_prevHovered.clear();
     }
 
     void MouseHoveringSystem::InitEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void MouseHoveringSystem::UpdateImpl(f32 delta, entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto hovering = ECS_GET_COMPONENT(id, Hovering);
         auto texture = ECS_GET_COMPONENT(id, Texture);
         auto geo = ECS_GET_COMPONENT(id, Geometry);
@@ -79,14 +85,17 @@ namespace ntt::renderer
 
     void MouseHoveringSystem::ShutdownEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void MouseHoveringSystem::ShutdownSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void MouseHoveringSystemUpdate(f32 delta)
     {
+        PROFILE_FUNCTION();
         const List<resource_id_t> &hovers = GetHoveredTexture();
         HoveringContext context;
 

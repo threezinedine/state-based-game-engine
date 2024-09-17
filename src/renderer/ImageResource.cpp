@@ -1,6 +1,7 @@
 #include <NTTEngine/renderer/ImageResource.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::renderer
 {
@@ -19,6 +20,7 @@ namespace ntt::renderer
 
     ImageResource::ImageResource(const ResourceInfo &info)
     {
+        PROFILE_FUNCTION();
         m_Impl = CreateScope<Impl>();
         m_Impl->path = info.path;
         m_Impl->additionalInfo = info.addintionalInfo;
@@ -27,15 +29,18 @@ namespace ntt::renderer
 
     ImageResource::~ImageResource()
     {
+        PROFILE_FUNCTION();
     }
 
     const String &ImageResource::GetName() const
     {
+        PROFILE_FUNCTION();
         return m_Impl->name;
     }
 
     resource_id_t ImageResource::Load()
     {
+        PROFILE_FUNCTION();
         if (m_Impl->isLoaded)
         {
             NTT_ENGINE_WARN("The image resource is already loaded.");
@@ -55,6 +60,7 @@ namespace ntt::renderer
 
     void ImageResource::Unload()
     {
+        PROFILE_FUNCTION();
         if (!m_Impl->isLoaded)
         {
             NTT_ENGINE_WARN("The image resource is already unloaded.");

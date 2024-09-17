@@ -48,7 +48,7 @@ namespace ntt
      * @param append: If true then the content will be appended to the file
      *          else the content will be overwritten
      */
-    String WriteFile(const String &path, const String &content, b8 append = false);
+    void WriteFile(const String &path, const String &content, b8 append = false);
 
     /**
      * Get filename from the path of the file

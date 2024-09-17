@@ -2,6 +2,7 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -21,6 +22,7 @@ namespace ntt
     State::State(Dictionary<String, Ref<State>> children, String defaultState)
         : m_impl(CreateScope<Impl>())
     {
+        PROFILE_FUNCTION();
         THIS(m_children) = children;
         THIS(m_defaultState) = defaultState;
         THIS(m_currentState) = defaultState;
@@ -28,10 +30,12 @@ namespace ntt
 
     State::~State()
     {
+        PROFILE_FUNCTION();
     }
 
     void State::SetEntity(entity_id_t id)
     {
+        PROFILE_FUNCTION();
         entity_id = id;
 
         if (THIS(m_children).empty())
@@ -47,6 +51,7 @@ namespace ntt
 
     void State::AddChild(const String &name, Ref<State> state)
     {
+        PROFILE_FUNCTION();
         if (THIS(m_children).empty())
         {
             THIS(m_defaultState) = name;
@@ -58,6 +63,7 @@ namespace ntt
 
     void State::OnEnter()
     {
+        PROFILE_FUNCTION();
         OnEnterImpl();
 
         if (THIS(m_children).empty())
@@ -71,6 +77,7 @@ namespace ntt
 
     void State::OnExit()
     {
+        PROFILE_FUNCTION();
         OnExitImpl();
 
         if (THIS(m_children).empty())
@@ -83,6 +90,7 @@ namespace ntt
 
     String State::OnUpdate(f32 delta)
     {
+        PROFILE_FUNCTION();
         auto navigatTo = OnNavigateImpl();
         if (THIS(m_children).empty())
         {

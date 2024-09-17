@@ -5,6 +5,7 @@
 #include <NTTEngine/renderer/Sprite.hpp>
 #include <NTTEngine/platforms/application.hpp>
 #include <NTTEngine/core/assertion.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::renderer
 {
@@ -17,23 +18,28 @@ namespace ntt::renderer
     SpriteRenderSystem::SpriteRenderSystem()
         : System()
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
     }
 
     SpriteRenderSystem::~SpriteRenderSystem()
     {
+        PROFILE_FUNCTION();
     }
 
     void SpriteRenderSystem::InitSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void SpriteRenderSystem::InitEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void SpriteRenderSystem::UpdateImpl(f32 delta, entity_id_t id)
     {
+        PROFILE_FUNCTION();
         auto sprite = ECS_GET_COMPONENT(id, Sprite);
         auto texture = ECS_GET_COMPONENT(id, Texture);
 
@@ -57,9 +63,11 @@ namespace ntt::renderer
 
     void SpriteRenderSystem::ShutdownEntityImpl(entity_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void SpriteRenderSystem::ShutdownSystemImpl()
     {
+        PROFILE_FUNCTION();
     }
 } // namespace ntt::renderer

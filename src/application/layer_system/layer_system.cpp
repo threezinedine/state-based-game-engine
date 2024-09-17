@@ -5,6 +5,7 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/renderer/renderer.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -21,6 +22,7 @@ namespace ntt
 
         void EntityCreatedCallback(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             auto id = context.u32_data[0];
 
             if (layers.size() <= currentLayer)
@@ -43,6 +45,7 @@ namespace ntt
 
         void EntityDestroyedCallback(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             auto id = context.u32_data[0];
 
             for (auto &layer : layers)
@@ -54,6 +57,7 @@ namespace ntt
 
     void LayerInit()
     {
+        PROFILE_FUNCTION();
         layers.clear();
 
         layers.push_back(List<entity_id_t>());
@@ -64,6 +68,7 @@ namespace ntt
 
     void BeginLayer(layer_t layer)
     {
+        PROFILE_FUNCTION();
         while (layers.size() <= layer)
         {
             layers.push_back(List<entity_id_t>());
@@ -74,10 +79,12 @@ namespace ntt
 
     void LayerUpdate(f32 deltaTime)
     {
+        PROFILE_FUNCTION();
     }
 
     void LayerMakeVisible(layer_t layer)
     {
+        PROFILE_FUNCTION();
         if (layers.size() <= layer)
         {
             return;
@@ -112,6 +119,7 @@ namespace ntt
 
     const List<entity_id_t> DrawedEntities()
     {
+        PROFILE_FUNCTION();
         List<entity_id_t> entities;
 
         for (auto i = 0; i <= currentRunningLayer; i++)
@@ -124,6 +132,7 @@ namespace ntt
 
     void LayerShutdown()
     {
+        PROFILE_FUNCTION();
         layers.clear();
     }
 }

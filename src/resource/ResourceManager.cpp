@@ -8,6 +8,7 @@
 #include <NTTEngine/renderer/ImageResource.hpp>
 #include <NTTEngine/audio/AudioResource.hpp>
 #include <NTTEngine/platforms/path.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -41,6 +42,7 @@ namespace ntt
 
         void LoadSceneResources(const String &sceneName)
         {
+            PROFILE_FUNCTION();
             NTT_ENGINE_DEBUG("Load all resources in the scene {}", sceneName);
             auto &sceneResources = s_resources[sceneName];
 
@@ -57,6 +59,7 @@ namespace ntt
 
         void UnloadCurrentScene()
         {
+            PROFILE_FUNCTION();
             NTT_ENGINE_DEBUG("Unload all resources in the scene {}", s_currentScene);
             s_resourcesDictionary.clear();
 
@@ -75,6 +78,7 @@ namespace ntt
 
     void ResourceInit()
     {
+        PROFILE_FUNCTION();
         if (s_initialized)
         {
             NTT_ENGINE_WARN("Resource manager is already initialized.");
@@ -91,6 +95,7 @@ namespace ntt
 
     static void RegisterResource(const String &sceneName, const ResourceInfo &info)
     {
+        PROFILE_FUNCTION();
         if (!s_initialized)
         {
             NTT_ENGINE_WARN("Resource manager is not initialized.");
@@ -137,6 +142,7 @@ namespace ntt
 
     void ResourceLoadConfig(const JSON &config)
     {
+        PROFILE_FUNCTION();
         if (!s_initialized)
         {
             NTT_ENGINE_WARN("Resource manager is not initialized.");
@@ -189,6 +195,7 @@ namespace ntt
 
     void ChangeScene(const String &sceneName)
     {
+        PROFILE_FUNCTION();
         if (!s_initialized)
         {
             NTT_ENGINE_WARN("Resource manager is not initialized.");
@@ -209,6 +216,7 @@ namespace ntt
 
     resource_id_t GetResourceID(const String &name)
     {
+        PROFILE_FUNCTION();
         if (!s_initialized)
         {
             NTT_ENGINE_WARN("Resource manager is not initialized.");
@@ -230,6 +238,7 @@ namespace ntt
 
     void ResourceShutdown()
     {
+        PROFILE_FUNCTION();
         if (!s_initialized)
         {
             NTT_ENGINE_WARN("Resource manager is not initialized.");

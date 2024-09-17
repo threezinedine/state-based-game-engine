@@ -8,6 +8,7 @@
 #include <cstring>
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/dev/store.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 #include "audio_platforms.hpp"
 
@@ -63,6 +64,7 @@ namespace ntt::audio
 
     void AudioInit()
     {
+        PROFILE_FUNCTION();
         if (s_isInitialized)
         {
             return;
@@ -79,6 +81,7 @@ namespace ntt::audio
 
     void SetVolume(resource_id_t audio_id, f32 volume)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -100,6 +103,7 @@ namespace ntt::audio
 
     resource_id_t LoadAudio(const String &path)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return RESOURCE_ID_DEFAULT;
@@ -132,6 +136,7 @@ namespace ntt::audio
 
     void PlayAudio(resource_id_t audio_id, const AudioContext &context)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -152,6 +157,7 @@ namespace ntt::audio
 
     void StopAudio(resource_id_t audio_id)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -175,6 +181,7 @@ namespace ntt::audio
 
     void AudioUpdate(f32 delta)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -221,6 +228,7 @@ namespace ntt::audio
 
     void UnloadAudio(resource_id_t audio_id)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -241,6 +249,7 @@ namespace ntt::audio
 
     void AudioShutdown()
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;

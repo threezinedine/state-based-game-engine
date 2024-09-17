@@ -27,3 +27,4 @@
 #include "assertion.hpp"
 #include "time.hpp"
 #include "random.hpp"
+#include "profiling.hpp"
