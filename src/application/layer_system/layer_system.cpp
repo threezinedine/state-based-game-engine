@@ -15,89 +15,115 @@ namespace ntt
 
     namespace
     {
-        Dictionary<LayerType, bool> layerVisibility;
-        Dictionary<LayerType, List<entity_id_t>> layerEntities;
-        LayerType currentLayer = LayerType::GAME_LAYER;
-        LayerType currentRunningLayer = LayerType::GAME_LAYER;
+        List<List<entity_id_t>> layers;
+        layer_t currentLayer = GAME_LAYER;
+        layer_t currentRunningLayer = GAME_LAYER;
 
         void EntityCreatedCallback(event_code_t code, void *sender, const EventContext &context)
         {
             auto id = context.u32_data[0];
 
-            NTT_ENGINE_DEBUG("Current Layer: {} - Current running: {}",
-                             (u8)currentLayer,
-                             (u8)currentRunningLayer);
-
-            if (!layerEntities.Contains(currentLayer))
+            if (layers.size() <= currentLayer)
             {
                 return;
             }
 
-            layerEntities[currentLayer].push_back(id);
+            if (layers[currentLayer].Contains(id))
+            {
+                return;
+            }
+
+            layers[currentLayer].push_back(id);
 
             if (currentLayer != currentRunningLayer)
             {
-                ECSSetEntityState(id, FALSE);
+                ECSGetEntity(id)->active = FALSE;
+            }
+        }
+
+        void EntityDestroyedCallback(event_code_t code, void *sender, const EventContext &context)
+        {
+            auto id = context.u32_data[0];
+
+            for (auto &layer : layers)
+            {
+                layer.RemoveItem(id);
             }
         }
     } // namespace
 
     void LayerInit()
     {
-        layerVisibility.clear();
-        layerEntities.clear();
+        layers.clear();
 
-        layerVisibility[LayerType::GAME_LAYER] = true;
-        layerEntities[LayerType::GAME_LAYER] = List<entity_id_t>();
+        layers.push_back(List<entity_id_t>());
 
         RegisterEvent(NTT_ENTITY_CREATED, EntityCreatedCallback);
+        RegisterEvent(NTT_ENTITY_DESTROYED, EntityDestroyedCallback);
     }
 
-    void BeginLayer(LayerType type)
+    void BeginLayer(layer_t layer)
     {
-        if (!layerEntities.Contains(type))
+        while (layers.size() <= layer)
         {
-            layerVisibility[type] = true;
-            layerEntities[type] = List<entity_id_t>();
+            layers.push_back(List<entity_id_t>());
         }
 
-        currentLayer = type;
+        currentLayer = layer;
     }
 
     void LayerUpdate(f32 deltaTime)
     {
     }
 
-    void LayerMakeVisible(LayerType type)
+    void LayerMakeVisible(layer_t layer)
     {
-        if (!layerVisibility.Contains(type))
+        if (layers.size() <= layer)
         {
-            NTT_ENGINE_WARN("The layer is not created yet");
             return;
         }
 
-        if (layerEntities.Contains(type))
+        // turn off the drawing of the current layer
+        for (auto &entity : layers[currentRunningLayer])
         {
-            // turn off the drawing of the current layer
-            for (auto &entity : layerEntities[currentRunningLayer])
+            auto entityInfo = ECSGetEntity(entity);
+
+            if (entityInfo == nullptr)
             {
-                ECSSetEntityState(entity, FALSE);
+                continue;
             }
 
-            currentRunningLayer = type;
-
-            // turn on the drawing of the new layer
-            for (auto &entity : layerEntities[currentRunningLayer])
-            {
-                ECSSetEntityState(entity, TRUE);
-            }
-            return;
+            entityInfo->active = FALSE;
         }
+
+        currentRunningLayer = layer;
+
+        // turn on the drawing of the new layer
+        for (auto &entity : layers[currentRunningLayer])
+        {
+            auto entityInfo = ECSGetEntity(entity);
+            if (entityInfo == nullptr)
+            {
+                continue;
+            }
+            entityInfo->active = TRUE;
+        }
+    }
+
+    const List<entity_id_t> DrawedEntities()
+    {
+        List<entity_id_t> entities;
+
+        for (auto i = 0; i <= currentRunningLayer; i++)
+        {
+            entities.insert(entities.end(), layers[i].begin(), layers[i].end());
+        }
+
+        return entities;
     }
 
     void LayerShutdown()
     {
-        layerVisibility.clear();
-        layerEntities.clear();
+        layers.clear();
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
-#include "ecs.hpp"
 #include <NTTEngine/core/parser/json.hpp>
 #include <NTTEngine/core/logging.hpp>
+#include "component_base.hpp"
 
 namespace ntt::ecs
 {

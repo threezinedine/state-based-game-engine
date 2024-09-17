@@ -29,17 +29,6 @@ namespace ntt::ecs
         }
     };
 
-    struct EntityInfo
-    {
-        Dictionary<std::type_index, Ref<ComponentBase>> components;
-        b8 active = TRUE;
-
-        EntityInfo(Dictionary<std::type_index, Ref<ComponentBase>> components)
-            : components(components), active(TRUE)
-        {
-        }
-    };
-
     using system_id_t = u32;
 
     namespace
@@ -182,40 +171,17 @@ namespace ntt::ecs
         return entityId;
     }
 
-    void ECSSetEntityState(entity_id_t id, b8 active)
+    Ref<EntityInfo> ECSGetEntity(entity_id_t id)
     {
         if (!s_isInitialized)
         {
-            return;
+            return nullptr;
         }
 
-        if (!s_entityStore->Contains(id))
-        {
-            NTT_ENGINE_TRACE("The entity with ID {} is not existed", id);
-            return;
-        }
-
-        auto entityInfo = s_entityStore->Get(id);
-        entityInfo->active = active;
+        return s_entityStore->Get(id);
     }
 
-    b8 ECSIsEntityActive(entity_id_t id)
-    {
-        if (!s_isInitialized)
-        {
-            return FALSE;
-        }
-
-        if (!s_entityStore->Contains(id))
-        {
-            return FALSE;
-        }
-
-        auto entityInfo = s_entityStore->Get(id);
-        return entityInfo->active;
-    }
-
-    Ref<ComponentBase> ECSGetComponent(entity_id_t id, std::type_index type)
+    Ref<ComponentBase> ECSGetEntityComponent(entity_id_t id, std::type_index type)
     {
         if (!s_isInitialized)
         {
@@ -224,6 +190,7 @@ namespace ntt::ecs
 
         if (!s_entityStore->Contains(id))
         {
+            NTT_ENGINE_TRACE("The entity with ID {} is not existed", id);
             return nullptr;
         }
 
@@ -231,6 +198,8 @@ namespace ntt::ecs
 
         if (!entityInfo->components.Contains(type))
         {
+            NTT_ENGINE_TRACE("The component with type {} is not existed in the entity",
+                             type.name());
             return nullptr;
         }
 

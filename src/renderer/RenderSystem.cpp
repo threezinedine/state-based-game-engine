@@ -5,10 +5,13 @@
 #include <NTTEngine/renderer/Sprite.hpp>
 #include <NTTEngine/platforms/application.hpp>
 #include <NTTEngine/core/assertion.hpp>
+#include <NTTEngine/application/layer_system/layer_system.hpp>
+#include <NTTEngine/ecs/ecs.hpp>
 
 namespace ntt::renderer
 {
 #define THIS(exp) (m_impl->exp)
+    using namespace ecs;
 
     class RenderSystem::Impl
     {
@@ -68,7 +71,7 @@ namespace ntt::renderer
 
         auto drawContext = DrawContext(texture->priority);
 
-        if (ECSIsEntityActive(id))
+        if (ECSGetEntity(id)->active)
         {
             drawContext.priority += 10;
         }
@@ -78,7 +81,8 @@ namespace ntt::renderer
 
     b8 RenderSystem::ShouldUpdate(entity_id_t id)
     {
-        return TRUE;
+        auto entities = DrawedEntities();
+        return entities.Contains(id);
     }
 
     void RenderSystem::ShutdownEntityImpl(entity_id_t id)

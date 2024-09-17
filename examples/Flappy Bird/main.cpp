@@ -121,7 +121,7 @@ void Begin()
             NTT_APP_DEBUG("Entity {} is destroyed", entityId);
         });
 
-    BeginLayer(LayerType::UI_LAYER);
+    BeginLayer(UI_LAYER);
     ECSCreateEntity(
         "resume-btn",
         {
@@ -131,7 +131,7 @@ void Begin()
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ResumeButtonController>()),
         });
 
-    LayerMakeVisible(LayerType::GAME_LAYER);
+    LayerMakeVisible(GAME_LAYER);
 }
 
 void MainLoop(f32 delta)

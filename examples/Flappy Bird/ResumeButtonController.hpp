@@ -36,6 +36,6 @@ protected:
 
     void OnClick()
     {
-        LayerMakeVisible(LayerType::GAME_LAYER);
+        LayerMakeVisible(GAME_LAYER);
     }
 };

@@ -1,10 +1,10 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include <typeindex>
-#include <NTTEngine/core/memory.hpp>
-#include <NTTEngine/structures/list.hpp>
-#include <NTTEngine/structures/dictionary.hpp>
-#include <NTTEngine/structures/string.hpp>
+#include "component_base.hpp"
+#include "data_com.hpp"
+#include "entity_info.hpp"
+#include "system.hpp"
 
 /**
  * Manage all the entity inside the game. This module has 3 main components:
@@ -19,90 +19,9 @@
 namespace ntt::ecs
 {
     /**
-     * Each entity is represented by a unique ID only, there's no actual
-     *      visible object in the user's perspective.
-     * If the type is changed, then must change the system trigger context
-     *      of CreateEntity, DeleteEntity, and the Layer system callback.
-     */
-    using entity_id_t = u32;
-    // constexpr entity_id_t INVALID_ENTITY_ID =
-    constexpr entity_id_t INVALID_ENTITY_ID = -1;
-
-    /**
-     * Component Base contains only the data, no logic, so the struct is used
-     *      rather than class. Other component should inherit from this struct.
-     */
-    struct ComponentBase
-    {
-        entity_id_t entity_id; ///< Each time a component is created, then
-                               ///< it must be attached to an entity.
-        b8 active = TRUE;
-    };
-
-    /**
      * Start the ECS system. This function must be called before any other
      */
     void ECSInit();
-
-    /**
-     * Store all lifetime functionalitiy of a system.
-     */
-    class System
-    {
-    public:
-        System();
-        virtual ~System();
-
-        // virtual const String GetName() const = 0;
-
-        /**
-         * The function which is called at the begginning of the game (once)
-         *      for initializing the system.
-         */
-        void InitSystem();
-
-        /**
-         * The function which is called for every entity which are registered
-         *      (related to this system) in the ECS system.
-         */
-        void InitEntity(entity_id_t id);
-
-        /**
-         * The function which is called for every entity which are registered
-         *      (related to this system) in the ECS system.
-         */
-        void Update(f32 delta, entity_id_t id);
-
-        /**
-         * The function which is called for every entity which are registered
-         *      (related to this system) in the ECS system.
-         */
-        void ShutdownEntity(entity_id_t id);
-
-        /**
-         * The function which is called at the end of the game (once)
-         *      for cleaning up the system.
-         */
-        void ShutdownSystem();
-
-    protected:
-        virtual void InitSystemImpl() {}
-        virtual void InitEntityImpl(entity_id_t id) {}
-        virtual void UpdateImpl(f32 delta, entity_id_t id) {}
-        virtual void ShutdownEntityImpl(entity_id_t id) {}
-        virtual void ShutdownSystemImpl() {}
-
-        /**
-         * Use for filtering out which entity should be updated or not.
-         *      (useful for some cases where the entity can be drawn but
-         *      logic is not needed)
-         */
-        virtual b8 ShouldUpdate(entity_id_t id);
-
-    private:
-        class Impl;
-        Scope<Impl> m_impl;
-    };
 
     /**
      * Add new system to the ECS, the order of adding the system is the order
@@ -138,38 +57,16 @@ namespace ntt::ecs
         Dictionary<std::type_index, Ref<ComponentBase>> components);
 
     /**
-     * Make the entity should be passed to the system for updating or not.
-     *
-     * @param id The ID of the entity
-     * @param active The state of the entity, if active = FALSE, then the entity
-     *      the entity will not be passed to the systems for updating (but pass
-     *      to the rendering system for drawing)
-     *      if active = TRUE, then the entity will be passed to all systems
+     * Retreive the entity information based on the entity ID.
+     * If the entity is not found, then return nullptr
      */
-    void ECSSetEntityState(entity_id_t id, b8 active = TRUE);
+    Ref<EntityInfo> ECSGetEntity(entity_id_t id);
 
     /**
-     * Check if the entity is active or not.
-     * If the entity is not active, then the entity will not be passed to the
-     *     systems for updating (but pass to the rendering system for drawing)
-     * If the entity is active, then the entity will be passed to all systems
-     *      for updating.
-     * If the entity is not found, then return FALSE
+     * Retrieve the component with the certain type from the entity.
+     * If the entity is not found, then return nullptr
      */
-    b8 ECSIsEntityActive(entity_id_t id);
-
-    /**
-     * Query the component based on the entity ID and the type of the component.
-     * Each entity has only 1 instance of each type of component.
-     *
-     * @param id The ID of the entity
-     * @param type The type of the component
-     *
-     * @return The component which is attached to the entity, if the id
-     *      is invalid or not found or the component type is not included
-     *      then return nullptr
-     */
-    Ref<ComponentBase> ECSGetComponent(entity_id_t id, std::type_index type);
+    Ref<ComponentBase> ECSGetEntityComponent(entity_id_t id, std::type_index type);
 
     /**
      * Changing the state of the component, if the component is not active,
@@ -206,5 +103,6 @@ namespace ntt::ecs
     void ECSShutdown();
 } // namespace ntt::ecs
 
-#define ECS_GET_COMPONENT(id, type) std::static_pointer_cast<type>(ECSGetComponent(id, typeid(type)))
+#define ECS_GET_COMPONENT(id, type) std::static_pointer_cast<type>( \
+    ECSGetEntityComponent(id, typeid(type)))
 #define ECS_CREATE_COMPONENT(type, ...) {typeid(type), std::make_shared<type>(__VA_ARGS__)}

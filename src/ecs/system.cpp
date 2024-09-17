@@ -45,7 +45,7 @@ namespace ntt::ecs
 
     b8 System::ShouldUpdate(entity_id_t id)
     {
-        return ECSIsEntityActive(id);
+        return ECSGetEntity(id)->active;
     }
 
     void System::Update(f32 delta, entity_id_t id)

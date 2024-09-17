@@ -30,7 +30,7 @@ protected:
     {
         if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
         {
-            LayerMakeVisible(LayerType::UI_LAYER);
+            LayerMakeVisible(UI_LAYER);
         }
     }
 };

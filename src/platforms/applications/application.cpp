@@ -110,7 +110,7 @@ namespace ntt
         NTT_ENGINE_INFO("The application is started.");
 
         s_timer.Reset();
-        BeginLayer(LayerType::GAME_LAYER);
+        BeginLayer(GAME_LAYER);
     }
 
     void LoadConfiguration(const String &path)
@@ -138,18 +138,17 @@ namespace ntt
         s_timer.Reset();
 
         InputUpdate(delta);
+        AudioUpdate(delta);
+        ECSUpdate(delta);
+        LayerUpdate(delta);
+        MouseHoveringSystemUpdate(delta);
 
         BEGIN_DRAWING();
 
         ClearBackground(BLACK);
-        AudioUpdate(delta);
-        ECSUpdate(delta);
-
         s_phrases.MainLoop(delta);
 
         GraphicUpdate();
-        MouseHoveringSystemUpdate(delta);
-        LayerUpdate(delta);
         END_DRAWING();
 
         running = !WINDOW_SHOULD_CLOSE();
