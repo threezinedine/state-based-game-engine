@@ -1,4 +1,4 @@
-#include <NTTEngine/debugging/components/continue_button.hpp>
+#include <NTTEngine/debugging/components/next_frame_button.hpp>
 #include <NTTEngine/renderer/Hovering.hpp>
 #include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
@@ -9,29 +9,29 @@ namespace ntt
     using namespace input;
     using namespace debugging;
 
-    class ContinueButton::Impl
+    class NextFrameButton::Impl
     {
     public:
         void OnHover()
         {
             if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
             {
-                NTT_ENGINE_DEBUG("Continue button pressed");
-                NextBreakpoint();
+                NTT_ENGINE_DEBUG("Next frame button pressed");
+                NextFrame();
             }
         }
     };
 
-    ContinueButton::ContinueButton()
+    NextFrameButton::NextFrameButton()
     {
         m_impl = CreateScope<Impl>();
     }
 
-    ContinueButton::~ContinueButton()
+    NextFrameButton::~NextFrameButton()
     {
     }
 
-    void ContinueButton::OnEnterImpl()
+    void NextFrameButton::OnEnterImpl()
     {
         GetComponent<Hovering>()->callback = [&](...)
         {

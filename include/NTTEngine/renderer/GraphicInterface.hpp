@@ -5,9 +5,12 @@
 #include <NTTEngine/structures/size.hpp>
 #include <NTTEngine/resources/resource_common.h>
 #include <NTTEngine/structures/stack.hpp>
+#include <NTTEngine/ecs/ecs.hpp>
 
 namespace ntt::renderer
 {
+    using namespace ecs;
+
     /**
      * Graphic Interface for drawing everything the engine pushes into it
      * It no need to worry about whether the object should be displayed or not
@@ -76,6 +79,14 @@ namespace ntt::renderer
     struct DrawContext
     {
         /**
+         * Must specify the entity ID which is used for the
+         *      collision detection with the mouse. If the entity
+         *      ID is not provided, then the object will not be
+         *      hovered by the mouse.
+         */
+        entity_id_t entity_id;
+
+        /**
          * The priority of the object, the higher priority will be drawn
          *      on the top of the lower priority objects (use for both texture
          *      and text drawing), this value should use with the PRIORITY_X
@@ -96,7 +107,7 @@ namespace ntt::renderer
          */
         u32 fontSize;
 
-        DrawContext() : priority(PRIORITY_0), fontSize(10) {}
+        DrawContext() : entity_id(INVALID_ENTITY_ID), priority(PRIORITY_0), fontSize(10) {}
     };
 
     /**
@@ -150,7 +161,7 @@ namespace ntt::renderer
      * @return The list of the texture ID which is hovered by the mouse
      *      the higher priority texture will be on the top of the list
      */
-    const List<resource_id_t> &GetHoveredTexture();
+    const List<entity_id_t> &GetHoveredTexture();
 
     /**
      * Actually draw the objects on the screen

@@ -76,6 +76,7 @@ namespace ntt::renderer
         }
 
         auto drawContext = DrawContext();
+        drawContext.entity_id = id;
         drawContext.priority = texture->priority;
         drawContext.tooltip = texture->tooltip;
 

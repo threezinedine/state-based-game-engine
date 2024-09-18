@@ -142,17 +142,38 @@ namespace ntt
 
         BeginLayer(DEBUG_LAYER);
         /// Default entities of the DEBUG_LAYER are defined below
-        ECSCreateEntity(
+        auto ent1 = ECSCreateEntity(
             "debug-continue",
             {
                 ECS_CREATE_COMPONENT(Geometry,
-                                     s_windowSize.width / 2,
+                                     s_windowSize.width / 2 - 31,
                                      s_windowSize.height * 0.05,
-                                     30),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"), 9, 11, 3),
+                                     30, 30),
+                ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"),
+                                     9,
+                                     11,
+                                     PRIORITY_0,
+                                     "Run until next breakpoint"),
                 ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ContinueButton>()),
                 ECS_CREATE_COMPONENT(Hovering),
             });
+
+        auto ent2 = ECSCreateEntity(
+            "debug-next-frame",
+            {
+                ECS_CREATE_COMPONENT(Geometry,
+                                     s_windowSize.width / 2 + 31,
+                                     s_windowSize.height * 0.05,
+                                     30, 30),
+                ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"),
+                                     9,
+                                     11,
+                                     PRIORITY_0,
+                                     "Run next frame"),
+                ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<NextFrameButton>()),
+                ECS_CREATE_COMPONENT(Hovering),
+            });
+
         /// Default entities of the DEBUG_LAYER are defined above
 
         /// the game layer is activated at the start of the game
