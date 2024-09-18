@@ -48,6 +48,9 @@ namespace ntt::renderer
         f32 toWidth;
         f32 toHeight;
         f32 rotate;
+        b8 drawText = FALSE;
+        String text;
+        u32 fontSize;
     };
 
     namespace
@@ -217,17 +220,46 @@ namespace ntt::renderer
             s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
         }
 
-        s_drawLists[drawContext.priority]->push_back(
-            {texture_id,
-             frameWidth * frame.col,
-             frameHeight * frame.row,
-             frameWidth,
-             frameHeight,
-             static_cast<f32>(context.position.x),
-             static_cast<f32>(context.position.y),
-             static_cast<f32>(actualSize.width),
-             static_cast<f32>(actualSize.height),
-             static_cast<f32>(context.rotate)});
+        DrawInfo info;
+        info.texture_id = texture_id;
+        info.fromX = frameWidth * frame.col;
+        info.fromY = frameHeight * frame.row;
+        info.fromWidth = frameWidth;
+        info.fromHeight = frameHeight;
+        info.toX = static_cast<f32>(context.position.x);
+        info.toY = static_cast<f32>(context.position.y);
+        info.toWidth = static_cast<f32>(actualSize.width);
+        info.toHeight = static_cast<f32>(actualSize.height);
+        info.rotate = static_cast<f32>(context.rotate);
+        info.drawText = FALSE;
+
+        s_drawLists[drawContext.priority]->push_back(info);
+    }
+
+    void DrawText(const String &text,
+                  const Position &position,
+                  const DrawContext &drawContext)
+    {
+        PROFILE_FUNCTION();
+        if (!s_isInitialized)
+        {
+            NTT_ENGINE_ERROR("The renderer is not initialized yet");
+            return;
+        }
+
+        if (s_drawLists[drawContext.priority] == nullptr)
+        {
+            s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
+        }
+
+        DrawInfo info;
+        info.drawText = TRUE;
+        info.text = text;
+        info.toX = static_cast<f32>(position.x);
+        info.toY = static_cast<f32>(position.y);
+        info.fontSize = drawContext.fontSize;
+
+        s_drawLists[drawContext.priority]->push_back(info);
     }
 
     void GraphicUpdate()
@@ -246,24 +278,31 @@ namespace ntt::renderer
 
             for (auto info : *drawList)
             {
-                if (info.toX - info.toWidth / 2 <= mouse.x &&
-                    mouse.x <= info.toX + info.toWidth / 2 &&
-                    info.toY - info.toHeight / 2 <= mouse.y &&
-                    mouse.y <= info.toY + info.toHeight / 2)
+                if (info.drawText)
                 {
-                    s_hoveredTextures.push_back(info.texture_id);
+                    DRAW_TEXT(info.text, info.toX, info.toY, info.fontSize);
                 }
+                else
+                {
+                    if (info.toX - info.toWidth / 2 <= mouse.x &&
+                        mouse.x <= info.toX + info.toWidth / 2 &&
+                        info.toY - info.toHeight / 2 <= mouse.y &&
+                        mouse.y <= info.toY + info.toHeight / 2)
+                    {
+                        s_hoveredTextures.push_back(info.texture_id);
+                    }
 
-                DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
-                             info.fromX,
-                             info.fromY,
-                             info.fromWidth,
-                             info.fromHeight,
-                             info.toX,
-                             info.toY,
-                             info.toWidth,
-                             info.toHeight,
-                             info.rotate);
+                    DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
+                                 info.fromX,
+                                 info.fromY,
+                                 info.fromWidth,
+                                 info.fromHeight,
+                                 info.toX,
+                                 info.toY,
+                                 info.toWidth,
+                                 info.toHeight,
+                                 info.rotate);
+                }
             }
 
             drawList->clear();

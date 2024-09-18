@@ -14,6 +14,8 @@ namespace ntt
     using namespace renderer;
     using namespace event;
 
+#define LAYER_RANGE 5
+
     namespace
     {
         List<List<entity_id_t>> layers;
@@ -63,6 +65,20 @@ namespace ntt
 
             if (currentLayer != currentRunningLayer)
             {
+                auto texture = ECS_GET_COMPONENT(id, Texture);
+
+                if (texture != nullptr)
+                {
+                    texture->priority += currentLayer * LAYER_RANGE;
+                }
+
+                auto text = ECS_GET_COMPONENT(id, Text);
+
+                if (text != nullptr)
+                {
+                    text->priority += currentLayer * LAYER_RANGE;
+                }
+
                 ECSGetEntity(id)->active = FALSE;
             }
         }

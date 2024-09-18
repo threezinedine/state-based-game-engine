@@ -7,6 +7,8 @@
 #define LOAD_TEXTURE(path) ::LoadTexture(path.RawString().c_str())
 #define UNLOAD_TEXTURE(texture) ::UnloadTexture(texture)
 #define IS_LOADED_SUCCESS(texture) (texture.id == 0)
+#define DRAW_TEXT(text, x, y, fontSize) \
+    ::DrawText(text.RawString().c_str(), x, y, fontSize, BLACK)
 #define DRAW_TEXTURE(texture, fx, fy, fw, fh, tx, ty, tw, th, rotate) \
     ::DrawTexturePro(texture,                                         \
                      ::Rectangle{fx, fy, fw, fh},                     \

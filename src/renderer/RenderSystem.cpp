@@ -75,12 +75,8 @@ namespace ntt::renderer
             return;
         }
 
-        auto drawContext = DrawContext(texture->priority);
-
-        if (ECSGetEntity(id)->active)
-        {
-            drawContext.priority += 10;
-        }
+        auto drawContext = DrawContext();
+        drawContext.priority = texture->priority;
 
         DrawTexture(texture->id, context, cell, drawContext);
     }

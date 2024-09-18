@@ -25,3 +25,4 @@ namespace ntt::renderer
 #include "Texture.hpp"
 #include "Sprite.hpp"
 #include "Hovering.hpp"
+#include "Text.hpp"

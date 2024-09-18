@@ -27,6 +27,26 @@ namespace ntt::renderer
         Scope<Impl> m_impl;
     };
 
+    class TextRenderSystem : public System
+    {
+    public:
+        TextRenderSystem();
+        ~TextRenderSystem();
+
+    protected:
+        void InitSystemImpl() override;
+        void InitEntityImpl(entity_id_t id) override;
+        void UpdateImpl(f32 delta, entity_id_t id) override;
+        void ShutdownEntityImpl(entity_id_t id) override;
+        void ShutdownSystemImpl() override;
+
+        b8 ShouldUpdate(entity_id_t id) override;
+
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
+    };
+
     class SpriteRenderSystem : public System
     {
     public:

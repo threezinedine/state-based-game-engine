@@ -80,6 +80,11 @@ namespace ntt
             {typeid(Geometry), typeid(Texture)});
 
         ECSRegister(
+            "Text Render System",
+            CreateRef<TextRenderSystem>(),
+            {typeid(Geometry), typeid(Text)});
+
+        ECSRegister(
             "Native Script System",
             CreateRef<ScriptSystem>(),
             {typeid(NativeScriptComponent)});

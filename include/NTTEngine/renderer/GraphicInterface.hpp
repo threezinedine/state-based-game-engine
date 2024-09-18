@@ -70,10 +70,13 @@ namespace ntt::renderer
     struct DrawContext
     {
         u8 priority; ///< The priority of the object, the higher priority will be drawn
-                     ///< on the top of the lower priority objects
+                     ///< on the top of the lower priority objects (use for both texture
+                     ///< and text drawing)
 
-        DrawContext() : priority(0) {}
-        DrawContext(u8 priority) : priority(priority) {}
+        u32 fontSize; ///< The size of the text which should be displayed (use for drawing
+                      ///< text only)
+
+        DrawContext() : priority(0), fontSize(10) {}
     };
 
     /**
@@ -104,6 +107,19 @@ namespace ntt::renderer
                      const RectContext &context = RectContext(),
                      const Grid &cell = Grid{0, 0},
                      const DrawContext &drawContext = DrawContext{});
+
+    /**
+     * Display the text on the screen with the given size and some additional
+     *      information.
+     *
+     * @param text: The text to be displayed
+     * @param context: (Optional) The context which the renderer used for drawing.
+     *      Default position is (0, 0)
+     * @param drawContext: (Optional) The additional information for the drawing context
+     */
+    void DrawText(const String &text,
+                  const Position &position = Position(),
+                  const DrawContext &drawContext = DrawContext{});
 
     /**
      * Each texture which is hovered by the mouse will be returned
