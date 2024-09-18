@@ -66,17 +66,30 @@ namespace ntt::renderer
         RectContext() = default;
     };
 
+#define PRIORITY_0 0
+#define PRIORITY_1 1
+#define PRIORITY_2 2
+#define PRIORITY_3 3
+#define PRIORITY_4 4
+
     // Additional information for the drawing context
     struct DrawContext
     {
-        u8 priority; ///< The priority of the object, the higher priority will be drawn
-                     ///< on the top of the lower priority objects (use for both texture
-                     ///< and text drawing)
+        /**
+         * The priority of the object, the higher priority will be drawn
+         *      on the top of the lower priority objects (use for both texture
+         *      and text drawing), this value should use with the PRIORITY_X
+         *      macro.
+         */
+        u8 priority;
 
-        u32 fontSize; ///< The size of the text which should be displayed (use for drawing
-                      ///< text only)
+        /**
+         * The size of the text which should be displayed (use for drawing
+         *      text only)
+         */
+        u32 fontSize;
 
-        DrawContext() : priority(0), fontSize(10) {}
+        DrawContext() : priority(PRIORITY_0), fontSize(10) {}
     };
 
     /**

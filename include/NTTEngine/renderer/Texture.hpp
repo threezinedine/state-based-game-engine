@@ -19,7 +19,7 @@ namespace ntt::renderer
         u8 priority;
 
         Texture(resource_id_t id = RESOURCE_ID_DEFAULT, u8 rowIndex = 0,
-                u8 colIndex = 0, u8 priority = FALSE)
+                u8 colIndex = 0, u8 priority = PRIORITY_0)
             : id(id), rowIndex(rowIndex),
               colIndex(colIndex),
               priority(priority)

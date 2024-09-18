@@ -69,14 +69,14 @@ namespace ntt
 
                 if (texture != nullptr)
                 {
-                    texture->priority += currentLayer * LAYER_RANGE;
+                    texture->priority += currentRunningLayer * LAYER_RANGE;
                 }
 
                 auto text = ECS_GET_COMPONENT(id, Text);
 
                 if (text != nullptr)
                 {
-                    text->priority += currentLayer * LAYER_RANGE;
+                    text->priority += currentRunningLayer * LAYER_RANGE;
                 }
 
                 ECSGetEntity(id)->active = FALSE;

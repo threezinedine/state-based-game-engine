@@ -33,7 +33,7 @@ void Begin()
         "menu-btn",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width * 0.95, windowSize.height * 0.05, 30),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("buttons"), 9, 11, 3),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("buttons"), 9, 11, PRIORITY_2),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<SettingButtonController>()),
             ECS_CREATE_COMPONENT(Hovering),
         });
@@ -47,7 +47,7 @@ void Begin()
                                  windowSize.width,
                                  windowSize.height / 10,
                                  180),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("base"), 0, 0, TRUE),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("base"), 0, 0, PRIORITY_1),
             ECS_CREATE_COMPONENT(Collision),
         });
 
@@ -59,7 +59,7 @@ void Begin()
                                  windowSize.height / 20 * 19,
                                  windowSize.width,
                                  windowSize.height / 10),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("base"), 0, 0, TRUE),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("base"), 0, 0, PRIORITY_1),
             ECS_CREATE_COMPONENT(Collision),
         });
 
@@ -101,7 +101,7 @@ void Begin()
         "hello-text",
         {
             ECS_CREATE_COMPONENT(Geometry, 10, 10),
-            ECS_CREATE_COMPONENT(Text, "Hello, World!", 20, 2),
+            ECS_CREATE_COMPONENT(Text, "Hello, World!", 20, PRIORITY_2),
         });
 
     RegisterEvent(

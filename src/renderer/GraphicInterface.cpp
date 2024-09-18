@@ -175,7 +175,7 @@ namespace ntt::renderer
             height = static_cast<f32>(frameHeight);
         }
 
-        return {width, height};
+        return {static_cast<size_t>(width), static_cast<size_t>(height)};
     }
 
     void DrawTexture(resource_id_t texture_id,
