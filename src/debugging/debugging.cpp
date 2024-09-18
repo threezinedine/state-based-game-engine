@@ -13,6 +13,7 @@ namespace ntt::debugging
     namespace
     {
         b8 s_isStopped = FALSE;
+        event_id_t s_endFrameEvent = -1;
     } // namespace
 
     void DebugInit()
@@ -39,16 +40,22 @@ namespace ntt::debugging
     void NextFrame()
     {
         PROFILE_FUNCTION();
-        auto event = RegisterEvent(
+        s_endFrameEvent = RegisterEvent(
             NTT_END_FRAME,
-            [](...)
-            { DebugBreak(); });
+            [&](...)
+            {
+                DebugBreak();
+                if (s_endFrameEvent == -1)
+                {
+                    return;
+                }
+                UnregisterEvent(s_endFrameEvent);
+                s_endFrameEvent = -1;
+            });
 
         EventContext context;
         context.b8_data[0] = TRUE; /// the debugging mode is temporarily off
         TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, {0});
-
-        UnregisterEvent(event);
     }
 
     b8 DebugIsStopped()

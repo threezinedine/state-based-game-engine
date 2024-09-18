@@ -128,6 +128,13 @@ void Begin()
             auto layer = context.u16_data[0];
             NTT_APP_DEBUG("Layer {} is changed", layer);
         });
+
+    RegisterEvent(
+        NTT_DEBUG_CONTINUE,
+        [](...)
+        {
+            NTT_APP_DEBUG("The debugging is continued");
+        });
 }
 
 void MainLoop(f32 delta)
