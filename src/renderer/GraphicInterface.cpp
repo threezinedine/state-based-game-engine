@@ -9,6 +9,7 @@
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
+#include <NTTEngine/platforms/application.hpp>
 
 #include "GraphicInterface_platforms.hpp"
 
@@ -19,6 +20,11 @@ namespace ntt::renderer
     using namespace dev::store;
 
 #define TEXTURE_MAX 1000
+#define TOOL_TIP_FONT_SIZE 10
+#define TOOL_TIP_PADDING 5
+#define TOOL_TOP_OFFSET_X 20
+#define TOOL_TOP_OFFSET_Y 20
+#define MAX_PRIORITY 20
 
     /**
      * All the needed information for rendering the texture
@@ -48,6 +54,7 @@ namespace ntt::renderer
         f32 toWidth;
         f32 toHeight;
         f32 rotate;
+        String tooltip;
         b8 drawText = FALSE;
         String text;
         u32 fontSize;
@@ -64,7 +71,7 @@ namespace ntt::renderer
         // Store all the priorities draw with maximum 256 priorities
         // The higher priority will be drawn on the top of the lower priority
         // It should be cleared after each frame
-        Scope<List<DrawInfo>> s_drawLists[20];
+        Scope<List<DrawInfo>> s_drawLists[MAX_PRIORITY];
 
         // Stack of all texture ID which is hovered by the mouse
         // It also be cleared after each frame
@@ -231,6 +238,7 @@ namespace ntt::renderer
         info.toWidth = static_cast<f32>(actualSize.width);
         info.toHeight = static_cast<f32>(actualSize.height);
         info.rotate = static_cast<f32>(context.rotate);
+        info.tooltip = drawContext.tooltip;
         info.drawText = FALSE;
 
         s_drawLists[drawContext.priority]->push_back(info);
@@ -269,14 +277,24 @@ namespace ntt::renderer
 
         auto mouse = input::GetMousePosition();
 
-        for (auto &drawList : s_drawLists)
+        auto highestPriority = MAX_PRIORITY - 1;
+
+        for (highestPriority; highestPriority >= 0; highestPriority--)
         {
-            if (drawList == nullptr)
+            if (s_drawLists[highestPriority] != nullptr)
+            {
+                break;
+            }
+        }
+
+        for (auto i = 0; i < MAX_PRIORITY; i++)
+        {
+            if (s_drawLists[i] == nullptr)
             {
                 continue;
             }
 
-            for (auto info : *drawList)
+            for (auto info : *s_drawLists[i])
             {
                 if (info.drawText)
                 {
@@ -284,14 +302,6 @@ namespace ntt::renderer
                 }
                 else
                 {
-                    if (info.toX - info.toWidth / 2 <= mouse.x &&
-                        mouse.x <= info.toX + info.toWidth / 2 &&
-                        info.toY - info.toHeight / 2 <= mouse.y &&
-                        mouse.y <= info.toY + info.toHeight / 2)
-                    {
-                        s_hoveredTextures.push_back(info.texture_id);
-                    }
-
                     DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
                                  info.fromX,
                                  info.fromY,
@@ -302,10 +312,54 @@ namespace ntt::renderer
                                  info.toWidth,
                                  info.toHeight,
                                  info.rotate);
+
+                    if (info.toX - info.toWidth / 2 <= mouse.x &&
+                        mouse.x <= info.toX + info.toWidth / 2 &&
+                        info.toY - info.toHeight / 2 <= mouse.y &&
+                        mouse.y <= info.toY + info.toHeight / 2)
+                    {
+                        s_hoveredTextures.push_back(info.texture_id);
+
+                        if (info.tooltip != "" && i == highestPriority)
+                        {
+                            auto windowSize = GetWindowSize();
+
+                            auto textWidth = GET_TEXT_WIDTH(info.tooltip, TOOL_TIP_FONT_SIZE);
+                            auto textHeight = TOOL_TIP_FONT_SIZE;
+
+                            auto toolTipX = mouse.x + TOOL_TOP_OFFSET_X;
+
+                            if (toolTipX + textWidth > windowSize.width)
+                            {
+                                toolTipX -= (textWidth + TOOL_TIP_PADDING * 2 + TOOL_TOP_OFFSET_X);
+                            }
+
+                            auto toolTipY = mouse.y + TOOL_TOP_OFFSET_Y;
+
+                            if (toolTipY + textHeight > windowSize.height)
+                            {
+                                toolTipY -= textHeight - TOOL_TIP_PADDING * 2 - TOOL_TOP_OFFSET_Y;
+                            }
+
+                            DRAW_RECTANGLE(
+                                toolTipX,
+                                toolTipY,
+                                textWidth + TOOL_TIP_PADDING * 2,
+                                textHeight + TOOL_TIP_PADDING * 2);
+
+                            DRAW_TEXT(info.tooltip,
+                                      toolTipX + TOOL_TIP_PADDING,
+                                      toolTipY + TOOL_TIP_PADDING,
+                                      TOOL_TIP_FONT_SIZE);
+                        }
+                    }
                 }
             }
 
-            drawList->clear();
+            s_drawLists[i]->clear();
+            s_drawLists[i].reset();
+
+            ASSERT(s_drawLists[i] == nullptr);
         }
     }
 

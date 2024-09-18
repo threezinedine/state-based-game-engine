@@ -33,7 +33,10 @@ void Begin()
         "menu-btn",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width * 0.95, windowSize.height * 0.05, 30),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("buttons"), 9, 11, PRIORITY_2),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("buttons"),
+                                 9, 11,
+                                 PRIORITY_2,
+                                 "Setting"),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<SettingButtonController>()),
             ECS_CREATE_COMPONENT(Hovering),
         });
@@ -80,7 +83,8 @@ void Begin()
         {
             ECS_CREATE_COMPONENT(Geometry, GetConfiguration().Get<position_t>("bird-start-x", 200),
                                  windowSize.height / 2, 70),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("bird")),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("bird"), 0, 0, PRIORITY_2,
+                                 "The bird"),
             {typeid(Mass), CreateRef<Mass>(1.0f)},
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(Sprite,
@@ -97,13 +101,6 @@ void Begin()
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ScoreBoard>()),
         });
 
-    ECSCreateEntity(
-        "hello-text",
-        {
-            ECS_CREATE_COMPONENT(Geometry, 10, 10),
-            ECS_CREATE_COMPONENT(Text, "Hello, World!", 20, PRIORITY_2),
-        });
-
     RegisterEvent(
         SPEED_UP_EVENT,
         [](auto id, void *sender, EventContext context)
@@ -117,7 +114,9 @@ void Begin()
         "resume-btn",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 100),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("menu-btn"), 1, 1),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("menu-btn"), 1, 1,
+                                 PRIORITY_0,
+                                 "Resume"),
             ECS_CREATE_COMPONENT(Hovering),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ResumeButtonController>()),
         });

@@ -84,6 +84,13 @@ namespace ntt::renderer
         u8 priority;
 
         /**
+         * The additional information for the texture drawing which will
+         *      be displayed when the mouse is hovered on the texture
+         *      if (tooltip is empty, then nothing will be displayed)
+         */
+        String tooltip;
+
+        /**
          * The size of the text which should be displayed (use for drawing
          *      text only)
          */

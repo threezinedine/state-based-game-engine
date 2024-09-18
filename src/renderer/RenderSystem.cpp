@@ -77,6 +77,7 @@ namespace ntt::renderer
 
         auto drawContext = DrawContext();
         drawContext.priority = texture->priority;
+        drawContext.tooltip = texture->tooltip;
 
         DrawTexture(texture->id, context, cell, drawContext);
     }

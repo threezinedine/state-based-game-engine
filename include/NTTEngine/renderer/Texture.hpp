@@ -17,12 +17,15 @@ namespace ntt::renderer
         u8 rowIndex;
         u8 colIndex;
         u8 priority;
+        String tooltip;
 
         Texture(resource_id_t id = RESOURCE_ID_DEFAULT, u8 rowIndex = 0,
-                u8 colIndex = 0, u8 priority = PRIORITY_0)
+                u8 colIndex = 0, u8 priority = PRIORITY_0,
+                const String &tooltip = "")
             : id(id), rowIndex(rowIndex),
               colIndex(colIndex),
-              priority(priority)
+              priority(priority),
+              tooltip(tooltip)
         {
         }
     };
