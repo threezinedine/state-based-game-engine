@@ -21,6 +21,8 @@
 #include <NTTEngine/application/state_system/state_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/application/layer_system/layer_system.hpp>
+#include <NTTEngine/debugging/debugging.hpp>
+#include <NTTEngine/debugging/components/components.hpp>
 
 namespace ntt
 {
@@ -32,6 +34,7 @@ namespace ntt
     using namespace ecs;
     using namespace physics;
     using namespace script;
+    using namespace debugging;
 
     namespace
     {
@@ -51,6 +54,7 @@ namespace ntt
         s_phrases = phrases;
 
         MemoryInit();
+        DebugInit();
 
         CREATE_WINDOW(screenWidth, screenHeight, title);
 
@@ -107,12 +111,54 @@ namespace ntt
 
         LayerInit();
 
+        /// Setup 3 layers in the predefined order GAME_LAYER -> UI_LAYER -> DEBUG_LAYER
+        ///     then now the user's code will not affect the order of the layer
+        BeginLayer(GAME_LAYER);
+
+        BeginLayer(UI_LAYER);
+        /// Default entities of the UI_LAYER are defined below
+
+        /// Default entities of the UI_LAYER are defined above
+
+        /// Registering the resource for the debug layer
+        ResourceInfo resourceInfo;
+        resourceInfo.name = "DebugButtons";
+        resourceInfo.type = ResourceType::IMAGE;
+        resourceInfo.path = JoinPath({GetFileFolder(__FILE__),
+                                      "assets/images/buttons.png"},
+                                     FALSE);
+        resourceInfo.addintionalInfo = JSON(R"({
+            "grid": {
+                "row": 12,
+                "col": 12
+            }  
+        })");
+        RegisterResource("default", resourceInfo);
+
+        BeginLayer(DEBUG_LAYER);
+        /// Default entities of the DEBUG_LAYER are defined below
+        ECSCreateEntity(
+            "debug-continue",
+            {
+                ECS_CREATE_COMPONENT(Geometry,
+                                     s_windowSize.width / 2,
+                                     s_windowSize.height * 0.05,
+                                     30),
+                ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"), 9, 11, 3),
+                ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ContinueButton>()),
+                ECS_CREATE_COMPONENT(Hovering),
+            });
+        /// Default entities of the DEBUG_LAYER are defined above
+
+        /// the game layer is activated at the start of the game
+        BeginLayer(GAME_LAYER);
         s_phrases.Begin();
+        BeginLayer(GAME_LAYER);
+        LayerMakeVisible(GAME_LAYER);
 
         NTT_ENGINE_INFO("The application is started.");
 
         s_timer.Reset();
-        BeginLayer(GAME_LAYER);
     }
 
     void LoadConfiguration(const String &path)
@@ -157,7 +203,9 @@ namespace ntt
 
         running = !WINDOW_SHOULD_CLOSE();
 
-        NTT_ENGINE_TRACE("FPS: {0}", 1000.0f / delta);
+        EventContext context;
+        context.f32_data[0] = 1000.0f / delta; ///< FPS of the game
+        TriggerEvent(NTT_END_FRAME, nullptr, context);
     }
 
     Size &GetWindowSize()
@@ -179,6 +227,7 @@ namespace ntt
         CLOSE_WINDOW();
         NTT_ENGINE_INFO("The application is closed.");
 
+        DebugShutdown();
         MemoryShutdown();
     }
 } // namespace ntt

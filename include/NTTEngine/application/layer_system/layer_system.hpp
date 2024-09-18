@@ -11,6 +11,9 @@ namespace ntt
      * Staring of the layer system, should be called in the beginning
      *      of the application, game layer will be the default layer
      *      and be turned on automatically.
+     *
+     * When a new Layer is visible, then an event VISIBLE_LAYER_CHANGED
+     *      will be triggered and the layer will be updated.
      */
     void LayerInit();
 
@@ -66,7 +69,13 @@ namespace ntt
      *      (no matter whether it can be update via
      *      the system or not)
      */
-    const List<entity_id_t> DrawedEntities();
+    const List<entity_id_t> DrawnEntities();
+
+    /**
+     * All entities which can be passed to the system
+     *      for updating the internal data
+     */
+    const List<entity_id_t> UpdatedEntities();
 
     /**
      * Release all needed resources of the layer system

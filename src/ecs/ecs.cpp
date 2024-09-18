@@ -4,6 +4,7 @@
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/ecs/data_com.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::ecs
 {
@@ -41,6 +42,7 @@ namespace ntt::ecs
 
     void ECSInit()
     {
+        PROFILE_FUNCTION();
         if (s_isInitialized)
         {
             return;
@@ -64,6 +66,7 @@ namespace ntt::ecs
     void ECSRegister(String name, Ref<System> system,
                      List<std::type_index> componentTypes)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -85,6 +88,7 @@ namespace ntt::ecs
 
     List<entity_id_t> ECSGetEntitiesWithSystem(String name)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return {};
@@ -105,6 +109,7 @@ namespace ntt::ecs
 
     static b8 _IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)
     {
+        PROFILE_FUNCTION();
         auto system = s_systemsStore->Get(system_id);
         auto entities = system->entities;
         auto systemTypes = system->componentTypes;
@@ -129,6 +134,7 @@ namespace ntt::ecs
         const String &name,
         Dictionary<std::type_index, Ref<ComponentBase>> components)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return 0;
@@ -173,6 +179,7 @@ namespace ntt::ecs
 
     Ref<EntityInfo> ECSGetEntity(entity_id_t id)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return nullptr;
@@ -183,6 +190,7 @@ namespace ntt::ecs
 
     Ref<ComponentBase> ECSGetEntityComponent(entity_id_t id, std::type_index type)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return nullptr;
@@ -208,6 +216,7 @@ namespace ntt::ecs
 
     void ECSSetComponentActive(entity_id_t id, std::type_index type, b8 active)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -264,6 +273,7 @@ namespace ntt::ecs
 
     void ECSDeleteEntity(entity_id_t id)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -307,6 +317,7 @@ namespace ntt::ecs
 
     void ECSUpdate(f32 delta)
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;
@@ -341,6 +352,7 @@ namespace ntt::ecs
 
     void ECSShutdown()
     {
+        PROFILE_FUNCTION();
         if (!s_isInitialized)
         {
             return;

@@ -15,4 +15,7 @@ namespace ntt
 
 #define UI_LAYER 0x01 ///< The UI layer where the UI components are updated
                       ///<      like the menu, the HUD, the dialog, etc.
+
+#define DEBUG_LAYER 0x02 ///< The debug layer where the all buttons which provide
+                         ///<    the debugging functionalities are updated.
 } // namespace ntt

@@ -18,6 +18,16 @@ namespace ntt
     void ResourceLoadConfig(const JSON &config);
 
     /**
+     * Adding a new resource to the resource manager.
+     *
+     * @param sceneName The name of the scene which the resource
+     *      belongs to. If the scene does not exist, then the
+     *      resource will not be added.
+     * @param info The information of the resource.
+     */
+    void RegisterResource(const String &sceneName, const ResourceInfo &info);
+
+    /**
      * Retrieve the resource id from the name of that resource.
      *
      * @param name The name of the resource.

@@ -105,22 +105,6 @@ void Begin()
             NTT_APP_INFO("New Speed {} for all pipes", speed);
         });
 
-    RegisterEvent(
-        NTT_ENTITY_CREATED,
-        [](auto id, void *sender, EventContext context)
-        {
-            auto entityId = context.u32_data[0];
-            NTT_APP_DEBUG("Entity {} is created", entityId);
-        });
-
-    RegisterEvent(
-        NTT_ENTITY_DESTROYED,
-        [](auto id, void *sender, EventContext context)
-        {
-            auto entityId = context.u32_data[0];
-            NTT_APP_DEBUG("Entity {} is destroyed", entityId);
-        });
-
     BeginLayer(UI_LAYER);
     ECSCreateEntity(
         "resume-btn",
@@ -131,11 +115,22 @@ void Begin()
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ResumeButtonController>()),
         });
 
-    LayerMakeVisible(GAME_LAYER);
+    RegisterEvent(
+        NTT_LAYER_CHANGED,
+        [](auto id, void *sender, EventContext context)
+        {
+            auto layer = context.u16_data[0];
+            NTT_APP_DEBUG("Layer {} is changed", layer);
+        });
 }
 
 void MainLoop(f32 delta)
 {
+    if (CheckState(NTT_KEY_D, NTT_PRESS))
+    {
+        // NTT_APP_DEBUG("The key D is pressed");
+        DebugBreak();
+    }
 }
 
 void Close()

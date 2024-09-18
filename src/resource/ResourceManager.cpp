@@ -43,7 +43,6 @@ namespace ntt
         void LoadSceneResources(const String &sceneName)
         {
             PROFILE_FUNCTION();
-            NTT_ENGINE_DEBUG("Load all resources in the scene {}", sceneName);
             auto &sceneResources = s_resources[sceneName];
 
             if (!s_resources.Contains(sceneName) || sceneName == EMPTY_SCENE)
@@ -60,7 +59,6 @@ namespace ntt
         void UnloadCurrentScene()
         {
             PROFILE_FUNCTION();
-            NTT_ENGINE_DEBUG("Unload all resources in the scene {}", s_currentScene);
             s_resourcesDictionary.clear();
 
             if (!s_resources.Contains(s_currentScene) || s_currentScene == EMPTY_SCENE)
@@ -93,7 +91,7 @@ namespace ntt
         s_initialized = TRUE;
     }
 
-    static void RegisterResource(const String &sceneName, const ResourceInfo &info)
+    void RegisterResource(const String &sceneName, const ResourceInfo &info)
     {
         PROFILE_FUNCTION();
         if (!s_initialized)
@@ -250,14 +248,12 @@ namespace ntt
             for (auto &resource : resources.second)
             {
                 resource->Unload();
-                NTT_ENGINE_DEBUG("Unloaded the resource {}", resource->GetName());
             }
         }
 
         for (auto &resource : s_defaultResourcesObjects)
         {
             resource->Unload();
-            NTT_ENGINE_DEBUG("Unloaded the default resource {}", resource->GetName());
         }
 
         s_resources.clear();

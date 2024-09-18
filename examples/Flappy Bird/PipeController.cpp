@@ -39,6 +39,10 @@ void PipeController::OnUpdateImpl(f32 delta)
 
     if (geo->x + geo->width < 0)
     {
+        if (geo->rotatation == 0)
+        {
+            DebugBreak();
+        }
         Delete();
     }
 }

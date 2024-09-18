@@ -10,6 +10,7 @@
 #include "ecs/ecs.hpp"
 #include "physics/physics.hpp"
 #include "resources/resources.hpp"
+#include "debugging/debugging.hpp"
 
 using namespace ntt;
 using namespace ntt::memory;
@@ -21,3 +22,4 @@ using namespace ntt::ecs;
 using namespace ntt::physics;
 using namespace ntt::script;
 using namespace ntt::event;
+using namespace ntt::debugging;

@@ -17,8 +17,32 @@ namespace ntt
     namespace
     {
         List<List<entity_id_t>> layers;
+        List<b8> layersVisibility;
         layer_t currentLayer = GAME_LAYER;
         layer_t currentRunningLayer = GAME_LAYER;
+        layer_t preLayer = GAME_LAYER;
+
+        void DebuggingCallback(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+
+            preLayer = currentLayer;
+            LayerMakeVisible(DEBUG_LAYER);
+        }
+
+        void DebuggingContinueCallback(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+
+            auto isOffPermanent = context.b8_data[0];
+
+            if (isOffPermanent)
+            {
+                return;
+            }
+
+            LayerMakeVisible(preLayer);
+        }
 
         void EntityCreatedCallback(event_code_t code, void *sender, const EventContext &context)
         {
@@ -61,9 +85,16 @@ namespace ntt
         layers.clear();
 
         layers.push_back(List<entity_id_t>());
+        layersVisibility.push_back(TRUE);
+
+        currentLayer = GAME_LAYER;
+        currentRunningLayer = GAME_LAYER;
 
         RegisterEvent(NTT_ENTITY_CREATED, EntityCreatedCallback);
         RegisterEvent(NTT_ENTITY_DESTROYED, EntityDestroyedCallback);
+
+        RegisterEvent(NTT_DEBUG_BREAK, DebuggingCallback);
+        RegisterEvent(NTT_DEBUG_CONTINUE, DebuggingContinueCallback);
     }
 
     void BeginLayer(layer_t layer)
@@ -115,9 +146,13 @@ namespace ntt
             }
             entityInfo->active = TRUE;
         }
+
+        EventContext context;
+        context.u16_data[0] = currentRunningLayer;
+        TriggerEvent(NTT_LAYER_CHANGED, nullptr, context);
     }
 
-    const List<entity_id_t> DrawedEntities()
+    const List<entity_id_t> DrawnEntities()
     {
         PROFILE_FUNCTION();
         List<entity_id_t> entities;
@@ -125,6 +160,19 @@ namespace ntt
         for (auto i = 0; i <= currentRunningLayer; i++)
         {
             entities.insert(entities.end(), layers[i].begin(), layers[i].end());
+        }
+
+        return entities;
+    }
+
+    const List<entity_id_t> UpdatedEntities()
+    {
+        PROFILE_FUNCTION();
+        List<entity_id_t> entities;
+
+        for (auto entity : layers[currentRunningLayer])
+        {
+            entities.push_back(entity);
         }
 
         return entities;

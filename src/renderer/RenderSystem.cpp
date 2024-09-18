@@ -88,7 +88,7 @@ namespace ntt::renderer
     b8 RenderSystem::ShouldUpdate(entity_id_t id)
     {
         PROFILE_FUNCTION();
-        auto entities = DrawedEntities();
+        auto entities = DrawnEntities();
         return entities.Contains(id);
     }
 

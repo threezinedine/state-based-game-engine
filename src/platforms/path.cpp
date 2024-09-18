@@ -123,6 +123,15 @@ namespace ntt
         return sysPath.filename().make_preferred().string();
     }
 
+    String GetFileFolder(const String &file)
+    {
+        auto sysPath = ::std::filesystem ::path(file.RawString())
+                           .make_preferred()
+                           .parent_path();
+
+        return sysPath.string();
+    }
+
     String JoinPath(List<String> paths, b8 useBase)
     {
         String path = useBase ? s_sourcePath : "";

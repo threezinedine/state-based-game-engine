@@ -86,6 +86,11 @@ namespace ntt
     String GetFileName(const String &path, b8 containBase = false);
 
     /**
+     * Get folder of the given file path
+     */
+    String GetFileFolder(const String &file);
+
+    /**
      * Create a directory/file with a series of directories and the eventual file
      *      and the path will be created step by step
      * If there are any the path which is not the final one contains the '.' then

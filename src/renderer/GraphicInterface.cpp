@@ -128,8 +128,6 @@ namespace ntt::renderer
 
         auto textureInfo = CREATE_REF(TextureInfo, texture, grid, path);
 
-        NTT_ENGINE_DEBUG("The texture {} is loaded", GetFileName(path, true));
-
         textureInfo->frameWith = static_cast<f32>(texture.width) / grid.col;
         textureInfo->frameHeight = static_cast<f32>(texture.height) / grid.row;
         return s_textureStore->Add(textureInfo);
