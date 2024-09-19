@@ -12,6 +12,7 @@ namespace ntt::ecs
      *      visible object in the user's perspective.
      * If the type is changed, then must change the system trigger context
      *      of CreateEntity, DeleteEntity, and the Layer system callback.
+     * The Debug click in GraphicInterface also uses this type (need to be changed).
      */
     using entity_id_t = u32;
     // constexpr entity_id_t INVALID_ENTITY_ID =

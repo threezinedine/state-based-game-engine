@@ -12,6 +12,15 @@
 #define GET_TEXT_WIDTH(text, fontSize) ::MeasureText(text.RawString().c_str(), fontSize)
 #define DRAW_RECTANGLE(x, y, width, height) \
     ::DrawRectangle(x, y, width, height, ::YELLOW)
+#define DRAW_RECTANGLE_PRO(x, y, width, height, rotation) \
+    ::DrawRectanglePro(                                   \
+        {x,                                               \
+         y,                                               \
+         static_cast<f32>(width),                         \
+         static_cast<f32>(height)},                       \
+        {width / 2, height / 2},                          \
+        rotation,                                         \
+        ::Color{0, 0, 255, 95})
 #define DRAW_TEXTURE(texture, fx, fy, fw, fh, tx, ty, tw, th, rotate) \
     ::DrawTexturePro(texture,                                         \
                      ::Rectangle{fx, fy, fw, fh},                     \

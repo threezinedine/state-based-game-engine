@@ -66,13 +66,14 @@ namespace ntt::event
 #define NTT_ENTITY_CREATED 0x07   ///< When an entity is created
 #define NTT_ENTITY_DESTROYED 0x08 ///< When an entity is destroyed
 
-#define NTT_DEBUG_BREAK 0x09    ///< When the debug mode is activated
-#define NTT_DEBUG_CONTINUE 0x0A ///< When the debug mode is continued
+#define NTT_DEBUG_BREAK 0x09         ///< When the debug mode is activated
+#define NTT_DEBUG_CONTINUE 0x0A      ///< When the debug mode is continued
+#define NTT_DEBUG_CHOOSE_ENTITY 0x0B ///< When the entity is chosen for debugging
 
-#define NTT_END_FRAME 0x0B ///< When an update frame is finished (trigger
+#define NTT_END_FRAME 0x0C ///< When an update frame is finished (trigger
                            ///< at the end of the game loop)
 
-#define NTT_LAYER_CHANGED 0x0C ///< When the layer is changed
+#define NTT_LAYER_CHANGED 0x0D ///< When the layer is changed
 
     // TODO: Change the default event < 255 and the user's event >= 255
 

@@ -36,7 +36,7 @@ void BirdController::OnUpdateImpl(f32 delta)
 
         auto geo = GetComponent<Geometry>();
         auto velocityY = GetComponent<Mass>()->velocity_y;
-        auto rotation = geo->rotatation;
+        auto rotation = geo->rotation;
 
         if (velocityY > 0)
         {
@@ -48,7 +48,7 @@ void BirdController::OnUpdateImpl(f32 delta)
         }
 
         rotation = std::max<int>(-30, std::min<int>(30, rotation));
-        geo->rotatation = rotation;
+        geo->rotation = rotation;
     }
 }
 

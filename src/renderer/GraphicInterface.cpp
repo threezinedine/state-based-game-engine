@@ -11,6 +11,8 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/platforms/application.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/debugging/debugging.hpp>
+#include <NTTEngine/application/event_system/event_system.hpp>
 
 #include "GraphicInterface_platforms.hpp"
 
@@ -20,6 +22,9 @@ namespace ntt::renderer
     using namespace memory;
     using namespace dev::store;
     using namespace ecs;
+    using namespace input;
+    using namespace debugging;
+    using namespace event;
 
 #define TEXTURE_MAX 1000
 #define TOOL_TIP_FONT_SIZE 10
@@ -283,6 +288,13 @@ namespace ntt::renderer
         auto mouse = input::GetMousePosition();
 
         auto highestPriority = MAX_PRIORITY - 1;
+        auto hoveredEntityId = INVALID_ENTITY_ID;
+        RectContext context;
+        context.position.x = 0;
+        context.position.y = 0;
+        context.size.width = 0;
+        context.size.height = 0;
+        context.rotate = 0;
 
         for (highestPriority; highestPriority >= 0; highestPriority--)
         {
@@ -330,6 +342,21 @@ namespace ntt::renderer
                     {
                         s_hoveredTextures.push_back(info.entity_id);
 
+                        if (i < highestPriority)
+                        {
+                            // store the highest priority hovered texture
+                            hoveredEntityId = info.entity_id;
+                            context.position.x = info.toX;
+                            context.position.y = info.toY;
+                            context.size.width = static_cast<size_t>(info.toWidth);
+                            context.size.height = static_cast<size_t>(info.toHeight);
+                            context.rotate = info.rotate;
+                        }
+                        else
+                        {
+                            hoveredEntityId = INVALID_ENTITY_ID;
+                        }
+
                         if (info.tooltip != "" && i == highestPriority)
                         {
                             auto windowSize = GetWindowSize();
@@ -370,6 +397,26 @@ namespace ntt::renderer
             s_drawLists[i].reset();
 
             ASSERT(s_drawLists[i] == nullptr);
+        }
+
+        // When the debugging mode is on, then the highest hovered texture will be tracked
+        if (DebugIsStopped())
+        {
+            if (hoveredEntityId != INVALID_ENTITY_ID)
+            {
+                DRAW_RECTANGLE_PRO(context.position.x,
+                                   context.position.y,
+                                   context.size.width,
+                                   context.size.height,
+                                   context.rotate);
+
+                if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
+                {
+                    EventContext context;
+                    context.u32_data[0] = hoveredEntityId;
+                    TriggerEvent(NTT_DEBUG_CHOOSE_ENTITY, nullptr, context);
+                }
+            }
         }
     }
 

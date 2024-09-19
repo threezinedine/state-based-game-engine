@@ -8,8 +8,8 @@ namespace ntt
      * If need to change the type of the position, then
      *      does not need to change any code in the engine
      */
-    using size_t = u32;
-    constexpr size_t SIZE_DEFAULT = u32{0} - 1;
+    using size_t = f32;
+    constexpr size_t SIZE_DEFAULT = f32{0} - 1;
 
     /**
      * This is used for representing asize

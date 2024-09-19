@@ -19,7 +19,7 @@ void PipeController::OnUpdateImpl(f32 delta)
     auto geo = GetComponent<Geometry>();
     auto config = GetConfiguration();
 
-    if (geo->rotatation == 0)
+    if (geo->rotation == 0)
     {
         if (geo->x < m_getScoreX && m_isPassed == FALSE)
         {

@@ -45,7 +45,7 @@ namespace ntt::renderer
         auto size = ValidateSize(texture->id,
                                  {{geo->x, geo->y},
                                   {geo->width, geo->height},
-                                  geo->rotatation});
+                                  geo->rotation});
 
         geo->width = size.width;
         geo->height = size.height;
@@ -62,7 +62,7 @@ namespace ntt::renderer
         RectContext context;
         context.position = {geo->x, geo->y};
         context.size = {geo->width, geo->height};
-        context.rotate = geo->rotatation;
+        context.rotate = geo->rotation;
 
         Grid cell;
         cell.row = texture->rowIndex;

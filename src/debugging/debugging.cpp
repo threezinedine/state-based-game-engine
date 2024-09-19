@@ -19,13 +19,15 @@ namespace ntt::debugging
     void DebugInit()
     {
         PROFILE_FUNCTION();
+
+        s_isStopped = FALSE;
     }
 
     void DebugBreak()
     {
         PROFILE_FUNCTION();
         TriggerEvent(NTT_DEBUG_BREAK, nullptr, {0});
-        b8 s_isStopped = TRUE;
+        s_isStopped = TRUE;
     }
 
     void NextBreakpoint()
@@ -34,7 +36,7 @@ namespace ntt::debugging
         EventContext context;
         context.b8_data[0] = FALSE; /// the debugging mode is permanently off
         TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, {0});
-        b8 s_isStopped = TRUE;
+        s_isStopped = FALSE;
     }
 
     void NextFrame()
@@ -56,6 +58,7 @@ namespace ntt::debugging
         EventContext context;
         context.b8_data[0] = TRUE; /// the debugging mode is temporarily off
         TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, {0});
+        s_isStopped = FALSE;
     }
 
     b8 DebugIsStopped()
