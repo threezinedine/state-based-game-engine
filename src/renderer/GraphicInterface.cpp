@@ -310,6 +310,9 @@ namespace ntt::renderer
         context.size.height = 0;
         context.rotate = 0;
 
+        // TODO: can be optimzed for drawing by removing the iteration through
+        //     the empty priorities
+
         for (highestPriority; highestPriority >= 0; highestPriority--)
         {
             if (s_drawLists[highestPriority] != nullptr)
