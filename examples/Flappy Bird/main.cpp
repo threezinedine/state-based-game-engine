@@ -7,19 +7,38 @@
 #include "defs.hpp"
 #include "SettingButtonController.hpp"
 #include "ResumeButtonController.hpp"
+#include "StartupSceneController.hpp"
 
 String GetSourceDir()
 {
     return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird/assets"};
 }
 
+void CreateStartupScene();
 void CreateScene1();
 
 List<std::pair<String, std::function<void()>>> GetSceneFuncs()
 {
     return {
+        {"startup", CreateStartupScene},
         {"game", CreateScene1},
     };
+}
+
+void CreateStartupScene()
+{
+    auto windowSize = GetWindowSize();
+
+    ECSCreateEntity(
+        "startup",
+        {
+            ECS_CREATE_COMPONENT(Geometry,
+                                 windowSize.width / 2,
+                                 windowSize.height / 2,
+                                 windowSize.width * 2 / 3),
+            ECS_CREATE_COMPONENT(Texture, GetResourceID("startup")),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<StartupSceneController>()),
+        });
 }
 
 void CreateScene1()

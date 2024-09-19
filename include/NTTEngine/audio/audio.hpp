@@ -53,7 +53,10 @@ namespace ntt::audio
      */
     struct AudioContext
     {
-        u32 desiredPlayedTimes = 1; ///< The desired played times of the audio if (0, then play forever)
+        /**
+         * The desired played times of the audio if (0, then play forever)
+         */
+        u32 desiredPlayedTimes = 1;
 
         AudioContext() = default;
         AudioContext(u32 desiredPlayedTimes)

@@ -42,7 +42,7 @@ namespace ntt
 
     timer_t Timer::GetSeconds() const
     {
-        return static_cast<timer_t>((timer_t)GetMilliseconds() / 10000000);
+        return static_cast<timer_t>((timer_t)GetMilliseconds() / 1000);
     }
 
     timer_t Timer::GetMilliseconds() const

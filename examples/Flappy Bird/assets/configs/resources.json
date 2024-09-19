@@ -1,42 +1,10 @@
 {
-	"default": [
+	"default": [],
+	"startup": [
 		{
-			"name": "background",
+			"name": "startup",
 			"type": 0,
-			"relPath": "images/game-objects/background-day.png"
-		},
-		{
-			"name": "menu-btn",
-			"type": 0,
-			"relPath": "images/ui/menu-btn.png",
-			"grid": {
-				"row": 9,
-				"col": 3
-			}
-		},
-		{
-			"name": "wing",
-			"type": 1,
-			"relPath": "audios/wing.wav",
-			"volume": 0.4
-		},
-		{
-			"name": "die",
-			"type": 1,
-			"relPath": "audios/die.wav"
-		},
-		{
-			"name": "point",
-			"type": 1,
-			"relPath": "audios/point.wav"
-		},
-		{
-			"name": "background-audio",
-			"type": 1,
-			"relPath": "audios/sunflower-street.wav",
-			"runAtStart": true,
-			"forever": true,
-			"volume": 0.3
+			"relPath": "images/ui/startup.png"
 		}
 	],
 	"game": [
@@ -86,6 +54,42 @@
 			"name": "message",
 			"type": 0,
 			"relPath": "images/ui/message.png"
+		},
+		{
+			"name": "background",
+			"type": 0,
+			"relPath": "images/game-objects/background-day.png"
+		},
+		{
+			"name": "menu-btn",
+			"type": 0,
+			"relPath": "images/ui/menu-btn.png",
+			"grid": {
+				"row": 9,
+				"col": 3
+			}
+		},
+		{
+			"name": "wing",
+			"type": 1,
+			"relPath": "audios/wing.wav",
+			"volume": 0.4
+		},
+		{
+			"name": "die",
+			"type": 1,
+			"relPath": "audios/die.wav"
+		},
+		{
+			"name": "point",
+			"type": 1,
+			"relPath": "audios/point.wav"
+		},
+		{
+			"name": "background-audio",
+			"type": 1,
+			"relPath": "audios/sunflower-street.wav",
+			"volume": 0.3
 		}
 	]
 }

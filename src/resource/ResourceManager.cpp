@@ -91,22 +91,6 @@ namespace ntt
         s_defaultResourcesObjects.clear();
 
         s_initialized = TRUE;
-
-        RegisterEvent(
-            NTT_RESOURCE_LOADED,
-            [](auto id, void *sender, EventContext context)
-            {
-                auto resourceId = context.u32_data[0];
-                NTT_APP_INFO("Resource {} is loaded", resourceId);
-            });
-
-        RegisterEvent(
-            NTT_RESOURCE_UNLOADED,
-            [](auto id, void *sender, EventContext context)
-            {
-                auto resourceId = context.u32_data[0];
-                NTT_APP_INFO("Resource {} is unloaded", resourceId);
-            });
     }
 
     void RegisterResource(const String &sceneName, const ResourceInfo &info)

@@ -43,7 +43,7 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
         if (m_Impl->isLoaded)
         {
-            NTT_ENGINE_WARN("The image resource is already loaded.");
+            NTT_ENGINE_TRACE("The image {} resource is already loaded.", GetName());
             return RESOURCE_ID_DEFAULT;
         }
 
@@ -56,6 +56,8 @@ namespace ntt::renderer
 
         m_Impl->textureId = LoadTexture(m_Impl->path, grid);
 
+        NTT_ENGINE_DEBUG("The image resource is loaded: {}", m_Impl->name);
+
         return m_Impl->textureId;
     }
 
@@ -64,9 +66,11 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
         if (!m_Impl->isLoaded)
         {
-            NTT_ENGINE_WARN("The image resource is already unloaded.");
+            NTT_ENGINE_TRACE("The image resource {} is already unloaded.", GetName());
             return;
         }
+
+        NTT_ENGINE_DEBUG("Unloading the image resource: {}", m_Impl->name);
 
         UnloadTexture(m_Impl->textureId);
         m_Impl->isLoaded = FALSE;

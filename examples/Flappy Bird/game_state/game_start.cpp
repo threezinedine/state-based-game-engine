@@ -14,6 +14,8 @@ void GameStart::OnEnterImpl()
         });
 
     ASSERT(m_messageEntity != INVALID_ENTITY_ID);
+
+    PlayAudio(GetResourceID("background-audio"), {0});
 }
 
 void GameStart::OnUpdateImpl(f32 delta)
