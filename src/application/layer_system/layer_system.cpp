@@ -34,7 +34,7 @@ namespace ntt
         {
             PROFILE_FUNCTION();
 
-            preLayer = currentLayer;
+            preLayer = currentRunningLayer;
             LayerMakeVisible(DEBUG_LAYER);
         }
 

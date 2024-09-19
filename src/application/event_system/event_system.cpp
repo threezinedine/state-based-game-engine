@@ -31,6 +31,12 @@ namespace ntt::event
         Dictionary<event_code_t, List<EventCallbackContext>> s_eventCallbacks;
     } // namespace
 
+    void EventInit()
+    {
+        PROFILE_FUNCTION();
+        s_eventCallbacks = Dictionary<event_code_t, List<EventCallbackContext>>();
+    }
+
     event_id_t RegisterEvent(event_code_t event_code, EventCallback callback)
     {
         PROFILE_FUNCTION();
@@ -63,5 +69,11 @@ namespace ntt::event
 
         callbacks.ForEach([&](const EventCallbackContext &callbackCxt, ...)
                           { callbackCxt.callback(event_code, sender, context); });
+    }
+
+    void EventShutdown()
+    {
+        PROFILE_FUNCTION();
+        s_eventCallbacks.clear();
     }
 } // namespace ntt::event

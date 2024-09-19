@@ -14,6 +14,7 @@ class LayerSystemTest : public ::testing::Test
 protected:
     void SetUp() override
     {
+        EventInit();
         ECSInit();
         LayerInit();
     }
@@ -22,6 +23,7 @@ protected:
     {
         LayerShutdown();
         ECSShutdown();
+        EventShutdown();
     }
 };
 
@@ -122,4 +124,58 @@ TEST_F(LayerSystemTest, When_Change_The_Layer_Then_That_Layer_Trigger_Event)
 
     LayerMakeVisible(DEBUG_LAYER);
     EXPECT_EQ(layer, DEBUG_LAYER);
+}
+
+TEST_F(LayerSystemTest, DebuggingBehaviorTest)
+{
+    BeginLayer(GAME_LAYER);
+    auto entity = ECSCreateEntity("test-entity", {});
+    auto entity2 = ECSCreateEntity("test-entity-2", {});
+
+    BeginLayer(DEBUG_LAYER);
+    auto entity3 = ECSCreateEntity("test-entity-3", {});
+    auto entity4 = ECSCreateEntity("test-entity-4", {});
+
+    EventContext context;
+
+    LayerMakeVisible(GAME_LAYER);
+    EXPECT_EQ(DrawnEntities(), List<entity_id_t>({entity, entity2}));
+    EXPECT_EQ(UpdatedEntities(), List<entity_id_t>({entity, entity2}));
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    TriggerEvent(NTT_DEBUG_BREAK, nullptr, context);
+
+    EXPECT_EQ(DrawnEntities(), List<entity_id_t>({entity, entity2, entity3, entity4}));
+    EXPECT_EQ(UpdatedEntities(), List<entity_id_t>({entity3, entity4}));
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    context.b8_data[0] = TRUE;
+    TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, context);
+    EXPECT_EQ(DrawnEntities(), List<entity_id_t>({entity, entity2, entity3, entity4}));
+    EXPECT_EQ(UpdatedEntities(), List<entity_id_t>({entity3, entity4}));
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    context.b8_data[0] = FALSE;
+    TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, context);
+    EXPECT_EQ(DrawnEntities(), List<entity_id_t>({entity, entity2}));
+    EXPECT_EQ(UpdatedEntities(), List<entity_id_t>({entity, entity2}));
+
+    // When the ui layer is visible, then the debug layer will return that layer when continue
+    BeginLayer(UI_LAYER_0);
+    auto entity5 = ECSCreateEntity("test-entity-5", {});
+
+    LayerMakeVisible(UI_LAYER_0);
+    EXPECT_EQ(DrawnEntities(), List<entity_id_t>({entity, entity2, entity5}));
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    TriggerEvent(NTT_DEBUG_BREAK, nullptr, context);
+
+    EXPECT_EQ(DrawnEntities(), List<entity_id_t>({entity, entity2, entity5, entity3, entity4}));
+    EXPECT_EQ(UpdatedEntities(), List<entity_id_t>({entity3, entity4}));
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    context.b8_data[0] = FALSE;
+    TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, context);
+
+    EXPECT_EQ(DrawnEntities(), List<entity_id_t>({entity, entity2, entity5}));
 }

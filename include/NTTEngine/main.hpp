@@ -19,6 +19,7 @@ List<std::pair<String, std::function<void()>>> GetSceneFuncs();
 int main()
 {
     LogInit();
+    EventInit();
     NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
     ntt::Phrases phrases = {
         []()
@@ -54,6 +55,7 @@ int main()
     ApplicationShutdown();
 
     ProfilingShutdown();
+    EventShutdown();
     LogShutdown();
     return 0;
 }

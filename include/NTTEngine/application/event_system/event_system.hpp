@@ -95,6 +95,11 @@ namespace ntt::event
     using EventCallback = std::function<void(const event_code_t, void *, const EventContext &)>;
 
     /**
+     * Starting the event bus with needed information and logic
+     */
+    void EventInit();
+
+    /**
      * When any callback is registered to the event bus
      *      it will be called each time the event code
      *      is triggered.
@@ -130,4 +135,9 @@ namespace ntt::event
     void TriggerEvent(event_code_t event_code,
                       void *sender = nullptr,
                       const EventContext &context = {});
+
+    /**
+     * Destroy the event bus and free the memory
+     */
+    void EventShutdown();
 } // namespace ntt::event
