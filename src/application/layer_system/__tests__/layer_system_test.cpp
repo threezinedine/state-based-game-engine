@@ -4,10 +4,12 @@
 #include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/renderer/renderer.hpp>
 
 using namespace ntt;
 using namespace ecs;
 using namespace event;
+using namespace renderer;
 
 class LayerSystemTest : public ::testing::Test
 {
@@ -178,4 +180,50 @@ TEST_F(LayerSystemTest, DebuggingBehaviorTest)
     TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, context);
 
     EXPECT_EQ(DrawnEntities(), List<entity_id_t>({entity, entity2, entity5}));
+}
+
+TEST_F(LayerSystemTest, CreateEntityWithPriority)
+{
+    BeginLayer(GAME_LAYER);
+
+    auto textureEnt = ECSCreateEntity(
+        "test-entity",
+        {
+            ECS_CREATE_COMPONENT(Texture, 1, 0, 0, PRIORITY_0),
+        });
+
+    auto textEnt = ECSCreateEntity(
+        "test-entity-2",
+        {
+            ECS_CREATE_COMPONENT(Text, "test", 10, PRIORITY_1),
+        });
+
+    auto textEntTexture = ECS_GET_COMPONENT(textureEnt, Texture);
+    EXPECT_EQ(textEntTexture->priority, PRIORITY_0);
+
+    auto textEntText = ECS_GET_COMPONENT(textEnt, Text);
+    EXPECT_EQ(textEntText->priority, PRIORITY_1);
+
+    TriggerEvent(NTT_ENTITY_CREATED, nullptr, {textEnt});
+    EXPECT_EQ(DrawnEntities(), List<entity_id_t>({textureEnt, textEnt}));
+
+    BeginLayer(UI_LAYER_0);
+
+    auto textureEnt2 = ECSCreateEntity(
+        "test-entity-3",
+        {
+            ECS_CREATE_COMPONENT(Texture, 1, 0, 0, PRIORITY_0),
+        });
+
+    auto textEnt2 = ECSCreateEntity(
+        "test-entity-4",
+        {
+            ECS_CREATE_COMPONENT(Text, "test", 10, PRIORITY_1),
+        });
+
+    auto textEntTexture2 = ECS_GET_COMPONENT(textureEnt2, Texture);
+    EXPECT_EQ(textEntTexture2->priority, PRIORITY_0 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
+
+    auto textEntText2 = ECS_GET_COMPONENT(textEnt2, Text);
+    EXPECT_EQ(textEntText2->priority, PRIORITY_1 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
 }

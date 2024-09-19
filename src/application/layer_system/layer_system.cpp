@@ -62,11 +62,6 @@ namespace ntt
                 return;
             }
 
-            if (layers[currentLayer] == nullptr)
-            {
-                layers[currentLayer] = CreateScope<List<entity_id_t>>();
-            }
-
             if (layers[currentLayer]->Contains(id))
             {
                 return;
