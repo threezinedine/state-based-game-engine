@@ -28,10 +28,12 @@ namespace ntt
      *      will be loaded and initialized, the previous scene and its resources will be deleted.
      *
      * If the scene is not found, the warning will be logged and nothing will be changed.
-     * When this function is called successfully, then SCENE_CHANGED event will be triggered.
+     * When this function is called successfully, then SCENE_CHANGED event will be triggered with
+     *      the data is the name of the scene (so that the name of the scene should less than 15
+     *      characters). If the scene name > 15 characters, the warning will be logged and the
+     *      event only contains the first 15 characters.
      *
      * @param sceneName: The name of the scene which is stored in the dictionary
-     *
      */
     void SceneOpen(const String &sceneName);
 

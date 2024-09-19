@@ -93,6 +93,18 @@ namespace ntt
         s_scenes[s_currentScene]();
 
         EventContext context;
+        if (s_currentScene.Length() > 15)
+        {
+            memcpy(context.u8_data, s_currentScene.RawString().c_str(), 15);
+            context.u8_data[15] = '\0';
+        }
+        else
+        {
+            memcpy(
+                context.u8_data,
+                s_currentScene.RawString().c_str(),
+                s_currentScene.Length() + 1);
+        }
         TriggerEvent(NTT_SCENE_CHANGED, nullptr, context);
     }
 

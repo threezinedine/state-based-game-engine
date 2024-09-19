@@ -24,7 +24,7 @@ namespace ntt::event
      * The data frame which will be passed to all the
      *      subscribers when the event is triggered
      *
-     * It has length 128 bytes and can be used to store
+     * It has length 16 bytes and can be used to store
      *      multiple data types
      */
     union EventContext
