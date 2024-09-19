@@ -15,6 +15,7 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 
 #include "GraphicInterface_platforms.hpp"
+#include <NTTEngine/application/layer_system/layer_types.hpp>
 
 namespace ntt::renderer
 {
@@ -31,7 +32,7 @@ namespace ntt::renderer
 #define TOOL_TIP_PADDING 5
 #define TOOL_TOP_OFFSET_X 20
 #define TOOL_TOP_OFFSET_Y 20
-#define MAX_PRIORITY 20
+#define MAX_PRIORITIES (LAYER_PRIORITY_RANGE * MAX_LAYERS)
 
     /**
      * All the needed information for rendering the texture
@@ -80,7 +81,7 @@ namespace ntt::renderer
         // Store all the priorities draw with maximum 256 priorities
         // The higher priority will be drawn on the top of the lower priority
         // It should be cleared after each frame
-        Scope<List<DrawInfo>> s_drawLists[MAX_PRIORITY];
+        Scope<List<DrawInfo>> s_drawLists[MAX_PRIORITIES];
 
         // Stack of all texture ID which is hovered by the mouse
         // It also be cleared after each frame
@@ -231,6 +232,12 @@ namespace ntt::renderer
         f32 frameHeight = textureInfo->frameHeight;
         auto actualSize = ValidateSize(texture_id, context);
 
+        if (drawContext.priority >= MAX_PRIORITIES)
+        {
+            NTT_ENGINE_WARN("The priority of the texture is out of range: {}", drawContext.priority);
+            return;
+        }
+
         if (s_drawLists[drawContext.priority] == nullptr)
         {
             s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
@@ -270,6 +277,11 @@ namespace ntt::renderer
             s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
         }
 
+        if (s_drawLists[drawContext.priority] == nullptr)
+        {
+            s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
+        }
+
         DrawInfo info;
         info.entity_id = drawContext.entity_id;
         info.drawText = TRUE;
@@ -289,7 +301,7 @@ namespace ntt::renderer
 
         auto mouse = input::GetMousePosition();
 
-        auto highestPriority = MAX_PRIORITY - 1;
+        auto highestPriority = MAX_PRIORITIES - 1;
         auto hoveredEntityId = INVALID_ENTITY_ID;
         RectContext context;
         context.position.x = 0;
@@ -306,7 +318,7 @@ namespace ntt::renderer
             }
         }
 
-        for (auto i = 0; i < MAX_PRIORITY; i++)
+        for (auto i = 0; i < MAX_PRIORITIES; i++)
         {
             if (s_drawLists[i] == nullptr)
             {

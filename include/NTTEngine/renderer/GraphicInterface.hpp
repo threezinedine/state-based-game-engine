@@ -12,6 +12,8 @@ namespace ntt::renderer
 {
     using namespace ecs;
 
+#define LAYER_PRIORITY_RANGE 5
+
     /**
      * Graphic Interface for drawing everything the engine pushes into it
      * It no need to worry about whether the object should be displayed or not

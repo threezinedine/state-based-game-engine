@@ -6,6 +6,9 @@
 #include <NTTEngine/renderer/renderer.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/core/memory.hpp>
+#include <NTTEngine/core/assertion.hpp>
+#include <NTTEngine/renderer/GraphicInterface.hpp>
 
 namespace ntt
 {
@@ -13,18 +16,19 @@ namespace ntt
     using namespace log;
     using namespace renderer;
     using namespace event;
+    using namespace memory;
 
-#define LAYER_RANGE 5
+#define INVALID_UI_LAYER 255
 
     namespace
     {
-        List<List<entity_id_t>> layers;
+        Scope<List<entity_id_t>> layers[MAX_LAYERS];
         List<b8> layersVisibility;
         layer_t currentLayer = GAME_LAYER;
         layer_t currentRunningLayer = GAME_LAYER;
         layer_t preLayer = GAME_LAYER;
 
-        b8 uiLayerVisible = FALSE;
+        u8 uiLayerVisible = INVALID_UI_LAYER;
 
         void DebuggingCallback(event_code_t code, void *sender, const EventContext &context)
         {
@@ -53,30 +57,35 @@ namespace ntt
             PROFILE_FUNCTION();
             auto id = context.u32_data[0];
 
-            if (layers.size() <= currentLayer)
+            if (currentLayer > MAX_LAYERS)
             {
                 return;
             }
 
-            if (layers[currentLayer].Contains(id))
+            if (layers[currentLayer] == nullptr)
+            {
+                layers[currentLayer] = CreateScope<List<entity_id_t>>();
+            }
+
+            if (layers[currentLayer]->Contains(id))
             {
                 return;
             }
 
-            layers[currentLayer].push_back(id);
+            layers[currentLayer]->push_back(id);
 
             auto texture = ECS_GET_COMPONENT(id, Texture);
 
             if (texture != nullptr)
             {
-                texture->priority += (currentLayer * LAYER_RANGE);
+                texture->priority += (currentLayer * LAYER_PRIORITY_RANGE);
             }
 
             auto text = ECS_GET_COMPONENT(id, Text);
 
             if (text != nullptr)
             {
-                text->priority += (currentLayer * LAYER_RANGE);
+                text->priority += (currentLayer * LAYER_PRIORITY_RANGE);
             }
 
             if (currentLayer != currentRunningLayer)
@@ -92,7 +101,11 @@ namespace ntt
 
             for (auto &layer : layers)
             {
-                layer.RemoveItem(id);
+                if (layer == nullptr)
+                {
+                    continue;
+                }
+                layer->RemoveItem(id);
             }
         }
     } // namespace
@@ -100,14 +113,16 @@ namespace ntt
     void LayerInit()
     {
         PROFILE_FUNCTION();
-        layers.clear();
+        memset(layers, 0, sizeof(layers));
 
-        layers.push_back(List<entity_id_t>());
-        layersVisibility.push_back(TRUE);
+        for (auto i = 0; i < MAX_LAYERS; i++)
+        {
+            layers[i] = CreateScope<List<entity_id_t>>();
+        }
 
         currentLayer = GAME_LAYER;
         currentRunningLayer = GAME_LAYER;
-        uiLayerVisible = FALSE;
+        uiLayerVisible = INVALID_UI_LAYER;
 
         RegisterEvent(NTT_ENTITY_CREATED, EntityCreatedCallback);
         RegisterEvent(NTT_ENTITY_DESTROYED, EntityDestroyedCallback);
@@ -119,9 +134,11 @@ namespace ntt
     void BeginLayer(layer_t layer)
     {
         PROFILE_FUNCTION();
-        while (layers.size() <= layer)
+
+        if (MAX_LAYERS <= layer)
         {
-            layers.push_back(List<entity_id_t>());
+            NTT_ENGINE_WARN("The layer {} is out of range", layer);
+            return;
         }
 
         currentLayer = layer;
@@ -135,19 +152,20 @@ namespace ntt
     void LayerMakeVisible(layer_t layer)
     {
         PROFILE_FUNCTION();
-        if (layers.size() <= layer)
+        if (MAX_LAYERS <= layer)
         {
+            NTT_ENGINE_WARN("The layer {} is out of range", layer);
             return;
         }
 
-        if (layer == UI_LAYER)
+        if (GAME_LAYER < layer && layer < DEBUG_LAYER)
         {
-            uiLayerVisible = TRUE;
+            uiLayerVisible = layer;
         }
 
         if (layer == GAME_LAYER)
         {
-            uiLayerVisible = FALSE;
+            uiLayerVisible = INVALID_UI_LAYER;
         }
 
         currentRunningLayer = layer;
@@ -162,16 +180,25 @@ namespace ntt
         PROFILE_FUNCTION();
         List<entity_id_t> entities;
 
-        entities.insert(entities.end(), layers[GAME_LAYER].begin(), layers[GAME_LAYER].end());
+        entities.insert(
+            entities.end(),
+            layers[GAME_LAYER]->begin(),
+            layers[GAME_LAYER]->end());
 
-        if (uiLayerVisible)
+        if (uiLayerVisible != INVALID_UI_LAYER)
         {
-            entities.insert(entities.end(), layers[UI_LAYER].begin(), layers[UI_LAYER].end());
+            entities.insert(
+                entities.end(),
+                layers[uiLayerVisible]->begin(),
+                layers[uiLayerVisible]->end());
         }
 
         if (currentRunningLayer == DEBUG_LAYER)
         {
-            entities.insert(entities.end(), layers[DEBUG_LAYER].begin(), layers[DEBUG_LAYER].end());
+            entities.insert(
+                entities.end(),
+                layers[DEBUG_LAYER]->begin(),
+                layers[DEBUG_LAYER]->end());
         }
 
         return entities;
@@ -182,7 +209,7 @@ namespace ntt
         PROFILE_FUNCTION();
         List<entity_id_t> entities;
 
-        for (auto entity : layers[currentRunningLayer])
+        for (auto entity : *(layers[currentRunningLayer]))
         {
             entities.push_back(entity);
         }
@@ -193,6 +220,11 @@ namespace ntt
     void LayerShutdown()
     {
         PROFILE_FUNCTION();
-        layers.clear();
+
+        for (auto &layer : layers)
+        {
+            layer.reset();
+            ASSERT_M(layer == nullptr, "The layer is not reset properly");
+        }
     }
 }

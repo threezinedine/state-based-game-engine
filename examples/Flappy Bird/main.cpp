@@ -116,7 +116,7 @@ void Begin()
             NTT_APP_INFO("New Speed {} for all pipes", speed);
         });
 
-    BeginLayer(UI_LAYER);
+    BeginLayer(UI_LAYER_0);
     ECSCreateEntity(
         "resume-btn",
         {

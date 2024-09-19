@@ -70,7 +70,7 @@ namespace ntt
     void ProfilingShutdown();
 } // namespace ntt
 
-// #define _PROFILING
+#define _PROFILING
 
 #ifdef _PROFILING
 #define PROFILE_FUNCTION() ntt::Profiling p_##__FUNCTION__##_##__LINE__(__FUNCTION__, __FILE__, __LINE__)

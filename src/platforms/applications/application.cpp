@@ -120,7 +120,15 @@ namespace ntt
         ///     then now the user's code will not affect the order of the layer
         BeginLayer(GAME_LAYER);
 
-        BeginLayer(UI_LAYER);
+        BeginLayer(UI_LAYER_0);
+        BeginLayer(UI_LAYER_1);
+        BeginLayer(UI_LAYER_2);
+        BeginLayer(UI_LAYER_3);
+        BeginLayer(UI_LAYER_4);
+        BeginLayer(UI_LAYER_5);
+        BeginLayer(UI_LAYER_6);
+        BeginLayer(UI_LAYER_7);
+        BeginLayer(UI_LAYER_8);
         /// Default entities of the UI_LAYER are defined below
 
         /// Default entities of the UI_LAYER are defined above
