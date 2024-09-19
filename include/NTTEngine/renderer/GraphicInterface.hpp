@@ -6,6 +6,7 @@
 #include <NTTEngine/resources/resource_common.h>
 #include <NTTEngine/structures/stack.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/structures/color.hpp>
 
 namespace ntt::renderer
 {
@@ -69,6 +70,12 @@ namespace ntt::renderer
         RectContext() = default;
     };
 
+    /**
+     * Use priority macro for avoiding the cases when use can specify
+     *      the priority manually and make the mistake with the priority
+     *      (because priority of a texture must be in the range of 0 to 4)
+     */
+
 #define PRIORITY_0 0
 #define PRIORITY_1 1
 #define PRIORITY_2 2
@@ -107,7 +114,17 @@ namespace ntt::renderer
          */
         u32 fontSize;
 
-        DrawContext() : entity_id(INVALID_ENTITY_ID), priority(PRIORITY_0), fontSize(10) {}
+        /**
+         * The color of the text (only) which should be displayed
+         */
+        Color color;
+
+        DrawContext() : entity_id(INVALID_ENTITY_ID),
+                        priority(PRIORITY_0),
+                        fontSize(10),
+                        color(NTT_WHITE)
+        {
+        }
     };
 
     /**
@@ -164,7 +181,14 @@ namespace ntt::renderer
     const List<entity_id_t> &GetHoveredTexture();
 
     /**
-     * Actually draw the objects on the screen
+     * Actually draw the objects on the screen.
+     *
+     * This function also tracking the hovered entity (provided via id)
+     *      and display the tooltip if the mouse is hovered on the object.
+     *
+     * In debugging mode, if the user hovers on an entity which is not the
+     *      DEBUG_LAYER, then the entity will be highlighted and the user
+     *      can click to trigger the event NTT_DEBUG_CHOOSE_ENTITY.
      */
     void GraphicUpdate();
 

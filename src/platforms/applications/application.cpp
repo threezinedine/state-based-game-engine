@@ -221,7 +221,7 @@ namespace ntt
 
         BEGIN_DRAWING();
 
-        ClearBackground(BLACK);
+        ClearBackground(::BLACK);
         s_phrases.MainLoop(delta);
 
         GraphicUpdate();

@@ -8,13 +8,13 @@
 
 namespace ntt::platforms
 {
-    void Print(Color color, const char *message, ...)
+    void Print(TerminalColor color, const char *message, ...)
     {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         int c = 0;
 
 #define WINDOW_COLOR(color, value) \
-    case Color::color:             \
+    case TerminalColor::color:     \
         c = value;                 \
         break;
 

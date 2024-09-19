@@ -17,3 +17,4 @@
 #include "size.hpp"
 #include "string.hpp"
 #include "stack.hpp"
+#include "color.hpp"

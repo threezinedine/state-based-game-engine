@@ -2,6 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include "GraphicInterface.hpp"
+#include <NTTEngine/structures/color.hpp>
 
 namespace ntt::renderer
 {
@@ -16,11 +17,16 @@ namespace ntt::renderer
         String text;
         u32 fontSize;
         u8 priority;
+        Color color;
 
-        Text(String text = "", u32 fontSize = 10, u8 priority = 0)
+        Text(String text = "",
+             u32 fontSize = 10,
+             u8 priority = PRIORITY_0,
+             Color color = NTT_WHITE)
             : text(text),
               fontSize(fontSize),
-              priority(priority)
+              priority(priority),
+              color(color)
         {
         }
     };

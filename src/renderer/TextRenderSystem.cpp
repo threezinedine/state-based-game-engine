@@ -43,6 +43,7 @@ namespace ntt::renderer
         DrawContext drawContext;
         drawContext.priority = text->priority;
         drawContext.fontSize = text->fontSize;
+        drawContext.color = text->color;
 
         DrawText(text->text, {geo->x, geo->y}, drawContext);
     }

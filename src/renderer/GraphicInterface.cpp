@@ -66,6 +66,7 @@ namespace ntt::renderer
         b8 drawText = FALSE;
         String text;
         u32 fontSize;
+        Color color;
     };
 
     namespace
@@ -276,6 +277,7 @@ namespace ntt::renderer
         info.toX = static_cast<f32>(position.x);
         info.toY = static_cast<f32>(position.y);
         info.fontSize = drawContext.fontSize;
+        info.color = drawContext.color;
 
         s_drawLists[drawContext.priority]->push_back(info);
     }
@@ -315,7 +317,7 @@ namespace ntt::renderer
             {
                 if (info.drawText)
                 {
-                    DRAW_TEXT(info.text, info.toX, info.toY, info.fontSize);
+                    DRAW_TEXT(info.text, info.toX, info.toY, info.fontSize, info.color);
                 }
                 else
                 {
@@ -387,7 +389,7 @@ namespace ntt::renderer
                             DRAW_TEXT(info.tooltip,
                                       toolTipX + TOOL_TIP_PADDING,
                                       toolTipY + TOOL_TIP_PADDING,
-                                      TOOL_TIP_FONT_SIZE);
+                                      TOOL_TIP_FONT_SIZE, info.color);
                         }
                     }
                 }

@@ -5,7 +5,7 @@ namespace ntt
     /**
      * All supported color in the engine
      */
-    enum Color
+    enum TerminalColor
     {
         RED,
         GREEN,

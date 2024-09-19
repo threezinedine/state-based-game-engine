@@ -101,6 +101,13 @@ void Begin()
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ScoreBoard>()),
         });
 
+    ECSCreateEntity(
+        "hello world text",
+        {
+            ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2),
+            ECS_CREATE_COMPONENT(Text, "Hello World", 20, PRIORITY_0, NTT_CYAN),
+        });
+
     RegisterEvent(
         SPEED_UP_EVENT,
         [](auto id, void *sender, EventContext context)
