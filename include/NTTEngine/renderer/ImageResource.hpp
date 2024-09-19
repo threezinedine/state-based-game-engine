@@ -14,8 +14,9 @@ namespace ntt::renderer
 
         const String &GetName() const override;
 
-        resource_id_t Load() override;
-        void Unload() override;
+    protected:
+        resource_id_t LoadImpl() override;
+        void UnloadImpl() override;
 
     private:
         class Impl;

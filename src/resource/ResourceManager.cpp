@@ -4,6 +4,7 @@
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/resources/Resource.hpp>
 #include <NTTEngine/core/parser/json.hpp>
+#include <NTTEngine/application/event_system/event_system.hpp>
 
 #include <NTTEngine/renderer/ImageResource.hpp>
 #include <NTTEngine/audio/AudioResource.hpp>
@@ -15,6 +16,7 @@ namespace ntt
     using namespace log;
     using namespace renderer;
     using namespace audio;
+    using namespace event;
 
     namespace
     {
@@ -89,6 +91,22 @@ namespace ntt
         s_defaultResourcesObjects.clear();
 
         s_initialized = TRUE;
+
+        RegisterEvent(
+            NTT_RESOURCE_LOADED,
+            [](auto id, void *sender, EventContext context)
+            {
+                auto resourceId = context.u32_data[0];
+                NTT_APP_INFO("Resource {} is loaded", resourceId);
+            });
+
+        RegisterEvent(
+            NTT_RESOURCE_UNLOADED,
+            [](auto id, void *sender, EventContext context)
+            {
+                auto resourceId = context.u32_data[0];
+                NTT_APP_INFO("Resource {} is unloaded", resourceId);
+            });
     }
 
     void RegisterResource(const String &sceneName, const ResourceInfo &info)

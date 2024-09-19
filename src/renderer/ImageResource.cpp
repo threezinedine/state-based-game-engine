@@ -38,7 +38,7 @@ namespace ntt::renderer
         return m_Impl->name;
     }
 
-    resource_id_t ImageResource::Load()
+    resource_id_t ImageResource::LoadImpl()
     {
         PROFILE_FUNCTION();
         if (m_Impl->isLoaded)
@@ -55,10 +55,11 @@ namespace ntt::renderer
         grid.col = gridInfo.Get("col", grid.col);
 
         m_Impl->textureId = LoadTexture(m_Impl->path, grid);
+
         return m_Impl->textureId;
     }
 
-    void ImageResource::Unload()
+    void ImageResource::UnloadImpl()
     {
         PROFILE_FUNCTION();
         if (!m_Impl->isLoaded)

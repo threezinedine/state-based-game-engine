@@ -14,12 +14,18 @@ using namespace ntt::renderer;
 using namespace ntt::memory;
 
 String GetSourceDir();
+List<std::pair<String, std::function<void()>>> GetSceneFuncs();
 
 int main()
 {
     LogInit();
     NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
-    ntt::Phrases phrases = {Begin, MainLoop, Close};
+    ntt::Phrases phrases = {
+        []()
+        { Begin(); BeginLayer(GAME_LAYER) ;SceneInit(GetSceneFuncs()); },
+        MainLoop,
+        []()
+        { SceneShutdown(); Close(); }};
 
     ConfigureSourcePath(GetSourceDir());
     ProfilingInit("profiling");

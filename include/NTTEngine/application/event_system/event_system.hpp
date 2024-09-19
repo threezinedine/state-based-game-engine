@@ -75,6 +75,11 @@ namespace ntt::event
 
 #define NTT_LAYER_CHANGED 0x0D ///< When the layer is changed
 
+#define NTT_SCENE_CHANGED 0x0E ///< When the scene is changed
+
+#define NTT_RESOURCE_LOADED 0x0F   ///< When the resource is loaded
+#define NTT_RESOURCE_UNLOADED 0x10 ///< When the resource is unloaded
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

@@ -42,7 +42,7 @@ namespace ntt::audio
         return m_Impl->name;
     }
 
-    resource_id_t AudioResource::Load()
+    resource_id_t AudioResource::LoadImpl()
     {
         PROFILE_FUNCTION();
         if (m_Impl->isLoaded)
@@ -72,7 +72,7 @@ namespace ntt::audio
         return m_Impl->audioId;
     }
 
-    void AudioResource::Unload()
+    void AudioResource::UnloadImpl()
     {
         PROFILE_FUNCTION();
         if (!m_Impl->isLoaded)

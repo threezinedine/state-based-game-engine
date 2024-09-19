@@ -1,8 +1,11 @@
 #pragma once
 #include "resource_common.h"
+#include <NTTEngine/core/memory.hpp>
 
 namespace ntt
 {
+    using namespace memory;
+
     /**
      * Interfaces of all resources, all other resources must
      *      inherit from this interface.
@@ -10,7 +13,8 @@ namespace ntt
     class Resource
     {
     public:
-        virtual ~Resource() = default;
+        Resource();
+        virtual ~Resource();
 
         virtual const String &GetName() const = 0;
 
@@ -20,11 +24,19 @@ namespace ntt
          *
          * @return True if the resource is loaded successfully, otherwise false.
          */
-        virtual resource_id_t Load() = 0;
+        resource_id_t Load();
 
         /**
          * Unload the resource from the memory.
          */
-        virtual void Unload() = 0;
+        void Unload();
+
+    protected:
+        virtual resource_id_t LoadImpl() = 0;
+        virtual void UnloadImpl() = 0;
+
+    private:
+        class Impl;
+        Scope<Impl> m_impl;
     };
 } // namespace ntt

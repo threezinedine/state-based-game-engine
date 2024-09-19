@@ -13,10 +13,17 @@ String GetSourceDir()
     return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird/assets"};
 }
 
-void Begin()
-{
-    NTT_APP_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
+void CreateScene1();
 
+List<std::pair<String, std::function<void()>>> GetSceneFuncs()
+{
+    return {
+        {"game", CreateScene1},
+    };
+}
+
+void CreateScene1()
+{
     auto windowSize = GetWindowSize();
     ECSCreateEntity(
         "background",
@@ -85,7 +92,7 @@ void Begin()
                                  windowSize.height / 2, 70),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("bird"), 0, 0, PRIORITY_2,
                                  "The bird"),
-            {typeid(Mass), CreateRef<Mass>(1.0f)},
+            ECS_CREATE_COMPONENT(Mass, 1.0f),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(Sprite,
                                  List<std::pair<u8, u8>>{{0, 0}, {1, 0}, {2, 0}},
@@ -115,6 +122,13 @@ void Begin()
             auto speed = context.f32_data[0];
             NTT_APP_INFO("New Speed {} for all pipes", speed);
         });
+}
+
+void Begin()
+{
+    NTT_APP_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
+
+    auto windowSize = GetWindowSize();
 
     BeginLayer(UI_LAYER_0);
     ECSCreateEntity(
