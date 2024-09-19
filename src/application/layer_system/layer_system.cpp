@@ -24,6 +24,8 @@ namespace ntt
         layer_t currentRunningLayer = GAME_LAYER;
         layer_t preLayer = GAME_LAYER;
 
+        b8 uiLayerVisible = FALSE;
+
         void DebuggingCallback(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
@@ -105,6 +107,7 @@ namespace ntt
 
         currentLayer = GAME_LAYER;
         currentRunningLayer = GAME_LAYER;
+        uiLayerVisible = FALSE;
 
         RegisterEvent(NTT_ENTITY_CREATED, EntityCreatedCallback);
         RegisterEvent(NTT_ENTITY_DESTROYED, EntityDestroyedCallback);
@@ -137,31 +140,17 @@ namespace ntt
             return;
         }
 
-        // turn off the drawing of the current layer
-        for (auto &entity : layers[currentRunningLayer])
+        if (layer == UI_LAYER)
         {
-            auto entityInfo = ECSGetEntity(entity);
+            uiLayerVisible = TRUE;
+        }
 
-            if (entityInfo == nullptr)
-            {
-                continue;
-            }
-
-            entityInfo->active = FALSE;
+        if (layer == GAME_LAYER)
+        {
+            uiLayerVisible = FALSE;
         }
 
         currentRunningLayer = layer;
-
-        // turn on the drawing of the new layer
-        for (auto &entity : layers[currentRunningLayer])
-        {
-            auto entityInfo = ECSGetEntity(entity);
-            if (entityInfo == nullptr)
-            {
-                continue;
-            }
-            entityInfo->active = TRUE;
-        }
 
         EventContext context;
         context.u16_data[0] = currentRunningLayer;
@@ -173,9 +162,16 @@ namespace ntt
         PROFILE_FUNCTION();
         List<entity_id_t> entities;
 
-        for (auto i = 0; i <= currentRunningLayer; i++)
+        entities.insert(entities.end(), layers[GAME_LAYER].begin(), layers[GAME_LAYER].end());
+
+        if (uiLayerVisible)
         {
-            entities.insert(entities.end(), layers[i].begin(), layers[i].end());
+            entities.insert(entities.end(), layers[UI_LAYER].begin(), layers[UI_LAYER].end());
+        }
+
+        if (currentRunningLayer == DEBUG_LAYER)
+        {
+            entities.insert(entities.end(), layers[DEBUG_LAYER].begin(), layers[DEBUG_LAYER].end());
         }
 
         return entities;
