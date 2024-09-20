@@ -92,6 +92,12 @@ namespace ntt
     {
         PROFILE_FUNCTION();
         auto navigatTo = OnNavigateImpl();
+
+        if (navigatTo != KEEP_STATE)
+        {
+            return navigatTo;
+        }
+
         if (THIS(m_children).empty())
         {
             if (navigatTo == KEEP_STATE)
@@ -111,11 +117,7 @@ namespace ntt
             THIS(m_children[newState]->OnUpdate(delta));
         }
 
-        if (navigatTo == KEEP_STATE)
-        {
-            OnUpdateImpl(delta);
-        }
-
+        OnUpdateImpl(delta);
         return navigatTo;
     }
 

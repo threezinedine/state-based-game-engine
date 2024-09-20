@@ -15,6 +15,8 @@ namespace ntt
     {
         IMAGE = 0x00, ///< Only .png files are supported.
         AUDIO = 0x01, ///< Only .wav files are supported.
+
+        TEST = 0xFF, ///< Only for testing purposes.
     };
 
     /**

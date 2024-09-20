@@ -79,4 +79,7 @@ TEST_F(ScriptableTest, TestEventSubscribe)
 
     TriggerEvent(TEST_EVENT);
     EXPECT_EQ(s_testEventCalled, 2);
+
+    TriggerEvent(TEST_EVENT);
+    EXPECT_EQ(s_testEventCalled, 2);
 }

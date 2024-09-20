@@ -11,6 +11,8 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
+#include "ResourceTest.hpp"
+
 namespace ntt
 {
     using namespace log;
@@ -47,11 +49,6 @@ namespace ntt
             PROFILE_FUNCTION();
             auto &sceneResources = s_resources[sceneName];
 
-            if (!s_resources.Contains(sceneName) || sceneName == EMPTY_SCENE)
-            {
-                return;
-            }
-
             for (auto &resource : sceneResources)
             {
                 s_resourcesDictionary[resource->GetName()] = resource->Load();
@@ -62,11 +59,6 @@ namespace ntt
         {
             PROFILE_FUNCTION();
             s_resourcesDictionary.clear();
-
-            if (!s_resources.Contains(s_currentScene) || s_currentScene == EMPTY_SCENE)
-            {
-                return;
-            }
 
             for (auto &resource : s_resources[s_currentScene])
             {
@@ -89,6 +81,7 @@ namespace ntt
         s_resourcesDictionary.clear();
         s_defaultResourcesDict.clear();
         s_defaultResourcesObjects.clear();
+        s_currentScene = EMPTY_SCENE;
 
         s_initialized = TRUE;
     }
@@ -110,8 +103,11 @@ namespace ntt
         case ResourceType::AUDIO:
             resource = CreateScope<AudioResource>(info);
             break;
-        default:
+        case ResourceType::IMAGE:
             resource = CreateScope<ImageResource>(info);
+            break;
+        default:
+            resource = CreateScope<ResourceTest>(info);
         }
         // =============== End of handling the incoming resource ===============
 
@@ -128,15 +124,12 @@ namespace ntt
         }
         else
         {
-            if (s_resources.Contains(sceneName))
-            {
-                s_resources[sceneName].push_back(std::move(resource));
-            }
-            else
+            if (!s_resources.Contains(sceneName))
             {
                 s_resources[sceneName] = std::vector<Scope<Resource>>();
-                s_resources[sceneName].push_back(std::move(resource));
             }
+
+            s_resources[sceneName].push_back(std::move(resource));
         }
     }
 
@@ -208,6 +201,12 @@ namespace ntt
             return;
         }
 
+        if (!s_resources.Contains(sceneName) || sceneName == EMPTY_SCENE)
+        {
+            NTT_ENGINE_WARN("The scene {} is not found.", sceneName);
+            return;
+        }
+
         UnloadCurrentScene();
         s_currentScene = sceneName;
         LoadSceneResources(sceneName);
@@ -245,12 +244,9 @@ namespace ntt
             return;
         }
 
-        for (auto &resources : s_resources)
+        if (s_currentScene != EMPTY_SCENE && s_resources.Contains(s_currentScene))
         {
-            for (auto &resource : resources.second)
-            {
-                resource->Unload();
-            }
+            UnloadCurrentScene();
         }
 
         for (auto &resource : s_defaultResourcesObjects)
