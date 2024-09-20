@@ -16,7 +16,7 @@ namespace ntt::script
     void Script::OnExit()
     {
         PROFILE_FUNCTION();
-        OnExitImpl();
+        Delete();
     }
 
     void Script::OnUpdate(f32 deltaTime)

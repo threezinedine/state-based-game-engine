@@ -48,7 +48,7 @@ namespace ntt
      * @param outputFolder: The folder where the profiling data will be saved.
      *      Each section will be saved in a separate file.
      */
-    void ProfilingInit(String outputFolder);
+    void ProfilingInit(String outputFolder, b8 test = FALSE);
 
     /**
      * The profiling can have multiple sections for different parts of the code.
@@ -72,7 +72,7 @@ namespace ntt
 
 #define _PROFILING
 
-#ifdef _PROFILING
+#if defined(_PROFILING) and not defined(_TEST)
 #define PROFILE_FUNCTION() ntt::Profiling p_##__FUNCTION__##_##__LINE__(__FUNCTION__, __FILE__, __LINE__)
 #else
 #define PROFILE_FUNCTION()

@@ -149,3 +149,8 @@ namespace ntt::input
      */
     i16 GetMouseScroll();
 } // namespace ntt::input
+
+#define CHECK_PRESS(key) CheckState(key, InputState::NTT_PRESS)
+#define CHECK_RELEASE(key) CheckState(key, InputState::NTT_RELEASE)
+#define CHECK_DOWN(key) CheckState(key, InputState::NTT_DOWN)
+#define CHECK_UP(key) CheckState(key, InputState::NTT_UP)

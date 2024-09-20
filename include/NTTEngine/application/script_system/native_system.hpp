@@ -53,6 +53,12 @@ namespace ntt::script
 
         void Delete()
         {
+            if (m_deleted)
+            {
+                return;
+            }
+            m_deleted = TRUE;
+
             for (auto id : events)
             {
                 UnregisterEvent(id);
@@ -62,10 +68,10 @@ namespace ntt::script
         }
 
         entity_id_t entity_id = INVALID_ENTITY_ID;
+        b8 m_deleted = FALSE;
 
     private:
         List<event_id_t> events;
-        b8 m_deleted = FALSE;
     };
 
     class Script : public Scriptable

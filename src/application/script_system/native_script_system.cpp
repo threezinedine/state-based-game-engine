@@ -45,6 +45,12 @@ namespace ntt::script
             return;
         }
 
+        if (script->ins == nullptr)
+        {
+            NTT_ENGINE_WARN("The Script instance is not found");
+            return;
+        }
+
         script->ins->SetEntity(entity_id);
         script->ins->OnEnter();
     }
@@ -60,6 +66,12 @@ namespace ntt::script
             return;
         }
 
+        if (script->ins == nullptr)
+        {
+            NTT_ENGINE_WARN("The Script instance is not found");
+            return;
+        }
+
         script->ins->OnUpdate(deltaTime);
     }
 
@@ -71,6 +83,12 @@ namespace ntt::script
         if (script == nullptr)
         {
             NTT_ENGINE_WARN("The Script component is not found");
+            return;
+        }
+
+        if (script->ins == nullptr)
+        {
+            NTT_ENGINE_WARN("The Script instance is not found");
             return;
         }
 

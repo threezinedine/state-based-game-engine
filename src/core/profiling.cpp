@@ -18,6 +18,7 @@ namespace ntt
         String s_currentSection = DEFAULT_SECTION;
         String s_outputFolder = RelativePath(".");
         b8 s_hasWritten = FALSE;
+        b8 s_test = FALSE;
         u8 s_indent = -1;
     } // namespace
 
@@ -32,6 +33,11 @@ namespace ntt
 
     Profiling::Profiling(String funcName, String file, u32 line)
     {
+        if (s_test)
+        {
+            return;
+        }
+
         m_impl = CreateScope<Impl>();
         s_indent++;
 
@@ -53,17 +59,29 @@ namespace ntt
 
         String logFile = JoinPath({s_outputFolder, (s_currentSection + ".prof.txt")});
 
-        if (!s_hasWritten)
+        try
         {
-            s_hasWritten = TRUE;
-            OpenFile(logFile, FALSE);
-        }
+            if (!s_hasWritten)
+            {
+                OpenFile(logFile, FALSE);
+                s_hasWritten = TRUE;
+            }
 
-        Write(data + "\n");
+            Write(data + "\n");
+        }
+        catch (...)
+        {
+            NTT_ENGINE_WARN("Cannot open file {0}", logFile);
+        }
     }
 
     Profiling::~Profiling()
     {
+        if (s_test)
+        {
+            return;
+        }
+
         auto duration = THIS(timer).GetMilliseconds();
 
         String data = fmt::format("[END]   {0} in {1}:{2} - {3}ms",
@@ -82,15 +100,21 @@ namespace ntt
         s_indent--;
     }
 
-    void ProfilingInit(String outputFolder)
+    void ProfilingInit(String outputFolder, b8 test)
     {
         s_outputFolder = outputFolder;
         s_hasWritten = FALSE;
         s_indent = -1;
+        s_test = test;
     }
 
     void ProfilingBegin(String section)
     {
+        if (s_test)
+        {
+            return;
+        }
+
         if (s_currentSection != DEFAULT_SECTION)
         {
             NTT_ENGINE_TRACE("End Section {0}\n{1}", s_currentSection, SEPARATOR);
@@ -100,7 +124,14 @@ namespace ntt
 
         if (s_hasWritten)
         {
-            CloseFile();
+            try
+            {
+                CloseFile();
+            }
+            catch (...)
+            {
+                NTT_ENGINE_WARN("Cannot close the file");
+            }
         }
 
         s_hasWritten = FALSE;
@@ -110,6 +141,11 @@ namespace ntt
 
     void ProfilingShutdown()
     {
+        if (s_test)
+        {
+            return;
+        }
+
         if (s_hasWritten)
         {
             CloseFile();

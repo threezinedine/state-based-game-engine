@@ -38,3 +38,13 @@ TEST_F(EventSystemTest, NormalWorkflow)
 
     EXPECT_EQ(callTimes, 1);
 }
+
+TEST_F(EventSystemTest, UnregisterNonExistEvent)
+{
+    EXPECT_NO_THROW(UnregisterEvent(0));
+}
+
+TEST_F(EventSystemTest, TriggerNonExistEvent)
+{
+    EXPECT_NO_THROW(TriggerEvent(0xDD, nullptr, {}));
+}
