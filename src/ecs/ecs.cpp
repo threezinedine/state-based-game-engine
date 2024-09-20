@@ -139,12 +139,15 @@ namespace ntt::ecs
         {
             return 0;
         }
+
         components[typeid(DataComponent)] = CreateRef<DataComponent>();
 
         auto entityId = s_entityStore->Add(CREATE_REF(EntityInfo, components));
 
-        components.ForEach([&entityId](const std::type_index &, const Ref<ComponentBase> &component)
-                           { component->entity_id = entityId; });
+        components.ForEach(
+            [&entityId](const std::type_index &,
+                        const Ref<ComponentBase> &component)
+            { component->entity_id = entityId; });
 
         auto availableSystems = s_systemsStore->GetAvailableIds();
 
