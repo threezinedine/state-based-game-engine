@@ -66,6 +66,16 @@ namespace ntt
             }
         }
 
+        void SceneChange(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+            String sceneName = reinterpret_cast<const char *>(context.u8_data);
+
+            NTT_ENGINE_DEBUG("Change scene to {}", sceneName);
+
+            ChangeScene(sceneName);
+        }
+
     } // namespace
 
     void ResourceInit()
@@ -84,6 +94,8 @@ namespace ntt
         s_currentScene = EMPTY_SCENE;
 
         s_initialized = TRUE;
+
+        RegisterEvent(NTT_SCENE_CHANGED, SceneChange);
     }
 
     void RegisterResource(const String &sceneName, const ResourceInfo &info)

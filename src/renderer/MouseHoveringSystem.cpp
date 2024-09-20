@@ -34,18 +34,18 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
     }
 
-    void MouseHoveringSystem::InitSystemImpl()
+    void MouseHoveringSystem::InitSystem()
     {
         PROFILE_FUNCTION();
         s_prevHovered.clear();
     }
 
-    void MouseHoveringSystem::InitEntityImpl(entity_id_t id)
+    void MouseHoveringSystem::InitEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void MouseHoveringSystem::UpdateImpl(f32 delta, entity_id_t id)
+    void MouseHoveringSystem::Update(f32 delta, entity_id_t id)
     {
         PROFILE_FUNCTION();
         auto hovering = ECS_GET_COMPONENT(id, Hovering);
@@ -82,12 +82,12 @@ namespace ntt::renderer
         onEnterCallback(context);
     }
 
-    void MouseHoveringSystem::ShutdownEntityImpl(entity_id_t id)
+    void MouseHoveringSystem::ShutdownEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void MouseHoveringSystem::ShutdownSystemImpl()
+    void MouseHoveringSystem::ShutdownSystem()
     {
         PROFILE_FUNCTION();
     }

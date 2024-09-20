@@ -4,6 +4,7 @@
 #include <NTTEngine/physics/Collision.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/application/layer_system/layer_system.hpp>
+#include <NTTEngine/application/scene_system/scene_system.hpp>
 #include <NTTEngine/renderer/renderer.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 
@@ -19,8 +20,8 @@ protected:
     void SetUp() override
     {
         EventInit();
-        ECSInit();
         LayerInit();
+        ECSInit();
 
         ECSRegister(
             COLLISION_NAME,
@@ -29,6 +30,10 @@ protected:
 
         BeginLayer(GAME_LAYER);
         LayerMakeVisible(GAME_LAYER);
+
+        SceneInit({
+            {"default", []() {}},
+        });
 
         entity = ECSCreateEntity(
             "First",
@@ -70,8 +75,9 @@ protected:
 
     void TearDown() override
     {
-        LayerShutdown();
+        SceneShutdown();
         ECSShutdown();
+        LayerShutdown();
         EventShutdown();
     }
 

@@ -3,7 +3,6 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
-#include <NTTEngine/resources/ResourceManager.hpp>
 
 namespace ntt
 {
@@ -50,10 +49,11 @@ namespace ntt
             return;
         }
 
-        s_currentScene = scenes[0].first;
-
         RegisterEvent(NTT_ENTITY_CREATED, CreateEntity);
         RegisterEvent(NTT_ENTITY_DESTROYED, DeleteEntity);
+
+        s_scenes.clear();
+        s_currentScene = "";
 
         for (auto &scene : scenes)
         {
@@ -62,8 +62,7 @@ namespace ntt
 
         s_entities.clear();
 
-        ChangeScene(s_currentScene);
-        s_scenes[s_currentScene]();
+        SceneOpen(scenes[0].first);
     }
 
     void SceneOpen(const String &sceneName)
@@ -89,8 +88,7 @@ namespace ntt
         }
 
         s_currentScene = sceneName;
-        ChangeScene(s_currentScene);
-        s_scenes[s_currentScene]();
+        // ChangeScene(s_currentScene);
 
         EventContext context;
         if (s_currentScene.Length() > 15)
@@ -106,6 +104,7 @@ namespace ntt
                 s_currentScene.Length() + 1);
         }
         TriggerEvent(NTT_SCENE_CHANGED, nullptr, context);
+        s_scenes[s_currentScene]();
     }
 
     void SceneShutdown()

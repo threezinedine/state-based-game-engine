@@ -31,17 +31,17 @@ namespace ntt::physics
         PROFILE_FUNCTION();
     }
 
-    void CollisionSystem::InitSystemImpl()
+    void CollisionSystem::InitSystem()
     {
         PROFILE_FUNCTION();
     }
 
-    void CollisionSystem::InitEntityImpl(entity_id_t entity_id)
+    void CollisionSystem::InitEntity(entity_id_t entity_id)
     {
         PROFILE_FUNCTION();
     }
 
-    void CollisionSystem::UpdateImpl(f32 delta, entity_id_t entity_id)
+    void CollisionSystem::Update(f32 delta, entity_id_t entity_id)
     {
         PROFILE_FUNCTION();
         auto collisionComponent = ECS_GET_COMPONENT(entity_id, Collision);
@@ -99,12 +99,12 @@ namespace ntt::physics
         collisionComponent->callback(colliedEntities);
     }
 
-    void CollisionSystem::ShutdownEntityImpl(entity_id_t id)
+    void CollisionSystem::ShutdownEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void CollisionSystem::ShutdownSystemImpl()
+    void CollisionSystem::ShutdownSystem()
     {
         PROFILE_FUNCTION();
     }

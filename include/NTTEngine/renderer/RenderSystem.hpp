@@ -12,15 +12,12 @@ namespace ntt::renderer
     public:
         RenderSystem();
         ~RenderSystem();
-        // const String GetName() const override { return "Render System"; }
 
-    protected:
-        void InitSystemImpl() override;
-        void InitEntityImpl(entity_id_t id) override;
-        void UpdateImpl(f32 delta, entity_id_t id) override;
-        void ShutdownEntityImpl(entity_id_t id) override;
-        void ShutdownSystemImpl() override;
-        b8 ShouldUpdate(entity_id_t id) override;
+        void InitSystem() override;
+        void InitEntity(entity_id_t id) override;
+        void Update(f32 delta, entity_id_t id) override;
+        void ShutdownEntity(entity_id_t id) override;
+        void ShutdownSystem() override;
 
     private:
         class Impl;
@@ -33,14 +30,11 @@ namespace ntt::renderer
         TextRenderSystem();
         ~TextRenderSystem();
 
-    protected:
-        void InitSystemImpl() override;
-        void InitEntityImpl(entity_id_t id) override;
-        void UpdateImpl(f32 delta, entity_id_t id) override;
-        void ShutdownEntityImpl(entity_id_t id) override;
-        void ShutdownSystemImpl() override;
-
-        b8 ShouldUpdate(entity_id_t id) override;
+        void InitSystem() override;
+        void InitEntity(entity_id_t id) override;
+        void Update(f32 delta, entity_id_t id) override;
+        void ShutdownEntity(entity_id_t id) override;
+        void ShutdownSystem() override;
 
     private:
         class Impl;
@@ -52,14 +46,12 @@ namespace ntt::renderer
     public:
         SpriteRenderSystem();
         ~SpriteRenderSystem();
-        // const String GetName() const override { return "Sprite Render System"; }
 
-    protected:
-        void InitSystemImpl() override;
-        void InitEntityImpl(entity_id_t id) override;
-        void UpdateImpl(f32 delta, entity_id_t id) override;
-        void ShutdownEntityImpl(entity_id_t id) override;
-        void ShutdownSystemImpl() override;
+        void InitSystem() override;
+        void InitEntity(entity_id_t id) override;
+        void Update(f32 delta, entity_id_t id) override;
+        void ShutdownEntity(entity_id_t id) override;
+        void ShutdownSystem() override;
 
     private:
         class Impl;

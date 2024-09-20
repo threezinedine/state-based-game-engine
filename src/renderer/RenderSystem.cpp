@@ -31,12 +31,12 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
     }
 
-    void RenderSystem::InitSystemImpl()
+    void RenderSystem::InitSystem()
     {
         PROFILE_FUNCTION();
     }
 
-    void RenderSystem::InitEntityImpl(entity_id_t id)
+    void RenderSystem::InitEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
         auto geo = ECS_GET_COMPONENT(id, Geometry);
@@ -51,7 +51,7 @@ namespace ntt::renderer
         geo->height = size.height;
     }
 
-    void RenderSystem::UpdateImpl(f32 delta, entity_id_t id)
+    void RenderSystem::Update(f32 delta, entity_id_t id)
     {
         PROFILE_FUNCTION();
         auto geo = ECS_GET_COMPONENT(id, Geometry);
@@ -83,19 +83,12 @@ namespace ntt::renderer
         DrawTexture(texture->id, context, cell, drawContext);
     }
 
-    b8 RenderSystem::ShouldUpdate(entity_id_t id)
-    {
-        PROFILE_FUNCTION();
-        auto entities = DrawnEntities();
-        return entities.Contains(id);
-    }
-
-    void RenderSystem::ShutdownEntityImpl(entity_id_t id)
+    void RenderSystem::ShutdownEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void RenderSystem::ShutdownSystemImpl()
+    void RenderSystem::ShutdownSystem()
     {
         PROFILE_FUNCTION();
     }

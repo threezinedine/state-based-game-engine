@@ -28,12 +28,12 @@ namespace ntt
         PROFILE_FUNCTION();
     }
 
-    void StateSystem::InitSystemImpl()
+    void StateSystem::InitSystem()
     {
         PROFILE_FUNCTION();
     }
 
-    void StateSystem::InitEntityImpl(entity_id_t id)
+    void StateSystem::InitEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
         auto machine = ECS_GET_COMPONENT(id, StateComponent);
@@ -48,7 +48,7 @@ namespace ntt
         machine->fsm->OnEnter();
     }
 
-    void StateSystem::UpdateImpl(f32 delta, entity_id_t id)
+    void StateSystem::Update(f32 delta, entity_id_t id)
     {
         PROFILE_FUNCTION();
         auto machine = ECS_GET_COMPONENT(id, StateComponent);
@@ -61,7 +61,7 @@ namespace ntt
         machine->fsm->OnUpdate(delta);
     }
 
-    void StateSystem::ShutdownEntityImpl(entity_id_t id)
+    void StateSystem::ShutdownEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
         auto machine = ECS_GET_COMPONENT(id, StateComponent);
@@ -74,7 +74,7 @@ namespace ntt
         machine->fsm->OnExit();
     }
 
-    void StateSystem::ShutdownSystemImpl()
+    void StateSystem::ShutdownSystem()
     {
         PROFILE_FUNCTION();
     }

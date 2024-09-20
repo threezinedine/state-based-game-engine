@@ -27,17 +27,17 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
     }
 
-    void SpriteRenderSystem::InitSystemImpl()
+    void SpriteRenderSystem::InitSystem()
     {
         PROFILE_FUNCTION();
     }
 
-    void SpriteRenderSystem::InitEntityImpl(entity_id_t id)
+    void SpriteRenderSystem::InitEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void SpriteRenderSystem::UpdateImpl(f32 delta, entity_id_t id)
+    void SpriteRenderSystem::Update(f32 delta, entity_id_t id)
     {
         PROFILE_FUNCTION();
         auto sprite = ECS_GET_COMPONENT(id, Sprite);
@@ -61,12 +61,12 @@ namespace ntt::renderer
         }
     }
 
-    void SpriteRenderSystem::ShutdownEntityImpl(entity_id_t id)
+    void SpriteRenderSystem::ShutdownEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void SpriteRenderSystem::ShutdownSystemImpl()
+    void SpriteRenderSystem::ShutdownSystem()
     {
         PROFILE_FUNCTION();
     }

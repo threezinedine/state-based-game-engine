@@ -25,12 +25,11 @@ namespace ntt::physics
         CollisionSystem();
         ~CollisionSystem();
 
-    protected:
-        void InitSystemImpl() override;
-        void InitEntityImpl(entity_id_t id) override;
-        void UpdateImpl(f32 delta, entity_id_t id) override;
-        void ShutdownEntityImpl(entity_id_t id) override;
-        void ShutdownSystemImpl() override;
+        void InitSystem() override;
+        void InitEntity(entity_id_t id) override;
+        void Update(f32 delta, entity_id_t id) override;
+        void ShutdownEntity(entity_id_t id) override;
+        void ShutdownSystem() override;
 
     private:
         class Impl;

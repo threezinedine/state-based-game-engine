@@ -28,17 +28,17 @@ namespace ntt::physics
         PROFILE_FUNCTION();
     }
 
-    void MassSystem::InitSystemImpl()
+    void MassSystem::InitSystem()
     {
         PROFILE_FUNCTION();
     }
 
-    void MassSystem::InitEntityImpl(entity_id_t id)
+    void MassSystem::InitEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void MassSystem::UpdateImpl(f32 delta, entity_id_t id)
+    void MassSystem::Update(f32 delta, entity_id_t id)
     {
         PROFILE_FUNCTION();
         auto mass = ECS_GET_COMPONENT(id, Mass);
@@ -51,12 +51,12 @@ namespace ntt::physics
         geo->y += mass->velocity_y * delta;
     }
 
-    void MassSystem::ShutdownEntityImpl(entity_id_t id)
+    void MassSystem::ShutdownEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void MassSystem::ShutdownSystemImpl()
+    void MassSystem::ShutdownSystem()
     {
         PROFILE_FUNCTION();
     }

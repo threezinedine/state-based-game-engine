@@ -14,6 +14,8 @@ namespace ntt
      *
      * When a new Layer is visible, then an event VISIBLE_LAYER_CHANGED
      *      will be triggered and the layer will be updated.
+     *
+     * Must be called before Scene and ECS system init
      */
     void LayerInit();
 
@@ -80,6 +82,8 @@ namespace ntt
     /**
      * Release all needed resources of the layer system
      *      when the application is closed
+     *
+     * Must be called after the ECS system and Scene system shutdown
      */
     void LayerShutdown();
 } // namespace ntt

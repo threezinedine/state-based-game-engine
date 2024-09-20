@@ -35,27 +35,23 @@ struct NonTestData : public ComponentBase
 class TestSystem : public System
 {
 public:
-    TestSystem() : System() {}
-    virtual ~TestSystem() noexcept override {}
-
-protected:
-    void InitSystemImpl() override { s_systemInitCalled++; }
-    void InitEntityImpl(entity_id_t id) override
+    void InitSystem() override { s_systemInitCalled++; }
+    void InitEntity(entity_id_t id) override
     {
         auto data = ECS_GET_COMPONENT(id, TestData);
         data->initCalled++;
     }
-    void UpdateImpl(f32 delta, entity_id_t id) override
+    void Update(f32 delta, entity_id_t id) override
     {
         auto data = ECS_GET_COMPONENT(id, TestData);
         data->updateCalled++;
     }
-    void ShutdownEntityImpl(entity_id_t id) override
+    void ShutdownEntity(entity_id_t id) override
     {
         auto data = ECS_GET_COMPONENT(id, TestData);
         data->shutdownCalled++;
     }
-    void ShutdownSystemImpl() override { s_systemShutdownCalled++; }
+    void ShutdownSystem() override { s_systemShutdownCalled++; }
 };
 
 class ECSTest : public testing::Test
@@ -67,8 +63,8 @@ protected:
         s_systemShutdownCalled = 0;
 
         EventInit();
-        ECSInit();
         LayerInit();
+        ECSInit();
 
         ECSRegister(TEST_SYSTEM_NAME, std::make_shared<TestSystem>(), {typeid(TestData)});
         EXPECT_EQ(s_systemInitCalled, 1);
@@ -98,8 +94,8 @@ protected:
 
     void TearDown() override
     {
-        LayerShutdown();
         ECSShutdown();
+        LayerShutdown();
         EventShutdown();
 
         EXPECT_EQ(data2->shutdownCalled, 1);

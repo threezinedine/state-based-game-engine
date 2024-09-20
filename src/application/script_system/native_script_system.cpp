@@ -29,12 +29,12 @@ namespace ntt::script
         PROFILE_FUNCTION();
     }
 
-    void ScriptSystem::InitSystemImpl()
+    void ScriptSystem::InitSystem()
     {
         PROFILE_FUNCTION();
     }
 
-    void ScriptSystem::InitEntityImpl(entity_id_t entity_id)
+    void ScriptSystem::InitEntity(entity_id_t entity_id)
     {
         PROFILE_FUNCTION();
         auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
@@ -55,7 +55,7 @@ namespace ntt::script
         script->ins->OnEnter();
     }
 
-    void ScriptSystem::UpdateImpl(f32 deltaTime, entity_id_t entity_id)
+    void ScriptSystem::Update(f32 deltaTime, entity_id_t entity_id)
     {
         PROFILE_FUNCTION();
         auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
@@ -75,7 +75,7 @@ namespace ntt::script
         script->ins->OnUpdate(deltaTime);
     }
 
-    void ScriptSystem::ShutdownEntityImpl(entity_id_t entity_id)
+    void ScriptSystem::ShutdownEntity(entity_id_t entity_id)
     {
         PROFILE_FUNCTION();
         auto script = ECS_GET_COMPONENT(entity_id, NativeScriptComponent);
@@ -95,7 +95,7 @@ namespace ntt::script
         script->ins->OnExit();
     }
 
-    void ScriptSystem::ShutdownSystemImpl()
+    void ScriptSystem::ShutdownSystem()
     {
         PROFILE_FUNCTION();
     }

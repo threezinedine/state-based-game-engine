@@ -5,12 +5,15 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/ecs/data_com.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/application/layer_system/layer_system.hpp>
+#include <NTTEngine/renderer/RenderSystem.hpp>
 
 namespace ntt::ecs
 {
     using namespace log;
     using namespace dev::store;
     using namespace event;
+    using namespace renderer;
 
     using component_id_t = entity_id_t;
 
@@ -38,6 +41,16 @@ namespace ntt::ecs
 
         Scope<Store<system_id_t, SystemInfo>> s_systemsStore;
         Scope<Store<entity_id_t, EntityInfo>> s_entityStore;
+
+        List<entity_id_t> s_DrawnEntities;
+        List<entity_id_t> s_UpdatedEntities;
+
+        void OnSceneOpened()
+        {
+            PROFILE_FUNCTION();
+            s_DrawnEntities = DrawnEntities();
+            s_UpdatedEntities = UpdatedEntities();
+        }
     } // namespace
 
     void ECSInit()
@@ -61,6 +74,11 @@ namespace ntt::ecs
             { return a->name == b->name; });
 
         s_isInitialized = TRUE;
+
+        s_DrawnEntities.clear();
+        s_UpdatedEntities.clear();
+
+        RegisterEvent(NTT_LAYER_CHANGED, std::bind(OnSceneOpened));
     }
 
     void ECSRegister(String name, Ref<System> system,
@@ -176,6 +194,8 @@ namespace ntt::ecs
         // must be changed when the entity_id_t is changed
         context.u32_data[0] = entityId;
         TriggerEvent(NTT_ENTITY_CREATED, nullptr, context);
+
+        OnSceneOpened();
 
         return entityId;
     }
@@ -316,6 +336,8 @@ namespace ntt::ecs
         // must be changed when the entity_id_t is changed
         context.u32_data[0] = id;
         TriggerEvent(NTT_ENTITY_DESTROYED, nullptr, context);
+
+        OnSceneOpened();
     }
 
     void ECSUpdate(f32 delta)
@@ -334,8 +356,27 @@ namespace ntt::ecs
             auto system = s_systemsStore->Get(systemId);
             auto entities = system->entities;
 
+            auto isRenderSystem =
+                ::std::dynamic_pointer_cast<RenderSystem>(system->system) ||
+                ::std::dynamic_pointer_cast<TextRenderSystem>(system->system);
+
             for (auto entityId : system->entities)
             {
+                if (isRenderSystem)
+                {
+                    if (!s_DrawnEntities.Contains(entityId))
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (!s_UpdatedEntities.Contains(entityId))
+                    {
+                        continue;
+                    }
+                }
+
                 if (!s_entityStore->Contains(entityId))
                 {
                     continue;

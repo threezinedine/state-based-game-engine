@@ -73,6 +73,7 @@ namespace ntt
 
         ResourceLoadConfig(JSON(resourceConfig));
 
+        LayerInit();
         ECSInit();
         ECSRegister(
             "Render System",
@@ -113,8 +114,6 @@ namespace ntt
             "Sprite Render System",
             CreateRef<SpriteRenderSystem>(),
             {typeid(Sprite), typeid(Texture)});
-
-        LayerInit();
 
         /// Setup 3 layers in the predefined order GAME_LAYER -> UI_LAYER -> DEBUG_LAYER
         ///     then now the user's code will not affect the order of the layer
@@ -252,8 +251,8 @@ namespace ntt
         PROFILE_FUNCTION();
         s_phrases.Close();
 
-        LayerShutdown();
         ECSShutdown();
+        LayerShutdown();
         ResourceShutdown();
         AudioShutdown();
         RendererShutdown();

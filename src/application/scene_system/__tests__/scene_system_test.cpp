@@ -4,6 +4,7 @@
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/application/layer_system/layer_system.hpp>
 
 using namespace ntt;
 using namespace ecs;
@@ -41,6 +42,7 @@ class SceneSystemTest : public ::testing::Test
 protected:
     void SetUp() override
     {
+        EventInit();
         RegisterEvent(
             NTT_ENTITY_CREATED,
             [&](const event_code_t code, void *sender, const EventContext &context)
@@ -58,17 +60,15 @@ protected:
             });
 
         ECSInit();
-        SceneInit({
-            {"default", DefaultSceneInit},
-            {"next", NextSceneInit},
-            {"large-scene-name", LargeSceneNameInit},
-        });
+        LayerInit();
     }
 
     void TearDown() override
     {
         SceneShutdown();
+        LayerShutdown();
         ECSShutdown();
+        EventShutdown();
     }
 };
 
@@ -91,6 +91,11 @@ TEST(SceneSystemTest_Spec, CreateSceneWithEmptyList)
 
 TEST_F(SceneSystemTest, AtTheBegging_TheSceneShouldInitTheDefaultScene)
 {
+    SceneInit({
+        {"default", DefaultSceneInit},
+        {"next", NextSceneInit},
+        {"large-scene-name", LargeSceneNameInit},
+    });
     EXPECT_EQ(entities, List<entity_id_t>({default_entity_1, default_entity_2}));
 
     auto event = RegisterEvent(

@@ -23,17 +23,17 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
     }
 
-    void TextRenderSystem::InitSystemImpl()
+    void TextRenderSystem::InitSystem()
     {
         PROFILE_FUNCTION();
     }
 
-    void TextRenderSystem::InitEntityImpl(entity_id_t id)
+    void TextRenderSystem::InitEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void TextRenderSystem::UpdateImpl(f32 delta, entity_id_t id)
+    void TextRenderSystem::Update(f32 delta, entity_id_t id)
     {
         PROFILE_FUNCTION();
 
@@ -48,18 +48,12 @@ namespace ntt::renderer
         DrawText(text->text, {geo->x, geo->y}, drawContext);
     }
 
-    b8 TextRenderSystem::ShouldUpdate(entity_id_t id)
-    {
-        PROFILE_FUNCTION();
-        return DrawnEntities().Contains(id);
-    }
-
-    void TextRenderSystem::ShutdownEntityImpl(entity_id_t id)
+    void TextRenderSystem::ShutdownEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
     }
 
-    void TextRenderSystem::ShutdownSystemImpl()
+    void TextRenderSystem::ShutdownSystem()
     {
         PROFILE_FUNCTION();
     }

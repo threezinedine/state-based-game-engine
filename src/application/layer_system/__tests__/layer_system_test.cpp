@@ -17,14 +17,14 @@ protected:
     void SetUp() override
     {
         EventInit();
-        ECSInit();
         LayerInit();
+        ECSInit();
     }
 
     void TearDown() override
     {
-        LayerShutdown();
         ECSShutdown();
+        LayerShutdown();
         EventShutdown();
     }
 };
