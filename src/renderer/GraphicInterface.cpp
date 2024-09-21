@@ -14,8 +14,8 @@
 #include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 
-#include "GraphicInterface_platforms.hpp"
 #include <NTTEngine/application/layer_system/layer_types.hpp>
+#include <NTTEngine/renderer/Raylib_GraphicAPI.hpp>
 
 namespace ntt::renderer
 {
@@ -39,14 +39,14 @@ namespace ntt::renderer
      */
     struct TextureInfo
     {
-        TEXTURE_2D texture; ///< The texture which is loaded
-        Grid grid;          ///< The grid of the texture
-        String path;        ///< The path of the texture
-        f32 frameWith;      ///< The width each frame in the texture
-        f32 frameHeight;    ///< The height each frame in the texture
+        Texture2D texture; ///< The texture which is loaded
+        Grid grid;         ///< The grid of the texture
+        String path;       ///< The path of the texture
+        f32 frameWith;     ///< The width each frame in the texture
+        f32 frameHeight;   ///< The height each frame in the texture
 
-        TextureInfo(TEXTURE_2D texture, const String &path) : texture(texture), path(path) {}
-        TextureInfo(TEXTURE_2D texture, const Grid &grid, const String &path)
+        TextureInfo(Texture2D texture, const String &path) : texture(texture), path(path) {}
+        TextureInfo(Texture2D texture, const Grid &grid, const String &path)
             : texture(texture), grid(grid), path(path) {}
     };
 
@@ -89,9 +89,10 @@ namespace ntt::renderer
         // If the same priority, the last hovered texture will be on the top
         List<entity_id_t> s_hoveredTextures;
 
+        Scope<GraphicAPI> s_graphicAPI;
     } // namespace
 
-    void RendererInit()
+    void RendererInit(b8 test)
     {
         PROFILE_FUNCTION();
         if (s_isInitialized)
@@ -105,10 +106,11 @@ namespace ntt::renderer
             [](Ref<TextureInfo> texture, Ref<TextureInfo> other) -> b8
             { return texture->path == other->path; });
 
+        s_graphicAPI = CreateScope<RaylibGraphicAPI>();
+
         memset(s_drawLists, 0, sizeof(s_drawLists));
 
         s_isInitialized = TRUE;
-        // memset(s_loadedTextures, 0, sizeof(s_loadedTextures));
     }
 
     resource_id_t LoadTexture(const String &path, const Grid &grid)
@@ -138,9 +140,9 @@ namespace ntt::renderer
             return RESOURCE_ID_DEFAULT;
         }
 
-        auto texture = LOAD_TEXTURE(path);
+        auto texture = s_graphicAPI->LoadTexture(path);
 
-        if (IS_LOADED_SUCCESS(texture) == TRUE)
+        if (s_graphicAPI->IsLoadedSuccess(texture) != TRUE)
         {
             NTT_ENGINE_WARN("Loading the texture {} error", GetFileName(path, true));
             return RESOURCE_ID_DEFAULT;
@@ -332,20 +334,26 @@ namespace ntt::renderer
             {
                 if (info.drawText)
                 {
-                    DRAW_TEXT(info.text, info.toX, info.toY, info.fontSize, info.color);
+                    s_graphicAPI->DrawText(
+                        info.text,
+                        info.toX,
+                        info.toY,
+                        info.fontSize,
+                        info.color);
                 }
                 else
                 {
-                    DRAW_TEXTURE(s_textureStore->Get(info.texture_id)->texture,
-                                 info.fromX,
-                                 info.fromY,
-                                 info.fromWidth,
-                                 info.fromHeight,
-                                 info.toX,
-                                 info.toY,
-                                 info.toWidth,
-                                 info.toHeight,
-                                 info.rotate);
+                    s_graphicAPI->DrawTexture(
+                        s_textureStore->Get(info.texture_id)->texture,
+                        info.fromX,
+                        info.fromY,
+                        info.fromWidth,
+                        info.fromHeight,
+                        info.toX,
+                        info.toY,
+                        info.toWidth,
+                        info.toHeight,
+                        info.rotate);
 
                     if (info.entity_id == INVALID_ENTITY_ID)
                     {
@@ -378,7 +386,9 @@ namespace ntt::renderer
                         {
                             auto windowSize = GetWindowSize();
 
-                            auto textWidth = GET_TEXT_WIDTH(info.tooltip, TOOL_TIP_FONT_SIZE);
+                            auto textWidth = s_graphicAPI->GetTextWidth(
+                                info.tooltip,
+                                TOOL_TIP_FONT_SIZE);
                             auto textHeight = TOOL_TIP_FONT_SIZE;
 
                             auto toolTipX = mouse.x + TOOL_TOP_OFFSET_X;
@@ -395,16 +405,16 @@ namespace ntt::renderer
                                 toolTipY -= textHeight - TOOL_TIP_PADDING * 2 - TOOL_TOP_OFFSET_Y;
                             }
 
-                            DRAW_RECTANGLE(
+                            s_graphicAPI->DrawRectangle(
                                 toolTipX,
                                 toolTipY,
                                 textWidth + TOOL_TIP_PADDING * 2,
                                 textHeight + TOOL_TIP_PADDING * 2);
 
-                            DRAW_TEXT(info.tooltip,
-                                      toolTipX + TOOL_TIP_PADDING,
-                                      toolTipY + TOOL_TIP_PADDING,
-                                      TOOL_TIP_FONT_SIZE, info.color);
+                            s_graphicAPI->DrawText(info.tooltip,
+                                                   toolTipX + TOOL_TIP_PADDING,
+                                                   toolTipY + TOOL_TIP_PADDING,
+                                                   TOOL_TIP_FONT_SIZE, info.color);
                         }
                     }
                 }
@@ -421,11 +431,11 @@ namespace ntt::renderer
         {
             if (hoveredEntityId != INVALID_ENTITY_ID)
             {
-                DRAW_RECTANGLE_PRO(context.position.x,
-                                   context.position.y,
-                                   context.size.width,
-                                   context.size.height,
-                                   context.rotate);
+                s_graphicAPI->DrawRectanglePro(context.position.x,
+                                               context.position.y,
+                                               context.size.width,
+                                               context.size.height,
+                                               context.rotate);
 
                 if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
                 {
@@ -459,7 +469,7 @@ namespace ntt::renderer
 
         try
         {
-            UNLOAD_TEXTURE(s_textureStore->Get(texture_id)->texture);
+            s_graphicAPI->UnloadTexture(s_textureStore->Get(texture_id)->texture);
         }
         catch (const std::exception &e)
         {

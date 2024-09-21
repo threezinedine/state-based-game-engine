@@ -40,7 +40,7 @@ namespace ntt::dev::store
             { return *a == *b; })
             : m_defaultId(defaultId), m_currentId(defaultId),
               m_max(maxElement), m_compareFunc(compareFunc),
-              m_store({}), m_freedIds({})
+              m_store({}), m_freedIds()
         {
             NTT_ENGINE_TRACE("The store is created");
         }

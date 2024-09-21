@@ -25,7 +25,7 @@ namespace ntt::renderer
      * Initialize the graphic interface if it is not initialized yet
      *      every other functionalities will be disabled.
      */
-    void RendererInit();
+    void RendererInit(b8 test = FALSE);
 
     /**
      * The needed information about the texture

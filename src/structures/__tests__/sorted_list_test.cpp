@@ -2,6 +2,7 @@
 #include <gmock/gmock.h>
 
 #include <NTTEngine/structures/sorted_list.hpp>
+#include <NTTEngine/structures/list.hpp>
 
 using namespace ntt;
 
@@ -27,7 +28,7 @@ TEST_F(SortedListTest, AddAndRemoveItem)
     list.Add(4);
     list.Add(6);
 
-    EXPECT_EQ(list, SortedList<u32>({1, 2, 3, 4, 5, 6}));
+    EXPECT_EQ(list, List<u32>({1, 2, 3, 4, 5, 6}));
 }
 
 TEST_F(SortedListTest, TestAddingWithComapator)
@@ -38,13 +39,15 @@ TEST_F(SortedListTest, TestAddingWithComapator)
         std::string name;
     };
 
-    SortedList<Data> list([](const Data &a, const Data &b)
-                          { return a.id - b.id; });
+    auto comparator = [](const Data &a, const Data &b)
+    { return static_cast<i32>(a.id) - static_cast<i32>(b.id); };
+
+    SortedList<Data> list(comparator);
 
     list.Add({2, "two"});
     list.Add({1, "one"});
     list.Add({3, "three"});
     list.Add({5, "five"});
 
-    EXPECT_EQ(list, SortedList<Data>({{1, "one"}, {2, "two"}, {3, "three"}, {5, "five"}}));
+    EXPECT_EQ(list, List<Data>({{1, "one"}, {2, "two"}, {3, "three"}, {5, "five"}}));
 }

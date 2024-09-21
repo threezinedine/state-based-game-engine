@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include "list.hpp"
 
 namespace ntt
 {
@@ -18,20 +19,10 @@ namespace ntt
     {
     public:
         SortedList(
-            std::function<u8(const T &, const T &)> comparator =
+            std::function<i32(const T &, const T &)> comparator =
                 [](const T &a, const T &b)
             { return a - b; })
             : std::vector<T>(),
-              m_comparator(comparator)
-        {
-        }
-
-        SortedList(
-            std::initializer_list<T> list,
-            std::function<u8(const T &, const T &)> comparator =
-                [](const T &a, const T &b)
-            { return a - b; })
-            : std::vector<T>(list),
               m_comparator(comparator)
         {
         }
@@ -44,12 +35,24 @@ namespace ntt
 
         void Add(T item)
         {
-            auto it = this->begin();
-            while (it != this->end() && m_comparator(*it, item) < 0)
+            u32 i = 0;
+
+            if (this->size() == 0)
             {
-                it++;
+                this->push_back(item);
+                return;
             }
-            this->insert(it, item);
+
+            for (i = 0; i < this->size(); i++)
+            {
+                if (m_comparator((*this)[i], item) >= 0)
+                {
+                    this->insert(this->begin() + i, item);
+                    return;
+                }
+            }
+
+            this->push_back(item);
         }
 
         void Remove(u32 index)
@@ -85,7 +88,7 @@ namespace ntt
 
             for (u32 i = 0; i < this->size(); i++)
             {
-                if (!m_comparator((*this)[i], list[i]))
+                if (m_comparator((*this)[i], list[i]) != 0)
                 {
                     return FALSE;
                 }
@@ -94,9 +97,27 @@ namespace ntt
             return TRUE;
         }
 
-        b8 operator=(const SortedList<T> &list) const
+        b8 operator==(const SortedList<T> &list) const
         {
             return Equals(list);
+        }
+
+        b8 operator==(const List<T> &list) const
+        {
+            if (this->size() != list.size())
+            {
+                return FALSE;
+            }
+
+            for (u32 i = 0; i < this->size(); i++)
+            {
+                if (m_comparator((*this)[i], list[i]) != 0)
+                {
+                    return FALSE;
+                }
+            }
+
+            return TRUE;
         }
 
         const char *ToString() const
@@ -116,6 +137,6 @@ namespace ntt
         }
 
     private:
-        std::function<u8(const T &, const T &)> m_comparator;
+        std::function<i32(const T &, const T &)> m_comparator;
     };
 } // namespace ntt
