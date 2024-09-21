@@ -2,6 +2,7 @@
 #include "dev.hpp"
 #include <functional>
 #include <NTTEngine/structures/list.hpp>
+#include <NTTEngine/structures/sorted_list.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/assertion.hpp>
@@ -181,16 +182,17 @@ namespace ntt::dev::store
 
                 // ASSERT_M(data == nullptr, "The object is not deleted properly");
 
-                for (auto i = 0; i < m_freedIds.size(); i++)
-                {
-                    if (m_freedIds[i] > id)
-                    {
-                        m_freedIds.Add(i, id);
-                        return;
-                    }
-                }
+                // for (auto i = 0; i < m_freedIds.size(); i++)
+                // {
+                //     if (m_freedIds[i] > id)
+                //     {
+                //         m_freedIds.Add(i, id);
+                //         return;
+                //     }
+                // }
 
-                m_freedIds.push_back(id);
+                // m_freedIds.push_back(id);
+                m_freedIds.Add(id);
             }
         }
 
@@ -230,6 +232,6 @@ namespace ntt::dev::store
         id_t m_max;
         List<Ref<data_t>> m_store;
         CompareFunc<data_t> m_compareFunc;
-        List<id_t> m_freedIds;
+        SortedList<id_t> m_freedIds;
     };
 } // namespace ntt::dev::store
