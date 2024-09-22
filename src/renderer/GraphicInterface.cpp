@@ -15,7 +15,8 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 
 #include <NTTEngine/application/layer_system/layer_types.hpp>
-#include <NTTEngine/renderer/Raylib_GraphicAPI.hpp>
+#include "Raylib_GraphicAPI.hpp"
+#include "Fake_GraphicAPI.hpp"
 
 namespace ntt::renderer
 {
@@ -90,6 +91,8 @@ namespace ntt::renderer
         List<entity_id_t> s_hoveredTextures;
 
         Scope<GraphicAPI> s_graphicAPI;
+
+        b8 s_test = FALSE;
     } // namespace
 
     void RendererInit(b8 test)
@@ -106,7 +109,15 @@ namespace ntt::renderer
             [](Ref<TextureInfo> texture, Ref<TextureInfo> other) -> b8
             { return texture->path == other->path; });
 
-        s_graphicAPI = CreateScope<RaylibGraphicAPI>();
+        if (test)
+        {
+            s_graphicAPI = CreateScope<FakeGraphicAPI>();
+        }
+        else
+        {
+            s_graphicAPI = CreateScope<RaylibGraphicAPI>();
+        }
+        s_test = test;
 
         memset(s_drawLists, 0, sizeof(s_drawLists));
 
@@ -122,22 +133,25 @@ namespace ntt::renderer
             return RESOURCE_ID_DEFAULT;
         }
 
-        auto existedTexturePaths = s_textureStore->GetByField<String>(
-            path,
-            [](Ref<TextureInfo> texture) -> String
-            { return texture->path; });
-
-        if (existedTexturePaths.size() > 0)
+        if (!s_test)
         {
-            NTT_ENGINE_WARN("The texture is already loaded",
-                            GetFileName(path, true));
-            return RESOURCE_ID_DEFAULT;
-        }
+            auto existedTexturePaths = s_textureStore->GetByField<String>(
+                path,
+                [](Ref<TextureInfo> texture) -> String
+                { return texture->path; });
 
-        if (IsExist(path) == FALSE)
-        {
-            NTT_ENGINE_WARN("The texture is not found: {}", GetFileName(path, true));
-            return RESOURCE_ID_DEFAULT;
+            if (existedTexturePaths.size() > 0)
+            {
+                NTT_ENGINE_WARN("The texture is already loaded",
+                                GetFileName(path, true));
+                return RESOURCE_ID_DEFAULT;
+            }
+
+            if (IsExist(path) == FALSE)
+            {
+                NTT_ENGINE_WARN("The texture is not found: {}", GetFileName(path, true));
+                return RESOURCE_ID_DEFAULT;
+            }
         }
 
         auto texture = s_graphicAPI->LoadTexture(path);
@@ -186,7 +200,7 @@ namespace ntt::renderer
         else if (context.size.height != SIZE_DEFAULT)
         {
             width = (f32)(frameWidth * context.size.height / frameHeight);
-            height = static_cast<f32>(frameHeight);
+            height = static_cast<f32>(context.size.height);
         }
         else
         {

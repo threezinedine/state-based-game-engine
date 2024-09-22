@@ -1,4 +1,5 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
+#include <NTTEngine/application/input_system/internal_input_system.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
@@ -76,7 +77,17 @@ namespace ntt::input
         Position s_mousePos;
         // InputState s_mousePreStates[KEY_SIZE];
         InputState s_mouseStates[MOUSE_BUTTON_SIZE];
+
+        b8 s_test = FALSE;
     } // namespace
+
+    void InputInit(b8 test)
+    {
+        PROFILE_FUNCTION();
+        s_test = test;
+        memset(s_keyStates, InputState::NTT_UP, sizeof(s_keyStates));
+        memset(s_mouseStates, InputState::NTT_UP, sizeof(s_mouseStates));
+    }
 
     void InputUpdate(f32 delta)
     {
@@ -231,5 +242,19 @@ namespace ntt::input
     {
         PROFILE_FUNCTION();
         return 0;
+    }
+
+    void SetMousePosition(const Position &pos)
+    {
+        PROFILE_FUNCTION();
+        if (s_test)
+        {
+            s_mousePos = pos;
+        }
+    }
+
+    void InputShutdown()
+    {
+        PROFILE_FUNCTION();
     }
 } // namespace ntt::input

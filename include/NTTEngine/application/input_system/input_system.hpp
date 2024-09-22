@@ -113,6 +113,15 @@ namespace ntt::input
     };
 
     /**
+     * Starting the input system
+     *
+     * @param test If it is true, then the input
+     *      can be set by the user (currently only
+     *      mouse position)
+     */
+    void InputInit(b8 test = FALSE);
+
+    /**
      * Should be call at the loop of
      *      the application, which will
      *      update the input system's internal
@@ -148,6 +157,11 @@ namespace ntt::input
      * Get scroll value of the mouse
      */
     i16 GetMouseScroll();
+
+    /**
+     * Ending the input system
+     */
+    void InputShutdown();
 } // namespace ntt::input
 
 #define CHECK_PRESS(key) CheckState(key, InputState::NTT_PRESS)

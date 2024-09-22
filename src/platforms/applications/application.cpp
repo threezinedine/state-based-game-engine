@@ -61,6 +61,7 @@ namespace ntt
         s_windowSize.width = static_cast<size_t>(screenWidth);
         s_windowSize.height = static_cast<size_t>(screenHeight);
 
+        InputInit();
         RendererInit();
         AudioInit();
         ResourceInit();
@@ -256,6 +257,7 @@ namespace ntt
         ResourceShutdown();
         AudioShutdown();
         RendererShutdown();
+        InputShutdown();
 
         CLOSE_WINDOW();
         NTT_ENGINE_INFO("The application is closed.");

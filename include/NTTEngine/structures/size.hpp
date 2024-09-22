@@ -25,5 +25,10 @@ namespace ntt
         Size() : width(SIZE_DEFAULT), height(SIZE_DEFAULT) {}
         Size(size_t width) : width(width), height(SIZE_DEFAULT) {}
         Size(size_t width, size_t height) : width(width), height(height) {}
+
+        b8 operator==(const Size &other) const
+        {
+            return width == other.width && height == other.height;
+        }
     };
 } // namespace ntt
