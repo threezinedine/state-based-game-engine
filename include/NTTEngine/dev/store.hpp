@@ -125,7 +125,7 @@ namespace ntt::dev::store
         {
             if (!Contains(id))
             {
-                NTT_ENGINE_WARN("The id is not existed in the store");
+                NTT_ENGINE_TRACE("The id is not existed in the store");
                 return nullptr;
             }
 

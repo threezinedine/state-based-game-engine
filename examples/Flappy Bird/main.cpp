@@ -39,16 +39,6 @@ void CreateStartupScene()
             ECS_CREATE_COMPONENT(Texture, GetResourceID("startup")),
             ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<StartupSceneController>()),
         });
-
-    RegisterEvent(
-        NTT_RESOURCE_LOADED,
-        [](auto id, void *sender, EventContext context)
-        {
-            auto resourceId = context.u32_data[0];
-            NTT_APP_INFO("Resource {} is loaded", resourceId);
-        });
-
-    NTT_ENGINE_INFO("The startup scene is created");
 }
 
 void CreateScene1()
