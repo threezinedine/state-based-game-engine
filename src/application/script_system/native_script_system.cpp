@@ -1,4 +1,5 @@
-#include <NTTEngine/application/script_system/native_system.hpp>
+#include <NTTEngine/application/script_system/native_script_system.hpp>
+#include <NTTEngine/application/script_system/native_script.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/structures/dictionary.hpp>

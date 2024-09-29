@@ -11,7 +11,7 @@
 
 String GetSourceDir()
 {
-    return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird/assets"};
+    return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird"};
 }
 
 void CreateStartupScene();

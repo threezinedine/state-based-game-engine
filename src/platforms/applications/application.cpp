@@ -17,7 +17,8 @@
 #include <NTTEngine/renderer/MouseHoveringSystem.hpp>
 
 #include <NTTEngine/physics/physics_dev.hpp>
-#include <NTTEngine/application/script_system/native_system.hpp>
+#include <NTTEngine/application/script_system/native_script_system.hpp>
+#include <NTTEngine/application/script_system/native_script.hpp>
 #include <NTTEngine/application/state_system/state_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/application/layer_system/layer_system.hpp>
@@ -66,7 +67,7 @@ namespace ntt
         AudioInit();
         ResourceInit();
 
-        String resourceConfig = ReadFile(RelativePath("configs/resources.json"));
+        String resourceConfig = ReadFile(RelativePath("assets/configs/resources.json"));
         if (resourceConfig == "")
         {
             resourceConfig = "{}";

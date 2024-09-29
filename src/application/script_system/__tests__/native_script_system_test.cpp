@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <NTTEngine/application/script_system/native_system.hpp>
+#include <NTTEngine/application/script_system/script_system.hpp>
+#include <NTTEngine/application/script_system/native_script_system.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>

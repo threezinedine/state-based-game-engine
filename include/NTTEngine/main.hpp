@@ -19,7 +19,7 @@ List<std::pair<String, std::function<void()>>> GetSceneFuncs();
 int main()
 {
     LogInit();
-    ProfilingInit("profiling");
+    ProfilingInit("assets/profiling");
     EventInit();
     NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
     ntt::Phrases phrases = {
@@ -31,7 +31,7 @@ int main()
 
     ConfigureSourcePath(GetSourceDir());
 
-    LoadConfiguration(RelativePath("configs/config.json"));
+    LoadConfiguration(RelativePath("assets/configs/config.json"));
     auto config = GetConfiguration();
 
     ProfilingBegin("Initialization");
