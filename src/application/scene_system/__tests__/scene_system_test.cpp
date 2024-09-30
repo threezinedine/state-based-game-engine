@@ -4,7 +4,6 @@
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
-#include <NTTEngine/application/layer_system/layer_system.hpp>
 
 using namespace ntt;
 using namespace ecs;
@@ -60,13 +59,11 @@ protected:
             });
 
         ECSInit();
-        LayerInit();
     }
 
     void TearDown() override
     {
         SceneShutdown();
-        LayerShutdown();
         ECSShutdown();
         EventShutdown();
     }

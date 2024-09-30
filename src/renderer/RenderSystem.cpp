@@ -5,7 +5,6 @@
 #include <NTTEngine/renderer/Sprite.hpp>
 #include <NTTEngine/platforms/application.hpp>
 #include <NTTEngine/core/assertion.hpp>
-#include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/profiling.hpp>
 

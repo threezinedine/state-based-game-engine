@@ -149,7 +149,7 @@ void Begin()
 
     auto windowSize = GetWindowSize();
 
-    BeginLayer(UI_LAYER_0);
+    ECSBeginLayer(UI_LAYER_0);
     ECSCreateEntity(
         "resume-btn",
         {

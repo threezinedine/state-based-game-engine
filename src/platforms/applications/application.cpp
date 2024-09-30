@@ -21,7 +21,6 @@
 #include <NTTEngine/application/script_system/native_script.hpp>
 #include <NTTEngine/application/state_system/state_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
-#include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/debugging/components/components.hpp>
 
@@ -75,7 +74,6 @@ namespace ntt
 
         ResourceLoadConfig(JSON(resourceConfig));
 
-        LayerInit();
         ECSInit();
         ECSRegister(
             "Render System",
@@ -119,17 +117,17 @@ namespace ntt
 
         /// Setup 3 layers in the predefined order GAME_LAYER -> UI_LAYER -> DEBUG_LAYER
         ///     then now the user's code will not affect the order of the layer
-        BeginLayer(GAME_LAYER);
+        ECSBeginLayer(GAME_LAYER);
 
-        BeginLayer(UI_LAYER_0);
-        BeginLayer(UI_LAYER_1);
-        BeginLayer(UI_LAYER_2);
-        BeginLayer(UI_LAYER_3);
-        BeginLayer(UI_LAYER_4);
-        BeginLayer(UI_LAYER_5);
-        BeginLayer(UI_LAYER_6);
-        BeginLayer(UI_LAYER_7);
-        BeginLayer(UI_LAYER_8);
+        ECSBeginLayer(UI_LAYER_0);
+        ECSBeginLayer(UI_LAYER_1);
+        ECSBeginLayer(UI_LAYER_2);
+        ECSBeginLayer(UI_LAYER_3);
+        ECSBeginLayer(UI_LAYER_4);
+        ECSBeginLayer(UI_LAYER_5);
+        ECSBeginLayer(UI_LAYER_6);
+        ECSBeginLayer(UI_LAYER_7);
+        ECSBeginLayer(UI_LAYER_8);
         /// Default entities of the UI_LAYER are defined below
 
         /// Default entities of the UI_LAYER are defined above
@@ -149,7 +147,7 @@ namespace ntt
         })");
         RegisterResource("default", resourceInfo);
 
-        BeginLayer(DEBUG_LAYER);
+        ECSBeginLayer(DEBUG_LAYER);
         /// Default entities of the DEBUG_LAYER are defined below
         auto ent1 = ECSCreateEntity(
             "debug-continue",
@@ -186,10 +184,10 @@ namespace ntt
         /// Default entities of the DEBUG_LAYER are defined above
 
         /// the game layer is activated at the start of the game
-        BeginLayer(GAME_LAYER);
+        ECSBeginLayer(GAME_LAYER);
         s_phrases.Begin();
-        BeginLayer(GAME_LAYER);
-        LayerMakeVisible(GAME_LAYER);
+        ECSBeginLayer(GAME_LAYER);
+        ECSLayerMakeVisible(GAME_LAYER);
 
         NTT_ENGINE_INFO("The application is started.");
 
@@ -225,7 +223,6 @@ namespace ntt
         InputUpdate(delta);
         AudioUpdate(delta);
         ECSUpdate(delta);
-        LayerUpdate(delta);
         MouseHoveringSystemUpdate(delta);
 
         BEGIN_DRAWING();
@@ -254,7 +251,6 @@ namespace ntt
         s_phrases.Close();
 
         ECSShutdown();
-        LayerShutdown();
         ResourceShutdown();
         AudioShutdown();
         RendererShutdown();

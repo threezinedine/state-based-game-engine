@@ -4,7 +4,6 @@
 #include <NTTEngine/application/script_system/script_system.hpp>
 #include <NTTEngine/application/script_system/native_script_system.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
-#include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
@@ -50,7 +49,6 @@ protected:
 
         EventInit();
         ECSInit();
-        LayerInit();
 
         ECSRegister(
             "Native Script System",
@@ -60,7 +58,6 @@ protected:
 
     void TearDown() override
     {
-        LayerShutdown();
         ECSShutdown();
         EventShutdown();
     }

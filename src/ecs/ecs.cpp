@@ -5,8 +5,10 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/ecs/data_com.hpp>
 #include <NTTEngine/core/profiling.hpp>
-#include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/renderer/RenderSystem.hpp>
+#include <NTTEngine/renderer/GraphicInterface.hpp>
+#include <NTTEngine/renderer/Texture.hpp>
+#include <NTTEngine/renderer/Text.hpp>
 
 namespace ntt::ecs
 {
@@ -16,6 +18,7 @@ namespace ntt::ecs
     using namespace renderer;
 
     using component_id_t = entity_id_t;
+#define INVALID_UI_LAYER 255
 
     struct SystemInfo
     {
@@ -23,12 +26,15 @@ namespace ntt::ecs
         Ref<System> system;
         List<std::type_index> componentTypes;
         List<entity_id_t> entities;
+        b8 alwayUpdate = FALSE;
 
         SystemInfo(String name,
                    Ref<System> system,
-                   List<std::type_index> componentTypes)
+                   List<std::type_index> componentTypes,
+                   b8 alwayUpdate = FALSE)
             : name(name), system(system),
-              componentTypes(componentTypes)
+              componentTypes(componentTypes),
+              alwayUpdate(alwayUpdate)
         {
         }
     };
@@ -45,11 +51,72 @@ namespace ntt::ecs
         List<entity_id_t> s_DrawnEntities;
         List<entity_id_t> s_UpdatedEntities;
 
-        void OnSceneOpened()
+        // void OnSceneOpened()
+        // {
+        //     PROFILE_FUNCTION();
+        //     s_DrawnEntities = DrawnEntities();
+        //     s_UpdatedEntities = UpdatedEntities();
+        // }
+
+        Scope<List<entity_id_t>> layers[MAX_LAYERS];
+        List<b8> layersVisibility;
+        layer_t currentLayer = GAME_LAYER;
+        layer_t currentRunningLayer = GAME_LAYER;
+        layer_t preLayer = GAME_LAYER;
+        u8 uiLayerVisible = INVALID_UI_LAYER;
+
+        void DebuggingCallback(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
-            s_DrawnEntities = DrawnEntities();
-            s_UpdatedEntities = UpdatedEntities();
+
+            preLayer = currentRunningLayer;
+            ECSLayerMakeVisible(DEBUG_LAYER);
+        }
+
+        void DebuggingContinueCallback(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+
+            auto isOffPermanent = context.b8_data[0];
+
+            if (isOffPermanent)
+            {
+                return;
+            }
+
+            ECSLayerMakeVisible(preLayer);
+        }
+
+        void ResetEntitiesState()
+        {
+            s_DrawnEntities.clear();
+            s_UpdatedEntities.clear();
+
+            s_DrawnEntities.insert(
+                s_DrawnEntities.end(),
+                layers[GAME_LAYER]->begin(),
+                layers[GAME_LAYER]->end());
+
+            if (uiLayerVisible != INVALID_UI_LAYER)
+            {
+                s_DrawnEntities.insert(
+                    s_DrawnEntities.end(),
+                    layers[uiLayerVisible]->begin(),
+                    layers[uiLayerVisible]->end());
+            }
+
+            if (currentRunningLayer == DEBUG_LAYER)
+            {
+                s_DrawnEntities.insert(
+                    s_DrawnEntities.end(),
+                    layers[DEBUG_LAYER]->begin(),
+                    layers[DEBUG_LAYER]->end());
+            }
+
+            for (auto entity : *(layers[currentRunningLayer]))
+            {
+                s_UpdatedEntities.push_back(entity);
+            }
         }
     } // namespace
 
@@ -78,11 +145,25 @@ namespace ntt::ecs
         s_DrawnEntities.clear();
         s_UpdatedEntities.clear();
 
-        RegisterEvent(NTT_LAYER_CHANGED, std::bind(OnSceneOpened));
+        // RegisterEvent(NTT_LAYER_CHANGED, std::bind(OnSceneOpened));
+        memset(layers, 0, sizeof(layers));
+
+        for (auto i = 0; i < MAX_LAYERS; i++)
+        {
+            layers[i] = CreateScope<List<entity_id_t>>();
+        }
+
+        currentLayer = GAME_LAYER;
+        currentRunningLayer = GAME_LAYER;
+        uiLayerVisible = INVALID_UI_LAYER;
+
+        RegisterEvent(NTT_DEBUG_BREAK, DebuggingCallback);
+        RegisterEvent(NTT_DEBUG_CONTINUE, DebuggingContinueCallback);
     }
 
     void ECSRegister(String name, Ref<System> system,
-                     List<std::type_index> componentTypes)
+                     List<std::type_index> componentTypes,
+                     b8 alwayUpdate)
     {
         PROFILE_FUNCTION();
         if (!s_isInitialized)
@@ -90,11 +171,12 @@ namespace ntt::ecs
             return;
         }
 
-        s_systemsStore->Add(CREATE_REF(
+        auto systemId = s_systemsStore->Add(CREATE_REF(
             SystemInfo,
             name,
             system,
-            componentTypes));
+            componentTypes,
+            alwayUpdate));
 
         for (auto i = 0; i < componentTypes.size(); i++)
         {
@@ -102,6 +184,54 @@ namespace ntt::ecs
         }
 
         system->InitSystem();
+    }
+
+    void ECSBeginLayer(layer_t layer)
+    {
+        PROFILE_FUNCTION();
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
+        if (layer >= MAX_LAYERS)
+        {
+            return;
+        }
+
+        currentLayer = layer;
+    }
+
+    void ECSLayerMakeVisible(layer_t layer)
+    {
+        PROFILE_FUNCTION();
+        if (!s_isInitialized)
+        {
+            return;
+        }
+
+        if (layer >= MAX_LAYERS)
+        {
+            return;
+        }
+
+        if (GAME_LAYER < layer && layer < DEBUG_LAYER)
+        {
+            uiLayerVisible = layer;
+        }
+
+        if (layer == GAME_LAYER)
+        {
+            uiLayerVisible = INVALID_UI_LAYER;
+        }
+
+        currentRunningLayer = layer;
+
+        ResetEntitiesState();
+
+        EventContext context;
+        context.u16_data[0] = currentRunningLayer;
+        TriggerEvent(NTT_LAYER_CHANGED, nullptr, context);
     }
 
     List<entity_id_t> ECSGetEntitiesWithSystem(String name)
@@ -189,13 +319,41 @@ namespace ntt::ecs
             }
         }
 
+        if (currentLayer > MAX_LAYERS)
+        {
+            return INVALID_ENTITY_ID;
+        }
+
+        if (layers[currentLayer]->Contains(entityId))
+        {
+            return INVALID_ENTITY_ID;
+        }
+
+        layers[currentLayer]->push_back(entityId);
+
+        auto texture = ECS_GET_COMPONENT(entityId, Texture);
+
+        if (texture != nullptr)
+        {
+            texture->priority += (currentLayer * LAYER_PRIORITY_RANGE);
+        }
+
+        auto text = ECS_GET_COMPONENT(entityId, Text);
+
+        if (text != nullptr)
+        {
+            text->priority += (currentLayer * LAYER_PRIORITY_RANGE);
+        }
+
+        ResetEntitiesState();
+
         NTT_ENGINE_TRACE("Entit {} has id {}", name, entityId);
         EventContext context;
         // must be changed when the entity_id_t is changed
         context.u32_data[0] = entityId;
         TriggerEvent(NTT_ENTITY_CREATED, nullptr, context);
 
-        OnSceneOpened();
+        // OnSceneOpened();
 
         return entityId;
     }
@@ -255,7 +413,8 @@ namespace ntt::ecs
 
         if (!entityInfo->components.Contains(type))
         {
-            NTT_ENGINE_TRACE("The component with type {} is not existed in the entity", type.name());
+            NTT_ENGINE_TRACE("The component with type {} is not existed in the entity",
+                             type.name());
             return;
         }
 
@@ -332,12 +491,23 @@ namespace ntt::ecs
 
         s_entityStore->Release(id);
 
+        for (auto &layer : layers)
+        {
+            if (layer == nullptr)
+            {
+                continue;
+            }
+            layer->RemoveItem(id);
+        }
+
+        ResetEntitiesState();
+
         EventContext context;
         // must be changed when the entity_id_t is changed
         context.u32_data[0] = id;
         TriggerEvent(NTT_ENTITY_DESTROYED, nullptr, context);
 
-        OnSceneOpened();
+        // OnSceneOpened();
     }
 
     void ECSUpdate(f32 delta)
@@ -362,7 +532,7 @@ namespace ntt::ecs
 
             for (auto entityId : system->entities)
             {
-                if (isRenderSystem)
+                if (system->alwayUpdate)
                 {
                     if (!s_DrawnEntities.Contains(entityId))
                     {
@@ -414,6 +584,12 @@ namespace ntt::ecs
         {
             auto system = s_systemsStore->Get(systemId);
             system->system->ShutdownSystem();
+        }
+
+        for (auto &layer : layers)
+        {
+            layer.reset();
+            ASSERT_M(layer == nullptr, "The layer is not reset properly");
         }
 
         s_entityStore.reset();

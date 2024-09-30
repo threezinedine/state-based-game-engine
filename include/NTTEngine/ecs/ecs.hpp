@@ -5,6 +5,7 @@
 #include "data_com.hpp"
 #include "entity_info.hpp"
 #include "system.hpp"
+#include "layer_types.hpp"
 
 /**
  * Manage all the entity inside the game. This module has 3 main components:
@@ -30,8 +31,54 @@ namespace ntt::ecs
      * @param name The name of the system, use for debugging only
      * @param system The system to be added to the ECS
      * @param componentTypes The list of component types that the system needs
+     * @param runInDebug If the system is running in the debug mode or not
      */
-    void ECSRegister(String name, Ref<System> system, List<std::type_index> componentTypes);
+    void ECSRegister(String name,
+                     Ref<System> system,
+                     List<std::type_index> componentTypes,
+                     b8 alwayUpdate = FALSE);
+
+    /**
+     * The beginning of a new layer inside the system, the new layer will
+     *      be on top of the previous layers, all entities which are created
+     *      after this new layer will be attached to this layer.
+     * User can begin a layer multiple times, but if the layer is created, then
+     *      the old layer will added new entities to the existed layer.
+     *
+     * @example:
+     * ```C++
+     *      ECSBeginLayer(GAME_LAYER);
+     *
+     *      ECS_CREATE_ENTITY("Player", {
+     *          {typeid(TransformComponent), CREATE_REF(TransformComponent, 0.0f, 0.0f, 0.0f)},
+     *          {typeid(SpriteComponent), CREATE_REF(SpriteComponent, "player.png")}
+     *      }); // now the "Player" entity is attached to the GAME_LAYER and the
+     *          // game layer will be the lowest layer in the system
+     *
+     *      ECSBeginLayer(UI_LAYER);
+     *      ECS_CREATE_ENTITY("Button", {
+     *          {typeid(TransformComponent), CREATE_REF(TransformComponent, 0.0f, 0.0f, 0.0f)},
+     *          {typeid(SpriteComponent), CREATE_REF(SpriteComponent, "button.png")}
+     *      }); // now the "Button" entity is attached to the UI_LAYER and the
+     *          // UI layer will be on top of the GAME_LAYER
+     *
+     *      ECSBeginLayer(GAME_LAYER);
+     *      ECS_CREATE_ENTITY("Enemy", {
+     *          {typeid(TransformComponent), CREATE_REF(TransformComponent, 0.0f, 0.0f, 0.0f)},
+     *          {typeid(SpriteComponent), CREATE_REF(SpriteComponent, "enemy.png")}
+     *      }); // now the "Enemy" entity is attached to the GAME_LAYER and the
+     *          // game layer is still the lowest layer in the system
+     * ```
+     */
+    void ECSBeginLayer(layer_t layer);
+
+    /**
+     * Staring drawing the layers on the screen
+     *      if the layer is already visible then
+     *      the layer will be drawn on the screen
+     * Other layers will be hidden
+     */
+    void ECSLayerMakeVisible(layer_t layer);
 
     /**
      * Get all list of entities which are attached to the system.

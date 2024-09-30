@@ -14,7 +14,6 @@
 #include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 
-#include <NTTEngine/application/layer_system/layer_types.hpp>
 #include "Raylib_GraphicAPI.hpp"
 #include "Fake_GraphicAPI.hpp"
 

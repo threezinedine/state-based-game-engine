@@ -36,6 +36,6 @@ protected:
 
     void OnClick()
     {
-        LayerMakeVisible(GAME_LAYER);
+        ECSLayerMakeVisible(GAME_LAYER);
     }
 };

@@ -3,7 +3,6 @@
 
 #include <NTTEngine/physics/Collision.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
-#include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 #include <NTTEngine/renderer/renderer.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
@@ -20,7 +19,6 @@ protected:
     void SetUp() override
     {
         EventInit();
-        LayerInit();
         ECSInit();
 
         ECSRegister(
@@ -28,8 +26,8 @@ protected:
             std::make_shared<CollisionSystem>(),
             {typeid(Collision), typeid(Geometry)});
 
-        BeginLayer(GAME_LAYER);
-        LayerMakeVisible(GAME_LAYER);
+        ECSBeginLayer(GAME_LAYER);
+        ECSLayerMakeVisible(GAME_LAYER);
 
         SceneInit({
             {"default", []() {}},
@@ -77,7 +75,6 @@ protected:
     {
         SceneShutdown();
         ECSShutdown();
-        LayerShutdown();
         EventShutdown();
     }
 

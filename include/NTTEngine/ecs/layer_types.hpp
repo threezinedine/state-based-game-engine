@@ -1,4 +1,5 @@
 #pragma once
+#include <NTTEngine/defines.hpp>
 
 namespace ntt
 {

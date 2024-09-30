@@ -1,7 +1,6 @@
 #include <NTTEngine/renderer/RenderSystem.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/renderer/Geometry.hpp>
-#include <NTTEngine/application/layer_system/layer_system.hpp>
 #include <NTTEngine/renderer/Text.hpp>
 
 namespace ntt::renderer

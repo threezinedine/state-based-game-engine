@@ -3,11 +3,13 @@
 
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
-#include <NTTEngine/application/layer_system/layer_system.hpp>
+#include <NTTEngine/renderer/Text.hpp>
+#include <NTTEngine/renderer/Texture.hpp>
 
 using namespace ntt;
 using namespace ntt::ecs;
 using namespace ntt::event;
+using namespace ntt::renderer;
 
 #define TEST_SYSTEM_NAME "TestSystem"
 
@@ -15,6 +17,14 @@ namespace
 {
     u8 s_systemInitCalled = 0;
     u8 s_systemShutdownCalled = 0;
+    List<entity_id_t> s_UpdatedEntities = {};
+    List<entity_id_t> s_DrawnedEntites = {};
+
+    void ResetEntityStates()
+    {
+        s_UpdatedEntities = {};
+        s_DrawnedEntites = {};
+    }
 }
 
 struct TestData : public ComponentBase
@@ -30,6 +40,64 @@ struct NonTestData : public ComponentBase
     u8 initCalled = 0;
     u8 updateCalled = 0;
     u8 shutdownCalled = 0;
+};
+
+struct TestLayerData : public ComponentBase
+{
+};
+
+class TestUpdatedSystem : public System
+{
+public:
+    void InitSystem() override
+    {
+        s_UpdatedEntities = {};
+    }
+
+    void Update(f32 delta, entity_id_t id) override
+    {
+        s_UpdatedEntities.push_back(id);
+    }
+
+    void ShutdownSystem() override
+    {
+        s_UpdatedEntities = {};
+    }
+
+    void InitEntity(entity_id_t id) override
+    {
+    }
+
+    void ShutdownEntity(entity_id_t id) override
+    {
+    }
+};
+
+class TestDrawnSystem : public System
+{
+public:
+    void InitSystem() override
+    {
+        s_DrawnedEntites = {};
+    }
+
+    void Update(f32 delta, entity_id_t id) override
+    {
+        s_DrawnedEntites.push_back(id);
+    }
+
+    void ShutdownSystem() override
+    {
+        s_DrawnedEntites = {};
+    }
+
+    void InitEntity(entity_id_t id) override
+    {
+    }
+
+    void ShutdownEntity(entity_id_t id) override
+    {
+    }
 };
 
 class TestSystem : public System
@@ -61,17 +129,26 @@ protected:
     {
         s_systemInitCalled = 0;
         s_systemShutdownCalled = 0;
+        ResetEntityStates();
 
         EventInit();
-        LayerInit();
         ECSInit();
 
-        ECSRegister(TEST_SYSTEM_NAME, std::make_shared<TestSystem>(), {typeid(TestData)});
+        ECSRegister(TEST_SYSTEM_NAME, CreateRef<TestSystem>(), {typeid(TestData)});
+        ECSRegister(
+            "TestUpdatedSystem",
+            CreateRef<TestUpdatedSystem>(),
+            {typeid(TestLayerData)});
+        ECSRegister(
+            "TestDrawnSystem",
+            CreateRef<TestDrawnSystem>(),
+            {typeid(TestLayerData)},
+            TRUE);
         EXPECT_EQ(s_systemInitCalled, 1);
         EXPECT_EQ(s_systemShutdownCalled, 0);
 
-        BeginLayer(GAME_LAYER);
-        LayerMakeVisible(GAME_LAYER);
+        ECSBeginLayer(GAME_LAYER);
+        ECSLayerMakeVisible(GAME_LAYER);
 
         entity = ECSCreateEntity(
             "TestEntity",
@@ -95,7 +172,6 @@ protected:
     void TearDown() override
     {
         ECSShutdown();
-        LayerShutdown();
         EventShutdown();
 
         EXPECT_EQ(data2->shutdownCalled, 1);
@@ -245,4 +321,301 @@ TEST_F(ECSTest, TestComponentActive)
 
     ECSSetComponentActive(entity4, typeid(NonTestData), TRUE);
     Check2ListEquivalent(ECSGetEntitiesWithSystem(TEST_SYSTEM_NAME), {entity, entity2});
+}
+
+TEST_F(ECSTest, Needed_Entitites_Should_Be_Drawn)
+{
+    // At the beginning, the layer has default GAME_LAYER
+    auto entity = ECSCreateEntity(
+        "test-entity",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    ECSUpdate(0.0f);
+
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity}));
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity}));
+    ResetEntityStates();
+
+    ECSDeleteEntity(entity);
+
+    ECSUpdate(0.0f);
+
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>());
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>());
+    ResetEntityStates();
+
+    entity = ECSCreateEntity(
+        "test-entity",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    ECSBeginLayer(UI_LAYER_0);
+    auto entity2 = ECSCreateEntity(
+        "test-entity-2",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    ECSUpdate(0.0f);
+
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity}));
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity}));
+    ResetEntityStates();
+
+    ECSLayerMakeVisible(UI_LAYER_0);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity2}));
+    ResetEntityStates();
+
+    ECSBeginLayer(UI_LAYER_1);
+    auto entity3 = ECSCreateEntity(
+        "test-entity-3",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity2}));
+    ResetEntityStates();
+
+    ECSLayerMakeVisible(UI_LAYER_1);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity3}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity3}));
+    ResetEntityStates();
+
+    ECSLayerMakeVisible(GAME_LAYER);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity}));
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity}));
+    ResetEntityStates();
+
+    ECSBeginLayer(DEBUG_LAYER);
+    auto entity4 = ECSCreateEntity(
+        "test-entity-4",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity}));
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity}));
+    ResetEntityStates();
+
+    ECSLayerMakeVisible(DEBUG_LAYER);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity4}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity4}));
+    ResetEntityStates();
+
+    ECSLayerMakeVisible(GAME_LAYER);
+    ECSLayerMakeVisible(UI_LAYER_0);
+    ECSLayerMakeVisible(DEBUG_LAYER);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2, entity4}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity4}));
+    ResetEntityStates();
+
+    ECSLayerMakeVisible(GAME_LAYER);
+    ECSUpdate(0.0f);
+    ResetEntityStates();
+
+    // visible the layer which exceeds the MAX_LAYERS
+    EXPECT_NO_THROW(ECSLayerMakeVisible(DEBUG_LAYER + 1));
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity}));
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity}));
+    ResetEntityStates();
+
+    // begin the layer which exceeds the MAX_LAYERS
+    ECSBeginLayer(GAME_LAYER);
+    ECSUpdate(0.0f);
+    ResetEntityStates();
+    EXPECT_NO_THROW(ECSBeginLayer(DEBUG_LAYER + 1));
+    ResetEntityStates();
+
+    auto entity5 = ECSCreateEntity(
+        "test-entity-5",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity, entity5}));
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity5}));
+    ResetEntityStates();
+}
+
+TEST_F(ECSTest, When_Change_The_Layer_Then_That_Layer_Trigger_Event)
+{
+    u8 layer = GAME_LAYER;
+
+    auto callback = [&](const event_code_t code, void *sender, const EventContext &context)
+    {
+        layer = context.u8_data[0];
+    };
+
+    RegisterEvent(NTT_LAYER_CHANGED, callback);
+
+    ECSBeginLayer(UI_LAYER_0);
+
+    ECSCreateEntity("test-entity", {});
+
+    ECSLayerMakeVisible(UI_LAYER_0);
+    EXPECT_EQ(layer, UI_LAYER_0);
+
+    ECSLayerMakeVisible(UI_LAYER_1);
+    EXPECT_EQ(layer, UI_LAYER_1);
+
+    ECSLayerMakeVisible(GAME_LAYER);
+    EXPECT_EQ(layer, GAME_LAYER);
+
+    ECSLayerMakeVisible(DEBUG_LAYER);
+    EXPECT_EQ(layer, DEBUG_LAYER);
+}
+
+TEST_F(ECSTest, DebuggingBehaviorTest)
+{
+    ECSBeginLayer(GAME_LAYER);
+    auto entity = ECSCreateEntity(
+        "test-entity",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+    auto entity2 = ECSCreateEntity(
+        "test-entity-2",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    ECSBeginLayer(DEBUG_LAYER);
+    auto entity3 = ECSCreateEntity(
+        "test-entity-3",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+    auto entity4 = ECSCreateEntity(
+        "test-entity-4",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    EventContext context;
+
+    ECSLayerMakeVisible(GAME_LAYER);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity, entity2}));
+    ResetEntityStates();
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    TriggerEvent(NTT_DEBUG_BREAK, nullptr, context);
+
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2, entity3, entity4}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity3, entity4}));
+    ResetEntityStates();
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    context.b8_data[0] = TRUE;
+    TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, context);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2, entity3, entity4}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity3, entity4}));
+    ResetEntityStates();
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    context.b8_data[0] = FALSE;
+    TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, context);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity, entity2}));
+    ResetEntityStates();
+
+    // When the ui layer is visible, then the debug layer will return that layer when continue
+    ECSBeginLayer(UI_LAYER_0);
+    ECSUpdate(0.0f);
+    ResetEntityStates();
+    auto entity5 = ECSCreateEntity(
+        "test-entity-5",
+        {
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    ECSLayerMakeVisible(UI_LAYER_0);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2, entity5}));
+    ResetEntityStates();
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    TriggerEvent(NTT_DEBUG_BREAK, nullptr, context);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity,
+                                                   entity2,
+                                                   entity3,
+                                                   entity4,
+                                                   entity5}));
+    EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity3, entity4}));
+    ResetEntityStates();
+
+    memset(context.u8_data, 0, sizeof(context.u8_data));
+    context.b8_data[0] = FALSE;
+    TriggerEvent(NTT_DEBUG_CONTINUE, nullptr, context);
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2, entity5}));
+    ResetEntityStates();
+}
+
+TEST_F(ECSTest, CreateEntityWithPriority)
+{
+    ECSBeginLayer(GAME_LAYER);
+
+    auto textureEnt = ECSCreateEntity(
+        "test-entity",
+        {
+            ECS_CREATE_COMPONENT(Texture, 1, 0, 0, PRIORITY_0),
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    auto textEnt = ECSCreateEntity(
+        "test-entity-2",
+        {
+            ECS_CREATE_COMPONENT(Text, "test", 10, PRIORITY_1),
+            ECS_CREATE_COMPONENT(TestLayerData),
+        });
+
+    auto textEntTexture = ECS_GET_COMPONENT(textureEnt, Texture);
+    EXPECT_EQ(textEntTexture->priority, PRIORITY_0);
+
+    auto textEntText = ECS_GET_COMPONENT(textEnt, Text);
+    EXPECT_EQ(textEntText->priority, PRIORITY_1);
+
+    TriggerEvent(NTT_ENTITY_CREATED, nullptr, {textEnt});
+    ECSUpdate(0.0f);
+    EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({textureEnt, textEnt}));
+    ResetEntityStates();
+
+    ECSBeginLayer(UI_LAYER_0);
+
+    auto textureEnt2 = ECSCreateEntity(
+        "test-entity-3",
+        {
+            ECS_CREATE_COMPONENT(Texture, 1, 0, 0, PRIORITY_0),
+        });
+
+    auto textEnt2 = ECSCreateEntity(
+        "test-entity-4",
+        {
+            ECS_CREATE_COMPONENT(Text, "test", 10, PRIORITY_1),
+        });
+
+    auto textEntTexture2 = ECS_GET_COMPONENT(textureEnt2, Texture);
+    EXPECT_EQ(textEntTexture2->priority, PRIORITY_0 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
+
+    auto textEntText2 = ECS_GET_COMPONENT(textEnt2, Text);
+    EXPECT_EQ(textEntText2->priority, PRIORITY_1 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
 }
