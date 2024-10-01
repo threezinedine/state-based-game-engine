@@ -1,11 +1,31 @@
-#include <iostream>
-#include <cstdio>
+#include <NTTEngine/NTTEngine.hpp>
 
-int main()
+class TestController : public Script
 {
-    std::cout << "Hello, World!" << std::endl;
-    printf("Hello\n");
-    printf("Working\n");
-    printf("Testing\n");
-    return 0;
+protected:
+    void OnEnterImpl() override
+    {
+        // NTT_APP_DEBUG("The file is loaded");
+    }
+
+    void OnUpdateImpl(f32 delta) override
+    {
+    }
+
+    void OnExitImpl() override
+    {
+        // NTT_APP_DEBUG("The file is unloaded");
+    }
+};
+
+SCRIPT_DEFINE
+
+void *CreateInstance(void *data)
+{
+    return new TestController();
+}
+
+void DeleteInstance(void *obj)
+{
+    delete static_cast<TestController *>(obj);
 }

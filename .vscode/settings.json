@@ -95,6 +95,26 @@
 		"source_location": "cpp",
 		"stack": "cpp",
 		"typeindex": "cpp",
-		"*.rh": "cpp"
+		"*.rh": "cpp",
+		"barrier": "cpp",
+		"cinttypes": "cpp",
+		"csetjmp": "cpp",
+		"cwctype": "cpp",
+		"execution": "cpp",
+		"future": "cpp",
+		"latch": "cpp",
+		"mdspan": "cpp",
+		"memory_resource": "cpp",
+		"numbers": "cpp",
+		"print": "cpp",
+		"scoped_allocator": "cpp",
+		"semaphore": "cpp",
+		"shared_mutex": "cpp",
+		"spanstream": "cpp",
+		"stacktrace": "cpp",
+		"stdfloat": "cpp",
+		"strstream": "cpp",
+		"syncstream": "cpp",
+		"resumable": "cpp"
 	}
 }

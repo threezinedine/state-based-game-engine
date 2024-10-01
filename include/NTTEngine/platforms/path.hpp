@@ -86,6 +86,11 @@ namespace ntt
     String GetFileName(const String &path, b8 containBase = false);
 
     /**
+     * Get current running directory (the location of the .exe file)
+     */
+    String CurrentDirectory();
+
+    /**
      * Get folder of the given file path
      */
     String GetFileFolder(const String &file);

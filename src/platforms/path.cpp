@@ -132,6 +132,13 @@ namespace ntt
         return sysPath.string();
     }
 
+    String CurrentDirectory()
+    {
+        return ::std::filesystem::current_path()
+            .make_preferred()
+            .string();
+    }
+
     String JoinPath(List<String> paths, b8 useBase)
     {
         String path = useBase ? s_sourcePath : "";

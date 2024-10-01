@@ -1,8 +1,8 @@
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/platforms/path.hpp>
-// #include "filewatch.hpp"
-// #include "watch_dog.hpp"
+#include "filewatch.hpp"
+#include <iostream>
 
 namespace ntt
 {
@@ -32,6 +32,30 @@ namespace ntt
             s_scriptContents[file] = newContent;
             return TRUE;
         }
+
+        void CompileFile(const String &path, const String &output)
+        {
+            auto command = fmt::format(
+                "g++ -o \"{}\" \"{}\" -shared",
+                output,
+                "C:/Users/Acer/Games Dev/state-based-game-engine/build/libNTTEngine.a");
+            // path);
+
+            NTT_ENGINE_DEBUG("Compile the file {} with command {}", path, command);
+            try
+            {
+                std::system(command.c_str());
+            }
+            catch (const std::exception &e)
+            {
+                NTT_ENGINE_FATAL(
+                    "The file {} cannot be compiled with error {}",
+                    path,
+                    e.what());
+            }
+        }
+
+        List<Scope<filewatch::FileWatch<std::string>>> s_watches;
     } // namespace
 
     void HotReloadInit(
@@ -46,35 +70,37 @@ namespace ntt
         s_scriptContents.clear();
         NTT_ENGINE_DEBUG("Hot reload module is initialized with folder {}.",
                          s_folder);
-
-        // wd::watch(s_folder.RawString(), [](const fs::path &path)
-        //           { NTT_ENGINE_DEBUG("The file {} is changed.", path); });
-
-        // filewatch::FileWatch<std::string> watch(
-        //     // StringToWString(s_folder.RawString()),
-        //     s_folder.RawString(),
-        //     [](const std::string &path, const filewatch::Event change_type)
-        //     {
-        //         NTT_ENGINE_DEBUG("The file {} is changed.", path);
-        //         switch (change_type)
-        //         {
-        //         case filewatch::Event::added:
-        //             break;
-        //         case filewatch::Event::removed:
-        //             break;
-        //         case filewatch::Event::modified:
-        //             NTT_ENGINE_DEBUG("The file is modified.");
-        //             break;
-        //         case filewatch::Event::renamed_old:
-        //             break;
-        //         // case filewatch::ChangeType::renamed_new:
-        //         //     std::cout << "The file was renamed and this is the new name." << '\n';
-        //         //     break;
-        //     }; });
     }
 
     script_id_t HotReloadLoad(const char *file, std::function<void()> onLoad)
     {
+        auto watch = CreateScope<filewatch::FileWatch<std::string>>(
+            JoinPath({s_folder, file}, FALSE).RawString(),
+            [onLoad](const std::string &path, const filewatch::Event change_type)
+            {
+                switch (change_type)
+                {
+                case filewatch::Event::removed:
+                    break;
+                case filewatch::Event::modified:
+                    NTT_ENGINE_DEBUG("The file {} is modified.", path);
+                    onLoad();
+                    break;
+                case filewatch::Event::renamed_old:
+                    break;
+                // case filewatch::ChangeType::renamed_new:
+                    //     std::cout << "The file was renamed and this is the new name." << '\n';
+                    //     break;
+                }; });
+
+        String fileStr = file;
+        fileStr.Replace(".cpp", ".dll");
+
+        CompileFile(
+            JoinPath({s_folder, file}, FALSE),
+            JoinPath({CurrentDirectory(), fileStr}, FALSE));
+
+        s_watches.push_back(std::move(watch));
         return INVALID_SCRIPT_ID;
     }
 
@@ -94,5 +120,9 @@ namespace ntt
 
     void HotReloadShutdown()
     {
+        for (auto &watch : s_watches)
+        {
+            watch.reset();
+        }
     }
 } // namespace ntt

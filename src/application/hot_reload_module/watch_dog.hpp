@@ -38,13 +38,13 @@
 #include "cinder/app/App.h"
 #endif
 #else
-#if defined(CINDER_WINRT) || (defined(_MSC_VER) && (_MSC_VER >= 1900))
-#include <filesystem>
-namespace ci
-{
-    namespace fs = std::tr2::sys;
-}
-#else
+// #if defined(CINDER_WINRT) || (defined(_MSC_VER) && (_MSC_VER >= 1900))
+// #include <filesystem>
+// namespace ci
+// {
+//     namespace fs = std::tr2::sys;
+// }
+// #else
 #define BOOST_FILESYSTEM_VERSION 3
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
@@ -52,7 +52,7 @@ namespace ci
 {
     namespace fs = boost::filesystem;
 }
-#endif
+// #endif
 #endif
 
 // Windows Issue :
@@ -122,11 +122,11 @@ public:
         watchImpl(ci::fs::path());
     }
     //! Sets the last modification time of a file or directory. by default sets the time to the current time
-#if defined(CINDER_WINRT) || (defined(_MSC_VER) && (_MSC_VER >= 1900))
-    static void touch(const ci::fs::path &path, ci::fs::file_time_type time = ci::fs::file_time_type::clock::now())
-#else
+    // #if defined(CINDER_WINRT) || (defined(_MSC_VER) && (_MSC_VER >= 1900))
+    //     static void touch(const ci::fs::path &path, ci::fs::file_time_type time = ci::fs::file_time_type::clock::now())
+    // #else
     static void touch(const ci::fs::path &path, std::time_t time = std::time(nullptr))
-#endif
+    // #endif
     {
 
         // if the file or directory exists change its last write time
@@ -448,11 +448,11 @@ protected:
         std::string mFilter;
         std::function<void(const ci::fs::path &)> mCallback;
         std::function<void(const std::vector<ci::fs::path> &)> mListCallback;
-#if defined(CINDER_WINRT) || (defined(_MSC_VER) && (_MSC_VER >= 1900))
-        std::map<std::string, ci::fs::file_time_type> mModificationTimes;
-#else
+        // #if defined(CINDER_WINRT) || (defined(_MSC_VER) && (_MSC_VER >= 1900))
+        // std::map<std::string, ci::fs::file_time_type> mModificationTimes;
+        // #else
         std::map<std::string, time_t> mModificationTimes;
-#endif
+        // #endif
     };
 
     friend class SleepyWatchdog;

@@ -27,7 +27,7 @@ namespace ntt
      *      ```
      *          extern "C"
      *          {
-     *              Scope<void> CreateInstance(void* data);   ///< the createFunc now is "CreateInstance"
+     *              void* CreateInstance(void* data);   ///< the createFunc now is "CreateInstance"
      *              void DeleteInstance(void*);         ///< pass the pointer from CreateInstance
      *                                                  ///< for deleting it
      *                                                  ///< the deleteFunc now is "DeleteInstance"
@@ -107,9 +107,9 @@ namespace ntt
 /**
  * This macro must be used in all script files which needed to be loaded into the system.
  */
-#define SCRIPT_DEFINE()                         \
-    extern "C"                                  \
-    {                                           \
-        Scope<void> CreateInstance(void *data); \
-        void DeleteInstance(void *);            \
+#define SCRIPT_DEFINE                     \
+    extern "C"                            \
+    {                                     \
+        void *CreateInstance(void *data); \
+        void DeleteInstance(void *);      \
     }

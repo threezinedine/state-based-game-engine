@@ -147,6 +147,9 @@ void Begin()
 {
     NTT_APP_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
 
+    HotReloadLoad("Test.cpp", []()
+                  { NTT_APP_DEBUG("The file is loaded"); });
+
     auto windowSize = GetWindowSize();
 
     ECSBeginLayer(UI_LAYER_0);

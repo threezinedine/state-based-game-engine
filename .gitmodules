@@ -10,3 +10,105 @@
 [submodule "vendors/fmt"]
 	path = vendors/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "vendors/boost/filesystem"]
+	path = vendors/boost/filesystem
+	url = https://github.com/boostorg/filesystem.git
+[submodule "vendors/boost/assert"]
+	path = vendors/boost/assert
+	url = https://github.com/boostorg/assert.git
+[submodule "vendors/boost/static_assert"]
+	path = vendors/boost/static_assert
+	url = https://github.com/boostorg/static_assert.git
+[submodule "vendors/boost/config"]
+	path = vendors/boost/config
+	url = https://github.com/boostorg/config.git
+[submodule "vendors/boost/container_hash"]
+	path = vendors/boost/container_hash
+	url = https://github.com/boostorg/container_hash.git
+[submodule "vendors/boost/detail"]
+	path = vendors/boost/detail
+	url = https://github.com/boostorg/detail.git
+[submodule "vendors/boost/io"]
+	path = vendors/boost/io
+	url = https://github.com/boostorg/io.git
+[submodule "vendors/boost/iterator"]
+	path = vendors/boost/iterator
+	url = https://github.com/boostorg/iterator.git
+[submodule "vendors/boost/smart_ptr"]
+	path = vendors/boost/smart_ptr
+	url = https://github.com/boostorg/smart_ptr.git
+[submodule "vendors/boost/system"]
+	path = vendors/boost/system
+	url = https://github.com/boostorg/system.git
+[submodule "vendors/boost/type_traits"]
+	path = vendors/boost/type_traits
+	url = https://github.com/boostorg/type_traits.git
+[submodule "vendors/boost/core"]
+	path = vendors/boost/core
+	url = https://github.com/boostorg/core.git
+[submodule "vendors/boost/predef"]
+	path = vendors/boost/predef
+	url = https://github.com/boostorg/predef.git
+[submodule "vendors/boost/scope"]
+	path = vendors/boost/scope
+	url = https://github.com/boostorg/scope.git
+[submodule "vendors/boost/throw_exceptions"]
+	path = vendors/boost/throw_exceptions
+	url = https://github.com/boostorg/throw_exception.git
+[submodule "vendors/boost/describe"]
+	path = vendors/boost/describe
+	url = https://github.com/boostorg/describe.git
+[submodule "vendors/boost/atmoic"]
+	path = vendors/boost/atmoic
+	url = https://github.com/boostorg/atomic.git
+[submodule "vendors/boost/mp11"]
+	path = vendors/boost/mp11
+	url = https://github.com/boostorg/mp11.git
+[submodule "vendors/boost/preprocessor"]
+	path = vendors/boost/preprocessor
+	url = https://github.com/boostorg/preprocessor.git
+[submodule "vendors/boost/winapi"]
+	path = vendors/boost/winapi
+	url = https://github.com/boostorg/winapi.git
+[submodule "vendors/boost/concept_check"]
+	path = vendors/boost/concept_check
+	url = https://github.com/boostorg/concept_check.git
+[submodule "vendors/boost/variant2"]
+	path = vendors/boost/variant2
+	url = https://github.com/boostorg/variant2.git
+[submodule "vendors/boost/align"]
+	path = vendors/boost/align
+	url = https://github.com/boostorg/align.git
+[submodule "vendors/boost/function_types"]
+	path = vendors/boost/function_types
+	url = https://github.com/boostorg/function_types.git
+[submodule "vendors/boost/move"]
+	path = vendors/boost/move
+	url = https://github.com/boostorg/move.git
+[submodule "vendors/boost/mpl"]
+	path = vendors/boost/mpl
+	url = https://github.com/boostorg/mpl.git
+[submodule "vendors/boost/fusion"]
+	path = vendors/boost/fusion
+	url = https://github.com/boostorg/fusion.git
+[submodule "vendors/boost/tuple"]
+	path = vendors/boost/tuple
+	url = https://github.com/boostorg/tuple.git
+[submodule "vendors/boost/optional"]
+	path = vendors/boost/optional
+	url = https://github.com/boostorg/optional.git
+[submodule "vendors/boost/utility"]
+	path = vendors/boost/utility
+	url = https://github.com/boostorg/utility.git
+[submodule "vendors/boost/typeof"]
+	path = vendors/boost/typeof
+	url = https://github.com/boostorg/typeof.git
+[submodule "vendors/boost/functional"]
+	path = vendors/boost/functional
+	url = https://github.com/boostorg/functional.git
+[submodule "vendors/boost/function"]
+	path = vendors/boost/function
+	url = https://github.com/boostorg/function.git
+[submodule "vendors/boost/bind"]
+	path = vendors/boost/bind
+	url = https://github.com/boostorg/bind.git
