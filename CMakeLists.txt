@@ -58,6 +58,8 @@ target_link_libraries(
     raylib
     fmt::fmt
     nlohmann_json
+    # efsw-static
+    Boost::filesystem
 )
 
 if (NTT_BUILD_SHARED)

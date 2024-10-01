@@ -23,6 +23,7 @@
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/debugging/components/components.hpp>
+#include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 
 namespace ntt
 {
@@ -54,6 +55,7 @@ namespace ntt
         s_phrases = phrases;
 
         MemoryInit();
+        HotReloadInit("CreateInstance", "DeleteInstance", "scripts");
         DebugInit();
 
         CREATE_WINDOW(screenWidth, screenHeight, title);
@@ -78,12 +80,14 @@ namespace ntt
         ECSRegister(
             "Render System",
             CreateRef<RenderSystem>(),
-            {typeid(Geometry), typeid(Texture)});
+            {typeid(Geometry), typeid(Texture)},
+            TRUE);
 
         ECSRegister(
             "Text Render System",
             CreateRef<TextRenderSystem>(),
-            {typeid(Geometry), typeid(Text)});
+            {typeid(Geometry), typeid(Text)},
+            TRUE);
 
         ECSRegister(
             "Native Script System",
@@ -260,6 +264,7 @@ namespace ntt
         NTT_ENGINE_INFO("The application is closed.");
 
         DebugShutdown();
+        HotReloadShutdown();
         MemoryShutdown();
     }
 } // namespace ntt

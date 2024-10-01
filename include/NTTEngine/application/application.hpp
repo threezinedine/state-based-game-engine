@@ -5,3 +5,4 @@
 #include "script_system/script_system.hpp"
 #include "state_system/state_system.hpp"
 #include "scene_system/scene_system.hpp"
+#include "hot_reload_module/hot_reload_module.hpp"

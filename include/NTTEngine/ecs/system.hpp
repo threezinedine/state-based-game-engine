@@ -10,6 +10,8 @@ namespace ntt::ecs
     class System
     {
     public:
+        virtual ~System() = default;
+
         /**
          * The function which is called at the begginning of the game (once)
          *      for initializing the system.

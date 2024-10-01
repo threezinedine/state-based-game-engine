@@ -8,6 +8,14 @@ file(
     *.cpp
 )
 
+file (
+    GLOB_RECURSE
+    SCRIPTS
+    scripts/*.cpp
+)
+
+list(REMOVE_ITEM SOURCES ${SCRIPTS})
+
 add_executable(
     ${PROJECT_NAME}
     ${SOURCES}

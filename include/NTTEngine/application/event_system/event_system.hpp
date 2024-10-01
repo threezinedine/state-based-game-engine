@@ -80,6 +80,9 @@ namespace ntt::event
 #define NTT_RESOURCE_LOADED 0x0F   ///< When the resource is loaded
 #define NTT_RESOURCE_UNLOADED 0x10 ///< When the resource is unloaded
 
+#define NTT_FILE_CHANGED 0x11 ///< When the file is changed
+#define NTT_FILE_UPDATED 0x12 ///< When the file is updated
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**
