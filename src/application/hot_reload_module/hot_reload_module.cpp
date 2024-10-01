@@ -2,7 +2,7 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/platforms/path.hpp>
 // #include "filewatch.hpp"
-#include "watch_dog.hpp"
+// #include "watch_dog.hpp"
 
 namespace ntt
 {
@@ -47,8 +47,8 @@ namespace ntt
         NTT_ENGINE_DEBUG("Hot reload module is initialized with folder {}.",
                          s_folder);
 
-        wd::watch(s_folder.RawString(), [](const fs::path &path)
-                  { NTT_ENGINE_DEBUG("The file {} is changed.", path); });
+        // wd::watch(s_folder.RawString(), [](const fs::path &path)
+        //           { NTT_ENGINE_DEBUG("The file {} is changed.", path); });
 
         // filewatch::FileWatch<std::string> watch(
         //     // StringToWString(s_folder.RawString()),

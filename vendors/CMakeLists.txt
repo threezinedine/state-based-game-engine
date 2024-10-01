@@ -1,14 +1,21 @@
 file(
-    GLOB 
+    GLOB
     VENDORS_SOURCES
     *
 )
 
-set(BUILD_SHARED_LIBS FALSE) 
+set(
+    IGNORED_FOLDERS
+)
 
-foreach(VENDOR_SOURCE ${VENDORS_SOURCES})
-    if (IS_DIRECTORY ${VENDOR_SOURCE})
-        add_subdirectory(${VENDOR_SOURCE})
-        message(STATUS "Added Vendor: ${VENDOR_SOURCE}")
+list(
+    REMOVE_ITEM
+    VENDORS_SOURCES
+    ${IGNORED_FOLDERS}
+)
+
+foreach(VENDORS_SOURCE ${VENDORS_SOURCES})
+    if(IS_DIRECTORY ${VENDORS_SOURCE})
+        add_subdirectory(${VENDORS_SOURCE})
     endif()
 endforeach()
