@@ -24,6 +24,7 @@
 #include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/debugging/components/components.hpp>
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
+#include <NTTEngine/application/script_system/script_system.hpp>
 
 namespace ntt
 {
@@ -55,7 +56,7 @@ namespace ntt
         s_phrases = phrases;
 
         MemoryInit();
-        HotReloadInit("CreateInstance", "DeleteInstance", "scripts");
+        ScriptStoreInit("CreateInstance", "DeleteInstance");
         DebugInit();
 
         CREATE_WINDOW(screenWidth, screenHeight, title);
@@ -264,7 +265,7 @@ namespace ntt
         NTT_ENGINE_INFO("The application is closed.");
 
         DebugShutdown();
-        HotReloadShutdown();
+        ScriptStoreShutdown();
         MemoryShutdown();
     }
 } // namespace ntt

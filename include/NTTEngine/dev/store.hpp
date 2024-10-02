@@ -117,6 +117,23 @@ namespace ntt::dev::store
             return result;
         }
 
+        template <typename field_t>
+        List<id_t> GetIdsByField(field_t value, GetFieldFunc<data_t, field_t> getField)
+        {
+            List<id_t> ids = {};
+            auto availableIds = GetAvailableIds();
+
+            for (auto i = 0; i < availableIds.size(); i++)
+            {
+                if (getField(Get(availableIds[i])) == value)
+                {
+                    ids.push_back(availableIds[i]);
+                }
+            }
+
+            return ids;
+        }
+
         /**
          * Query the object with the id.
          *      if the object is not found, it will return nullptr.

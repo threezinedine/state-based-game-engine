@@ -4,9 +4,13 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#include <NTTEngine/core/memory.hpp>
 
 namespace ntt
 {
+    using namespace memory;
+    using namespace log;
+
     namespace
     {
         String s_sourcePath = ::std::filesystem::current_path()
@@ -20,7 +24,7 @@ namespace ntt
     {
         if (!IsExist(path))
         {
-            NTT_ENGINE_WARN("The path {} does not exist", path.RawString().c_str());
+            NTT_ENGINE_WARN("The path {} does not exist", path);
             return;
         }
         s_sourcePath = ::std::filesystem::absolute(path.RawString())
@@ -56,8 +60,9 @@ namespace ntt
     {
         if (!IsExist(path))
         {
+            NTT_ENGINE_WARN("Testing {}", 3);
             NTT_ENGINE_WARN("The path {} does not exist - create new",
-                            path.RawString().c_str());
+                            path.RawString());
         }
 
         if (s_file != nullptr)

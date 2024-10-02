@@ -9,6 +9,7 @@
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/renderer/Texture.hpp>
 #include <NTTEngine/renderer/Text.hpp>
+#include <cstring>
 
 namespace ntt::ecs
 {

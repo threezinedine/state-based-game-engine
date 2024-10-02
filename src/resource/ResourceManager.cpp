@@ -10,6 +10,7 @@
 #include <NTTEngine/audio/AudioResource.hpp>
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/application/script_system/ScriptResource.hpp>
 
 #include "ResourceTest.hpp"
 
@@ -117,6 +118,9 @@ namespace ntt
             break;
         case ResourceType::IMAGE:
             resource = CreateScope<ImageResource>(info);
+            break;
+        case ResourceType::SCRIPT:
+            resource = CreateScope<ScriptResource>(info);
             break;
         default:
             resource = CreateScope<ResourceTest>(info);

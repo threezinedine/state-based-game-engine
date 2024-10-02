@@ -30,7 +30,6 @@ target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
     NTTEngine
-    # "C:/Users/Acer/Games Dev/state-based-game-engine/build/libNTTEngine.dll.a"
 )
 
 target_include_directories(

@@ -1,6 +1,5 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
-#include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/core/exception.hpp>
 
@@ -12,7 +11,6 @@
 
 namespace ntt
 {
-    using namespace log;
     using namespace exception;
 
     template <typename T>
@@ -63,7 +61,6 @@ namespace ntt
         {
             if (index >= this->size() || index < 0)
             {
-                // NTT_ENGINE_WARN("The index is out of range, nothing will be removed");
                 return;
             }
 

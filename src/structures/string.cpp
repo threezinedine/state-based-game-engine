@@ -66,7 +66,7 @@ namespace ntt
         return indexes;
     }
 
-    void String::Replace(const String &oldStr, const String &newStr)
+    void String::Replace(const String &oldStr, const String &newStr, b8 all)
     {
         while (1)
         {
@@ -76,6 +76,11 @@ namespace ntt
                 m_Str.replace(index, oldStr.Length(), newStr.RawString());
             }
             else
+            {
+                break;
+            }
+
+            if (!all)
             {
                 break;
             }

@@ -33,28 +33,6 @@ namespace ntt
             return TRUE;
         }
 
-        void CompileFile(const String &path, const String &output)
-        {
-            auto command = fmt::format(
-                "g++ -o \"{}\" \"{}\" -shared",
-                output,
-                "C:/Users/Acer/Games Dev/state-based-game-engine/build/libNTTEngine.a");
-            // path);
-
-            NTT_ENGINE_DEBUG("Compile the file {} with command {}", path, command);
-            try
-            {
-                std::system(command.c_str());
-            }
-            catch (const std::exception &e)
-            {
-                NTT_ENGINE_FATAL(
-                    "The file {} cannot be compiled with error {}",
-                    path,
-                    e.what());
-            }
-        }
-
         List<Scope<filewatch::FileWatch<std::string>>> s_watches;
     } // namespace
 
@@ -95,10 +73,6 @@ namespace ntt
 
         String fileStr = file;
         fileStr.Replace(".cpp", ".dll");
-
-        CompileFile(
-            JoinPath({s_folder, file}, FALSE),
-            JoinPath({CurrentDirectory(), fileStr}, FALSE));
 
         s_watches.push_back(std::move(watch));
         return INVALID_SCRIPT_ID;

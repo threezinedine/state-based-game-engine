@@ -9,7 +9,7 @@ namespace ntt
     class ScriptResource : public Resource
     {
     public:
-        ScriptResource(const String &name, const String &path);
+        ScriptResource(const ResourceInfo &info);
         ~ScriptResource();
 
         const String &GetName() const override;
@@ -22,4 +22,4 @@ namespace ntt
         class Impl;
         Scope<Impl> m_impl;
     };
-} // namespace ntt
+} // namespace ntt::script

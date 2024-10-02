@@ -4,12 +4,13 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/core/time.hpp>
 #include <NTTEngine/structures/list.hpp>
+#include <NTTEngine/core/formatter.hpp>
 
 namespace ntt
 {
     using namespace log;
 
-#define THIS(exp) m_impl->exp
+#define THIS(exp) this->m_impl->exp
 #define DEFAULT_SECTION "Default"
 #define SEPARATOR "---------------------"
 
@@ -47,14 +48,14 @@ namespace ntt
 
         THIS(timer).Reset();
 
-        String data = fmt::format("[START] {} in {}:{}",
-                                  THIS(funcName),
-                                  THIS(file),
-                                  THIS(line));
+        String data = format("[START] {} in {}:{}",
+                             THIS(funcName).RawString(),
+                             THIS(file).RawString(),
+                             THIS(line));
 
         for (u8 i = 0; i < s_indent; i++)
         {
-            data = fmt::format("\t{}", data);
+            data = format("\t{}", data.RawString());
         }
 
         String logFile = JoinPath({s_outputFolder, (s_currentSection + ".prof.txt")});
@@ -71,7 +72,7 @@ namespace ntt
         }
         catch (...)
         {
-            NTT_ENGINE_WARN("Cannot open file {0}", logFile);
+            NTT_ENGINE_WARN("Cannot open file {}", logFile);
         }
     }
 
@@ -84,7 +85,7 @@ namespace ntt
 
         auto duration = THIS(timer).GetMilliseconds();
 
-        String data = fmt::format("[END]   {0} in {1}:{2} - {3}ms",
+        String data = ntt::format("[END]   {} in {}:{} - {}ms",
                                   THIS(funcName),
                                   THIS(file),
                                   THIS(line),
@@ -92,10 +93,17 @@ namespace ntt
 
         for (u8 i = 0; i < s_indent; i++)
         {
-            data = fmt::format("\t{}", data);
+            data = format("\t{}", data);
         }
 
-        Write(data + "\n");
+        try
+        {
+            Write(data + "\n");
+        }
+        catch (...)
+        {
+            NTT_ENGINE_WARN("Cannot write to the file");
+        }
 
         s_indent--;
     }
@@ -117,10 +125,10 @@ namespace ntt
 
         if (s_currentSection != DEFAULT_SECTION)
         {
-            NTT_ENGINE_TRACE("End Section {0}\n{1}", s_currentSection, SEPARATOR);
+            NTT_ENGINE_TRACE("End Section {}\n{}", s_currentSection, SEPARATOR);
         }
 
-        NTT_ENGINE_TRACE("Begin Section {0}\n{1}", section, SEPARATOR);
+        NTT_ENGINE_TRACE("Begin Section {}\n{}", section, SEPARATOR);
 
         if (s_hasWritten)
         {

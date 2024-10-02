@@ -78,10 +78,7 @@ target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
     raylib
-    fmt::fmt
     nlohmann_json
-    # efsw-static
-    Boost::filesystem
 )
 
 if (NTT_BUILD_SHARED)

@@ -101,15 +101,3 @@ namespace ntt
      */
     void HotReloadShutdown();
 } // namespace ntt
-
-#define GET_SCRIPT(type, id) std::reinterpret_cast<type *>(HotReloadGetObject(id))
-
-/**
- * This macro must be used in all script files which needed to be loaded into the system.
- */
-#define SCRIPT_DEFINE                     \
-    extern "C"                            \
-    {                                     \
-        void *CreateInstance(void *data); \
-        void DeleteInstance(void *);      \
-    }

@@ -4,6 +4,28 @@
 #include <cstdarg>
 #include <cstring>
 #include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/base.h>
+#include <cstdarg>
+#include <any>
+#include <vector>
+
+namespace fmt
+{
+    template <>
+    struct formatter<ntt::String>
+    {
+        constexpr auto parse(format_parse_context &ctx)
+        {
+            return ctx.begin();
+        }
+
+        auto format(const ntt::String &str, format_context &ctx) const
+        {
+            return format_to(ctx.out(), "{}", str.RawString());
+        }
+    };
+}
 
 namespace ntt::log
 {
@@ -51,7 +73,11 @@ namespace ntt::log
         }
     }
 
-    void Log(const char *name, LogLevel level, const char *file, u16 line, const String &message)
+    void Log(const char *name,
+             LogLevel level,
+             const char *file,
+             u16 line,
+             const String &message)
     {
         if (!s_isInitialized)
         {

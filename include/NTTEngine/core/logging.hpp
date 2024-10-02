@@ -1,10 +1,8 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include "memory.hpp"
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/base.h>
 #include <NTTEngine/structures/string.hpp>
+#include <NTTEngine/core/formatter.hpp>
 
 /**
  * Log module provides functionalities for presenting, storing and managing
@@ -22,23 +20,6 @@
  *      - //TODO: Multi-threading
  *      - //TODO: File logging
  */
-
-namespace fmt
-{
-    template <>
-    struct formatter<ntt::String>
-    {
-        constexpr auto parse(format_parse_context &ctx)
-        {
-            return ctx.begin();
-        }
-
-        auto format(const ntt::String &str, format_context &ctx) const
-        {
-            return format_to(ctx.out(), "{}", str.RawString());
-        }
-    };
-}
 
 namespace ntt::log
 {
@@ -152,6 +133,7 @@ namespace ntt::log
      */
     void Log(const char *name, LogLevel level, const char *file,
              u16 line,
+             //  const String &message);
              const String &message);
 
     /**
@@ -163,33 +145,76 @@ namespace ntt::log
 #define ENGINE_LOGGER_NAME "Engine"
 #define APP_LOGGER_NAME "Application"
 
+#define _LOG_ACTIVE
+#ifdef _LOG_ACTIVE
 #define NTT_ENGINE_CONFIG(...) \
     ConfigureLogger(ENGINE_LOGGER_NAME, ##__VA_ARGS__)
 
 #define NTT_ENGINE_FATAL(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_ERROR(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::ERROR, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::ERROR, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_WARN(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::WARN, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::WARN, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_INFO(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_DEBUG(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_TRACE(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 
 #define NTT_APP_CONFIG(...) \
     ConfigureLogger(APP_LOGGER_NAME, ##__VA_ARGS__)
 
 #define NTT_APP_FATAL(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(APP_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_APP_ERROR(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::ERROR, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(APP_LOGGER_NAME, LogLevel::ERROR, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_APP_WARN(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::WARN, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(APP_LOGGER_NAME, LogLevel::WARN, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_APP_INFO(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(APP_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
 #define NTT_APP_DEBUG(message, ...) \
-    Log(APP_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
-#define NTT_APP_TRACE(message, ...) Log(APP_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, fmt::format(message, ##__VA_ARGS__))
+    Log(APP_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
+#define NTT_APP_TRACE(message, ...) Log(APP_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
+
+#else
+
+#define NTT_APP_FATAL(message, ...)
+#define NTT_APP_ERROR(message, ...)
+
+#define NTT_APP_WARN(message, ...)
+
+#define NTT_APP_INFO(message, ...)
+
+#define NTT_APP_DEBUG(message, ...)
+
+#define NTT_APP_TRACE(message, ...)
+
+#define NTT_ENGINE_CONFIG(...)
+
+#define NTT_ENGINE_FATAL(message, ...)
+
+#define NTT_ENGINE_ERROR(message, ...)
+
+#define NTT_ENGINE_WARN(message, ...)
+
+#define NTT_ENGINE_INFO(message, ...)
+
+#define NTT_ENGINE_DEBUG(message, ...)
+
+#define NTT_ENGINE_TRACE(message, ...)
+
+#define NTT_APP_FATAL(message, ...)
+
+#define NTT_APP_ERROR(message, ...)
+
+#define NTT_APP_WARN(message, ...)
+
+#define NTT_APP_INFO(message, ...)
+
+#define NTT_APP_DEBUG(message, ...)
+
+#define NTT_APP_TRACE(message, ...)
+#define NTT_APP_CONFIG(...)
+#endif

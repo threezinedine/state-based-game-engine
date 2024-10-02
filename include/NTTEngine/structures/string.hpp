@@ -53,8 +53,10 @@ namespace ntt
          * Replace all occurrences of the old string with the new string
          * @param oldStr: The string to be replaced
          * @param newStr: The string to replace the old string
+         * @param all: If all is TRUE then replace all occurrences or FALSE
+         *      then replace only the first occurrence
          */
-        void Replace(const String &oldStr, const String &newStr);
+        void Replace(const String &oldStr, const String &newStr, b8 all = TRUE);
 
         /**
          * Concat the current string with other string
