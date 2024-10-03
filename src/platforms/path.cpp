@@ -60,13 +60,10 @@ namespace ntt
     {
         if (!IsExist(path))
         {
-            ::std::filesystem::path sysPath(path.RawString());
             try
             {
-                // ::std::filesystem::create_directories(sysPath);
-                std::system(format("mkdir \"{}\"", sysPath.make_preferred().string())
-                                .RawString()
-                                .c_str());
+                auto command = format("mkdir \"{}\"", path);
+                std::system(command.RawString().c_str());
             }
             catch (const ::std::exception &e)
             {

@@ -52,7 +52,7 @@ namespace ntt
         {
             PROFILE_FUNCTION();
 
-            auto tempPath = JoinPath({CurrentDirectory(), "temp"});
+            auto tempPath = JoinPath({CurrentDirectory(), "temp"}, FALSE);
             CreateFolder(tempPath);
         }
 
@@ -126,7 +126,7 @@ namespace ntt
         PROFILE_FUNCTION();
 
         THIS(m_path) = info.path;
-        // THIS(CreateTempFolder());
+        THIS(CreateTempFolder());
         THIS(GetTempPath());
         THIS(GetOutputPath());
     }
