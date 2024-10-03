@@ -1,5 +1,5 @@
 #include "game_start.hpp"
-#include "GameController.hpp"
+#include "defs.hpp"
 
 void GameStart::OnEnterImpl()
 {

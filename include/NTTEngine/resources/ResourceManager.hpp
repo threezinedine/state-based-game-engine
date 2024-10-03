@@ -4,6 +4,8 @@
 
 namespace ntt
 {
+    constexpr resource_id_t INVALID_RESOURCE_ID = -1;
+
     /**
      * Initialize the resource manager. No scene is active
      *      when the resource manager is initialized. Need to
@@ -29,6 +31,8 @@ namespace ntt
 
     /**
      * Retrieve the resource id from the name of that resource.
+     * If the resource is not found, the INVALID_RESOURCE_ID will
+     *      be returned.
      *
      * @param name The name of the resource.
      */

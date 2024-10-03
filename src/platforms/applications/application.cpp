@@ -59,15 +59,15 @@ namespace ntt
         ScriptStoreInit("CreateInstance", "DeleteInstance");
         DebugInit();
 
-        CREATE_WINDOW(screenWidth, screenHeight, title);
-
         s_windowSize.width = static_cast<size_t>(screenWidth);
         s_windowSize.height = static_cast<size_t>(screenHeight);
 
-        InputInit();
         RendererInit();
-        AudioInit();
         ResourceInit();
+        InputInit();
+        AudioInit();
+
+        CREATE_WINDOW(screenWidth, screenHeight, title);
 
         String resourceConfig = ReadFile(RelativePath("assets/configs/resources.json"));
         if (resourceConfig == "")
@@ -154,37 +154,37 @@ namespace ntt
 
         ECSBeginLayer(DEBUG_LAYER);
         /// Default entities of the DEBUG_LAYER are defined below
-        auto ent1 = ECSCreateEntity(
-            "debug-continue",
-            {
-                ECS_CREATE_COMPONENT(Geometry,
-                                     s_windowSize.width / 2 - 31,
-                                     s_windowSize.height * 0.05,
-                                     30, 30),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"),
-                                     9,
-                                     11,
-                                     PRIORITY_0,
-                                     "Run until next breakpoint"),
-                ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ContinueButton>()),
-                ECS_CREATE_COMPONENT(Hovering),
-            });
+        // auto ent1 = ECSCreateEntity(
+        //     "debug-continue",
+        //     {
+        //         ECS_CREATE_COMPONENT(Geometry,
+        //                              s_windowSize.width / 2 - 31,
+        //                              s_windowSize.height * 0.05,
+        //                              30, 30),
+        //         ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"),
+        //                              9,
+        //                              11,
+        //                              PRIORITY_0,
+        //                              "Run until next breakpoint"),
+        //         ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ContinueButton>()),
+        //         ECS_CREATE_COMPONENT(Hovering),
+        //     });
 
-        auto ent2 = ECSCreateEntity(
-            "debug-next-frame",
-            {
-                ECS_CREATE_COMPONENT(Geometry,
-                                     s_windowSize.width / 2 + 31,
-                                     s_windowSize.height * 0.05,
-                                     30, 30),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"),
-                                     9,
-                                     11,
-                                     PRIORITY_0,
-                                     "Run next frame"),
-                ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<NextFrameButton>()),
-                ECS_CREATE_COMPONENT(Hovering),
-            });
+        // auto ent2 = ECSCreateEntity(
+        //     "debug-next-frame",
+        //     {
+        //         ECS_CREATE_COMPONENT(Geometry,
+        //                              s_windowSize.width / 2 + 31,
+        //                              s_windowSize.height * 0.05,
+        //                              30, 30),
+        //         ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"),
+        //                              9,
+        //                              11,
+        //                              PRIORITY_0,
+        //                              "Run next frame"),
+        //         ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<NextFrameButton>()),
+        //         ECS_CREATE_COMPONENT(Hovering),
+        //     });
 
         /// Default entities of the DEBUG_LAYER are defined above
 
@@ -256,10 +256,11 @@ namespace ntt
         s_phrases.Close();
 
         ECSShutdown();
-        ResourceShutdown();
+
         AudioShutdown();
-        RendererShutdown();
         InputShutdown();
+        ResourceShutdown();
+        RendererShutdown();
 
         CLOSE_WINDOW();
         NTT_ENGINE_INFO("The application is closed.");

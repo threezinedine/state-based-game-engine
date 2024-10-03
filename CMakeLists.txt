@@ -9,18 +9,20 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(_DEBUG)
 endif()
 
-# option(NTT_BUILD_SHARED "Build shared library" ON)
-option(NTT_BUILD_SHARED "Build shared library" OFF)
-
 # TODO: fix later
 # add_compile_definitions(_WIN32)
 # add_compile_definitions(_MSC_VER)
 
+set(BUILD_SHARED_LIBS OFF)
 file(
     GLOB
     VENDORS_SOURCES
     vendors/*
 )
+
+option(NTT_BUILD_SHARED "Build shared library" ON)
+# option(NTT_BUILD_SHARED "Build shared library" OFF)
+
 
 set(
     IGNORED_FOLDERS
@@ -54,12 +56,19 @@ foreach(SOURCE ${SOURCES})
 endforeach()
 
 
-add_library(
-    ${PROJECT_NAME}
-    # SHARED
-    STATIC
-    ${SOURCES}
-)
+if (NTT_BUILD_SHARED)
+    add_library(
+        ${PROJECT_NAME}
+        SHARED
+        ${SOURCES}
+    )
+else()
+    add_library(
+        ${PROJECT_NAME}
+        STATIC
+        ${SOURCES}
+    )
+endif()
 
 target_include_directories(
     ${PROJECT_NAME}

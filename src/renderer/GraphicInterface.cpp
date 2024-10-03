@@ -13,6 +13,7 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/resources/ResourceManager.hpp>
 
 #include "Raylib_GraphicAPI.hpp"
 #include "Fake_GraphicAPI.hpp"
@@ -219,6 +220,11 @@ namespace ntt::renderer
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The renderer is not initialized yet");
+            return;
+        }
+
+        if (texture_id == INVALID_RESOURCE_ID)
+        {
             return;
         }
 

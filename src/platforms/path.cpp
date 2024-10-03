@@ -56,11 +56,29 @@ namespace ntt
         return content;
     }
 
+    void CreateFolder(const String &path)
+    {
+        if (!IsExist(path))
+        {
+            ::std::filesystem::path sysPath(path.RawString());
+            try
+            {
+                // ::std::filesystem::create_directories(sysPath);
+                std::system(format("mkdir \"{}\"", sysPath.make_preferred().string())
+                                .RawString()
+                                .c_str());
+            }
+            catch (const ::std::exception &e)
+            {
+                NTT_ENGINE_FATAL("The folder {} cannot be created with error {}", path, e.what());
+            }
+        }
+    }
+
     void OpenFile(const String &path, b8 append)
     {
         if (!IsExist(path))
         {
-            NTT_ENGINE_WARN("Testing {}", 3);
             NTT_ENGINE_WARN("The path {} does not exist - create new",
                             path.RawString());
         }

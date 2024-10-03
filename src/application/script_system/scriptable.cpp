@@ -8,9 +8,16 @@ namespace ntt::script
         return data->data;
     }
 
-    void Scriptable::Subscribe(event_code_t eventCode, EventCallback callback)
+    void Scriptable::Subscribe(event_code_t eventCode)
     {
-        auto id = RegisterEvent(eventCode, callback);
+        auto id = RegisterEvent(
+            eventCode,
+            std::bind(
+                &Scriptable::OnEvent,
+                this,
+                std::placeholders::_1,
+                std::placeholders::_2,
+                std::placeholders::_3));
         events.push_back(id);
     }
 

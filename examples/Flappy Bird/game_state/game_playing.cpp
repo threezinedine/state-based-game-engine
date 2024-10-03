@@ -1,7 +1,5 @@
 #include "game_playing.hpp"
-#include "PipeController.hpp"
 #include "defs.hpp"
-#include "GameController.hpp"
 
 #define CHANGE_PER (5)
 

@@ -3,6 +3,7 @@
 
 #include <NTTEngine/application/script_system/script_system.hpp>
 #include <NTTEngine/application/script_system/native_script.hpp>
+#include <NTTEngine/application/script_system/script_store.hpp>
 #include <NTTEngine/application/script_system/native_script_system.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
@@ -49,29 +50,40 @@ protected:
         s_exitCalled = 0;
 
         EventInit();
+        ScriptStoreInit("CreateInstance", "DeleteInstance");
         ECSInit();
 
         ECSRegister(
             "Native Script System",
             CreateRef<ScriptSystem>(),
             {typeid(NativeScriptComponent)});
+
+        testControllerId = ScriptStoreLoad(
+            "TestController",
+            [](auto data) -> void *
+            { return new TestController(); },
+            [](void *obj)
+            { delete static_cast<TestController *>(obj); });
     }
 
     void TearDown() override
     {
         ECSShutdown();
+        ScriptStoreShutdown();
         EventShutdown();
     }
+
+    resource_id_t testControllerId;
 };
 
 TEST_F(NativeScriptSystemTest, NormalWorkflow)
 {
     auto entity = ECSCreateEntity(
         "test",
-        {ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<TestController>())});
+        {ECS_CREATE_COMPONENT(NativeScriptComponent, testControllerId)});
 
     ECSUpdate(0.1f);
-    EXPECT_EQ(ECS_GET_COMPONENT(entity, NativeScriptComponent)->ins->GetEntity(), entity);
+    EXPECT_EQ(ECS_GET_COMPONENT(entity, NativeScriptComponent)->GetObj()->GetEntity(), entity);
     EXPECT_EQ(s_enterCalled, 1);
     EXPECT_EQ(s_updateCalled, 1);
 
@@ -106,7 +118,7 @@ TEST_F(NativeScriptSystemTest, EmptyScript)
 {
     auto entity = ECSCreateEntity(
         "test",
-        {ECS_CREATE_COMPONENT(NativeScriptComponent, nullptr)});
+        {ECS_CREATE_COMPONENT(NativeScriptComponent, INVALID_ENTITY_ID)});
 
     ECSUpdate(0.1f);
     EXPECT_EQ(s_enterCalled, 0);

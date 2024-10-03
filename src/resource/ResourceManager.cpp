@@ -235,7 +235,7 @@ namespace ntt
         if (!s_initialized)
         {
             NTT_ENGINE_WARN("Resource manager is not initialized.");
-            return RESOURCE_ID_DEFAULT;
+            return INVALID_RESOURCE_ID;
         }
 
         if (s_defaultResourcesDict.Contains(name))
@@ -248,7 +248,7 @@ namespace ntt
             return s_resourcesDictionary[name];
         }
 
-        return RESOURCE_ID_DEFAULT;
+        return INVALID_RESOURCE_ID;
     }
 
     void ResourceShutdown()

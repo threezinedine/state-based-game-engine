@@ -1,7 +1,5 @@
 #include "game_over.hpp"
-#include "PipeController.hpp"
 #include "defs.hpp"
-#include "GameController.hpp"
 
 using namespace ntt::input;
 using namespace ntt::log;

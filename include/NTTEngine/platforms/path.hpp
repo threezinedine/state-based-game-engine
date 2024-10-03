@@ -40,6 +40,11 @@ namespace ntt
     String ReadFile(const String &path);
 
     /**
+     * Create the folder if not exist
+     */
+    void CreateFolder(const String &path);
+
+    /**
      * Open a file for writing new content or appending content
      *      to the file
      * Every Write operation after this OpenFile will be written

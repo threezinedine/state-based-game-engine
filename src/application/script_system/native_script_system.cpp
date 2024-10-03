@@ -1,9 +1,11 @@
 #include <NTTEngine/application/script_system/native_script_system.hpp>
 #include <NTTEngine/application/script_system/native_script.hpp>
+#include <NTTEngine/application/script_system/script_store.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/resources/ResourceManager.hpp>
 
 namespace ntt::script
 {
@@ -46,14 +48,35 @@ namespace ntt::script
             return;
         }
 
-        if (script->ins == nullptr)
+        // if (script->ins == nullptr)
+        // {
+        //     NTT_ENGINE_WARN("The Script instance is not found");
+        //     return;
+        // }
+
+        // script->ins->SetEntity(entity_id);
+        // script->ins->OnEnter();
+
+        if (script->scriptId == INVALID_RESOURCE_ID)
         {
-            NTT_ENGINE_WARN("The Script instance is not found");
+            NTT_ENGINE_TRACE("The Script resource id is not found");
             return;
         }
 
-        script->ins->SetEntity(entity_id);
-        script->ins->OnEnter();
+        // script_object_id_t id = script->id;
+
+        script->objId = ScriptStoreCreate(script->scriptId, nullptr);
+        auto obj = GET_SCRIPT(Script, script->objId);
+
+        if (obj == nullptr)
+        {
+            ScriptStoreDeleteObject(script->objId);
+            script->objId = INVALID_OBJECT_ID;
+            return;
+        }
+
+        obj->SetEntity(entity_id);
+        obj->OnEnter();
     }
 
     void ScriptSystem::Update(f32 deltaTime, entity_id_t entity_id)
@@ -67,13 +90,16 @@ namespace ntt::script
             return;
         }
 
-        if (script->ins == nullptr)
+        auto obj = script->GetObj();
+
+        if (obj == nullptr)
         {
-            NTT_ENGINE_WARN("The Script instance is not found");
+            ScriptStoreDeleteObject(script->objId);
+            script->objId = INVALID_OBJECT_ID;
             return;
         }
 
-        script->ins->OnUpdate(deltaTime);
+        obj->OnUpdate(deltaTime);
     }
 
     void ScriptSystem::ShutdownEntity(entity_id_t entity_id)
@@ -87,13 +113,16 @@ namespace ntt::script
             return;
         }
 
-        if (script->ins == nullptr)
+        auto obj = script->GetObj();
+
+        if (obj == nullptr)
         {
-            NTT_ENGINE_WARN("The Script instance is not found");
             return;
         }
 
-        script->ins->OnExit();
+        obj->OnExit();
+        ScriptStoreDeleteObject(script->objId);
+        script->objId = INVALID_OBJECT_ID;
     }
 
     void ScriptSystem::ShutdownSystem()

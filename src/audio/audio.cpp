@@ -9,6 +9,7 @@
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/resources/ResourceManager.hpp>
 
 #include "audio_platforms.hpp"
 
@@ -138,6 +139,11 @@ namespace ntt::audio
     {
         PROFILE_FUNCTION();
         if (!s_isInitialized)
+        {
+            return;
+        }
+
+        if (audio_id == INVALID_RESOURCE_ID)
         {
             return;
         }

@@ -22,6 +22,7 @@
  *
  */
 
+#include "formatter.hpp"
 #include "memory.hpp"
 #include "logging.hpp"
 #include "assertion.hpp"

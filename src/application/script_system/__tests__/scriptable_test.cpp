@@ -54,13 +54,18 @@ class TestScript : public Scriptable
 public:
     void OnEnter() override
     {
-        Subscribe(TEST_EVENT, [this](...)
-                  { s_testEventCalled++; });
+        Subscribe(TEST_EVENT);
     }
 
     void OnExit() override
     {
         Delete();
+    }
+
+protected:
+    void OnEvent(event_code_t code, void *sender, const EventContext &context) override
+    {
+        s_testEventCalled++;
     }
 };
 

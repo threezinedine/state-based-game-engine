@@ -1,13 +1,6 @@
 #include <NTTEngine/main.hpp>
-#include "PipeController.hpp"
 #include "game_state/game_state.hpp"
-#include "ScoreBoard.hpp"
-#include "BirdController.hpp"
-#include "GameController.hpp"
 #include "defs.hpp"
-#include "SettingButtonController.hpp"
-#include "ResumeButtonController.hpp"
-#include "StartupSceneController.hpp"
 
 String GetSourceDir()
 {
@@ -37,7 +30,9 @@ void CreateStartupScene()
                                  windowSize.height / 2,
                                  windowSize.width * 2 / 3),
             ECS_CREATE_COMPONENT(Texture, GetResourceID("startup")),
-            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<StartupSceneController>()),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("startup-scene-controller")),
+            ECS_CREATE_COMPONENT(Hovering),
+            ECS_CREATE_COMPONENT(Mass, 1.0f),
         });
 }
 
@@ -63,7 +58,7 @@ void CreateScene1()
                                  9, 11,
                                  PRIORITY_2,
                                  "Setting"),
-            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<SettingButtonController>()),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("setting-btn-controller")),
             ECS_CREATE_COMPONENT(Hovering),
         });
 
@@ -101,7 +96,7 @@ void CreateScene1()
         "game-play",
         {
             ECS_CREATE_COMPONENT(StateComponent, gameState),
-            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<GameController>()),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("game-controller")),
         });
 
     auto bird = ECSCreateEntity(
@@ -117,14 +112,14 @@ void CreateScene1()
                                  List<std::pair<u8, u8>>{{0, 0}, {1, 0}, {2, 0}},
                                  200),
             ECS_CREATE_COMPONENT(Hovering),
-            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<BirdController>()),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("bird-controller")),
         });
 
     ECSCreateEntity(
         "score-board",
         {
             ECS_CREATE_COMPONENT(Geometry, 20, 20),
-            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ScoreBoard>()),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("score-board")),
         });
 
     ECSCreateEntity(
@@ -147,9 +142,6 @@ void Begin()
 {
     NTT_APP_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
 
-    // HotReloadLoad("Test.cpp", []()
-    //               { NTT_APP_DEBUG("The file is loaded"); });
-
     auto windowSize = GetWindowSize();
 
     ECSBeginLayer(UI_LAYER_0);
@@ -161,7 +153,7 @@ void Begin()
                                  PRIORITY_0,
                                  "Resume"),
             ECS_CREATE_COMPONENT(Hovering),
-            ECS_CREATE_COMPONENT(NativeScriptComponent, CreateRef<ResumeButtonController>()),
+            ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("resume-btn-controller")),
         });
 
     RegisterEvent(

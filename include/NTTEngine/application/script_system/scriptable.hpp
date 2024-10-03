@@ -37,8 +37,13 @@ namespace ntt::script
         }
 
         JSON &GetData();
-        void Subscribe(event_code_t eventCode, EventCallback callback);
+        void Subscribe(event_code_t eventCode);
         void Delete();
+
+        virtual void OnEvent(
+            event_code_t eventCode,
+            void *sender,
+            const EventContext &context) {}
 
         entity_id_t entity_id = INVALID_ENTITY_ID;
 

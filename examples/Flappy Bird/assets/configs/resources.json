@@ -1,5 +1,41 @@
 {
-	"default": [],
+	"default": [
+		{
+			"name": "bird-controller",
+			"type": 2,
+			"relPath": "scripts/BirdController.cpp"
+		},
+		{
+			"name": "game-controller",
+			"type": 2,
+			"relPath": "scripts/GameController.cpp"
+		},
+		{
+			"name": "pipe-controller",
+			"type": 2,
+			"relPath": "scripts/PipeController.cpp"
+		},
+		{
+			"name": "resume-btn-controller",
+			"type": 2,
+			"relPath": "scripts/ResumeButtonController.cpp"
+		},
+		{
+			"name": "score-board",
+			"type": 2,
+			"relPath": "scripts/ScoreBoard.cpp"
+		},
+		{
+			"name": "setting-btn-controller",
+			"type": 2,
+			"relPath": "scripts/SettingButtonController.cpp"
+		},
+		{
+			"name": "startup-scene-controller",
+			"type": 2,
+			"relPath": "scripts/StartupSceneController.cpp"
+		}
+	],
 	"startup": [
 		{
 			"name": "startup",

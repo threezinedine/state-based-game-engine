@@ -1,32 +1,35 @@
-#pragma once
 #include <NTTEngine/NTTEngine.hpp>
 
 class ResumeButtonController : public Script
 {
+public:
+    ResumeButtonController(void *data)
+    {
+    }
+    ~ResumeButtonController()
+    {
+    }
+
 protected:
     void OnEnterImpl() override
     {
-        GetComponent<Hovering>()->callback =
-            std::bind(&ResumeButtonController::OnHover, this);
-
-        GetComponent<Hovering>()->onEnterCallback =
-            std::bind(&ResumeButtonController::OnHoverEnter, this);
-
-        GetComponent<Hovering>()->onExitCallback =
-            std::bind(&ResumeButtonController::OnHoverExit, this);
     }
 
-    void OnHoverEnter()
+    void OnExitImpl() override
+    {
+    }
+
+    void OnHoverEnter() override
     {
         GetComponent<Texture>()->rowIndex = 5;
     }
 
-    void OnHoverExit()
+    void OnHoverExit() override
     {
         GetComponent<Texture>()->rowIndex = 1;
     }
 
-    void OnHover()
+    void OnHover(HoveringContext &context) override
     {
         if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
         {
@@ -39,3 +42,5 @@ protected:
         ECSLayerMakeVisible(GAME_LAYER);
     }
 };
+
+SCRIPT_DEFINE(ResumeButtonController)
