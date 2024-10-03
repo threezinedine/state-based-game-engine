@@ -7,42 +7,6 @@
 [submodule "vendors/json"]
 	path = vendors/json
 	url = https://github.com/nlohmann/json.git
-[submodule "vendors/fmt"]
-	path = vendors/fmt
-	url = https://github.com/fmtlib/fmt.git
-[submodule "vendors/boost/filesystem"]
-	path = vendors/boost/filesystem
-	url = https://github.com/boostorg/filesystem.git
-[submodule "vendors/boost/assert"]
-	path = vendors/boost/assert
-	url = https://github.com/boostorg/assert.git
-[submodule "vendors/boost/static_assert"]
-	path = vendors/boost/static_assert
-	url = https://github.com/boostorg/static_assert.git
-[submodule "vendors/boost/config"]
-	path = vendors/boost/config
-	url = https://github.com/boostorg/config.git
-[submodule "vendors/boost/container_hash"]
-	path = vendors/boost/container_hash
-	url = https://github.com/boostorg/container_hash.git
-[submodule "vendors/boost/detail"]
-	path = vendors/boost/detail
-	url = https://github.com/boostorg/detail.git
-[submodule "vendors/boost/io"]
-	path = vendors/boost/io
-	url = https://github.com/boostorg/io.git
-[submodule "vendors/boost/iterator"]
-	path = vendors/boost/iterator
-	url = https://github.com/boostorg/iterator.git
-[submodule "vendors/boost/smart_ptr"]
-	path = vendors/boost/smart_ptr
-	url = https://github.com/boostorg/smart_ptr.git
-[submodule "vendors/boost/system"]
-	path = vendors/boost/system
-	url = https://github.com/boostorg/system.git
-[submodule "vendors/boost/type_traits"]
-	path = vendors/boost/type_traits
-	url = https://github.com/boostorg/type_traits.git
 [submodule "vendors/boost/core"]
 	path = vendors/boost/core
 	url = https://github.com/boostorg/core.git
@@ -97,18 +61,3 @@
 [submodule "vendors/boost/optional"]
 	path = vendors/boost/optional
 	url = https://github.com/boostorg/optional.git
-[submodule "vendors/boost/utility"]
-	path = vendors/boost/utility
-	url = https://github.com/boostorg/utility.git
-[submodule "vendors/boost/typeof"]
-	path = vendors/boost/typeof
-	url = https://github.com/boostorg/typeof.git
-[submodule "vendors/boost/functional"]
-	path = vendors/boost/functional
-	url = https://github.com/boostorg/functional.git
-[submodule "vendors/boost/function"]
-	path = vendors/boost/function
-	url = https://github.com/boostorg/function.git
-[submodule "vendors/boost/bind"]
-	path = vendors/boost/bind
-	url = https://github.com/boostorg/bind.git
