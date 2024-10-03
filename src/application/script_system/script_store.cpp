@@ -39,37 +39,6 @@ namespace ntt::script
 
         GetFieldFunc<ScriptData, String> s_GetPath = [](Ref<ScriptData> obj) -> String
         { return obj->path; };
-
-        void CompileFile(const String &path, const String &output)
-        {
-            PROFILE_FUNCTION();
-
-            if (IsExist(output))
-            {
-                return;
-            }
-
-            auto command = format(
-                "g++ -g -o \"{}\" -I \"{}\" -I \"{}\" \"{}\" -L \"{}\" -lNTTEngine -shared",
-                output.RawString(),
-                "C:/Users/Acer/Games Dev/state-based-game-engine/include",
-                "C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird",
-                path.RawString(),
-                "C:/Users/Acer/Games Dev/state-based-game-engine/build");
-
-            NTT_ENGINE_DEBUG("The command is {}", command);
-            try
-            {
-                std::system(command.RawString().c_str());
-            }
-            catch (const std::exception &e)
-            {
-                NTT_ENGINE_FATAL(
-                    "The file {} cannot be compiled with error {}",
-                    path,
-                    e.what());
-            }
-        }
     } // namespace
 
     void ScriptStoreInit(const char *createFunc, const char *deleteFunc)
@@ -108,10 +77,6 @@ namespace ntt::script
             return INVALID_SCRIPT_ID;
         }
 
-        // CompileFile(
-        //     file,
-        //     outputFile);
-
         Ref<ScriptData> data = CreateRef<ScriptData>();
         try
         {
@@ -124,10 +89,6 @@ namespace ntt::script
                 GetProcAddress(data->module, s_deleteFunc.RawString().c_str()));
             NTT_ENGINE_TRACE("The module {} is loaded - output: {}",
                              GetFileName(file), outputFile);
-
-            // void *obj = data->createFunc(nullptr);
-            // reinterpret_cast<Script *>(obj)->OnEnter();
-            // data->deleteFunc(obj);
         }
         catch (const std::exception &e)
         {

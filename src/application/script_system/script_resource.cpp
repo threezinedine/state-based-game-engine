@@ -98,10 +98,13 @@ namespace ntt
             auto command = format(
                 "g++ -g -o \"{}\" -I \"{}\" -I \"{}\" \"{}\" -L \"{}\" -lNTTEngine -shared",
                 m_outputPath,
-                "C:/Users/Acer/Games Dev/state-based-game-engine/include",
-                "C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird",
+                // "C:/Users/Acer/Games Dev/state-based-game-engine/include",
+                JoinPath({GetStoredPath(PathType::NTT_ENGINE), "include"}, FALSE),
+                // "C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird",
+                GetStoredPath(PathType::NTT_SOURCE),
                 m_path,
-                "C:/Users/Acer/Games Dev/state-based-game-engine/build");
+                // "C:/Users/Acer/Games Dev/state-based-game-engine/build");
+                GetStoredPath(PathType::NTT_BINARY));
 
             NTT_ENGINE_DEBUG("The command is {}", command);
             try

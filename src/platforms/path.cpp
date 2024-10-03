@@ -18,6 +18,8 @@ namespace ntt
                                   .string();
 
         Scope<::std::ofstream> s_file = nullptr;
+
+        String s_storedPaths[3];
     } // namespace
 
     void ConfigureSourcePath(const String &path)
@@ -30,6 +32,36 @@ namespace ntt
         s_sourcePath = ::std::filesystem::absolute(path.RawString())
                            .make_preferred()
                            .string();
+    }
+
+    const String &GetStoredPath(PathType type)
+    {
+        if (static_cast<u32>(type) >= sizeof(s_storedPaths) / sizeof(s_storedPaths[0]))
+        {
+            NTT_ENGINE_WARN("The type {} is not supported", static_cast<u32>(type));
+            return s_sourcePath;
+        }
+
+        return s_storedPaths[static_cast<u32>(type)];
+    }
+
+    void SetSetPath(PathType type, const String &path)
+    {
+        if (!IsExist(path))
+        {
+            NTT_ENGINE_WARN("The path {} does not exist", path);
+            return;
+        }
+
+        if (static_cast<u32>(type) >= sizeof(s_storedPaths) / sizeof(s_storedPaths[0]))
+        {
+            NTT_ENGINE_WARN("The type {} is not supported", static_cast<u32>(type));
+            return;
+        }
+
+        s_storedPaths[static_cast<u32>(type)] = ::std::filesystem::absolute(path.RawString())
+                                                    .make_preferred()
+                                                    .string();
     }
 
     String RelativePath(const String &path)

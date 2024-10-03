@@ -3,6 +3,14 @@
 
 namespace ntt
 {
+
+    enum class PathType
+    {
+        NTT_SOURCE = 0,
+        NTT_BINARY = 1,
+        NTT_ENGINE = 2,
+    };
+
     /**
      * Configure Source path for whole application
      *
@@ -11,6 +19,32 @@ namespace ntt
      *      nothing will be changed
      */
     void ConfigureSourcePath(const String &path);
+
+    /**
+     * Get the source path via the type of path, only a certain type
+     *      of path can be stored, at the default, the source path
+     *      will be the source dir which is configured by ConfigureSourcePath
+     *
+     * @param type: The type of path, if the type is larger than the the storage
+     *      then the source dir will be returned
+     * @return the path of the source
+     */
+    const String &GetStoredPath(PathType type = PathType::NTT_SOURCE);
+
+    /**
+     * Configure the path for a certain type of path.
+     * If the path is not exist or be a file then the warning will be logged
+     *      and nothing will be changed
+     *
+     * @param type: The type of path, if the type is larger than the the storage
+     *      then the source dir will be returned
+     * @param path: The path of the source
+     */
+    void SetSetPath(PathType type, const String &path);
+
+    /**
+     * Get the file with the base path is the source path
+     */
 
     /**
      * Get the file with the base path is the source path

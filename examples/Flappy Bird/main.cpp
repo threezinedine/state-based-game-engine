@@ -7,6 +7,13 @@ String GetSourceDir()
     return {"C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird"};
 }
 
+void ConfigureStoredPath()
+{
+    SetSetPath(PathType::NTT_BINARY, "C:/Users/Acer/Games Dev/state-based-game-engine/build");
+    SetSetPath(PathType::NTT_ENGINE, "C:/Users/Acer/Games Dev/state-based-game-engine");
+    SetSetPath(PathType::NTT_SOURCE, "C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird");
+}
+
 void CreateStartupScene();
 void CreateScene1();
 

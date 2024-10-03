@@ -13,6 +13,7 @@ using namespace ntt::event;
 using namespace ntt::renderer;
 using namespace ntt::memory;
 
+void ConfigureStoredPath();
 String GetSourceDir();
 List<std::pair<String, std::function<void()>>> GetSceneFuncs();
 
@@ -30,6 +31,7 @@ int main()
         { SceneShutdown(); Close(); }};
 
     ConfigureSourcePath(GetSourceDir());
+    ConfigureStoredPath();
 
     LoadConfiguration(RelativePath("assets/configs/config.json"));
     auto config = GetConfiguration();
