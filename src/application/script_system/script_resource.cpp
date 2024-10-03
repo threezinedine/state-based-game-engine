@@ -2,6 +2,7 @@
 #include <NTTEngine/application/script_system/script_system.hpp>
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -24,6 +25,8 @@ namespace ntt
 
         void GetTempPath()
         {
+            PROFILE_FUNCTION();
+
             m_tempPath = JoinPath({
                                       CurrentDirectory(),
                                       "temp",
@@ -34,6 +37,8 @@ namespace ntt
 
         void GetOutputPath()
         {
+            PROFILE_FUNCTION();
+
             String output = GetFileName(m_path);
             output.Replace(".cpp", ".dll");
             m_outputPath = JoinPath({
@@ -45,21 +50,18 @@ namespace ntt
 
         void CreateTempFolder()
         {
+            PROFILE_FUNCTION();
+
             auto tempPath = JoinPath({CurrentDirectory(), "temp"});
             CreateFolder(tempPath);
         }
 
         void Copy()
         {
-            NTT_ENGINE_DEBUG("Copying the file {} to {}", m_path, m_tempPath);
+            PROFILE_FUNCTION();
+
             try
             {
-                // std::system(
-                //     format("xcopy \"{}\" \"{}\" /Y",
-                //            m_path,
-                //            GetFileFolder(m_tempPath))
-                //         .RawString()
-                //         .c_str());
                 auto content = ReadFile(m_path);
                 OpenFile(m_tempPath);
                 Write(content);
@@ -76,6 +78,8 @@ namespace ntt
 
         b8 FileChanged()
         {
+            PROFILE_FUNCTION();
+
             if (!IsExist(m_tempPath) || !IsExist(m_outputPath))
             {
                 return true;
@@ -89,6 +93,8 @@ namespace ntt
 
         void CompileFile()
         {
+            PROFILE_FUNCTION();
+
             auto command = format(
                 "g++ -g -o \"{}\" -I \"{}\" -I \"{}\" \"{}\" -L \"{}\" -lNTTEngine -shared",
                 m_outputPath,
@@ -117,6 +123,8 @@ namespace ntt
     ScriptResource::ScriptResource(const ResourceInfo &info)
         : m_impl(CreateScope<Impl>())
     {
+        PROFILE_FUNCTION();
+
         THIS(m_path) = info.path;
         // THIS(CreateTempFolder());
         THIS(GetTempPath());
@@ -125,6 +133,7 @@ namespace ntt
 
     ScriptResource::~ScriptResource()
     {
+        PROFILE_FUNCTION();
     }
 
     const String &ScriptResource::GetName() const
@@ -134,6 +143,8 @@ namespace ntt
 
     resource_id_t ScriptResource::LoadImpl()
     {
+        PROFILE_FUNCTION();
+
         if (!IsExist(THIS(m_tempPath)))
         {
             THIS(CompileFile());
@@ -150,6 +161,8 @@ namespace ntt
 
     void ScriptResource::UnloadImpl()
     {
+        PROFILE_FUNCTION();
+
         ScriptStoreUnload(THIS(m_scriptId));
     }
 } // namespace ntt

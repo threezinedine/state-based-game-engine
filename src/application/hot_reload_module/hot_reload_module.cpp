@@ -3,6 +3,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include "filewatch.hpp"
 #include <iostream>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -20,6 +21,8 @@ namespace ntt
 
         b8 CheckScriptUpdated(const String &file)
         {
+            PROFILE_FUNCTION();
+
             auto filePath = JoinPath({s_folder, file}, FALSE);
 
             auto newContent = ReadFile(filePath);
@@ -41,6 +44,8 @@ namespace ntt
         const char *deleteFunc,
         const char *folder)
     {
+        PROFILE_FUNCTION();
+
         memcpy(s_createFunc, createFunc, strlen(createFunc) + 1);
         memcpy(s_deleteFunc, deleteFunc, strlen(deleteFunc) + 1);
         s_folder = RelativePath(folder);
@@ -52,6 +57,8 @@ namespace ntt
 
     script_id_t HotReloadLoad(const char *file, std::function<void()> onLoad)
     {
+        PROFILE_FUNCTION();
+
         auto watch = CreateScope<filewatch::FileWatch<std::string>>(
             JoinPath({s_folder, file}, FALSE).RawString(),
             [onLoad](const std::string &path, const filewatch::Event change_type)
@@ -80,20 +87,25 @@ namespace ntt
 
     script_object_id_t HotReloadCreateObject(script_id_t id)
     {
+        PROFILE_FUNCTION();
         return INVALID_OBJECT_ID;
     }
 
     void *HotReloadGetObject(script_object_id_t id)
     {
+        PROFILE_FUNCTION();
         return nullptr;
     }
 
     void HotReloadUnload(script_id_t id)
     {
+        PROFILE_FUNCTION();
     }
 
     void HotReloadShutdown()
     {
+        PROFILE_FUNCTION();
+
         for (auto &watch : s_watches)
         {
             watch.reset();

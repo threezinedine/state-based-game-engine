@@ -1,15 +1,20 @@
 #include <NTTEngine/application/script_system/scriptable.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::script
 {
     JSON &Scriptable::GetData()
     {
+        PROFILE_FUNCTION();
+
         auto data = GetComponent<DataComponent>();
         return data->data;
     }
 
     void Scriptable::Subscribe(event_code_t eventCode)
     {
+        PROFILE_FUNCTION();
+
         auto id = RegisterEvent(
             eventCode,
             std::bind(
@@ -23,6 +28,8 @@ namespace ntt::script
 
     void Scriptable::Delete()
     {
+        PROFILE_FUNCTION();
+
         if (m_deleted)
         {
             return;

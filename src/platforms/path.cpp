@@ -77,12 +77,6 @@ namespace ntt
 
     void OpenFile(const String &path, b8 append)
     {
-        if (!IsExist(path))
-        {
-            NTT_ENGINE_WARN("The path {} does not exist - create new",
-                            path.RawString());
-        }
-
         if (s_file != nullptr)
         {
             if (s_file->is_open())
@@ -106,7 +100,7 @@ namespace ntt
 
         if (!s_file->is_open())
         {
-            NTT_ENGINE_WARN("The file is not opened, nothing will be written");
+            NTT_ENGINE_TRACE("The file is not opened, nothing will be written");
             return;
         }
 

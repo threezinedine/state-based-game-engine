@@ -15,15 +15,18 @@ class GameController : public Script
 public:
     GameController(void *data)
     {
+        PROFILE_FUNCTION();
     }
 
     ~GameController()
     {
+        PROFILE_FUNCTION();
     }
 
 protected:
     void OnEnterImpl() override
     {
+        PROFILE_FUNCTION();
         GetData().Set<u16>("score", 0);
         GetData().Set<b8>("isPlaying", FALSE);
 
@@ -35,6 +38,7 @@ protected:
 
     void OnEvent(event_code_t code, void *sender, const EventContext &context) override
     {
+        PROFILE_FUNCTION();
         switch (code)
         {
         case NEW_PIPE_EVENT:
@@ -55,6 +59,7 @@ protected:
 
     void PlayAgain()
     {
+        PROFILE_FUNCTION();
         GetData().Set<u16>("score", 0);
         TriggerEvent(SCORE_CHANGED_EVENT, this, {0});
         GetData().Set<b8>("isPlaying", TRUE);
@@ -63,6 +68,7 @@ protected:
 
     void AddScore()
     {
+        PROFILE_FUNCTION();
         auto score = GetData().Get<u16>("score") + 1;
         GetData().Set<u16>("score", score);
 
@@ -80,6 +86,7 @@ protected:
 
     void AddNewPipe(position_t posX)
     {
+        PROFILE_FUNCTION();
         auto speed = GetSpeed(GetData().Get<u16>("score"));
         auto windowSize = GetWindowSize();
         auto config = GetConfiguration();

@@ -17,6 +17,7 @@ public:
 protected:
     void OnCollide(List<entity_id_t> others) override
     {
+        PROFILE_FUNCTION();
         PlayAudio(GetResourceID("hit"));
         TriggerEvent(GAME_OVER_EVENT);
     }
@@ -26,6 +27,7 @@ protected:
         void *sender,
         const EventContext &context) override
     {
+        PROFILE_FUNCTION();
         switch (eventCode)
         {
         case PLAY_AGAIN_EVENT:
@@ -39,6 +41,7 @@ protected:
 
     void StopBird()
     {
+        PROFILE_FUNCTION();
         SetComponentState<Mass>(FALSE);
         SetComponentState<Sprite>(FALSE);
         m_isPlaying = FALSE;
@@ -46,6 +49,7 @@ protected:
 
     void StartBird()
     {
+        PROFILE_FUNCTION();
         SetComponentState<Geometry>(TRUE);
         SetComponentState<Mass>(TRUE);
         SetComponentState<Sprite>(TRUE);
@@ -56,10 +60,12 @@ protected:
 
     void OnHover(HoveringContext &context) override
     {
+        PROFILE_FUNCTION();
     }
 
     void OnEnterImpl() override
     {
+        PROFILE_FUNCTION();
         StopBird();
         Subscribe(PLAY_AGAIN_EVENT);
         Subscribe(GAME_OVER_EVENT);
@@ -73,6 +79,7 @@ protected:
 
     void OnUpdateImpl(f32 delta) override
     {
+        PROFILE_FUNCTION();
         if (m_isPlaying)
         {
             if (CheckState(NTT_KEY_SPACE, NTT_PRESS))
@@ -101,6 +108,7 @@ protected:
 
     void OnExitImpl() override
     {
+        PROFILE_FUNCTION();
         NTT_APP_INFO("Yah, see you later!");
     }
 

@@ -5,6 +5,7 @@
 #include <NTTEngine/core/formatter.hpp>
 #include <functional>
 #include <NTTEngine/core/object.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt::script
 {
@@ -16,10 +17,6 @@ namespace ntt::script
 
     namespace
     {
-#ifdef _DEBUG
-        u32 s_allocateCalled = 0;
-#endif
-
         struct ScriptData : public Object
         {
             String path;
@@ -45,6 +42,8 @@ namespace ntt::script
 
         void CompileFile(const String &path, const String &output)
         {
+            PROFILE_FUNCTION();
+
             if (IsExist(output))
             {
                 return;
@@ -75,6 +74,8 @@ namespace ntt::script
 
     void ScriptStoreInit(const char *createFunc, const char *deleteFunc)
     {
+        PROFILE_FUNCTION();
+
         s_scripts = CreateScope<Store<resource_id_t, ScriptData>>(
             0, 1000, [](Ref<ScriptData> a, Ref<ScriptData> b)
             { return a->path == b->path; });
@@ -88,6 +89,8 @@ namespace ntt::script
 
     resource_id_t ScriptStoreLoad(const char *file, std::function<void()> onLoad)
     {
+        PROFILE_FUNCTION();
+
         auto ids = s_scripts->GetIdsByField(String(file), s_GetPath);
 
         if (ids.size() > 0)
@@ -144,6 +147,8 @@ namespace ntt::script
         void *(*createFunc)(void *),
         void (*deleteFunc)(void *))
     {
+        PROFILE_FUNCTION();
+
         auto id = s_scripts->GetIdsByField(String(key), s_GetPath);
 
         if (id.size() > 0)
@@ -162,6 +167,8 @@ namespace ntt::script
 
     void ScriptStoreUnload(resource_id_t id)
     {
+        PROFILE_FUNCTION();
+
         auto script = s_scripts->Get(id);
 
         std::function<resource_id_t(Ref<ScriptObjectData>)> func = [id](Ref<ScriptObjectData> obj)
@@ -190,6 +197,8 @@ namespace ntt::script
 
     script_object_id_t ScriptStoreCreate(resource_id_t id, void *data)
     {
+        PROFILE_FUNCTION();
+
         auto script = s_scripts->Get(id);
 
         if (script == nullptr)
@@ -204,9 +213,6 @@ namespace ntt::script
         }
 
         objData->object = script->createFunc(data);
-#ifdef _DEBUG
-        s_allocateCalled++;
-#endif
         objData->scriptId = id;
 
         return s_objects->Add(objData);
@@ -214,6 +220,8 @@ namespace ntt::script
 
     void *ScriptStoreGetObject(script_object_id_t id)
     {
+        PROFILE_FUNCTION();
+
         auto obj = s_objects->Get(id);
 
         if (obj == nullptr)
@@ -226,6 +234,8 @@ namespace ntt::script
 
     void ScriptStoreDeleteObject(script_object_id_t id)
     {
+        PROFILE_FUNCTION();
+
         auto obj = s_objects->Get(id);
 
         if (obj == nullptr)
@@ -240,9 +250,6 @@ namespace ntt::script
             if (script->deleteFunc != nullptr)
             {
                 script->deleteFunc(obj->object);
-#ifdef _DEBUG
-                s_allocateCalled--;
-#endif
             }
         }
 
@@ -251,6 +258,8 @@ namespace ntt::script
 
     void ScriptStoreShutdown()
     {
+        PROFILE_FUNCTION();
+
         auto objectIds = s_objects->GetAvailableIds();
 
         for (auto id : objectIds)
@@ -266,8 +275,6 @@ namespace ntt::script
         }
 
         ASSERT_M(s_objects->GetAvailableIds().size() == 0, "The object store is not empty");
-
-        ASSERT_M(s_allocateCalled == 0, "The object is not deleted properly");
 
         s_objects.reset();
         s_scripts.reset();

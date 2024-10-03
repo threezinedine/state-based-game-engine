@@ -91,6 +91,8 @@ namespace ntt::ecs
 
         void ResetEntitiesState()
         {
+            PROFILE_FUNCTION();
+
             s_DrawnEntities.clear();
             s_UpdatedEntities.clear();
 

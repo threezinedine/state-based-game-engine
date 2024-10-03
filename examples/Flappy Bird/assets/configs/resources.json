@@ -1,6 +1,15 @@
 {
 	"default": [
 		{
+			"name": "menu-btn",
+			"type": 0,
+			"relPath": "assets/images/ui/menu-btn.png",
+			"grid": {
+				"row": 9,
+				"col": 3
+			}
+		},
+		{
 			"name": "bird-controller",
 			"type": 2,
 			"relPath": "scripts/BirdController.cpp"
@@ -95,15 +104,6 @@
 			"name": "background",
 			"type": 0,
 			"relPath": "assets/images/game-objects/background-day.png"
-		},
-		{
-			"name": "menu-btn",
-			"type": 0,
-			"relPath": "assets/images/ui/menu-btn.png",
-			"grid": {
-				"row": 9,
-				"col": 3
-			}
 		},
 		{
 			"name": "wing",
