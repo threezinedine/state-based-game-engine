@@ -56,7 +56,6 @@ protected:
 
     void OnHover(HoveringContext &context) override
     {
-        NTT_APP_INFO("Bird is hovering!");
     }
 
     void OnEnterImpl() override

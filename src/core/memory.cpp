@@ -29,8 +29,6 @@ namespace ntt::memory
     namespace
     {
         b8 s_isInitialized = FALSE;
-
-        Dictionary<void *, PointerInfo> s_pointersInfo;
         u32 s_createdObjects = 0;
     }
 

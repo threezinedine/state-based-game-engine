@@ -4,6 +4,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/core/formatter.hpp>
 #include <functional>
+#include <NTTEngine/core/object.hpp>
 
 namespace ntt::script
 {
@@ -19,7 +20,7 @@ namespace ntt::script
         u32 s_allocateCalled = 0;
 #endif
 
-        struct ScriptData
+        struct ScriptData : public Object
         {
             String path;
             HMODULE module;
@@ -27,7 +28,7 @@ namespace ntt::script
             DeleteFuncType deleteFunc;
         };
 
-        struct ScriptObjectData
+        struct ScriptObjectData : public Object
         {
             void *object;
             std::function<void(void *)> deleteFunc;

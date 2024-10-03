@@ -3,29 +3,9 @@
 #include <NTTEngine/core/memory.hpp>
 #include <cstdarg>
 #include <cstring>
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/base.h>
 #include <cstdarg>
 #include <any>
 #include <vector>
-
-namespace fmt
-{
-    template <>
-    struct formatter<ntt::String>
-    {
-        constexpr auto parse(format_parse_context &ctx)
-        {
-            return ctx.begin();
-        }
-
-        auto format(const ntt::String &str, format_context &ctx) const
-        {
-            return format_to(ctx.out(), "{}", str.RawString());
-        }
-    };
-}
 
 namespace ntt::log
 {
@@ -65,11 +45,11 @@ namespace ntt::log
 
         if (strcmp(name, ENGINE_LOGGER_NAME) == 0)
         {
-            s_engineLogger = CREATE_SCOPE(Logger, name, level, type, format);
+            s_engineLogger = CreateScope<Logger>(name, level, type, format);
         }
         else // if (strcmp(name, APP_LOGGER_NAME) == 0)
         {
-            s_appLogger = CREATE_SCOPE(Logger, name, level, type, format);
+            s_appLogger = CreateScope<Logger>(name, level, type, format);
         }
     }
 

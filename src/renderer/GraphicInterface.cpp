@@ -14,6 +14,7 @@
 #include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
+#include <NTTEngine/core/object.hpp>
 
 #include "Raylib_GraphicAPI.hpp"
 #include "Fake_GraphicAPI.hpp"
@@ -38,7 +39,7 @@ namespace ntt::renderer
     /**
      * All the needed information for rendering the texture
      */
-    struct TextureInfo
+    struct TextureInfo : public Object
     {
         Texture2D texture; ///< The texture which is loaded
         Grid grid;         ///< The grid of the texture
@@ -162,7 +163,7 @@ namespace ntt::renderer
             return RESOURCE_ID_DEFAULT;
         }
 
-        auto textureInfo = CREATE_REF(TextureInfo, texture, grid, path);
+        auto textureInfo = CreateRef<TextureInfo>(texture, grid, path);
 
         textureInfo->frameWith = static_cast<f32>(texture.width) / grid.col;
         textureInfo->frameHeight = static_cast<f32>(texture.height) / grid.row;

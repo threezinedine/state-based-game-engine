@@ -10,6 +10,7 @@
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
+#include <NTTEngine/core/object.hpp>
 
 #include "audio_platforms.hpp"
 
@@ -22,7 +23,7 @@ namespace ntt::audio
 
 #define MAX_AUDIO 100
 
-    struct AudioInfo
+    struct AudioInfo : public Object
     {
         SOUND sound;
         String path;
@@ -125,7 +126,7 @@ namespace ntt::audio
 
         if (IS_LOADED_SUCCESS(sound))
         {
-            auto info = CREATE_REF(AudioInfo, sound, path);
+            auto info = CreateRef<AudioInfo>(sound, path);
             return s_audioStore.Add(info);
         }
         else

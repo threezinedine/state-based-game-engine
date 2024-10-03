@@ -9,6 +9,7 @@
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/renderer/Texture.hpp>
 #include <NTTEngine/renderer/Text.hpp>
+#include <NTTEngine/core/object.hpp>
 #include <cstring>
 
 namespace ntt::ecs
@@ -21,7 +22,7 @@ namespace ntt::ecs
     using component_id_t = entity_id_t;
 #define INVALID_UI_LAYER 255
 
-    struct SystemInfo
+    struct SystemInfo : public Object
     {
         String name;
         Ref<System> system;
@@ -172,8 +173,7 @@ namespace ntt::ecs
             return;
         }
 
-        auto systemId = s_systemsStore->Add(CREATE_REF(
-            SystemInfo,
+        auto systemId = s_systemsStore->Add(CreateRef<SystemInfo>(
             name,
             system,
             componentTypes,
@@ -291,7 +291,7 @@ namespace ntt::ecs
 
         components[typeid(DataComponent)] = CreateRef<DataComponent>();
 
-        auto entityId = s_entityStore->Add(CREATE_REF(EntityInfo, components));
+        auto entityId = s_entityStore->Add(CreateRef<EntityInfo>(components));
 
         components.ForEach(
             [&entityId](const std::type_index &,
