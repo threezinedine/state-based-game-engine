@@ -1,13 +1,14 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include "entity_info.hpp"
+#include "NTTEngine/core/object.hpp"
 
 namespace ntt::ecs
 {
     /**
      * Store all lifetime functionalitiy of a system.
      */
-    class System
+    class System : public Object
     {
     public:
         virtual ~System() = default;

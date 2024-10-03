@@ -2,13 +2,14 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/core/object.hpp>
 
 namespace ntt::script
 {
     using namespace ecs;
     using namespace event;
 
-    class Scriptable
+    class Scriptable : public Object
     {
     public:
         virtual ~Scriptable() = default;

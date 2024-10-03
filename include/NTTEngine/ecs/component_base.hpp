@@ -4,6 +4,7 @@
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/structures/string.hpp>
+#include <NTTEngine/core/object.hpp>
 
 namespace ntt::ecs
 {
@@ -22,7 +23,7 @@ namespace ntt::ecs
      * Component Base contains only the data, no logic, so the struct is used
      *      rather than class. Other component should inherit from this struct.
      */
-    struct ComponentBase
+    struct ComponentBase : public Object
     {
         entity_id_t entity_id; ///< Each time a component is created, then
                                ///< it must be attached to an entity.

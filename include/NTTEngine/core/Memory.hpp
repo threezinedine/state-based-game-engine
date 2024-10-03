@@ -27,16 +27,28 @@ namespace ntt::memory
      */
     void MemoryInit();
 
-    /**
-     * Store needed information for each pointer which is
-     *      created by the engine
-     */
-    void RegisterPointer(void *ptr, const PointerInfo &info);
+    // /**
+    //  * Store needed information for each pointer which is
+    //  *      created by the engine
+    //  */
+    // void RegisterPointer(void *ptr, const PointerInfo &info);
+
+    // /**
+    //  * Remove the information of the pointer if it is deleted
+    //  */
+    // void UnregisterPointer(void *ptr);
 
     /**
-     * Remove the information of the pointer if it is deleted
+     * The function which is called when a new object is created (should be used for
+     *      checking memory leaks)
      */
-    void UnregisterPointer(void *ptr);
+    void AllocateCalled();
+
+    /**
+     * The function which is called when an object is deleted (should be used for
+     *      checking memory leaks)
+     */
+    void DeallocateCalled();
 
     /**
      * The Scope pointer which can be owned by only 1 context,
@@ -114,3 +126,11 @@ namespace ntt::memory
      */
     void MemoryShutdown();
 } // namespace ntt
+
+#ifdef _DEBUG
+#define CREATE_NEW() AllocateCalled()
+#define DELETE_OBJ() DeallocateCalled()
+#else
+#define CREATE_NEW()
+#define DELETE_OBJ()
+#endif

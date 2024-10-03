@@ -6,10 +6,11 @@
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/structures/string.hpp>
 #include "component_base.hpp"
+#include <NTTEngine/core/object.hpp>
 
 namespace ntt::ecs
 {
-    struct EntityInfo
+    struct EntityInfo : public Object
     {
         Dictionary<std::type_index, Ref<ComponentBase>> components;
         b8 active = TRUE;

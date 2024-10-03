@@ -2,6 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/core/parser/json.hpp>
+#include <NTTEngine/core/object.hpp>
 
 namespace ntt
 {

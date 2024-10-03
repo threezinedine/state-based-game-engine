@@ -4,6 +4,7 @@
 #include <NTTEngine/defines.hpp>
 #include <fmt/core.h>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/core/assertion.hpp>
 
 #if defined(_DEBUG) && not defined(NTTENGINE_SHARED)
 #include "memplumber.h"
@@ -30,6 +31,7 @@ namespace ntt::memory
         b8 s_isInitialized = FALSE;
 
         Dictionary<void *, PointerInfo> s_pointersInfo;
+        u32 s_createdObjects = 0;
     }
 
     void MemoryInit()
@@ -41,6 +43,7 @@ namespace ntt::memory
         }
 
         s_isInitialized = TRUE;
+        s_createdObjects = 0;
     }
 
     void MemoryShutdown()
@@ -52,45 +55,69 @@ namespace ntt::memory
             return;
         }
 
+        ASSERT_M(s_createdObjects == 0,
+                 format("There are memory leaks in the engine: {} objects", s_createdObjects));
         s_isInitialized = FALSE;
     }
 
-    void RegisterPointer(void *ptr, const PointerInfo &info)
-    {
-        PROFILE_FUNCTION();
+    // void RegisterPointer(void *ptr, const PointerInfo &info)
+    // {
+    //     PROFILE_FUNCTION();
 
+    //     if (!s_isInitialized)
+    //     {
+    //         NTT_ENGINE_ERROR("The memory module is not initialized yet");
+    //         return;
+    //     }
+
+    //     if (s_pointersInfo.Contains(ptr))
+    //     {
+    //         NTT_ENGINE_WARN("The pointer is already registered");
+    //         return;
+    //     }
+
+    //     s_pointersInfo[ptr] = info;
+    // }
+
+    // void UnregisterPointer(void *ptr)
+    // {
+    //     PROFILE_FUNCTION();
+
+    //     if (!s_isInitialized)
+    //     {
+    //         NTT_ENGINE_ERROR("The memory module is not initialized yet");
+    //         return;
+    //     }
+
+    //     if (!s_pointersInfo.Contains(ptr))
+    //     {
+    //         NTT_ENGINE_WARN("The pointer is not registered");
+    //         return;
+    //     }
+
+    //     s_pointersInfo.erase(ptr);
+    // }
+
+    void AllocateCalled()
+    {
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The memory module is not initialized yet");
             return;
         }
 
-        if (s_pointersInfo.Contains(ptr))
-        {
-            NTT_ENGINE_WARN("The pointer is already registered");
-            return;
-        }
-
-        s_pointersInfo[ptr] = info;
+        s_createdObjects++;
     }
 
-    void UnregisterPointer(void *ptr)
+    void DeallocateCalled()
     {
-        PROFILE_FUNCTION();
-
         if (!s_isInitialized)
         {
             NTT_ENGINE_ERROR("The memory module is not initialized yet");
             return;
         }
 
-        if (!s_pointersInfo.Contains(ptr))
-        {
-            NTT_ENGINE_WARN("The pointer is not registered");
-            return;
-        }
-
-        s_pointersInfo.erase(ptr);
+        s_createdObjects--;
     }
 
 #if defined(_DEBUG) && not defined(NTTENGINE_SHARED)

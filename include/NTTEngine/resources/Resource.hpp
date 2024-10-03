@@ -1,6 +1,7 @@
 #pragma once
 #include "resource_common.h"
 #include <NTTEngine/core/memory.hpp>
+#include <NTTEngine/core/object.hpp>
 
 namespace ntt
 {
@@ -10,7 +11,7 @@ namespace ntt
      * Interfaces of all resources, all other resources must
      *      inherit from this interface.
      */
-    class Resource
+    class Resource : public Object
     {
     public:
         Resource();

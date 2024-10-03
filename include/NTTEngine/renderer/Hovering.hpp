@@ -1,6 +1,6 @@
 #pragma once
-
 #include "renderer.hpp"
+#include <NTTEngine/core/object.hpp>
 
 namespace ntt::renderer
 {
