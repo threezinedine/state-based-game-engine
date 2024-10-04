@@ -57,12 +57,34 @@ namespace ntt
     String RelativePath(const String &path);
 
     /**
+     * Substract the path with a certain base path
+     * If there is any error then the path (without substracting)
+     *      will be returned.
+     *
+     * @param path: The path of the file
+     * @param base: The base path
+     *
+     * @return the path after substracting
+     */
+    String SubtractPath(const String &path, const String &base);
+
+    /**
      * Checking whether the file/directory exists or not
      *
      * @param path: The path of the file/directory
      * @return true if the file/directory exists, else false
      */
     b8 IsExist(const String &path);
+
+    /**
+     * Copy a file from the source path to the destination path
+     * If any of the path is not exist then nothing will be copied
+     *      and the warning will be logged
+     *
+     * @param source: The source path of the file
+     * @param destination: The destination path of the file
+     */
+    void NTTCopyFile(const String &source, const String &destination);
 
     /**
      * Read the content from the file if that file does not exist

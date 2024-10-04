@@ -3,6 +3,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 
 namespace ntt
 {
@@ -17,81 +18,25 @@ namespace ntt
     class ScriptResource::Impl
     {
     public:
-        const String m_name = "ScriptResource";
-        String m_path;
+        String m_name = "ScriptResource";
+        String m_path = "";
+        String m_outputPath = "";
         resource_id_t m_scriptId = INVALID_SCRIPT_ID;
-        String m_tempPath;
-        String m_outputPath;
 
-        void GetTempPath()
+        void SetOutputPath()
         {
             PROFILE_FUNCTION();
 
-            m_tempPath = JoinPath({
-                                      CurrentDirectory(),
-                                      "temp",
-                                      GetFileName(m_path),
-                                  },
-                                  FALSE);
+            String outputFile = GetFileName(m_path);
+            outputFile.Replace(".cpp", ".dll");
+
+            m_outputPath = JoinPath(
+                {CurrentDirectory(),
+                 outputFile},
+                FALSE);
         }
 
-        void GetOutputPath()
-        {
-            PROFILE_FUNCTION();
-
-            String output = GetFileName(m_path);
-            output.Replace(".cpp", ".dll");
-            m_outputPath = JoinPath({
-                                        CurrentDirectory(),
-                                        output,
-                                    },
-                                    FALSE);
-        }
-
-        void CreateTempFolder()
-        {
-            PROFILE_FUNCTION();
-
-            auto tempPath = JoinPath({CurrentDirectory(), "temp"}, FALSE);
-            CreateFolder(tempPath);
-        }
-
-        void Copy()
-        {
-            PROFILE_FUNCTION();
-
-            try
-            {
-                auto content = ReadFile(m_path);
-                OpenFile(m_tempPath);
-                Write(content);
-                CloseFile();
-            }
-            catch (const std::exception &e)
-            {
-                NTT_ENGINE_FATAL(
-                    "The file {} cannot be copied with error {}",
-                    m_path,
-                    e.what());
-            }
-        }
-
-        b8 FileChanged()
-        {
-            PROFILE_FUNCTION();
-
-            if (!IsExist(m_tempPath) || !IsExist(m_outputPath))
-            {
-                return true;
-            }
-
-            auto fileContent = ReadFile(m_path);
-            auto tempContent = ReadFile(m_tempPath);
-
-            return fileContent != tempContent;
-        }
-
-        void CompileFile()
+        void CompileFile(const String &file)
         {
             PROFILE_FUNCTION();
 
@@ -102,7 +47,7 @@ namespace ntt
                 JoinPath({GetStoredPath(PathType::NTT_ENGINE), "include"}, FALSE),
                 // "C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird",
                 GetStoredPath(PathType::NTT_SOURCE),
-                m_path,
+                file,
                 // "C:/Users/Acer/Games Dev/state-based-game-engine/build");
                 GetStoredPath(PathType::NTT_BINARY));
 
@@ -115,11 +60,9 @@ namespace ntt
             {
                 NTT_ENGINE_FATAL(
                     "The file {} cannot be compiled with error {}",
-                    m_path,
+                    file,
                     e.what());
             }
-
-            Copy();
         }
     };
 
@@ -128,10 +71,14 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
+        THIS(m_name) = info.name;
         THIS(m_path) = info.path;
-        THIS(CreateTempFolder());
-        THIS(GetTempPath());
-        THIS(GetOutputPath());
+        THIS(SetOutputPath());
+
+        HotReloadRegister(
+            THIS(m_path),
+            [this](const String &file)
+            { THIS(CompileFile(file)); });
     }
 
     ScriptResource::~ScriptResource()
@@ -148,17 +95,7 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        if (!IsExist(THIS(m_tempPath)))
-        {
-            THIS(CompileFile());
-        }
-
-        if (THIS(FileChanged()))
-        {
-            THIS(CompileFile());
-        }
-
-        THIS(m_scriptId) = ScriptStoreLoad(THIS(m_path).RawString().c_str(), []() {});
+        THIS(m_scriptId) = ScriptStoreLoad(THIS(m_outputPath).RawString().c_str(), []() {});
         return THIS(m_scriptId);
     }
 

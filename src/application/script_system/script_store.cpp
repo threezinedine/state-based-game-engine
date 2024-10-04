@@ -67,12 +67,7 @@ namespace ntt::script
             return ids[0];
         }
 
-        String outputFile = JoinPath({CurrentDirectory(),
-                                      GetFileName(file, false)},
-                                     FALSE);
-        outputFile.Replace(".cpp", ".dll");
-
-        if (!IsExist(outputFile))
+        if (!IsExist(file))
         {
             return INVALID_SCRIPT_ID;
         }
@@ -80,15 +75,15 @@ namespace ntt::script
         Ref<ScriptData> data = CreateRef<ScriptData>();
         try
         {
-            data->module = LoadLibraryA(outputFile.RawString().c_str());
+            data->module = LoadLibraryA(file);
 
             data->createFunc = reinterpret_cast<CreateFuncType>(
                 GetProcAddress(data->module, s_createFunc.RawString().c_str()));
 
             data->deleteFunc = reinterpret_cast<DeleteFuncType>(
                 GetProcAddress(data->module, s_deleteFunc.RawString().c_str()));
-            NTT_ENGINE_TRACE("The module {} is loaded - output: {}",
-                             GetFileName(file), outputFile);
+            NTT_ENGINE_TRACE("The module {} is loaded",
+                             GetFileName(file));
         }
         catch (const std::exception &e)
         {

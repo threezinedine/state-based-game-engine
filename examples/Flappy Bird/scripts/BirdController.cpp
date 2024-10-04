@@ -61,6 +61,7 @@ protected:
     void OnHover(HoveringContext &context) override
     {
         PROFILE_FUNCTION();
+        NTT_ENGINE_DEBUG("The bird is hovered");
     }
 
     void OnEnterImpl() override
@@ -109,7 +110,6 @@ protected:
     void OnExitImpl() override
     {
         PROFILE_FUNCTION();
-        NTT_APP_INFO("Yah, see you later!");
     }
 
 private:

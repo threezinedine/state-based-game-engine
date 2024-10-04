@@ -48,22 +48,11 @@ namespace ntt::script
             return;
         }
 
-        // if (script->ins == nullptr)
-        // {
-        //     NTT_ENGINE_WARN("The Script instance is not found");
-        //     return;
-        // }
-
-        // script->ins->SetEntity(entity_id);
-        // script->ins->OnEnter();
-
         if (script->scriptId == INVALID_RESOURCE_ID)
         {
             NTT_ENGINE_TRACE("The Script resource id is not found");
             return;
         }
-
-        // script_object_id_t id = script->id;
 
         script->objId = ScriptStoreCreate(script->scriptId, nullptr);
         auto obj = GET_SCRIPT(Script, script->objId);

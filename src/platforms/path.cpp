@@ -11,9 +11,11 @@ namespace ntt
     using namespace memory;
     using namespace log;
 
+    namespace fs = ::std::filesystem;
+
     namespace
     {
-        String s_sourcePath = ::std::filesystem::current_path()
+        String s_sourcePath = fs::current_path()
                                   .make_preferred()
                                   .string();
 
@@ -29,7 +31,7 @@ namespace ntt
             NTT_ENGINE_WARN("The path {} does not exist", path);
             return;
         }
-        s_sourcePath = ::std::filesystem::absolute(path.RawString())
+        s_sourcePath = fs::absolute(path.RawString())
                            .make_preferred()
                            .string();
     }
@@ -59,7 +61,7 @@ namespace ntt
             return;
         }
 
-        s_storedPaths[static_cast<u32>(type)] = ::std::filesystem::absolute(path.RawString())
+        s_storedPaths[static_cast<u32>(type)] = fs::absolute(path.RawString())
                                                     .make_preferred()
                                                     .string();
     }
@@ -69,9 +71,61 @@ namespace ntt
         return JoinPath({s_sourcePath, path}, false);
     }
 
+    String SubtractPath(const String &path, const String &base)
+    {
+        try
+        {
+            auto sysPath = fs::path(path.RawString()).make_preferred();
+            auto sysBase = fs::path(base.RawString()).make_preferred();
+
+            return fs::relative(sysPath, sysBase)
+                .make_preferred()
+                .string();
+        }
+        catch (const ::std::exception &e)
+        {
+            return path;
+        }
+    }
+
     b8 IsExist(const String &path)
     {
-        return ::std::filesystem::exists(path.RawString());
+        fs::path sysPath = fs::path(path.RawString()).make_preferred();
+        return fs::exists(sysPath);
+    }
+
+    void NTTCopyFile(const String &source, const String &destination)
+    {
+        if (!IsExist(source))
+        {
+            NTT_ENGINE_WARN("The source {} does not exist", source, destination);
+            return;
+        }
+
+        fs::path srcPath = fs::path(source.RawString()).make_preferred();
+        fs::path destPath = fs::path(destination.RawString())
+                                .make_preferred();
+
+        fs::path destFolder = fs::path(GetFileFolder(destination).RawString())
+                                  .make_preferred();
+
+        try
+        {
+            if (!fs::exists(destFolder))
+            {
+                fs::create_directories(destFolder);
+            }
+
+            if (fs::exists(destPath))
+            {
+                fs::remove(destPath);
+            }
+            fs::copy(srcPath, destPath);
+        }
+        catch (const ::std::exception &e)
+        {
+            NTT_ENGINE_FATAL("The file {} cannot be copied with error {}", source, e.what());
+        }
     }
 
     String ReadFile(const String &path)
@@ -152,15 +206,15 @@ namespace ntt
 
     String GetFileName(const String &path, b8 containBase)
     {
-        auto sysPath = ::std::filesystem::path(path.RawString()).make_preferred();
+        auto sysPath = fs::path(path.RawString()).make_preferred();
         auto sysPathStr = String(sysPath.string());
 
         if (containBase)
         {
             if (sysPathStr.Contains(s_sourcePath))
             {
-                auto basePath = ::std::filesystem::path(s_sourcePath.RawString()).make_preferred();
-                return ::std::filesystem::relative(sysPath, basePath)
+                auto basePath = fs::path(s_sourcePath.RawString()).make_preferred();
+                return fs::relative(sysPath, basePath)
                     .make_preferred()
                     .string();
             }
@@ -171,7 +225,7 @@ namespace ntt
 
     String GetFileFolder(const String &file)
     {
-        auto sysPath = ::std::filesystem ::path(file.RawString())
+        auto sysPath = fs ::path(file.RawString())
                            .make_preferred()
                            .parent_path();
 
@@ -180,7 +234,7 @@ namespace ntt
 
     String CurrentDirectory()
     {
-        return ::std::filesystem::current_path()
+        return fs::current_path()
             .make_preferred()
             .string();
     }
@@ -202,6 +256,6 @@ namespace ntt
                 }
                 path += element;
             } });
-        return ::std::filesystem::path(path.RawString()).make_preferred().string();
+        return fs::path(path.RawString()).make_preferred().string();
     }
 } // namespace ntt

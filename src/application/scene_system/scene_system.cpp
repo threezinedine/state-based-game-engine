@@ -88,7 +88,6 @@ namespace ntt
         }
 
         s_currentScene = sceneName;
-        // ChangeScene(s_currentScene);
 
         EventContext context;
         if (s_currentScene.Length() > 15)
