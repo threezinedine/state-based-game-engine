@@ -5,7 +5,6 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/ecs/data_com.hpp>
 #include <NTTEngine/core/profiling.hpp>
-#include <NTTEngine/renderer/RenderSystem.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/renderer/Texture.hpp>
 #include <NTTEngine/renderer/Text.hpp>
@@ -541,10 +540,6 @@ namespace ntt::ecs
         {
             auto system = s_systemsStore->Get(systemId);
             auto entities = system->entities;
-
-            auto isRenderSystem =
-                ::std::dynamic_pointer_cast<RenderSystem>(system->system) ||
-                ::std::dynamic_pointer_cast<TextRenderSystem>(system->system);
 
             for (auto entityId : system->entities)
             {

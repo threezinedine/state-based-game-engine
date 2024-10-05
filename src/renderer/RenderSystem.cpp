@@ -7,6 +7,7 @@
 #include <NTTEngine/core/assertion.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/renderer/Text.hpp>
 
 namespace ntt::renderer
 {
@@ -41,6 +42,11 @@ namespace ntt::renderer
         auto geo = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, Texture);
 
+        if (texture == nullptr)
+        {
+            return;
+        }
+
         auto size = ValidateSize(texture->id,
                                  {{geo->x, geo->y},
                                   {geo->width, geo->height},
@@ -55,31 +61,46 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
         auto geo = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, Texture);
+        auto text = ECS_GET_COMPONENT(id, Text);
+
+        RectContext context;
+        Grid cell;
+        auto drawContext = DrawContext();
 
         auto windowSize = GetWindowSize();
 
-        RectContext context;
-        context.position = {geo->x, geo->y};
-        context.size = {geo->width, geo->height};
-        context.rotate = geo->rotation;
-
-        Grid cell;
-        cell.row = texture->rowIndex;
-        cell.col = texture->colIndex;
-
         // check if the texture is in the window or not
         // if not, then don't draw it
-        if (geo->x + geo->width / 2 < 0 || geo->x - geo->width / 2 > windowSize.width || geo->y + geo->height / 2 < 0 || geo->y - geo->height / 2 > windowSize.height)
+        if (geo->x + geo->width / 2 < 0 ||
+            geo->x - geo->width / 2 > windowSize.width ||
+            geo->y + geo->height / 2 < 0 ||
+            geo->y - geo->height / 2 > windowSize.height)
         {
             return;
         }
 
-        auto drawContext = DrawContext();
-        drawContext.entity_id = id;
-        drawContext.priority = texture->priority;
-        drawContext.tooltip = texture->tooltip;
+        if (texture != nullptr)
+        {
+            context.position = {geo->x, geo->y};
+            context.size = {geo->width, geo->height};
+            context.rotate = geo->rotation;
 
-        DrawTexture(texture->id, context, cell, drawContext);
+            cell.row = texture->rowIndex;
+            cell.col = texture->colIndex;
+
+            drawContext.entity_id = id;
+            drawContext.priority = texture->priority;
+            drawContext.tooltip = texture->tooltip;
+            DrawTexture(texture->id, context, cell, drawContext);
+        }
+        else if (text != nullptr)
+        {
+            drawContext.priority = text->priority;
+            drawContext.fontSize = text->fontSize;
+            drawContext.color = text->color;
+
+            DrawText(text->text, {geo->x, geo->y}, drawContext);
+        }
     }
 
     void RenderSystem::ShutdownEntity(entity_id_t id)

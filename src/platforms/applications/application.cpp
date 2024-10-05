@@ -82,13 +82,7 @@ namespace ntt
         ECSRegister(
             "Render System",
             CreateRef<RenderSystem>(),
-            {typeid(Geometry), typeid(Texture)},
-            TRUE);
-
-        ECSRegister(
-            "Text Render System",
-            CreateRef<TextRenderSystem>(),
-            {typeid(Geometry), typeid(Text)},
+            {typeid(Geometry)},
             TRUE);
 
         ECSRegister(

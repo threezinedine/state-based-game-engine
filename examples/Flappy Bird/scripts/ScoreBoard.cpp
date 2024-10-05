@@ -78,11 +78,11 @@ protected:
 
         if (score < 100)
         {
-            ECSSetComponentActive(m_hunderedNumber, typeid(Texture), FALSE);
+            ECSSetComponentActive(m_hunderedNumber, typeid(Geometry), FALSE);
         }
         else
         {
-            ECSSetComponentActive(m_hunderedNumber, typeid(Texture), TRUE);
+            ECSSetComponentActive(m_hunderedNumber, typeid(Geometry), TRUE);
 
             hundredGeo->x = geo->x;
             tenGeo->x = geo->x + hundredGeo->width + SCORE_DIGIT_GAP;
@@ -95,14 +95,14 @@ protected:
 
         if (score < 10)
         {
-            ECSSetComponentActive(m_tenNumber, typeid(Texture), FALSE);
+            ECSSetComponentActive(m_tenNumber, typeid(Geometry), FALSE);
 
             oneGeo->x = geo->x;
             oneText->colIndex = score;
         }
         else
         {
-            ECSSetComponentActive(m_tenNumber, typeid(Texture), TRUE);
+            ECSSetComponentActive(m_tenNumber, typeid(Geometry), TRUE);
         }
 
         if (score < 100 && score >= 10)
