@@ -35,8 +35,12 @@ namespace ntt
      *          the scene name of the resources.json file (or no resources will be loaded)
      *      - The first pair of the list will be the default scene
      *      - If the list has no pair, the warning will be logged the game can not run.
+     *
+     * @param onSceneChanged: The function which will be called when the scene is changed
+     *      - If the function is not set, nothing will be called
      */
-    void SceneInit(List<std::pair<String, SceneContext>> scenes);
+    void SceneInit(List<std::pair<String, SceneContext>> scenes,
+                   std::function<void(const String &)> onSceneChanged = nullptr);
 
     /**
      * Running the scene with name attribute, all the resources which are related to the scene

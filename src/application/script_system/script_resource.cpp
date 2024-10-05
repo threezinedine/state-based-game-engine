@@ -19,7 +19,6 @@ namespace ntt
     class ScriptResource::Impl
     {
     public:
-        String m_name = "ScriptResource";
         String m_path = "";
         String m_outputPath = "";
         resource_id_t m_scriptId = INVALID_SCRIPT_ID;
@@ -68,11 +67,10 @@ namespace ntt
     };
 
     ScriptResource::ScriptResource(const ResourceInfo &info)
-        : m_impl(CreateScope<Impl>())
+        : Resource(info), m_impl(CreateScope<Impl>())
     {
         PROFILE_FUNCTION();
 
-        THIS(m_name) = info.name;
         THIS(m_path) = info.path;
         THIS(SetOutputPath());
 
@@ -90,11 +88,6 @@ namespace ntt
     ScriptResource::~ScriptResource()
     {
         PROFILE_FUNCTION();
-    }
-
-    const String &ScriptResource::GetName() const
-    {
-        return THIS(m_name);
     }
 
     resource_id_t ScriptResource::LoadImpl()

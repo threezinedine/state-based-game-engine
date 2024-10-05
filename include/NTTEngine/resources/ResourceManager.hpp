@@ -30,6 +30,12 @@ namespace ntt
     void RegisterResource(const String &sceneName, const ResourceInfo &info);
 
     /**
+     * Starting the resource manager, now all DEFAULT resources will be loadded,
+     *     and the ChangeScene function can be called.
+     */
+    void ResourceStart();
+
+    /**
      * Retrieve the resource id from the name of that resource.
      * If the resource is not found, the INVALID_RESOURCE_ID will
      *      be returned.
@@ -42,6 +48,8 @@ namespace ntt
      * When new scene is loaded, all resources which are not
      *      default resources will be unloaded, and the needed
      *      resource of the new scene will be loaded.
+     *
+     * Must be called after the ResourceStart function.
      *
      * @param sceneName The name of the new scene. If the scene
      *      does not found, the the warning will be logged and

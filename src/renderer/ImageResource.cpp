@@ -11,7 +11,6 @@ namespace ntt::renderer
     {
     public:
         String path;
-        String name;
         JSON additionalInfo;
 
         b8 isLoaded = FALSE;
@@ -19,23 +18,17 @@ namespace ntt::renderer
     };
 
     ImageResource::ImageResource(const ResourceInfo &info)
+        : Resource(info)
     {
         PROFILE_FUNCTION();
         m_Impl = CreateScope<Impl>();
         m_Impl->path = info.path;
         m_Impl->additionalInfo = info.addintionalInfo;
-        m_Impl->name = info.name;
     }
 
     ImageResource::~ImageResource()
     {
         PROFILE_FUNCTION();
-    }
-
-    const String &ImageResource::GetName() const
-    {
-        PROFILE_FUNCTION();
-        return m_Impl->name;
     }
 
     resource_id_t ImageResource::LoadImpl()

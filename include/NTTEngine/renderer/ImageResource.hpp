@@ -12,8 +12,6 @@ namespace ntt::renderer
         ImageResource(const ResourceInfo &info);
         ~ImageResource() override;
 
-        const String &GetName() const override;
-
     protected:
         resource_id_t LoadImpl() override;
         void UnloadImpl() override;

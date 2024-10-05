@@ -41,6 +41,8 @@ namespace ntt
         //      The key is the resource name.
         Dictionary<String, resource_id_t> s_defaultResourcesDict;
 
+        b8 s_start = FALSE;
+
         std::vector<Scope<Resource>> s_defaultResourcesObjects;
 #define EMPTY_SCENE ""
         String s_currentScene = EMPTY_SCENE;
@@ -95,6 +97,7 @@ namespace ntt
         s_currentScene = EMPTY_SCENE;
 
         s_initialized = TRUE;
+        s_start = FALSE;
 
         RegisterEvent(NTT_SCENE_CHANGED, SceneChange);
     }
@@ -135,7 +138,11 @@ namespace ntt
                 return;
             }
 
-            s_defaultResourcesDict[info.name] = resource->Load();
+            if (s_start)
+            {
+                s_defaultResourcesDict[info.name] = resource->Load();
+            }
+
             s_defaultResourcesObjects.push_back(std::move(resource));
         }
         else
@@ -202,12 +209,41 @@ namespace ntt
         }
     }
 
+    void ResourceStart()
+    {
+        PROFILE_FUNCTION();
+        if (!s_initialized)
+        {
+            NTT_ENGINE_WARN("Resource manager is not initialized.");
+            return;
+        }
+
+        if (s_start)
+        {
+            NTT_ENGINE_WARN("Resource manager is already started.");
+            return;
+        }
+
+        s_start = TRUE;
+
+        for (auto &resource : s_defaultResourcesObjects)
+        {
+            s_defaultResourcesDict[resource->GetName()] = resource->Load();
+        }
+    }
+
     void ChangeScene(const String &sceneName)
     {
         PROFILE_FUNCTION();
         if (!s_initialized)
         {
             NTT_ENGINE_WARN("Resource manager is not initialized.");
+            return;
+        }
+
+        if (!s_start)
+        {
+            NTT_ENGINE_WARN("Resource manager is not started.");
             return;
         }
 

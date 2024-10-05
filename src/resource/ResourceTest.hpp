@@ -15,12 +15,6 @@ namespace ntt
 
         virtual ~ResourceTest() override;
 
-        inline const String &GetName() const override
-        {
-            static String name = "ResourceTest";
-            return name;
-        }
-
         u8 loadCalls = 0;
         u8 unloadCalls = 0;
         resource_id_t id = 0;

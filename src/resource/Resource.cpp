@@ -12,17 +12,27 @@ namespace ntt
     {
     public:
         resource_id_t id;
+        String name;
     };
 
-    Resource::Resource()
+    Resource::Resource(const ResourceInfo &info)
+        : m_impl(CreateScope<Impl>())
     {
         PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
+
+        m_impl->name = info.name;
     }
 
     Resource::~Resource()
     {
         PROFILE_FUNCTION();
+    }
+
+    const String &Resource::GetName() const
+    {
+        PROFILE_FUNCTION();
+        return m_impl->name;
     }
 
     resource_id_t Resource::Load()

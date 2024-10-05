@@ -5,7 +5,7 @@ namespace ntt
     Dictionary<String, ResourceTest *> ResourceTest::s_resources;
 
     ResourceTest::ResourceTest(const ResourceInfo &info)
-        : Resource()
+        : Resource(info)
     {
         s_resources[info.name] = this;
     }

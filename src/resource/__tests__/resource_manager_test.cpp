@@ -43,6 +43,8 @@ TEST_F(ResourceManagerTest, TestNotChangeScene)
                 {}
             )")});
 
+    ResourceStart();
+
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
 
     ResourceShutdown();
@@ -60,6 +62,8 @@ TEST_F(ResourceManagerTest, TestRegisterResource)
             JSON(R"(
                 {}
             )")});
+
+    ResourceStart();
 
     EXPECT_EQ(GET_LOAD_CALL("test"), 0);
 
@@ -82,6 +86,8 @@ TEST_F(ResourceManagerTest, RegisterAtDefaultScene)
             JSON(R"(
                 {}
             )")});
+
+    ResourceStart();
 
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
 
@@ -124,6 +130,8 @@ TEST_F(ResourceManagerTest, SceneChangingTest)
                 ]
             }
         )"));
+
+    ResourceStart();
 
     EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 0);

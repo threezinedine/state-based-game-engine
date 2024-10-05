@@ -68,8 +68,6 @@ namespace ntt
         InputInit();
         AudioInit();
 
-        CREATE_WINDOW(screenWidth, screenHeight, title);
-
         String resourceConfig = ReadFile(RelativePath("assets/configs/resources.json"));
         if (resourceConfig == "")
         {
@@ -77,6 +75,9 @@ namespace ntt
         }
 
         ResourceLoadConfig(JSON(resourceConfig));
+
+        CREATE_WINDOW(screenWidth, screenHeight, title);
+        ResourceStart();
 
         ECSInit();
         ECSRegister(

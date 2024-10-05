@@ -16,6 +16,7 @@ namespace ntt
         List<entity_id_t> s_entities;
 
         String s_currentScene = "";
+        std::function<void(const String &)> s_onSceneChanged = nullptr;
 
         void CreateEntity(event_code_t code, void *sender, const EventContext &context)
         {
@@ -40,7 +41,8 @@ namespace ntt
         }
     } // namespace
 
-    void SceneInit(List<std::pair<String, SceneContext>> scenes)
+    void SceneInit(List<std::pair<String, SceneContext>> scenes,
+                   std::function<void(const String &)> onSceneChanged)
     {
         PROFILE_FUNCTION();
         if (scenes.size() == 0)
@@ -48,6 +50,8 @@ namespace ntt
             NTT_ENGINE_ERROR("No scene is found, the game can not run.");
             return;
         }
+
+        s_onSceneChanged = onSceneChanged;
 
         RegisterEvent(NTT_ENTITY_CREATED, CreateEntity);
         RegisterEvent(NTT_ENTITY_DESTROYED, DeleteEntity);
@@ -95,19 +99,12 @@ namespace ntt
         s_currentScene = sceneName;
 
         EventContext context;
-        if (s_currentScene.Length() > 15)
-        {
-            memcpy(context.u8_data, s_currentScene.RawString().c_str(), 15);
-            context.u8_data[15] = '\0';
-        }
-        else
-        {
-            memcpy(
-                context.u8_data,
-                s_currentScene.RawString().c_str(),
-                s_currentScene.Length() + 1);
-        }
         TriggerEvent(NTT_SCENE_CHANGED, nullptr, context);
+        if (s_onSceneChanged != nullptr)
+        {
+            s_onSceneChanged(sceneName);
+        }
+
         if (s_scenes[s_currentScene].createFunc != nullptr)
         {
             s_scenes[s_currentScene].createFunc();

@@ -12,8 +12,6 @@ namespace ntt::audio
         AudioResource(const ResourceInfo &info);
         ~AudioResource();
 
-        const String &GetName() const override;
-
     protected:
         resource_id_t LoadImpl() override;
         void UnloadImpl() override;

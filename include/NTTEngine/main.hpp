@@ -25,7 +25,7 @@ int main()
     NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
     ntt::Phrases phrases = {
         []()
-        { Begin(); ECSBeginLayer(GAME_LAYER) ;SceneInit(GetSceneFuncs()); },
+        { Begin(); ECSBeginLayer(GAME_LAYER) ;SceneInit(GetSceneFuncs(), ChangeScene); },
         MainLoop,
         []()
         { SceneShutdown(); Close(); }};

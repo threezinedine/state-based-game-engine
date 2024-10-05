@@ -12,8 +12,6 @@ namespace ntt
         ScriptResource(const ResourceInfo &info);
         ~ScriptResource();
 
-        const String &GetName() const override;
-
     protected:
         resource_id_t LoadImpl() override;
         void UnloadImpl() override;

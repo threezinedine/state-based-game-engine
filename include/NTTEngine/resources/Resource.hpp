@@ -14,10 +14,10 @@ namespace ntt
     class Resource : public Object
     {
     public:
-        Resource();
+        Resource(const ResourceInfo &info);
         virtual ~Resource();
 
-        virtual const String &GetName() const = 0;
+        const String &GetName() const;
 
         /**
          * Actually load the resource into the memory

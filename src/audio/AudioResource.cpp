@@ -7,7 +7,6 @@ namespace ntt::audio
     class AudioResource::Impl
     {
     public:
-        String name;
         String path;
         JSON additionalInfo;
 
@@ -19,11 +18,11 @@ namespace ntt::audio
     };
 
     AudioResource::AudioResource(const ResourceInfo &info)
+        : Resource(info)
     {
         PROFILE_FUNCTION();
         m_Impl = CreateScope<Impl>();
         m_Impl->path = info.path;
-        m_Impl->name = info.name;
         m_Impl->additionalInfo = info.addintionalInfo;
 
         m_Impl->forever = info.addintionalInfo.Get<b8>("forever", m_Impl->forever);
@@ -34,12 +33,6 @@ namespace ntt::audio
     AudioResource::~AudioResource()
     {
         PROFILE_FUNCTION();
-    }
-
-    const String &AudioResource::GetName() const
-    {
-        PROFILE_FUNCTION();
-        return m_Impl->name;
     }
 
     resource_id_t AudioResource::LoadImpl()
