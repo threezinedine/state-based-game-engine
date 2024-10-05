@@ -21,7 +21,6 @@
 #include <NTTEngine/application/script_system/native_script.hpp>
 #include <NTTEngine/application/state_system/state_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
-#include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/application/script_system/script_system.hpp>
 
@@ -35,7 +34,6 @@ namespace ntt
     using namespace ecs;
     using namespace physics;
     using namespace script;
-    using namespace debugging;
 
     namespace
     {
@@ -57,7 +55,6 @@ namespace ntt
         MemoryInit();
         HotReloadInit();
         ScriptStoreInit("CreateInstance", "DeleteInstance");
-        DebugInit();
 
         s_windowSize.width = static_cast<size_t>(screenWidth);
         s_windowSize.height = static_cast<size_t>(screenHeight);
@@ -206,7 +203,6 @@ namespace ntt
         CLOSE_WINDOW();
         NTT_ENGINE_INFO("The application is closed.");
 
-        DebugShutdown();
         ScriptStoreShutdown();
         HotReloadInit();
         MemoryShutdown();

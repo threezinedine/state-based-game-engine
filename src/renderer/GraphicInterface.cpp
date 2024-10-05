@@ -11,7 +11,6 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/platforms/application.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
-#include <NTTEngine/debugging/debugging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/core/object.hpp>
@@ -26,7 +25,6 @@ namespace ntt::renderer
     using namespace dev::store;
     using namespace ecs;
     using namespace input;
-    using namespace debugging;
     using namespace event;
 
 #define TEXTURE_MAX 1000
@@ -404,7 +402,7 @@ namespace ntt::renderer
 
                         if (info.tooltip != "" &&
                             i == highestPriority &&
-                            !DebugIsStopped())
+                            i < MAX_PRIORITIES - LAYER_PRIORITY_RANGE)
                         {
                             auto windowSize = GetWindowSize();
 
@@ -449,24 +447,24 @@ namespace ntt::renderer
         }
 
         // When the debugging mode is on, then the highest hovered texture will be tracked
-        if (DebugIsStopped())
-        {
-            if (hoveredEntityId != INVALID_ENTITY_ID)
-            {
-                s_graphicAPI->DrawRectanglePro(context.position.x,
-                                               context.position.y,
-                                               context.size.width,
-                                               context.size.height,
-                                               context.rotate);
+        // if (DebugIsStopped())
+        // {
+        //     if (hoveredEntityId != INVALID_ENTITY_ID)
+        //     {
+        //         s_graphicAPI->DrawRectanglePro(context.position.x,
+        //                                        context.position.y,
+        //                                        context.size.width,
+        //                                        context.size.height,
+        //                                        context.rotate);
 
-                if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
-                {
-                    EventContext context;
-                    context.u32_data[0] = hoveredEntityId;
-                    TriggerEvent(NTT_DEBUG_CHOOSE_ENTITY, nullptr, context);
-                }
-            }
-        }
+        //         if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
+        //         {
+        //             EventContext context;
+        //             context.u32_data[0] = hoveredEntityId;
+        //             TriggerEvent(NTT_DEBUG_CHOOSE_ENTITY, nullptr, context);
+        //         }
+        //     }
+        // }
     }
 
     const List<entity_id_t> &GetHoveredTexture()

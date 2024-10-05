@@ -196,20 +196,9 @@ void Begin()
 
 void MainLoop(f32 delta)
 {
-    if (CheckState(NTT_KEY_D, NTT_PRESS))
-    {
-        // NTT_APP_DEBUG("The key D is pressed");
-        DebugBreak();
-    }
-
     if (CheckState(NTT_KEY_R, NTT_PRESS))
     {
         SceneReload();
-    }
-
-    if (CheckState(NTT_KEY_C, NTT_PRESS))
-    {
-        NextBreakpoint();
     }
 }
 
