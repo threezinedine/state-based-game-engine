@@ -201,6 +201,11 @@ void MainLoop(f32 delta)
         // NTT_APP_DEBUG("The key D is pressed");
         DebugBreak();
     }
+
+    if (CheckState(NTT_KEY_R, NTT_PRESS))
+    {
+        SceneOpen("game", TRUE);
+    }
 }
 
 void Close()

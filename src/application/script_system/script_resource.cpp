@@ -78,7 +78,9 @@ namespace ntt
         HotReloadRegister(
             THIS(m_path),
             [this](const String &file)
-            { THIS(CompileFile(file)); });
+            {
+                THIS(CompileFile(file));
+            });
     }
 
     ScriptResource::~ScriptResource()

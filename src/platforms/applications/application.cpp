@@ -56,6 +56,7 @@ namespace ntt
         s_phrases = phrases;
 
         MemoryInit();
+        HotReloadInit();
         ScriptStoreInit("CreateInstance", "DeleteInstance");
         DebugInit();
 
@@ -288,6 +289,7 @@ namespace ntt
 
         DebugShutdown();
         ScriptStoreShutdown();
+        HotReloadInit();
         MemoryShutdown();
     }
 } // namespace ntt

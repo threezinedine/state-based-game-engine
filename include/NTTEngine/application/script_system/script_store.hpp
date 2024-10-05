@@ -72,6 +72,15 @@ namespace ntt::script
         void (*deleteFunc)(void *));
 
     /**
+     * Use for reloading the script, firstly, the module will be free, then the callback
+     *      will be called, after that, the module will be reloaded.
+     *
+     * All other object which is created from the script will be automatically reloaded
+     *     (the script_object_id_t is not changed).
+     */
+    void ScriptStoreReload(resource_id_t id, std::function<void()> callback);
+
+    /**
      * When unload the script, then all needed resources from that script will be deleted.
      */
     void ScriptStoreUnload(resource_id_t id);

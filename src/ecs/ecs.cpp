@@ -122,6 +122,63 @@ namespace ntt::ecs
                 s_UpdatedEntities.push_back(entity);
             }
         }
+
+        void InternalEntityDelete(entity_id_t id)
+        {
+            PROFILE_FUNCTION();
+            if (!s_isInitialized)
+            {
+                return;
+            }
+
+            if (!s_entityStore->Contains(id))
+            {
+                // NTT_ENGINE_WARN("The entity with ID {} is not existed", id);
+                return;
+            }
+
+            auto entityInfo = s_entityStore->Get(id);
+            NTT_ENGINE_TRACE("Deleting entity: {}", id);
+
+            auto keyComponents = entityInfo->components.Keys();
+
+            auto availabeSystems = s_systemsStore->GetAvailableIds();
+
+            for (auto systemId : availabeSystems)
+            {
+                auto system = s_systemsStore->Get(systemId);
+                if (system->entities.Contains(id))
+                {
+                    system->system->ShutdownEntity(id);
+                    system->entities.RemoveItem(id);
+                }
+            }
+
+            for (auto component : entityInfo->components)
+            {
+                component.second.reset();
+            }
+
+            s_entityStore->Release(id);
+
+            for (auto &layer : layers)
+            {
+                if (layer == nullptr)
+                {
+                    continue;
+                }
+                layer->RemoveItem(id);
+            }
+
+            ResetEntitiesState();
+
+            EventContext context;
+            // must be changed when the entity_id_t is changed
+            context.u32_data[0] = id;
+            TriggerEvent(NTT_ENTITY_DESTROYED, nullptr, context);
+        }
+
+        List<entity_id_t> s_deletedEntities;
     } // namespace
 
     void ECSInit()
@@ -148,6 +205,7 @@ namespace ntt::ecs
 
         s_DrawnEntities.clear();
         s_UpdatedEntities.clear();
+        s_deletedEntities.clear();
 
         // RegisterEvent(NTT_LAYER_CHANGED, std::bind(OnSceneOpened));
         memset(layers, 0, sizeof(layers));
@@ -458,59 +516,14 @@ namespace ntt::ecs
 
     void ECSDeleteEntity(entity_id_t id)
     {
-        PROFILE_FUNCTION();
-        if (!s_isInitialized)
+        // Delay delete the entity until the end of the frame (ECSUpdate)
+
+        if (s_deletedEntities.Contains(id))
         {
             return;
         }
 
-        if (!s_entityStore->Contains(id))
-        {
-            // NTT_ENGINE_WARN("The entity with ID {} is not existed", id);
-            return;
-        }
-
-        auto entityInfo = s_entityStore->Get(id);
-        NTT_ENGINE_TRACE("Deleting entity: {}", id);
-
-        auto keyComponents = entityInfo->components.Keys();
-
-        auto availabeSystems = s_systemsStore->GetAvailableIds();
-
-        for (auto systemId : availabeSystems)
-        {
-            auto system = s_systemsStore->Get(systemId);
-            if (system->entities.Contains(id))
-            {
-                system->system->ShutdownEntity(id);
-                system->entities.RemoveItem(id);
-            }
-        }
-
-        for (auto component : entityInfo->components)
-        {
-            component.second.reset();
-        }
-
-        s_entityStore->Release(id);
-
-        for (auto &layer : layers)
-        {
-            if (layer == nullptr)
-            {
-                continue;
-            }
-            layer->RemoveItem(id);
-        }
-
-        ResetEntitiesState();
-
-        EventContext context;
-        // must be changed when the entity_id_t is changed
-        context.u32_data[0] = id;
-        TriggerEvent(NTT_ENTITY_DESTROYED, nullptr, context);
-
-        // OnSceneOpened();
+        s_deletedEntities.push_back(id);
     }
 
     void ECSUpdate(f32 delta)
@@ -565,6 +578,13 @@ namespace ntt::ecs
                 }
             }
         }
+
+        for (auto entityId : s_deletedEntities)
+        {
+            InternalEntityDelete(entityId);
+        }
+
+        s_deletedEntities.clear();
     }
 
     void ECSShutdown()
@@ -579,7 +599,8 @@ namespace ntt::ecs
 
         for (auto entityId : availableIds)
         {
-            ECSDeleteEntity(entityId);
+            // ECSDeleteEntity(entityId);
+            InternalEntityDelete(entityId);
         }
 
         auto availableSystems = s_systemsStore->GetAvailableIds();

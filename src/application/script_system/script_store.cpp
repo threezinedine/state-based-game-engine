@@ -28,7 +28,6 @@ namespace ntt::script
         struct ScriptObjectData : public Object
         {
             void *object;
-            std::function<void(void *)> deleteFunc;
             resource_id_t scriptId;
         };
 
@@ -119,6 +118,41 @@ namespace ntt::script
         data->deleteFunc = deleteFunc;
 
         return s_scripts->Add(data);
+    }
+
+    void ScriptStoreReload(resource_id_t id, std::function<void()> callback)
+    {
+        auto script = s_scripts->Get(id);
+        List<script_object_id_t> objIds = s_objects->GetIdsByField<resource_id_t>(
+            id,
+            [](Ref<ScriptObjectData> obj)
+            { return obj->scriptId; });
+
+        for (auto objId : objIds)
+        {
+            auto obj = s_objects->Get(objId);
+            script->deleteFunc(obj->object);
+        }
+
+        if (script->module != nullptr)
+        {
+            FreeLibrary(script->module);
+        }
+
+        callback();
+
+        script->module = LoadLibraryA(script->path.RawString().c_str());
+
+        script->createFunc = reinterpret_cast<CreateFuncType>(
+            GetProcAddress(script->module, s_createFunc.RawString().c_str()));
+        script->deleteFunc = reinterpret_cast<DeleteFuncType>(
+            GetProcAddress(script->module, s_deleteFunc.RawString().c_str()));
+
+        for (auto objId : objIds)
+        {
+            auto obj = s_objects->Get(objId);
+            obj->object = script->createFunc(obj->object);
+        }
     }
 
     void ScriptStoreUnload(resource_id_t id)

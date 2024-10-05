@@ -65,7 +65,7 @@ namespace ntt
         SceneOpen(scenes[0].first);
     }
 
-    void SceneOpen(const String &sceneName)
+    void SceneOpen(const String &sceneName, b8 force)
     {
         PROFILE_FUNCTION();
 
@@ -75,7 +75,7 @@ namespace ntt
             return;
         }
 
-        if (s_currentScene == sceneName)
+        if (s_currentScene == sceneName && force == FALSE)
         {
             NTT_ENGINE_WARN("The scene {0} is already opened", sceneName);
             return;

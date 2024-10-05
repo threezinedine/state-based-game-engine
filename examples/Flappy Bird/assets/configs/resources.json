@@ -10,11 +10,6 @@
 			}
 		},
 		{
-			"name": "bird-controller",
-			"type": 2,
-			"relPath": "scripts/BirdController.cpp"
-		},
-		{
 			"name": "game-controller",
 			"type": 2,
 			"relPath": "scripts/GameController.cpp"
@@ -61,6 +56,11 @@
 				"row": 1,
 				"col": 10
 			}
+		},
+		{
+			"name": "bird-controller",
+			"type": 2,
+			"relPath": "scripts/BirdController.cpp"
 		},
 		{
 			"name": "bird",
