@@ -12,7 +12,7 @@ namespace ntt
 
     ResourceTest::~ResourceTest()
     {
-        s_resources.erase(GetName());
+        // s_resources.erase(GetName());
     }
 
     resource_id_t ResourceTest::LoadImpl()

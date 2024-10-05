@@ -23,6 +23,9 @@
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/application/script_system/script_system.hpp>
+#include <NTTEngine/editor/editor.hpp>
+
+#include <NTTEngine/application/scene_system/scene_system.hpp>
 
 namespace ntt
 {
@@ -42,6 +45,7 @@ namespace ntt
         Size s_windowSize = {0, 0};
 
         JSON s_config("{}");
+
     } // namespace
 
     void ApplicationInit(u16 screenWidth,
@@ -112,7 +116,7 @@ namespace ntt
             CreateRef<SpriteRenderSystem>(),
             {typeid(Sprite), typeid(Texture)});
 
-        /// Setup 3 layers in the predefined order GAME_LAYER -> UI_LAYER -> DEBUG_LAYER
+        /// Setup 3 layers in the predefined order GAME_LAYER -> UI_LAYER -> EDITOR_LAYER
         ///     then now the user's code will not affect the order of the layer
         ECSBeginLayer(GAME_LAYER);
 
@@ -125,7 +129,7 @@ namespace ntt
         ECSBeginLayer(UI_LAYER_6);
         ECSBeginLayer(UI_LAYER_7);
         ECSBeginLayer(UI_LAYER_8);
-        ECSBeginLayer(DEBUG_LAYER);
+        ECSBeginLayer(EDITOR_LAYER);
 
         ECSBeginLayer(GAME_LAYER);
         s_phrases.Begin();
@@ -134,7 +138,15 @@ namespace ntt
 
         NTT_ENGINE_INFO("The application is started.");
 
+        EditorInit();
         s_timer.Reset();
+
+        RegisterEvent(
+            NTT_EDITOR_STOP,
+            [](auto id, void *sender, EventContext context)
+            {
+                SceneReload();
+            });
     }
 
     void LoadConfiguration(const String &path)
@@ -174,7 +186,9 @@ namespace ntt
         s_phrases.MainLoop(delta);
 
         GraphicUpdate();
+        ResourceUpdate(delta);
         END_DRAWING();
+        EditorUpdate(delta);
 
         running = !WINDOW_SHOULD_CLOSE();
 
@@ -192,7 +206,7 @@ namespace ntt
     {
         PROFILE_FUNCTION();
         s_phrases.Close();
-
+        EditorShutdown();
         ECSShutdown();
 
         AudioShutdown();

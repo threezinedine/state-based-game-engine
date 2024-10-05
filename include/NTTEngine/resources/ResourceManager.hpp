@@ -50,12 +50,19 @@ namespace ntt
      *      resource of the new scene will be loaded.
      *
      * Must be called after the ResourceStart function.
+     * This function will be delayed until the end of the frame.
      *
      * @param sceneName The name of the new scene. If the scene
      *      does not found, the the warning will be logged and
      *      nothing will be changed.
      */
     void ChangeScene(const String &sceneName);
+
+    /**
+     * Actually change the scene, the `ChangeScene` function
+     *      will be delayed until the end of the frame.
+     */
+    void ResourceUpdate(f32 delta);
 
     /**
      * Shutdown the resource manager.

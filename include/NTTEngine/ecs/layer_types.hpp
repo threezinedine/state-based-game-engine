@@ -14,7 +14,7 @@ namespace ntt
      *      the UI_LAYER_Xs are same, and only 1 layer can be visible
      *      at the same time.
      *
-     * Stack: GAME_LAYER -> UI_LAYER_X -> DEBUG_LAYER
+     * Stack: GAME_LAYER -> UI_LAYER_X -> EDITOR_LAYER
      */
 
 #define GAME_LAYER 0x00 ///< The main game layer where the physics, rendering
@@ -30,8 +30,8 @@ namespace ntt
 #define UI_LAYER_7 0x08 ///< Eighth slot for the UI layer
 #define UI_LAYER_8 0x09 ///< Ninth slot for the UI layer
 
-#define DEBUG_LAYER 0x0A ///< The debug layer where the all buttons which provide
-                         ///<    the debugging functionalities are updated.
+#define EDITOR_LAYER 0x0A ///< The debug layer where the all buttons which provide
+                          ///<    the debugging functionalities are updated.
 
-#define MAX_LAYERS (DEBUG_LAYER + 1)
+#define MAX_LAYERS (EDITOR_LAYER + 1)
 } // namespace ntt

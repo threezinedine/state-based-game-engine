@@ -170,35 +170,23 @@ void Begin()
             auto layer = context.u16_data[0];
             NTT_APP_DEBUG("Layer {} is changed", layer);
         });
-
-    RegisterEvent(
-        NTT_DEBUG_CONTINUE,
-        [](...)
-        {
-            NTT_APP_DEBUG("The debugging is continued");
-        });
-
-    RegisterEvent(
-        NTT_DEBUG_CHOOSE_ENTITY,
-        [](auto id, void *sender, EventContext context)
-        {
-            auto entityId = context.u32_data[0];
-            auto geo = ECS_GET_COMPONENT(entityId, Geometry);
-            NTT_APP_DEBUG("The entity {} with geo: ({}, {}, {}, {}, {})",
-                          entityId,
-                          geo->x,
-                          geo->y,
-                          geo->width,
-                          geo->height,
-                          geo->rotation);
-        });
 }
 
 void MainLoop(f32 delta)
 {
-    if (CheckState(NTT_KEY_R, NTT_PRESS))
+    if (CHECK_PRESS(NTT_KEY_R))
     {
         SceneReload();
+    }
+
+    if (CHECK_PRESS(NTT_KEY_D))
+    {
+        EditorRun();
+    }
+
+    if (CHECK_PRESS(NTT_KEY_S))
+    {
+        EditorStop();
     }
 }
 

@@ -28,6 +28,8 @@ protected:
     {
         ECSShutdown();
         EventShutdown();
+
+        ResourceTest::s_resources.clear();
     }
 };
 
@@ -48,6 +50,7 @@ TEST_F(ResourceManagerTest, TestNotChangeScene)
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
 
     ResourceShutdown();
+    ResourceTest::s_resources;
     EXPECT_EQ(GET_UNLOAD_CALL("test"), 1);
 }
 

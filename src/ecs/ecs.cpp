@@ -44,20 +44,11 @@ namespace ntt::ecs
 
     namespace
     {
-        b8 s_isInitialized = FALSE;
-
         Scope<Store<system_id_t, SystemInfo>> s_systemsStore;
         Scope<Store<entity_id_t, EntityInfo>> s_entityStore;
 
         List<entity_id_t> s_DrawnEntities;
         List<entity_id_t> s_UpdatedEntities;
-
-        // void OnSceneOpened()
-        // {
-        //     PROFILE_FUNCTION();
-        //     s_DrawnEntities = DrawnEntities();
-        //     s_UpdatedEntities = UpdatedEntities();
-        // }
 
         Scope<List<entity_id_t>> layers[MAX_LAYERS];
         List<b8> layersVisibility;
@@ -66,26 +57,19 @@ namespace ntt::ecs
         layer_t preLayer = GAME_LAYER;
         u8 uiLayerVisible = INVALID_UI_LAYER;
 
-        void DebuggingCallback(event_code_t code, void *sender, const EventContext &context)
+        void InitEditor(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
 
-            preLayer = currentRunningLayer;
-            ECSLayerMakeVisible(DEBUG_LAYER);
+            // preLayer = currentRunningLayer;
+            // ECSLayerMakeVisible(EDITOR_LAYER);
         }
 
-        void DebuggingContinueCallback(event_code_t code, void *sender, const EventContext &context)
+        void EditorRun(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
 
-            auto isOffPermanent = context.b8_data[0];
-
-            if (isOffPermanent)
-            {
-                return;
-            }
-
-            ECSLayerMakeVisible(preLayer);
+            // ECSLayerMakeVisible(preLayer);
         }
 
         void ResetEntitiesState()
@@ -108,12 +92,12 @@ namespace ntt::ecs
                     layers[uiLayerVisible]->end());
             }
 
-            if (currentRunningLayer == DEBUG_LAYER)
+            if (currentRunningLayer == EDITOR_LAYER)
             {
                 s_DrawnEntities.insert(
                     s_DrawnEntities.end(),
-                    layers[DEBUG_LAYER]->begin(),
-                    layers[DEBUG_LAYER]->end());
+                    layers[EDITOR_LAYER]->begin(),
+                    layers[EDITOR_LAYER]->end());
             }
 
             for (auto entity : *(layers[currentRunningLayer]))
@@ -125,10 +109,6 @@ namespace ntt::ecs
         void InternalEntityDelete(entity_id_t id)
         {
             PROFILE_FUNCTION();
-            if (!s_isInitialized)
-            {
-                return;
-            }
 
             if (!s_entityStore->Contains(id))
             {
@@ -183,10 +163,6 @@ namespace ntt::ecs
     void ECSInit()
     {
         PROFILE_FUNCTION();
-        if (s_isInitialized)
-        {
-            return;
-        }
 
         s_entityStore = CreateScope<Store<entity_id_t, EntityInfo>>(
             0,
@@ -199,8 +175,6 @@ namespace ntt::ecs
             1000,
             [](Ref<SystemInfo> a, Ref<SystemInfo> b) -> b8
             { return a->name == b->name; });
-
-        s_isInitialized = TRUE;
 
         s_DrawnEntities.clear();
         s_UpdatedEntities.clear();
@@ -218,8 +192,8 @@ namespace ntt::ecs
         currentRunningLayer = GAME_LAYER;
         uiLayerVisible = INVALID_UI_LAYER;
 
-        RegisterEvent(NTT_DEBUG_BREAK, DebuggingCallback);
-        RegisterEvent(NTT_DEBUG_CONTINUE, DebuggingContinueCallback);
+        RegisterEvent(NTT_EDITOR_STOP, InitEditor);
+        RegisterEvent(NTT_EDITOR_START, EditorRun);
     }
 
     void ECSRegister(String name, Ref<System> system,
@@ -227,10 +201,6 @@ namespace ntt::ecs
                      b8 alwayUpdate)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         auto systemId = s_systemsStore->Add(CreateRef<SystemInfo>(
             name,
@@ -249,10 +219,6 @@ namespace ntt::ecs
     void ECSBeginLayer(layer_t layer)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         if (layer >= MAX_LAYERS)
         {
@@ -265,17 +231,13 @@ namespace ntt::ecs
     void ECSLayerMakeVisible(layer_t layer)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         if (layer >= MAX_LAYERS)
         {
             return;
         }
 
-        if (GAME_LAYER < layer && layer < DEBUG_LAYER)
+        if (GAME_LAYER < layer && layer < EDITOR_LAYER)
         {
             uiLayerVisible = layer;
         }
@@ -297,10 +259,6 @@ namespace ntt::ecs
     List<entity_id_t> ECSGetEntitiesWithSystem(String name)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return {};
-        }
 
         auto system = s_systemsStore->GetByField<String>(
             name,
@@ -343,10 +301,6 @@ namespace ntt::ecs
         Dictionary<std::type_index, Ref<ComponentBase>> components)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return 0;
-        }
 
         components[typeid(DataComponent)] = CreateRef<DataComponent>();
 
@@ -421,10 +375,6 @@ namespace ntt::ecs
     Ref<EntityInfo> ECSGetEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return nullptr;
-        }
 
         return s_entityStore->Get(id);
     }
@@ -432,10 +382,6 @@ namespace ntt::ecs
     Ref<ComponentBase> ECSGetEntityComponent(entity_id_t id, std::type_index type)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return nullptr;
-        }
 
         if (!s_entityStore->Contains(id))
         {
@@ -458,10 +404,6 @@ namespace ntt::ecs
     void ECSSetComponentActive(entity_id_t id, std::type_index type, b8 active)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         if (!s_entityStore->Contains(id))
         {
@@ -528,10 +470,6 @@ namespace ntt::ecs
     void ECSUpdate(f32 delta)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         auto availableIds = s_entityStore->GetAvailableIds();
         auto availableSystems = s_systemsStore->GetAvailableIds();
@@ -585,10 +523,6 @@ namespace ntt::ecs
     void ECSShutdown()
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         auto availableIds = s_entityStore->GetAvailableIds();
 
@@ -613,7 +547,5 @@ namespace ntt::ecs
 
         s_entityStore.reset();
         s_systemsStore.reset();
-
-        s_isInitialized = FALSE;
     }
 } // namespace ntt::ecs

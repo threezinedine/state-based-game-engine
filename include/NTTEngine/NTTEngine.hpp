@@ -10,6 +10,7 @@
 #include "ecs/ecs.hpp"
 #include "physics/physics.hpp"
 #include "resources/resources.hpp"
+#include "editor/editor.hpp"
 
 using namespace ntt;
 using namespace ntt::memory;

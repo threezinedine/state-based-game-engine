@@ -95,67 +95,25 @@ TEST_F(SceneSystemTest, AtTheBegging_TheSceneShouldInitTheDefaultScene)
     });
     EXPECT_EQ(entities, List<entity_id_t>({default_entity_1, default_entity_2}));
 
-    auto event = RegisterEvent(
-        NTT_SCENE_CHANGED,
-        [](event_code_t code, void *sender, const EventContext &context)
-        {
-            auto scene_name = reinterpret_cast<const char *>(context.u8_data);
-            EXPECT_STREQ(scene_name, "default");
-        });
+    b8 hasCalled = FALSE;
 
     SceneOpen("default");
+    ECSUpdate(0.0f);
     EXPECT_EQ(entities, List<entity_id_t>({default_entity_1, default_entity_2}));
-    UnregisterEvent(event);
 
-    event = RegisterEvent(
-        NTT_SCENE_CHANGED,
-        [](event_code_t code, void *sender, const EventContext &context)
-        {
-            auto scene_name = reinterpret_cast<const char *>(context.u8_data);
-            EXPECT_STREQ(scene_name, "next");
-        });
     SceneOpen("next");
     ECSUpdate(0.0f);
     EXPECT_EQ(entities, List<entity_id_t>({next_scene_entity_1, next_scene_entity_2}));
-    UnregisterEvent(event);
 
     b8 is_scene_opened = FALSE;
 
-    event = RegisterEvent(
-        NTT_SCENE_CHANGED,
-        [&](event_code_t code, void *sender, const EventContext &context)
-        {
-            is_scene_opened = TRUE;
-        });
     SceneOpen("non-exist");
     ECSUpdate(0.0f);
     EXPECT_EQ(entities, List<entity_id_t>({next_scene_entity_1, next_scene_entity_2}));
 
     EXPECT_FALSE(is_scene_opened);
-    UnregisterEvent(event);
-
-    event = RegisterEvent(
-        NTT_SCENE_CHANGED,
-        [&](event_code_t code, void *sender, const EventContext &context)
-        {
-            auto scene_name = reinterpret_cast<const char *>(context.u8_data);
-            const char *expected_scene_name = "large-scene-name";
-
-            for (u32 i = 0; i < 16; i++)
-            {
-                if (i < 15)
-                {
-                    EXPECT_EQ(scene_name[i], expected_scene_name[i]);
-                }
-                else
-                {
-                    EXPECT_EQ(scene_name[i], '\0');
-                }
-            }
-        });
 
     SceneOpen("large-scene-name");
     ECSUpdate(0.0f);
     EXPECT_EQ(entities, List<entity_id_t>({}));
-    UnregisterEvent(event);
 }

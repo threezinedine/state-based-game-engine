@@ -66,10 +66,6 @@ namespace ntt::event
 #define NTT_ENTITY_CREATED 0x07   ///< When an entity is created
 #define NTT_ENTITY_DESTROYED 0x08 ///< When an entity is destroyed
 
-#define NTT_DEBUG_BREAK 0x09         ///< When the debug mode is activated
-#define NTT_DEBUG_CONTINUE 0x0A      ///< When the debug mode is continued
-#define NTT_DEBUG_CHOOSE_ENTITY 0x0B ///< When the entity is chosen for debugging
-
 #define NTT_END_FRAME 0x0C ///< When an update frame is finished (trigger
                            ///< at the end of the game loop)
 
@@ -84,6 +80,10 @@ namespace ntt::event
 #define NTT_FILE_UPDATED 0x12 ///< When the file is updated
 
 #define NTT_SCRIPT_FILE_CHANGED 0x13 ///< When the script file is changed
+
+#define NTT_EDITOR_START 0x14 ///< When the editor is started
+#define NTT_EDITOR_PAUSE 0x15 ///< When the editor is paused
+#define NTT_EDITOR_STOP 0x16  ///< When the editor is stopped
 
     // TODO: Change the default event < 255 and the user's event >= 255
 

@@ -10,34 +10,9 @@
 			}
 		},
 		{
-			"name": "game-controller",
-			"type": 2,
-			"relPath": "scripts/GameController.cpp"
-		},
-		{
-			"name": "pipe-controller",
-			"type": 2,
-			"relPath": "scripts/PipeController.cpp"
-		},
-		{
 			"name": "resume-btn-controller",
 			"type": 2,
 			"relPath": "scripts/ResumeButtonController.cpp"
-		},
-		{
-			"name": "score-board",
-			"type": 2,
-			"relPath": "scripts/ScoreBoard.cpp"
-		},
-		{
-			"name": "setting-btn-controller",
-			"type": 2,
-			"relPath": "scripts/SettingButtonController.cpp"
-		},
-		{
-			"name": "startup-scene-controller",
-			"type": 2,
-			"relPath": "scripts/StartupSceneController.cpp"
 		}
 	],
 	"startup": [
@@ -45,9 +20,19 @@
 			"name": "startup",
 			"type": 0,
 			"relPath": "assets/images/ui/startup.png"
+		},
+		{
+			"name": "startup-scene-controller",
+			"type": 2,
+			"relPath": "scripts/StartupSceneController.cpp"
 		}
 	],
 	"game": [
+		{
+			"name": "game-controller",
+			"type": 2,
+			"relPath": "scripts/GameController.cpp"
+		},
 		{
 			"name": "numbers",
 			"type": 0,
@@ -126,6 +111,21 @@
 			"type": 1,
 			"relPath": "assets/audios/sunflower-street.wav",
 			"volume": 0.3
+		},
+		{
+			"name": "pipe-controller",
+			"type": 2,
+			"relPath": "scripts/PipeController.cpp"
+		},
+		{
+			"name": "score-board",
+			"type": 2,
+			"relPath": "scripts/ScoreBoard.cpp"
+		},
+		{
+			"name": "setting-btn-controller",
+			"type": 2,
+			"relPath": "scripts/SettingButtonController.cpp"
 		}
 	]
 }

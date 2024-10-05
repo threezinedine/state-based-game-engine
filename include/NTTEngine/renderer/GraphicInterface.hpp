@@ -189,7 +189,7 @@ namespace ntt::renderer
      *      and display the tooltip if the mouse is hovered on the object.
      *
      * In debugging mode, if the user hovers on an entity which is not the
-     *      DEBUG_LAYER, then the entity will be highlighted and the user
+     *      EDITOR_LAYER, then the entity will be highlighted and the user
      *      can click to trigger the event NTT_DEBUG_CHOOSE_ENTITY.
      */
     void GraphicUpdate();

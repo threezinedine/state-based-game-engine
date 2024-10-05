@@ -41,6 +41,8 @@ namespace ntt
         //      The key is the resource name.
         Dictionary<String, resource_id_t> s_defaultResourcesDict;
 
+        List<Scope<Resource>> s_deletedResources;
+
         b8 s_start = FALSE;
 
         std::vector<Scope<Resource>> s_defaultResourcesObjects;
@@ -63,20 +65,12 @@ namespace ntt
             PROFILE_FUNCTION();
             s_resourcesDictionary.clear();
 
-            for (auto &resource : s_resources[s_currentScene])
+            for (auto i = 0; i < s_resources[s_currentScene].size(); i++)
             {
-                resource->Unload();
+                s_deletedResources.push_back(std::move(s_resources[s_currentScene][i]));
             }
-        }
 
-        void SceneChange(event_code_t code, void *sender, const EventContext &context)
-        {
-            PROFILE_FUNCTION();
-            String sceneName = reinterpret_cast<const char *>(context.u8_data);
-
-            NTT_ENGINE_DEBUG("Change scene to {}", sceneName);
-
-            ChangeScene(sceneName);
+            s_resources[s_currentScene].clear();
         }
 
     } // namespace
@@ -95,11 +89,10 @@ namespace ntt
         s_defaultResourcesDict.clear();
         s_defaultResourcesObjects.clear();
         s_currentScene = EMPTY_SCENE;
+        s_deletedResources.clear();
 
         s_initialized = TRUE;
         s_start = FALSE;
-
-        RegisterEvent(NTT_SCENE_CHANGED, SceneChange);
     }
 
     void RegisterResource(const String &sceneName, const ResourceInfo &info)
@@ -265,6 +258,23 @@ namespace ntt
         return;
     }
 
+    void ResourceUpdate(f32 delta)
+    {
+        PROFILE_FUNCTION();
+
+        if (s_deletedResources.size() == 0)
+        {
+            return;
+        }
+
+        for (auto &resource : s_deletedResources)
+        {
+            resource->Unload();
+        }
+
+        s_deletedResources.clear();
+    }
+
     resource_id_t GetResourceID(const String &name)
     {
         PROFILE_FUNCTION();
@@ -298,7 +308,10 @@ namespace ntt
 
         if (s_currentScene != EMPTY_SCENE && s_resources.Contains(s_currentScene))
         {
-            UnloadCurrentScene();
+            for (auto &resource : s_resources[s_currentScene])
+            {
+                resource->Unload();
+            }
         }
 
         for (auto &resource : s_defaultResourcesObjects)
