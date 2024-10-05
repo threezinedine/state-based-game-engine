@@ -186,6 +186,9 @@ namespace ntt
         s_phrases.MainLoop(delta);
 
         GraphicUpdate();
+
+        // acutally unload all resources of the scene if needed
+        // it must be called after drawing
         ResourceUpdate(delta);
         END_DRAWING();
         EditorUpdate(delta);

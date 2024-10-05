@@ -61,15 +61,15 @@ namespace ntt::ecs
         {
             PROFILE_FUNCTION();
 
-            // preLayer = currentRunningLayer;
-            // ECSLayerMakeVisible(EDITOR_LAYER);
+            preLayer = currentRunningLayer;
+            ECSLayerMakeVisible(EDITOR_LAYER);
         }
 
         void EditorRun(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
 
-            // ECSLayerMakeVisible(preLayer);
+            ECSLayerMakeVisible(preLayer);
         }
 
         void ResetEntitiesState()

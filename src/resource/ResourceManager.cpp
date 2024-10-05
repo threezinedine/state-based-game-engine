@@ -41,13 +41,12 @@ namespace ntt
         //      The key is the resource name.
         Dictionary<String, resource_id_t> s_defaultResourcesDict;
 
-        List<Scope<Resource>> s_deletedResources;
-
         b8 s_start = FALSE;
 
         std::vector<Scope<Resource>> s_defaultResourcesObjects;
 #define EMPTY_SCENE ""
         String s_currentScene = EMPTY_SCENE;
+        String s_deletedScene = EMPTY_SCENE;
 
         void LoadSceneResources(const String &sceneName)
         {
@@ -63,14 +62,9 @@ namespace ntt
         void UnloadCurrentScene()
         {
             PROFILE_FUNCTION();
+
             s_resourcesDictionary.clear();
-
-            for (auto i = 0; i < s_resources[s_currentScene].size(); i++)
-            {
-                s_deletedResources.push_back(std::move(s_resources[s_currentScene][i]));
-            }
-
-            s_resources[s_currentScene].clear();
+            s_deletedScene = s_currentScene;
         }
 
     } // namespace
@@ -89,7 +83,6 @@ namespace ntt
         s_defaultResourcesDict.clear();
         s_defaultResourcesObjects.clear();
         s_currentScene = EMPTY_SCENE;
-        s_deletedResources.clear();
 
         s_initialized = TRUE;
         s_start = FALSE;
@@ -262,17 +255,17 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        if (s_deletedResources.size() == 0)
+        if (s_deletedScene == EMPTY_SCENE)
         {
             return;
         }
 
-        for (auto &resource : s_deletedResources)
+        for (auto &resource : s_resources[s_deletedScene])
         {
             resource->Unload();
         }
 
-        s_deletedResources.clear();
+        s_deletedScene = EMPTY_SCENE;
     }
 
     resource_id_t GetResourceID(const String &name)

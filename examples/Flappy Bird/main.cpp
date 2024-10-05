@@ -188,6 +188,16 @@ void MainLoop(f32 delta)
     {
         EditorStop();
     }
+
+    if (CHECK_PRESS(NTT_KEY_ONE))
+    {
+        SceneOpen("startup");
+    }
+
+    if (CHECK_PRESS(NTT_KEY_TWO))
+    {
+        SceneOpen("game");
+    }
 }
 
 void Close()
