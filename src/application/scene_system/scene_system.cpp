@@ -65,7 +65,7 @@ namespace ntt
         SceneOpen(scenes[0].first);
     }
 
-    void SceneOpen(const String &sceneName, b8 force)
+    void SceneOpen(const String &sceneName)
     {
         PROFILE_FUNCTION();
 
@@ -75,7 +75,7 @@ namespace ntt
             return;
         }
 
-        if (s_currentScene == sceneName && force == FALSE)
+        if (s_currentScene == sceneName)
         {
             NTT_ENGINE_WARN("The scene {0} is already opened", sceneName);
             return;
@@ -103,6 +103,18 @@ namespace ntt
                 s_currentScene.Length() + 1);
         }
         TriggerEvent(NTT_SCENE_CHANGED, nullptr, context);
+        s_scenes[s_currentScene]();
+    }
+
+    void SceneReload()
+    {
+        PROFILE_FUNCTION();
+
+        for (auto &entityId : s_entities)
+        {
+            ECSDeleteEntity(entityId);
+        }
+
         s_scenes[s_currentScene]();
     }
 

@@ -93,11 +93,12 @@ TEST_F(NativeScriptSystemTest, NormalWorkflow)
     EXPECT_EQ(s_exitCalled, 0);
 
     ECSDeleteEntity(entity);
+    ECSUpdate(0);
     EXPECT_EQ(s_exitCalled, 1);
 
     ECSUpdate(0.1f);
     EXPECT_EQ(s_enterCalled, 1);
-    EXPECT_EQ(s_updateCalled, 2);
+    EXPECT_EQ(s_updateCalled, 3);
     EXPECT_EQ(s_exitCalled, 1);
 }
 

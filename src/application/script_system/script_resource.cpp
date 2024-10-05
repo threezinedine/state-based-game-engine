@@ -4,6 +4,7 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
+#include <NTTEngine/application/event_system/event_system.hpp>
 
 namespace ntt
 {
@@ -80,6 +81,9 @@ namespace ntt
             [this](const String &file)
             {
                 THIS(CompileFile(file));
+                EventContext context;
+                context.u32_data[0] = THIS(m_scriptId);
+                TriggerEvent(NTT_SCRIPT_FILE_CHANGED, nullptr, context);
             });
     }
 

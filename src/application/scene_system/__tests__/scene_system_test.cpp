@@ -115,6 +115,7 @@ TEST_F(SceneSystemTest, AtTheBegging_TheSceneShouldInitTheDefaultScene)
             EXPECT_STREQ(scene_name, "next");
         });
     SceneOpen("next");
+    ECSUpdate(0.0f);
     EXPECT_EQ(entities, List<entity_id_t>({next_scene_entity_1, next_scene_entity_2}));
     UnregisterEvent(event);
 
@@ -127,6 +128,7 @@ TEST_F(SceneSystemTest, AtTheBegging_TheSceneShouldInitTheDefaultScene)
             is_scene_opened = TRUE;
         });
     SceneOpen("non-exist");
+    ECSUpdate(0.0f);
     EXPECT_EQ(entities, List<entity_id_t>({next_scene_entity_1, next_scene_entity_2}));
 
     EXPECT_FALSE(is_scene_opened);
@@ -153,6 +155,7 @@ TEST_F(SceneSystemTest, AtTheBegging_TheSceneShouldInitTheDefaultScene)
         });
 
     SceneOpen("large-scene-name");
+    ECSUpdate(0.0f);
     EXPECT_EQ(entities, List<entity_id_t>({}));
     UnregisterEvent(event);
 }

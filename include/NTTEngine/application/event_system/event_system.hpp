@@ -83,6 +83,8 @@ namespace ntt::event
 #define NTT_FILE_CHANGED 0x11 ///< When the file is changed
 #define NTT_FILE_UPDATED 0x12 ///< When the file is updated
 
+#define NTT_SCRIPT_FILE_CHANGED 0x13 ///< When the script file is changed
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

@@ -204,7 +204,7 @@ void MainLoop(f32 delta)
 
     if (CheckState(NTT_KEY_R, NTT_PRESS))
     {
-        SceneOpen("game", TRUE);
+        SceneReload();
     }
 }
 

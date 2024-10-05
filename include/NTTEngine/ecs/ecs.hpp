@@ -130,6 +130,7 @@ namespace ntt::ecs
 
     /**
      * Delete the entity and all the components attached to the entity.
+     *      The enity is removed at the end of the frame.
      *
      * @param id The ID of the entity to be deleted
      *      if the id is invalid, then nothing will be deleted

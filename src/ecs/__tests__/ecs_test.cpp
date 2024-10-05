@@ -241,6 +241,7 @@ TEST_F(ECSTest, TestECSInit)
         { eventEntity = context.u32_data[0]; });
 
     ECSDeleteEntity(entity);
+    ECSUpdate(0.0f);
     EXPECT_EQ(eventEntity, entity);
     UnregisterEvent(event);
 
@@ -248,16 +249,16 @@ TEST_F(ECSTest, TestECSInit)
               List<entity_id_t>({entity2, entity3}));
 
     EXPECT_EQ(data->initCalled, 1);
-    EXPECT_EQ(data->updateCalled, 2);
+    EXPECT_EQ(data->updateCalled, 3);
     EXPECT_EQ(data->shutdownCalled, 1);
 
     EXPECT_EQ(data3->initCalled, 1);
-    EXPECT_EQ(data3->updateCalled, 0);
+    EXPECT_EQ(data3->updateCalled, 1);
     EXPECT_EQ(data3->shutdownCalled, 0);
 
     ECSUpdate(0.0f);
     EXPECT_EQ(data3->initCalled, 1);
-    EXPECT_EQ(data3->updateCalled, 1);
+    EXPECT_EQ(data3->updateCalled, 2);
     EXPECT_EQ(data3->shutdownCalled, 0);
 
     EXPECT_EQ(data4->initCalled, 0);
@@ -340,6 +341,8 @@ TEST_F(ECSTest, Needed_Entitites_Should_Be_Drawn)
 
     ECSDeleteEntity(entity);
 
+    ECSUpdate(0.0f);
+    ResetEntityStates();
     ECSUpdate(0.0f);
 
     EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>());

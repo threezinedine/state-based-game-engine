@@ -34,10 +34,14 @@ namespace ntt
      *      event only contains the first 15 characters.
      *
      * @param sceneName: The name of the scene which is stored in the dictionary
-     * @param force: If TRUE, the current scene will be reloaded and reinitialized
-     *      despite the sceneName is the same as the current scene
      */
-    void SceneOpen(const String &sceneName, b8 force = FALSE);
+    void SceneOpen(const String &sceneName);
+
+    /**
+     * Reload the current scene, all entities will be reset and re-initialized as the
+     *      start of the scene.
+     */
+    void SceneReload();
 
     /**
      * Delete all scenes's information and free the memory
