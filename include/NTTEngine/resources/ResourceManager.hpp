@@ -31,7 +31,7 @@ namespace ntt
 
     /**
      * Starting the resource manager, now all DEFAULT resources will be loadded,
-     *     and the ChangeScene function can be called.
+     *     and the ResourceChangeScene function can be called.
      */
     void ResourceStart();
 
@@ -56,10 +56,10 @@ namespace ntt
      *      does not found, the the warning will be logged and
      *      nothing will be changed.
      */
-    void ChangeScene(const String &sceneName);
+    void ResourceChangeScene(const String &sceneName);
 
     /**
-     * Actually change the scene, the `ChangeScene` function
+     * Actually change the scene, the `ResourceChangeScene` function
      *      will be delayed until the end of the frame.
      */
     void ResourceUpdate(f32 delta);

@@ -177,13 +177,14 @@ namespace ntt
 
         InputUpdate(delta);
         AudioUpdate(delta);
-        ECSUpdate(delta);
-        MouseHoveringSystemUpdate(delta);
 
         BEGIN_DRAWING();
 
         ClearBackground(::BLACK);
         s_phrases.MainLoop(delta);
+
+        ECSUpdate(delta);
+        MouseHoveringSystemUpdate(delta);
 
         GraphicUpdate();
 

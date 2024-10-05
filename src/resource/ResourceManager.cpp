@@ -218,7 +218,7 @@ namespace ntt
         }
     }
 
-    void ChangeScene(const String &sceneName)
+    void ResourceChangeScene(const String &sceneName)
     {
         PROFILE_FUNCTION();
         if (!s_initialized)

@@ -33,7 +33,7 @@ protected:
     }
 };
 
-TEST_F(ResourceManagerTest, TestNotChangeScene)
+TEST_F(ResourceManagerTest, TestNotResourceChangeScene)
 {
     RegisterResource(
         "default",
@@ -70,7 +70,7 @@ TEST_F(ResourceManagerTest, TestRegisterResource)
 
     EXPECT_EQ(GET_LOAD_CALL("test"), 0);
 
-    ChangeScene("scene1");
+    ResourceChangeScene("scene1");
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
     EXPECT_EQ(GET_UNLOAD_CALL("test"), 0);
 
@@ -94,7 +94,7 @@ TEST_F(ResourceManagerTest, RegisterAtDefaultScene)
 
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
 
-    ChangeScene("scene1");
+    ResourceChangeScene("scene1");
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
 
     ResourceShutdown();
@@ -144,7 +144,7 @@ TEST_F(ResourceManagerTest, SceneChangingTest)
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 0);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 0);
 
-    ChangeScene("scene1");
+    ResourceChangeScene("scene1");
     EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 0);
@@ -153,46 +153,56 @@ TEST_F(ResourceManagerTest, SceneChangingTest)
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 0);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 0);
 
-    ChangeScene("scene2");
+    ResourceChangeScene("scene2");
     EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
+
+    ResourceUpdate(0);
 
     EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 0);
 
-    ChangeScene("scene2");
+    ResourceChangeScene("scene2");
     EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
+
+    ResourceUpdate(0);
 
     EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 0);
 
-    ChangeScene("scene1");
+    ResourceChangeScene("scene1");
     EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 2);
     EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
+
+    ResourceUpdate(0);
 
     EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 1);
 
-    ChangeScene("unknown");
+    ResourceChangeScene("unknown");
     EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 2);
     EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
+
+    ResourceUpdate(0);
 
     EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 1);
 
-    ChangeScene("");
+    ResourceChangeScene("");
     EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
     EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 2);
     EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
+
+    ResourceUpdate(0);
 
     EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
     EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);

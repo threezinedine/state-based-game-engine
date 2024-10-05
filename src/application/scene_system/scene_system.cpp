@@ -75,13 +75,13 @@ namespace ntt
 
         if (!s_scenes.Contains(sceneName))
         {
-            NTT_ENGINE_WARN("The scene {0} is not found", sceneName);
+            NTT_ENGINE_WARN("The scene {} is not found", sceneName);
             return;
         }
 
         if (s_currentScene == sceneName)
         {
-            NTT_ENGINE_WARN("The scene {0} is already opened", sceneName);
+            NTT_ENGINE_WARN("The scene {} is already opened", sceneName);
             return;
         }
 
