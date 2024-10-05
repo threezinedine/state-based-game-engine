@@ -6,6 +6,21 @@
 
 namespace ntt
 {
+    struct SceneContext
+    {
+        /**
+         * The function which will be called when the scene is opened
+         * If the function is not set, nothing will be called
+         */
+        std::function<void()> createFunc;
+
+        /**
+         * The function which will be called when the scene is reloaded
+         * If the function is not set, nothing will be called
+         */
+        std::function<void()> onExit;
+    };
+
     /**
      * The scene system is located inside the GAME_LAYER, each scene has their own
      *      initialization function, no update or shutdown function.
@@ -21,7 +36,7 @@ namespace ntt
      *      - The first pair of the list will be the default scene
      *      - If the list has no pair, the warning will be logged the game can not run.
      */
-    void SceneInit(List<std::pair<String, std::function<void()>>> scenes);
+    void SceneInit(List<std::pair<String, SceneContext>> scenes);
 
     /**
      * Running the scene with name attribute, all the resources which are related to the scene

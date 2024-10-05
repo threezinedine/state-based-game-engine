@@ -12,7 +12,7 @@ namespace ntt
 
     namespace
     {
-        Dictionary<String, std::function<void()>> s_scenes;
+        Dictionary<String, SceneContext> s_scenes;
         List<entity_id_t> s_entities;
 
         String s_currentScene = "";
@@ -40,7 +40,7 @@ namespace ntt
         }
     } // namespace
 
-    void SceneInit(List<std::pair<String, std::function<void()>>> scenes)
+    void SceneInit(List<std::pair<String, SceneContext>> scenes)
     {
         PROFILE_FUNCTION();
         if (scenes.size() == 0)
@@ -87,6 +87,11 @@ namespace ntt
             ECSDeleteEntity(entityId);
         }
 
+        if (s_scenes[s_currentScene].onExit != nullptr)
+        {
+            s_scenes[s_currentScene].onExit();
+        }
+
         s_currentScene = sceneName;
 
         EventContext context;
@@ -103,7 +108,10 @@ namespace ntt
                 s_currentScene.Length() + 1);
         }
         TriggerEvent(NTT_SCENE_CHANGED, nullptr, context);
-        s_scenes[s_currentScene]();
+        if (s_scenes[s_currentScene].createFunc != nullptr)
+        {
+            s_scenes[s_currentScene].createFunc();
+        }
     }
 
     void SceneReload()
@@ -115,7 +123,15 @@ namespace ntt
             ECSDeleteEntity(entityId);
         }
 
-        s_scenes[s_currentScene]();
+        if (s_scenes[s_currentScene].onExit != nullptr)
+        {
+            s_scenes[s_currentScene].onExit();
+        }
+
+        if (s_scenes[s_currentScene].createFunc != nullptr)
+        {
+            s_scenes[s_currentScene].createFunc();
+        }
     }
 
     void SceneShutdown()

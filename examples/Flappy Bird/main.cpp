@@ -17,11 +17,11 @@ void ConfigureStoredPath()
 void CreateStartupScene();
 void CreateScene1();
 
-List<std::pair<String, std::function<void()>>> GetSceneFuncs()
+List<std::pair<String, SceneContext>> GetSceneFuncs()
 {
     return {
-        {"startup", CreateStartupScene},
-        {"game", CreateScene1},
+        {"startup", {CreateStartupScene, nullptr}},
+        {"game", {CreateScene1, nullptr}},
     };
 }
 

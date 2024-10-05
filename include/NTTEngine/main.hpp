@@ -15,7 +15,7 @@ using namespace ntt::memory;
 
 void ConfigureStoredPath();
 String GetSourceDir();
-List<std::pair<String, std::function<void()>>> GetSceneFuncs();
+List<std::pair<String, SceneContext>> GetSceneFuncs();
 
 int main()
 {

@@ -89,9 +89,9 @@ TEST(SceneSystemTest_Spec, CreateSceneWithEmptyList)
 TEST_F(SceneSystemTest, AtTheBegging_TheSceneShouldInitTheDefaultScene)
 {
     SceneInit({
-        {"default", DefaultSceneInit},
-        {"next", NextSceneInit},
-        {"large-scene-name", LargeSceneNameInit},
+        {"default", {DefaultSceneInit, nullptr}},
+        {"next", {NextSceneInit, nullptr}},
+        {"large-scene-name", {LargeSceneNameInit, nullptr}},
     });
     EXPECT_EQ(entities, List<entity_id_t>({default_entity_1, default_entity_2}));
 

@@ -30,7 +30,7 @@ protected:
         ECSLayerMakeVisible(GAME_LAYER);
 
         SceneInit({
-            {"default", []() {}},
+            {"default", {nullptr, nullptr}},
         });
 
         entity = ECSCreateEntity(
