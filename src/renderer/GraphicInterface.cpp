@@ -387,7 +387,7 @@ namespace ntt::renderer
                     {
                         s_hoveredTextures.push_back(info.entity_id);
 
-                        if (i < highestPriority)
+                        if (i < MAX_PRIORITIES - LAYER_PRIORITY_RANGE)
                         {
                             // store the highest priority hovered texture
                             hoveredEntityId = info.entity_id;
@@ -402,7 +402,9 @@ namespace ntt::renderer
                             hoveredEntityId = INVALID_ENTITY_ID;
                         }
 
-                        if (info.tooltip != "" && i == highestPriority)
+                        if (info.tooltip != "" &&
+                            i == highestPriority &&
+                            !DebugIsStopped())
                         {
                             auto windowSize = GetWindowSize();
 

@@ -116,7 +116,7 @@ namespace ntt
 
         HotReloadData data;
         data.tempPath = SubtractPath(filePath, GetStoredPath(PathType::NTT_SOURCE));
-        data.tempPath = JoinPath({GetStoredPath(PathType::NTT_BINARY),
+        data.tempPath = JoinPath({CurrentDirectory(),
                                   "temp",
                                   data.tempPath},
                                  FALSE);

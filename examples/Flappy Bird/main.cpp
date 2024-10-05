@@ -206,6 +206,11 @@ void MainLoop(f32 delta)
     {
         SceneReload();
     }
+
+    if (CheckState(NTT_KEY_C, NTT_PRESS))
+    {
+        NextBreakpoint();
+    }
 }
 
 void Close()

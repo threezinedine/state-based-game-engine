@@ -22,7 +22,6 @@
 #include <NTTEngine/application/state_system/state_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/debugging/debugging.hpp>
-#include <NTTEngine/debugging/components/components.hpp>
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/application/script_system/script_system.hpp>
 
@@ -129,83 +128,8 @@ namespace ntt
         ECSBeginLayer(UI_LAYER_6);
         ECSBeginLayer(UI_LAYER_7);
         ECSBeginLayer(UI_LAYER_8);
-        /// Default entities of the UI_LAYER are defined below
-
-        /// Default entities of the UI_LAYER are defined above
-
-        /// Registering the resource for the debug layer
-        ResourceInfo resourceInfo;
-        resourceInfo.name = "DebugButtons";
-        resourceInfo.type = ResourceType::IMAGE;
-        resourceInfo.path = JoinPath({GetFileFolder(__FILE__),
-                                      "assets/images/buttons.png"},
-                                     FALSE);
-        resourceInfo.addintionalInfo = JSON(R"({
-            "grid": {
-                "row": 12,
-                "col": 12
-            }  
-        })");
-        RegisterResource("default", resourceInfo);
-
         ECSBeginLayer(DEBUG_LAYER);
-        // Default entities of the DEBUG_LAYER are defined below
-        auto continueBtnController = ScriptStoreLoad(
-            "ContinueButton",
-            [](void *data)
-            {
-                return reinterpret_cast<void *>(new ContinueButton());
-            },
-            [](void *obj)
-            {
-                delete reinterpret_cast<ContinueButton *>(obj);
-            });
 
-        auto ent1 = ECSCreateEntity(
-            "debug-continue",
-            {
-                ECS_CREATE_COMPONENT(Geometry,
-                                     s_windowSize.width / 2 - 31,
-                                     s_windowSize.height * 0.05,
-                                     30, 30),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"),
-                                     9,
-                                     11,
-                                     PRIORITY_0,
-                                     "Run until next breakpoint"),
-                ECS_CREATE_COMPONENT(NativeScriptComponent, continueBtnController),
-                ECS_CREATE_COMPONENT(Hovering),
-            });
-
-        auto nextFrameBtnController = ScriptStoreLoad(
-            "NextFrameButton",
-            [](void *data)
-            {
-                return reinterpret_cast<void *>(new NextFrameButton());
-            },
-            [](void *obj)
-            {
-                delete reinterpret_cast<NextFrameButton *>(obj);
-            });
-        auto ent2 = ECSCreateEntity(
-            "debug-next-frame",
-            {
-                ECS_CREATE_COMPONENT(Geometry,
-                                     s_windowSize.width / 2 + 31,
-                                     s_windowSize.height * 0.05,
-                                     30, 30),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("DebugButtons"),
-                                     9,
-                                     11,
-                                     PRIORITY_0,
-                                     "Run next frame"),
-                ECS_CREATE_COMPONENT(NativeScriptComponent, nextFrameBtnController),
-                ECS_CREATE_COMPONENT(Hovering),
-            });
-
-        /// Default entities of the DEBUG_LAYER are defined above
-
-        /// the game layer is activated at the start of the game
         ECSBeginLayer(GAME_LAYER);
         s_phrases.Begin();
         ECSBeginLayer(GAME_LAYER);
