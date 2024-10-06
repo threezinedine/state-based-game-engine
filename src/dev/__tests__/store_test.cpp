@@ -3,7 +3,7 @@
 
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/structures/string.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 
 using namespace ntt;
 using namespace ntt::log;

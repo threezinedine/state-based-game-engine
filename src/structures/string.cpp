@@ -1,6 +1,6 @@
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/structures/list.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <cstdarg>
 
 namespace ntt

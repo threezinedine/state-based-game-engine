@@ -147,7 +147,10 @@ void CreateScene1()
 
 void Begin()
 {
-    NTT_APP_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
+    NTT_APP_CONFIG(
+        LogLevel::DEBUG,
+        {CreateRef<ConsoleHandler>(),
+         CreateRef<EditorLogHandler>()});
 
     auto windowSize = GetWindowSize();
 
@@ -170,6 +173,13 @@ void Begin()
             auto layer = context.u16_data[0];
             NTT_APP_DEBUG("Layer {} is changed", layer);
         });
+
+    RegisterEvent(
+        NTT_SCENE_CHANGED,
+        [](auto id, void *sender, EventContext context)
+        {
+            NTT_APP_DEBUG("Scene is changed");
+        });
 }
 
 void MainLoop(f32 delta)
@@ -177,6 +187,11 @@ void MainLoop(f32 delta)
     if (CHECK_PRESS(NTT_KEY_R))
     {
         SceneReload();
+    }
+
+    if (CHECK_PRESS(NTT_KEY_P))
+    {
+        NTT_APP_INFO("P is pressed");
     }
 
     if (CHECK_PRESS(NTT_KEY_D))

@@ -1,21 +1,5 @@
-#include "Handler.hpp"
-#include "ConsoleHandler.hpp"
-#include "TestingHandler.hpp"
+#include <NTTEngine/core/logging/Handler.hpp>
 
 namespace ntt::log
 {
-    void ExtractHandlers(LoggerType type, std::vector<Scope<Handler>> &handlers)
-    {
-        handlers.clear();
-
-        if (type & LOGGER_TESTING)
-        {
-            handlers.push_back(CreateScope<TestingHandler>());
-        }
-
-        if (type & LOGGER_CONSOLE)
-        {
-            handlers.push_back(CreateScope<ConsoleHandler>());
-        }
-    }
 } // namespace ntt::log

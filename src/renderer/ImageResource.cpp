@@ -1,5 +1,5 @@
 #include <NTTEngine/renderer/ImageResource.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/core/profiling.hpp>
 

@@ -1,5 +1,5 @@
 #include <NTTEngine/ecs/ecs.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/dev/store.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>

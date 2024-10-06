@@ -3,10 +3,8 @@
 
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/structures/list.hpp>
-#include <NTTEngine/core/logging.hpp>
 
 using namespace ntt;
-using namespace ntt::log;
 
 #define EXPECT_STR_EQ(str1, str2)           \
     EXPECT_TRUE(str1 == str2)               \
@@ -18,7 +16,6 @@ class StringTest : public ::testing::Test
 protected:
     void SetUp() override
     {
-        NTT_ENGINE_CONFIG(LogLevel::FATAL, LOGGER_NONE);
     }
 };
 

@@ -132,6 +132,18 @@ namespace ntt::input
     void InputUpdate(f32 delta);
 
     /**
+     * Set the input module state, this will be used for
+     *      editor mode, when the view port is not focused
+     *      then the input like keyboard press, mouse press
+     *      is not detected.
+     *
+     * @param state The state of the input module
+     *      if it is TRUE then the input module is active,
+     *      otherwise it is not active
+     */
+    void SetInputModuleState(b8 state);
+
+    /**
      * Check whether the key is in
      *      the state or not
      */
@@ -151,7 +163,7 @@ namespace ntt::input
     /**
      * Get the current mouse position
      */
-    Position &GetMousePosition();
+    Position GetMousePosition();
 
     /**
      * Get scroll value of the mouse

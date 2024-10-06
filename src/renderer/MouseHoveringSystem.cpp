@@ -1,6 +1,6 @@
 #include <NTTEngine/renderer/MouseHoveringSystem.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/core/profiling.hpp>
 

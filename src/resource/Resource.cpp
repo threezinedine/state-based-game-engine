@@ -1,6 +1,6 @@
 #include <NTTEngine/resources/Resource.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
 namespace ntt

@@ -1,6 +1,6 @@
 #include <NTTEngine/platforms/application.hpp>
 #include "application_platform.hpp"
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/audio/audio.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
@@ -26,8 +26,6 @@
 #include <NTTEngine/editor/editor.hpp>
 
 #include <NTTEngine/application/scene_system/scene_system.hpp>
-#include "rlImGui.h"
-#include "imgui.h"
 
 namespace ntt
 {
@@ -49,7 +47,6 @@ namespace ntt
         JSON s_config("{}");
         b8 s_editor = FALSE;
 
-        RenderTexture s_renderTexture;
     } // namespace
 
     void ApplicationInit(u16 screenWidth,
@@ -62,7 +59,17 @@ namespace ntt
         s_phrases = phrases;
         s_editor = editor;
 
-        MemoryInit();
+        auto handlers = List<Ref<Handler>>{
+            CreateRef<ConsoleHandler>(),
+        };
+
+        if (editor)
+        {
+            handlers.push_back(CreateRef<EditorLogHandler>());
+        }
+
+        NTT_ENGINE_CONFIG(LogLevel::DEBUG, handlers);
+
         HotReloadInit();
         ScriptStoreInit("CreateInstance", "DeleteInstance");
 
@@ -72,6 +79,9 @@ namespace ntt
         RendererInit();
         ResourceInit();
         InputInit();
+
+        // TODO: Refactor this
+        SetTraceLogLevel(LOG_NONE);
         AudioInit();
 
         String resourceConfig = ReadFile(RelativePath("assets/configs/resources.json"));
@@ -82,6 +92,7 @@ namespace ntt
 
         ResourceLoadConfig(JSON(resourceConfig));
 
+        // TODO: Refactor this
         if (s_editor)
         {
             SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -159,9 +170,7 @@ namespace ntt
 
         if (editor)
         {
-            EditorInit();
-            rlImGuiSetup(true);
-            s_renderTexture = LoadRenderTexture(screenWidth, screenHeight);
+            EditorInit(TRUE, screenWidth, screenHeight);
             RegisterEvent(
                 NTT_EDITOR_STOP,
                 [](auto id, void *sender, EventContext context)
@@ -205,11 +214,8 @@ namespace ntt
         AudioUpdate(delta);
 
         BEGIN_DRAWING();
+        EditorBeginDraw();
 
-        if (s_editor)
-        {
-            BeginTextureMode(s_renderTexture);
-        }
         ClearBackground(::BLACK);
         s_phrases.MainLoop(delta);
 
@@ -221,56 +227,10 @@ namespace ntt
         // acutally unload all resources of the scene if needed
         // it must be called after drawing
         ResourceUpdate(delta);
-        if (s_editor)
-        {
-            EndTextureMode();
-        }
+        EditorEndDraw();
 
-        if (s_editor)
-        {
-            rlImGuiBegin();
-
-            ImGui::Begin("Viewport");
-            ImVec2 size = ImGui::GetContentRegionAvail();
-            ImVec2 viewportSize = {0, 0};
-
-            f32 aspectRatio = static_cast<f32>(s_windowSize.width) / static_cast<f32>(s_windowSize.height);
-
-            if (aspectRatio * size.y > size.x)
-            {
-                viewportSize.x = size.x;
-                viewportSize.y = size.x / aspectRatio;
-            }
-            else
-            {
-                viewportSize.x = size.y * aspectRatio;
-                viewportSize.y = size.y;
-            }
-
-            ImGui::SetCursorPosX(0);
-            ImGui::SetCursorPosX(size.x / 2 - viewportSize.x / 2);
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (size.y / 2 - viewportSize.y / 2));
-
-            rlImGuiImageRect(
-                &s_renderTexture.texture,
-                viewportSize.x,
-                viewportSize.y,
-                {0, 0,
-                 static_cast<float>(s_renderTexture.texture.width),
-                 -static_cast<float>(s_renderTexture.texture.height)});
-            ImGui::End();
-
-            static b8 show = TRUE;
-            if (show)
-            {
-                ImGui::ShowDemoWindow(&show);
-            }
-
-            rlImGuiEnd();
-        }
-
-        END_DRAWING();
         EditorUpdate(delta);
+        END_DRAWING();
 
         running = !WINDOW_SHOULD_CLOSE();
 
@@ -301,6 +261,5 @@ namespace ntt
 
         ScriptStoreShutdown();
         HotReloadInit();
-        MemoryShutdown();
     }
 } // namespace ntt

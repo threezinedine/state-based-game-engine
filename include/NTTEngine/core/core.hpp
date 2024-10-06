@@ -24,7 +24,7 @@
 
 #include "formatter.hpp"
 #include "memory.hpp"
-#include "logging.hpp"
+#include "logging/logging.hpp"
 #include "assertion.hpp"
 #include "time.hpp"
 #include "random.hpp"

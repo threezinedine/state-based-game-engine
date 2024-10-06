@@ -1,9 +1,7 @@
-#include <NTTEngine/core/logging.hpp>
-#include "handlers/Handler.hpp"
-
-// TODO: Temporary includes
-#include <vector>
-// End of temporary includes
+#include <NTTEngine/core/logging/logging.hpp>
+#include <NTTEngine/core/logging/Handler.hpp>
+#include <NTTEngine/core/memory.hpp>
+#include <NTTEngine/structures/list.hpp>
 
 namespace ntt::log
 {
@@ -21,8 +19,8 @@ namespace ntt::log
     {
     public:
         Logger(const char *name, LogLevel level,
-               u8 type, const char *format);
-        ~Logger() = default;
+               List<Ref<Handler>> handlers, const char *format);
+        ~Logger();
 
         /**
          * Method receives the needed information and handles it
@@ -52,7 +50,7 @@ namespace ntt::log
         // TODO: Change not use std:vector, use self-implemented list
         // all logger type which the log message
         //      will be handled through
-        std::vector<Scope<Handler>> m_handlers;
+        List<Ref<Handler>> m_handlers;
 
         // The format must always contain the following:
         //      `@l`, `@t`, `@f`, `@L`, `@m`, `@n`

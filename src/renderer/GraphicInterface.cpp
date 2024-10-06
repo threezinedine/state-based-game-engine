@@ -1,5 +1,5 @@
 #include <NTTEngine/renderer/GraphicInterface.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/assertion.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/structures/dictionary.hpp>

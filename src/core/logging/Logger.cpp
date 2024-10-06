@@ -5,11 +5,20 @@
 namespace ntt::log
 {
     Logger::Logger(const char *name, LogLevel level,
-                   LoggerType type, const char *format)
-        : m_name(name), m_level(level), m_format(format)
+                   List<Ref<Handler>> handlers, const char *format)
+        : m_name(name), m_handlers(handlers), m_level(level), m_format(format)
     {
-        // TODO: Implement logger format checking
-        ExtractHandlers(type, m_handlers);
+        // TODO:
+        //     Implement logger format checking for (auto &handler : handlers)
+        // for (auto &handler : handlers)
+        // {
+        //     m_handlers.push_back(std::move(handler));
+        // }
+    }
+
+    Logger::~Logger()
+    {
+        m_handlers.clear();
     }
 
     void Logger::Log(LogLevel level, const char *file, u16 line, const String &message)

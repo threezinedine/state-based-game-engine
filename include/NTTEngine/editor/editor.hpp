@@ -1,5 +1,6 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
+#include "editor_log_handler.hpp"
 
 namespace ntt
 {
@@ -11,7 +12,7 @@ namespace ntt
      *      scene. If FALSE, the game will be run as normal and
      *      other command will be ignored.
      */
-    void EditorInit(b8 use = TRUE);
+    void EditorInit(b8 use = TRUE, u16 width = 800, u16 height = 600);
 
     /**
      * Starting the game until the EditorStop is called.
@@ -30,6 +31,21 @@ namespace ntt
      *      actually in the game engine.
      */
     void EditorUpdate(f32 delta);
+
+    /**
+     * Called at the start of the drawing frame
+     */
+    void EditorBeginDraw();
+
+    /**
+     * Called at the end of the drawing frame
+     */
+    void EditorEndDraw();
+
+    /**
+     * Append new log message into the editor log
+     */
+    void AppendLog(const char *log);
 
     /**
      * Shutdown the editor mode in the game engine

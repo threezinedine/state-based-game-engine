@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include "../handlers/TestingHandler.hpp"
 
 using namespace ntt::log;
@@ -22,7 +22,7 @@ protected:
 
 TEST_F(LoggerTest, LogFunctionShouldCall_WhenLogLevelValid)
 {
-    NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_TESTING);
+    NTT_ENGINE_CONFIG(LogLevel::DEBUG, {CreateRef<TestingHandler>()});
 
     NTT_ENGINE_TRACE("This is a trace message");
     NTT_ENGINE_DEBUG("This is a debug message");
@@ -41,13 +41,13 @@ TEST_F(LoggerTest, LogFunctionShouldCall_WhenLogLevelValid)
 
 TEST_F(LoggerTest, MatchTheFormat)
 {
-    NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_TESTING, "[@l] - @m");
+    NTT_ENGINE_CONFIG(LogLevel::DEBUG, {CreateRef<TestingHandler>()}, "[@l] - @m");
     NTT_ENGINE_DEBUG("This is a debug message");
     EXPECT_TRUE(
         GetData().LogMessageString ==
         "[DEBUG] - This is a debug message\n");
 
-    NTT_ENGINE_CONFIG(LogLevel::INFO, LOGGER_TESTING, "[@l] - @t - @m");
+    NTT_ENGINE_CONFIG(LogLevel::INFO, {CreateRef<TestingHandler>()}, "[@l] - @t - @m");
     NTT_ENGINE_INFO("This is a info message");
     EXPECT_TRUE(
         GetData().LogMessageString.MatchPattern(

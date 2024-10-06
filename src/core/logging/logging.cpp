@@ -1,4 +1,4 @@
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include "Logger.hpp"
 #include <NTTEngine/core/memory.hpp>
 #include <cstdarg>
@@ -36,7 +36,7 @@ namespace ntt::log
     }
 
     void ConfigureLogger(const char *name, LogLevel level,
-                         LoggerType type, const char *format)
+                         List<Ref<Handler>> handlers, const char *format)
     {
         if (!s_isInitialized)
         {
@@ -45,11 +45,11 @@ namespace ntt::log
 
         if (strcmp(name, ENGINE_LOGGER_NAME) == 0)
         {
-            s_engineLogger = CreateScope<Logger>(name, level, type, format);
+            s_engineLogger = CreateScope<Logger>(name, level, handlers, format);
         }
         else // if (strcmp(name, APP_LOGGER_NAME) == 0)
         {
-            s_appLogger = CreateScope<Logger>(name, level, type, format);
+            s_appLogger = CreateScope<Logger>(name, level, handlers, format);
         }
     }
 
@@ -97,5 +97,8 @@ namespace ntt::log
         }
 
         s_isInitialized = FALSE;
+
+        s_appLogger.reset();
+        s_engineLogger.reset();
     }
 } // namespace ntt::log

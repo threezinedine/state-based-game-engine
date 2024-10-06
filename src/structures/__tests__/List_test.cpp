@@ -2,11 +2,9 @@
 #include <gmock/gmock.h>
 
 #include <NTTEngine/structures/list.hpp>
-#include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/core/exception.hpp>
 
 using namespace ntt;
-using namespace ntt::log;
 using namespace ntt::exception;
 
 #define EXPECT_LIST_EQ(lst1, lst2)                      \
@@ -47,7 +45,6 @@ class ListTest : public testing::Test
 protected:
     void SetUp() override
     {
-        NTT_ENGINE_CONFIG(LogLevel::FATAL, LOGGER_NONE);
     }
 };
 

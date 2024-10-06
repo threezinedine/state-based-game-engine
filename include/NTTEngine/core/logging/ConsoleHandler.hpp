@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Handler.hpp"
+#include <NTTEngine/core/logging/Handler.hpp>
 
 namespace ntt::log
 {
@@ -12,8 +12,8 @@ namespace ntt::log
     class ConsoleHandler : public Handler
     {
     public:
-        ConsoleHandler() = default;
-        ~ConsoleHandler() override = default;
+        ConsoleHandler();
+        ~ConsoleHandler() override {}
 
         void Handle(const LogMessage &message) override;
     };

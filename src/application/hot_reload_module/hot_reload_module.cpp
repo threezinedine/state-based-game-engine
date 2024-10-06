@@ -1,6 +1,6 @@
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/platforms/path.hpp>
 #include "filewatch.hpp"
 #include <iostream>

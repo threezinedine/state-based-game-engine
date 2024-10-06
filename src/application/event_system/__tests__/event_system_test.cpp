@@ -2,17 +2,14 @@
 #include <gmock/gmock.h>
 
 #include <NTTEngine/application/event_system/event_system.hpp>
-#include <NTTEngine/core/logging.hpp>
 
 using namespace ntt::event;
-using namespace ntt::log;
 
 class EventSystemTest : public ::testing::Test
 {
 protected:
     void SetUp() override
     {
-        NTT_APP_CONFIG(LogLevel::INFO, LOGGER_NONE);
     }
 };
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <NTTEngine/core/logging.hpp>
+#include "LogLevel.hpp"
 #include <NTTEngine/structures/string.hpp>
 
 namespace ntt::log

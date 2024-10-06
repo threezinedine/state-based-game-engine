@@ -1,5 +1,5 @@
 #include <NTTEngine/resources/ResourceManager.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/resources/Resource.hpp>

@@ -1,7 +1,7 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/application/input_system/internal_input_system.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <cstring>
 #include <NTTEngine/core/profiling.hpp>
@@ -79,6 +79,7 @@ namespace ntt::input
         InputState s_mouseStates[MOUSE_BUTTON_SIZE];
 
         b8 s_test = FALSE;
+        b8 s_active = TRUE;
     } // namespace
 
     void InputInit(b8 test)
@@ -87,6 +88,14 @@ namespace ntt::input
         s_test = test;
         memset(s_keyStates, InputState::NTT_UP, sizeof(s_keyStates));
         memset(s_mouseStates, InputState::NTT_UP, sizeof(s_mouseStates));
+
+        s_active = TRUE;
+    }
+
+    void SetInputModuleState(b8 state)
+    {
+        PROFILE_FUNCTION();
+        s_active = state;
     }
 
     void InputUpdate(f32 delta)
@@ -217,24 +226,37 @@ namespace ntt::input
     b8 CheckState(Key key, InputState state)
     {
         PROFILE_FUNCTION();
+
+        if (!s_active)
+        {
+            return state == InputState::NTT_UP;
+        }
+
         return s_keyStates[key] == state;
     }
 
     b8 CheckState(MouseButton button, InputState state)
     {
         PROFILE_FUNCTION();
-        return s_mouseStates[button] == state;
+
+        return s_active && s_mouseStates[button] == state;
     }
 
     b8 IsMouseMoving()
     {
         PROFILE_FUNCTION();
-        return s_mousePrePos.x != s_mousePos.x || s_mousePrePos.y != s_mousePos.y;
+        return s_mousePrePos.x != s_mousePos.x || s_mousePrePos.y != s_mousePos.y && s_active;
     }
 
-    Position &GetMousePosition()
+    Position GetMousePosition()
     {
         PROFILE_FUNCTION();
+
+        if (!s_active)
+        {
+            return {0, 0};
+        }
+
         return s_mousePos;
     }
 

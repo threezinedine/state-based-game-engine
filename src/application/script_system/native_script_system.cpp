@@ -1,7 +1,7 @@
 #include <NTTEngine/application/script_system/native_script_system.hpp>
 #include <NTTEngine/application/script_system/native_script.hpp>
 #include <NTTEngine/application/script_system/script_store.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/core/profiling.hpp>

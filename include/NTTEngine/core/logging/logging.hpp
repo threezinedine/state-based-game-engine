@@ -1,8 +1,12 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
-#include "memory.hpp"
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/core/formatter.hpp>
+#include <NTTEngine/structures/list.hpp>
+#include "Handler.hpp"
+#include "LogLevel.hpp"
+#include <NTTEngine/core/memory.hpp>
+#include "ConsoleHandler.hpp"
 
 /**
  * Log module provides functionalities for presenting, storing and managing
@@ -24,24 +28,6 @@
 namespace ntt::log
 {
     using namespace memory;
-
-    /**
-     * The LogLevel represents the importance of the message
-     *      in log system.
-     */
-    enum LogLevel
-    {
-        FATAL = 0, ///< The error that crashes the whole application
-        ERROR = 1, ///< The error that can be handled but the application
-                   ///<     cannot continue to run (like network error, etc.)
-        WARN = 2,  ///< The exceptions which can be handled easily or ignored (
-                   ///<     like missing resources, etc.)
-        INFO = 3,  ///< The normal information such as intialized the window, etc.
-        DEBUG = 4, ///< The detail information which can be valuable for debugging
-                   ///<     such as the position of the object, size of the image, etc.
-        TRACE = 5  ///< The information which is representing the flow of the application
-                   ///<     such as the function is called, etc. (should use in profiling)
-    };
 
     /**
      * The logger type which is supported by the logging module
@@ -76,11 +62,6 @@ namespace ntt::log
      *          changing the LoggerType to u16 or u32
      */
 
-#define LOGGER_NONE 0x00    ///< The logger which does nothing with the message
-#define LOGGER_CONSOLE 0x01 ///< The logger which prints the message to the console
-#define LOGGER_FILE (0x01 << 1)
-#define LOGGER_TESTING (0x01 << 7) ///< For testing purpose, not use in production
-
     using LoggerType = u8;
 
     /**
@@ -104,8 +85,8 @@ namespace ntt::log
      * @param level: The threshold level which all messages
      *      with higher level will be printed, stored, ...
      *
-     * @param type: The type of the logger which will handle the message
-     *      (currently only support `CONSOLE`)
+     * @param handlers: The list of the handlers which will handle the message
+     *      (currently only support `CONSOLE`), default is empty
      *
      * @param format: The format of the of the printed message
      *      which has some special characters:
@@ -119,7 +100,7 @@ namespace ntt::log
      *      The default format is "[@l] - @t - @f:@L - @m"
      */
     void ConfigureLogger(const char *name, LogLevel level = LogLevel::INFO,
-                         LoggerType type = LOGGER_CONSOLE,
+                         List<Ref<Handler>> handlers = List<Ref<Handler>>(),
                          const char *format = "[@l] - @t - @f:@L - @m");
 
     /**

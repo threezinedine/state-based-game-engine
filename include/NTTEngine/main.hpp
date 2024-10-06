@@ -19,10 +19,10 @@ List<std::pair<String, SceneContext>> GetSceneFuncs();
 
 int main()
 {
+    MemoryInit();
     LogInit();
     ProfilingInit("assets/profiling");
     EventInit();
-    NTT_ENGINE_CONFIG(LogLevel::DEBUG, LOGGER_CONSOLE);
     ntt::Phrases phrases = {
         []()
         { Begin(); ECSBeginLayer(GAME_LAYER) ;SceneInit(GetSceneFuncs(), ResourceChangeScene); },
@@ -65,6 +65,7 @@ int main()
     EventShutdown();
     ProfilingShutdown();
     LogShutdown();
+    MemoryShutdown();
     return 0;
 }
 #endif

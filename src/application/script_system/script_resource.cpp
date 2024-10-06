@@ -1,7 +1,7 @@
 #include <NTTEngine/application/script_system/ScriptResource.hpp>
 #include <NTTEngine/application/script_system/script_system.hpp>
 #include <NTTEngine/platforms/path.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>

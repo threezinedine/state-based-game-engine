@@ -1,5 +1,5 @@
 #include <NTTEngine/platforms/path.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <filesystem>
 #include <fstream>

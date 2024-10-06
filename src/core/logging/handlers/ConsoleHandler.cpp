@@ -1,9 +1,13 @@
-#include "ConsoleHandler.hpp"
+#include <NTTEngine/core/logging/ConsoleHandler.hpp>
 #include <NTTEngine/platforms/stream.hpp>
 
 namespace ntt::log
 {
     using namespace platforms;
+
+    ConsoleHandler::ConsoleHandler()
+    {
+    }
 
     void ConsoleHandler::Handle(const LogMessage &message)
     {

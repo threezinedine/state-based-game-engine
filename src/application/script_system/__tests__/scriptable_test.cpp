@@ -6,13 +6,11 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/core/profiling.hpp>
-#include <NTTEngine/core/logging.hpp>
 
 using namespace ntt;
 using namespace ntt::script;
 using namespace ntt::event;
 using namespace ntt::memory;
-using namespace ntt::log;
 
 namespace
 {
@@ -35,7 +33,6 @@ protected:
         s_testEventCalled = 0;
 
         LogInit();
-        ConfigureLogger(ENGINE_LOGGER_NAME, LogLevel::INFO, LOGGER_NONE);
         ProfilingInit("profiling", TRUE);
         EventInit();
     }

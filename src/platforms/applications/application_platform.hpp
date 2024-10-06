@@ -5,7 +5,6 @@
 #include <raylib.h>
 
 #define CREATE_WINDOW(width, height, title) \
-    SetTraceLogLevel(LOG_NONE);             \
     InitWindow(width, height, title);       \
     SetTargetFPS(60)
 #define WINDOW_SHOULD_CLOSE() (WindowShouldClose())

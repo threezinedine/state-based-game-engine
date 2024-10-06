@@ -1,6 +1,6 @@
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 #include <NTTEngine/core/profiling.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 
@@ -100,6 +100,7 @@ namespace ntt
 
         EventContext context;
         TriggerEvent(NTT_SCENE_CHANGED, nullptr, context);
+
         if (s_onSceneChanged != nullptr)
         {
             s_onSceneChanged(sceneName);

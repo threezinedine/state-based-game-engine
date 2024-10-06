@@ -4,7 +4,7 @@
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/structures/sorted_list.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/assertion.hpp>
 
 namespace ntt::dev::store

@@ -1,5 +1,5 @@
 #pragma once
-#include "logging.hpp"
+#include "logging/logging.hpp"
 
 #define NTT_ENABLE_ASSERTS
 
@@ -16,16 +16,21 @@
     if (!(exp))                                         \
     {                                                   \
         NTT_ENGINE_FATAL("Assertion failed: %s", #exp); \
-        DEBUG_BREAK();                                  \
     }
 
 #define ASSERT_M(exp, msg)     \
     if (!(exp))                \
     {                          \
         NTT_ENGINE_FATAL(msg); \
-        DEBUG_BREAK();         \
+    }
+
+#define ASSERT_STA(exp, sta) \
+    if (!(exp))              \
+    {                        \
+        sta;                 \
     }
 #else
 #define ASSERT(exp)
 #define ASSERT_M(exp, msg)
+#define ASSERT_STA(exp, sta)
 #endif

@@ -1,6 +1,6 @@
 #pragma once
 #include <NTTEngine/core/parser/json.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include "component_base.hpp"
 
 namespace ntt::ecs

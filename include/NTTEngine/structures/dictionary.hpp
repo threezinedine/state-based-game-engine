@@ -1,6 +1,6 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/exception.hpp>
 #include "list.hpp"
 #include <map>

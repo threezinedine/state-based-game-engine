@@ -3,17 +3,14 @@
 
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/structures/string.hpp>
-#include <NTTEngine/core/logging.hpp>
 
 using namespace ntt;
-using namespace ntt::log;
 
 class DictionaryTest : public ::testing::Test
 {
 protected:
     void SetUp() override
     {
-        NTT_ENGINE_CONFIG(LogLevel::FATAL, LOGGER_NONE);
     }
 };
 

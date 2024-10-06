@@ -1,6 +1,6 @@
 #include <NTTEngine/audio/audio.hpp>
 #include <NTTEngine/core/memory.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/platforms/path.hpp>

@@ -1,6 +1,6 @@
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/structures/string.hpp>
-#include <NTTEngine/core/logging.hpp>
+#include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/core/time.hpp>
 #include <NTTEngine/structures/list.hpp>
