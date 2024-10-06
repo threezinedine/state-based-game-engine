@@ -4,7 +4,7 @@
 
 /**
  * Managing all resources (supports multiple resource types)
- *      - Texture
+ *      - TextureComponent
  *      - Audio
  *      - Font
  *      - etc.

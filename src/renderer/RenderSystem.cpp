@@ -1,5 +1,5 @@
 #include <NTTEngine/renderer/Geometry.hpp>
-#include <NTTEngine/renderer/Texture.hpp>
+#include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/renderer/RenderSystem.hpp>
 #include <NTTEngine/renderer/Sprite.hpp>
@@ -40,7 +40,7 @@ namespace ntt::renderer
     {
         PROFILE_FUNCTION();
         auto geo = ECS_GET_COMPONENT(id, Geometry);
-        auto texture = ECS_GET_COMPONENT(id, Texture);
+        auto texture = ECS_GET_COMPONENT(id, TextureComponent);
 
         if (texture == nullptr)
         {
@@ -60,7 +60,7 @@ namespace ntt::renderer
     {
         PROFILE_FUNCTION();
         auto geo = ECS_GET_COMPONENT(id, Geometry);
-        auto texture = ECS_GET_COMPONENT(id, Texture);
+        auto texture = ECS_GET_COMPONENT(id, TextureComponent);
         auto text = ECS_GET_COMPONENT(id, Text);
 
         RectContext context;

@@ -70,7 +70,7 @@ TEST_F(GraphicInterfaceTest, DrawTextAndTextureWithRightPriority)
     auto texture2 = LoadTexture("path");
     DrawContext context5;
     context5.priority = 0;
-    context5.tooltip = "Texture 2";
+    context5.tooltip = "TextureComponent 2";
     DrawTexture(texture2, {{0, 0}, {0, 0}}, {0, 0}, context5);
 
     DrawContext context6;

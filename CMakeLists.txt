@@ -56,6 +56,11 @@ foreach(SOURCE ${SOURCES})
 endforeach()
 
 
+add_compile_definitions(
+    ${PROJECT_NAME}
+    _EDITOR
+)
+
 if (NTT_BUILD_SHARED)
     add_library(
         ${PROJECT_NAME}
@@ -79,8 +84,6 @@ target_include_directories(
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
-    vendors/fmt/include
-    # vendors/nlohmann_json/include
 )
 
 target_link_libraries(
@@ -88,6 +91,7 @@ target_link_libraries(
     PRIVATE
     raylib
     nlohmann_json
+    ImGui_Raylib
 )
 
 if (NTT_BUILD_SHARED)

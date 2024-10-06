@@ -1,5 +1,5 @@
 #include <NTTEngine/renderer/Geometry.hpp>
-#include <NTTEngine/renderer/Texture.hpp>
+#include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/renderer/RenderSystem.hpp>
 #include <NTTEngine/renderer/Sprite.hpp>
@@ -41,7 +41,7 @@ namespace ntt::renderer
     {
         PROFILE_FUNCTION();
         auto sprite = ECS_GET_COMPONENT(id, Sprite);
-        auto texture = ECS_GET_COMPONENT(id, Texture);
+        auto texture = ECS_GET_COMPONENT(id, TextureComponent);
 
         auto colIndex = texture->colIndex;
         auto rowIndex = texture->rowIndex;

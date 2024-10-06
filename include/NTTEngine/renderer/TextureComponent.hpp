@@ -11,7 +11,7 @@ namespace ntt::renderer
      * Store the information about the segment of the texture
      *      which is needed to draw on the screen.
      */
-    struct Texture : public ComponentBase
+    struct TextureComponent : public ComponentBase
     {
         resource_id_t id;
         u8 rowIndex;
@@ -19,9 +19,9 @@ namespace ntt::renderer
         u8 priority;
         String tooltip;
 
-        Texture(resource_id_t id = RESOURCE_ID_DEFAULT, u8 rowIndex = 0,
-                u8 colIndex = 0, u8 priority = PRIORITY_0,
-                const String &tooltip = "")
+        TextureComponent(resource_id_t id = RESOURCE_ID_DEFAULT, u8 rowIndex = 0,
+                         u8 colIndex = 0, u8 priority = PRIORITY_0,
+                         const String &tooltip = "")
             : id(id), rowIndex(rowIndex),
               colIndex(colIndex),
               priority(priority),

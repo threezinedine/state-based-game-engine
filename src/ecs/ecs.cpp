@@ -6,7 +6,7 @@
 #include <NTTEngine/ecs/data_com.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
-#include <NTTEngine/renderer/Texture.hpp>
+#include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/renderer/Text.hpp>
 #include <NTTEngine/core/object.hpp>
 #include <cstring>
@@ -345,7 +345,7 @@ namespace ntt::ecs
 
         layers[currentLayer]->push_back(entityId);
 
-        auto texture = ECS_GET_COMPONENT(entityId, Texture);
+        auto texture = ECS_GET_COMPONENT(entityId, TextureComponent);
 
         if (texture != nullptr)
         {

@@ -107,7 +107,7 @@ protected:
             "pipe-up",
             {
                 ECS_CREATE_COMPONENT(Geometry, posX, highPipeY, 100, highPipeY * 2, 180),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
+                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("pipe")),
                 ECS_CREATE_COMPONENT(Mass, 1.0f, -speed, 0, 0, 0),
                 ECS_CREATE_COMPONENT(Collision),
                 ECS_CREATE_COMPONENT(NativeScriptComponent,
@@ -118,7 +118,7 @@ protected:
             "pipe-down",
             {
                 ECS_CREATE_COMPONENT(Geometry, posX, lowPipeY, 100, lowPipeHeight),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("pipe")),
+                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("pipe")),
                 ECS_CREATE_COMPONENT(Mass, 1.0f, -speed, 0, 0, 0),
                 ECS_CREATE_COMPONENT(Collision),
                 ECS_CREATE_COMPONENT(NativeScriptComponent,

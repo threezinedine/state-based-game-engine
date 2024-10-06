@@ -10,7 +10,7 @@ void GameStart::OnEnterImpl()
         "start-message",
         {
             ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 200),
-            ECS_CREATE_COMPONENT(Texture, GetResourceID("message")),
+            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("message")),
         });
 
     ASSERT(m_messageEntity != INVALID_ENTITY_ID);

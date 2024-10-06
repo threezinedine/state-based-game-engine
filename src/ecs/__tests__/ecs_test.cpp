@@ -4,7 +4,7 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/renderer/Text.hpp>
-#include <NTTEngine/renderer/Texture.hpp>
+#include <NTTEngine/renderer/TextureComponent.hpp>
 
 using namespace ntt;
 using namespace ntt::ecs;
@@ -580,7 +580,7 @@ TEST_F(ECSTest, CreateEntityWithPriority)
     auto textureEnt = ECSCreateEntity(
         "test-entity",
         {
-            ECS_CREATE_COMPONENT(Texture, 1, 0, 0, PRIORITY_0),
+            ECS_CREATE_COMPONENT(TextureComponent, 1, 0, 0, PRIORITY_0),
             ECS_CREATE_COMPONENT(TestLayerData),
         });
 
@@ -591,7 +591,7 @@ TEST_F(ECSTest, CreateEntityWithPriority)
             ECS_CREATE_COMPONENT(TestLayerData),
         });
 
-    auto textEntTexture = ECS_GET_COMPONENT(textureEnt, Texture);
+    auto textEntTexture = ECS_GET_COMPONENT(textureEnt, TextureComponent);
     EXPECT_EQ(textEntTexture->priority, PRIORITY_0);
 
     auto textEntText = ECS_GET_COMPONENT(textEnt, Text);
@@ -607,7 +607,7 @@ TEST_F(ECSTest, CreateEntityWithPriority)
     auto textureEnt2 = ECSCreateEntity(
         "test-entity-3",
         {
-            ECS_CREATE_COMPONENT(Texture, 1, 0, 0, PRIORITY_0),
+            ECS_CREATE_COMPONENT(TextureComponent, 1, 0, 0, PRIORITY_0),
         });
 
     auto textEnt2 = ECSCreateEntity(
@@ -616,7 +616,7 @@ TEST_F(ECSTest, CreateEntityWithPriority)
             ECS_CREATE_COMPONENT(Text, "test", 10, PRIORITY_1),
         });
 
-    auto textEntTexture2 = ECS_GET_COMPONENT(textureEnt2, Texture);
+    auto textEntTexture2 = ECS_GET_COMPONENT(textureEnt2, TextureComponent);
     EXPECT_EQ(textEntTexture2->priority, PRIORITY_0 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
 
     auto textEntText2 = ECS_GET_COMPONENT(textEnt2, Text);

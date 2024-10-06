@@ -18,12 +18,12 @@ protected:
 
     void OnHoverEnter() override
     {
-        GetComponent<Texture>()->colIndex = 5;
+        GetComponent<TextureComponent>()->colIndex = 5;
     }
 
     void OnHoverExit() override
     {
-        GetComponent<Texture>()->colIndex = 11;
+        GetComponent<TextureComponent>()->colIndex = 11;
     }
 
     void OnHover(HoveringContext &context) override

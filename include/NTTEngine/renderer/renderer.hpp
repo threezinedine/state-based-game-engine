@@ -22,7 +22,7 @@ namespace ntt::renderer
 } // namespace ntt::renderer
 
 #include "Geometry.hpp"
-#include "Texture.hpp"
+#include "TextureComponent.hpp"
 #include "Sprite.hpp"
 #include "Hovering.hpp"
 #include "Text.hpp"

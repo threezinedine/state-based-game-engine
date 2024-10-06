@@ -2,25 +2,8 @@
 #include <NTTEngine/core/logging.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/defines.hpp>
-#include <fmt/core.h>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/core/assertion.hpp>
-
-#if defined(_DEBUG) && not defined(NTTENGINE_SHARED)
-#include "memplumber.h"
-
-namespace ntt::memory
-{
-    class MemoryChecker
-    {
-    public:
-        MemoryChecker();
-        ~MemoryChecker();
-    };
-} // namespace ntt::memory
-
-static ntt::memory::MemoryChecker memoryChecker;
-#endif
 
 namespace ntt::memory
 {
@@ -117,35 +100,4 @@ namespace ntt::memory
 
         s_createdObjects--;
     }
-
-#if defined(_DEBUG) && not defined(NTTENGINE_SHARED)
-    MemoryChecker::MemoryChecker()
-    {
-        MemPlumber::start();
-    }
-
-    MemoryChecker::~MemoryChecker()
-    {
-        ::std::size_t memLeakCount;
-        u64 memLeakSize;
-
-        MemPlumber::memLeakCheck(memLeakCount, memLeakSize, true);
-
-        if (memLeakCount > 0)
-        {
-            printf("Memory leaks detected: %zu leaks with a total of %zu bytes\n",
-                   memLeakCount, memLeakSize);
-        }
-
-        auto forEach = [](const void *ptr, PointerInfo &info)
-        {
-            fmt::print("Memory leak detected at {}:{} with size {}\n",
-                       info.file,
-                       info.line,
-                       info.size);
-        };
-
-        s_pointersInfo.ForEach(forEach);
-    }
-#endif
 } // namespace ntt::memory

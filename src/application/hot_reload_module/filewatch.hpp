@@ -708,9 +708,9 @@ namespace filewatch
 
                   if (stat.st_mode & S_IFREG || stat.st_mode & S_IFLNK)
                   {
-                        size_t len = strlen(buf);
+                        std::size_t len = strlen(buf);
 
-                        for (size_t i = len - 1; i >= 0; i--)
+                        for (std::size_t i = len - 1; i >= 0; i--)
                         {
                               if (buf[i] == '/')
                               {
@@ -723,7 +723,7 @@ namespace filewatch
 
                   if (IsWChar<C>::value)
                   {
-                        size_t needed = mbsrtowcs(nullptr, &str, 0, &state) + 1;
+                        std::size_t needed = mbsrtowcs(nullptr, &str, 0, &state) + 1;
                         StringType s;
 
                         s.reserve(needed);
@@ -745,9 +745,9 @@ namespace filewatch
 
                   if (stat.st_mode & S_IFREG || stat.st_mode & S_IFLNK)
                   {
-                        size_t len = strlen(buf);
+                        std::size_t len = strlen(buf);
 
-                        for (size_t i = len - 1; i >= 0; i--)
+                        for (std::size_t i = len - 1; i >= 0; i--)
                         {
                               if (buf[i] == '/')
                               {
@@ -759,7 +759,7 @@ namespace filewatch
 
                   if (IsWChar<C>::value)
                   {
-                        size_t needed = mbsrtowcs(nullptr, &str, 0, &state) + 1;
+                        std::size_t needed = mbsrtowcs(nullptr, &str, 0, &state) + 1;
                         StringType s;
 
                         s.reserve(needed);
@@ -771,7 +771,7 @@ namespace filewatch
 #elif _WIN32
             static StringType absolute_path_of(const StringType &path)
             {
-                  constexpr size_t size = IsWChar<C>::value ? MAX_PATH : 32767 * sizeof(wchar_t);
+                  constexpr std::size_t size = IsWChar<C>::value ? MAX_PATH : 32767 * sizeof(wchar_t);
                   char buf[size];
 
                   DWORD length = IsWChar<C>::value ? GetFullPathNameW((LPCWSTR)path.c_str(),
@@ -792,7 +792,7 @@ namespace filewatch
                   mbstate_t state{};
                   StringType s{};
 
-                  size_t needed = mbsrtowcs(nullptr, &buffer, 0, &state) + 1;
+                  std::size_t needed = mbsrtowcs(nullptr, &buffer, 0, &state) + 1;
                   s.reserve(needed);
                   mbsrtowcs((wchar_t *)&s[0], &buffer, s.size(), &state);
                   return s;
@@ -834,7 +834,7 @@ namespace filewatch
 
             static StringType nameofFd(int fd)
             {
-                  size_t len = 0;
+                  std::size_t len = 0;
                   char buf[MAXPATHLEN];
 
                   if (fcntl(fd, F_GETPATH, buf) == -1)
@@ -874,7 +874,7 @@ namespace filewatch
 
             static StringType pathOfFd(int fd)
             {
-                  size_t len = 0;
+                  std::size_t len = 0;
                   char buf[MAXPATHLEN];
 
                   if (fcntl(fd, F_GETPATH, buf) == -1)
@@ -891,7 +891,7 @@ namespace filewatch
                   {
                         if (buf[i] == '/')
                         {
-                              return StringType{buf, static_cast<size_t>(i)};
+                              return StringType{buf, static_cast<std::size_t>(i)};
                         }
                   }
                   return StringType{buf, len};
@@ -1156,7 +1156,7 @@ namespace filewatch
 
                   buffer[written] = 0;
 
-                  StringType absolutePath{(const C *)buffer, static_cast<size_t>(pathLength)};
+                  StringType absolutePath{(const C *)buffer, static_cast<std::size_t>(pathLength)};
                   PathParts pathPair = splitPath(absolutePath);
 
                   if (_watching_single_file && pathPair.filename != _filename)
@@ -1215,14 +1215,14 @@ namespace filewatch
 
             static void handleFsEvent(__attribute__((unused)) ConstFSEventStreamRef streamFef,
                                       void *clientCallBackInfo,
-                                      size_t numEvents,
+                                      std::size_t numEvents,
                                       CFArrayRef eventPaths,
                                       const FSEventStreamEventFlags *eventFlags,
                                       __attribute__((unused)) const FSEventStreamEventId *eventIds)
             {
                   FileWatch<StringType> *self = (FileWatch<StringType> *)clientCallBackInfo;
 
-                  for (size_t i = 0; i < numEvents; i++)
+                  for (std::size_t i = 0; i < numEvents; i++)
                   {
                         FSEventStreamEventFlags flag = eventFlags[i];
                         CFStringRef path = (CFStringRef)CFArrayGetValueAtIndex(eventPaths, i);

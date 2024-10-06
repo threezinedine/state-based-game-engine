@@ -207,7 +207,7 @@ namespace ntt::renderer
             height = static_cast<f32>(frameHeight);
         }
 
-        return {static_cast<size_t>(width), static_cast<size_t>(height)};
+        return {static_cast<ntt_size_t>(width), static_cast<ntt_size_t>(height)};
     }
 
     void DrawTexture(resource_id_t texture_id,
@@ -391,8 +391,8 @@ namespace ntt::renderer
                             hoveredEntityId = info.entity_id;
                             context.position.x = info.toX;
                             context.position.y = info.toY;
-                            context.size.width = static_cast<size_t>(info.toWidth);
-                            context.size.height = static_cast<size_t>(info.toHeight);
+                            context.size.width = static_cast<ntt_size_t>(info.toWidth);
+                            context.size.height = static_cast<ntt_size_t>(info.toHeight);
                             context.rotate = info.rotate;
                         }
                         else

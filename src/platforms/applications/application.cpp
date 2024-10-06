@@ -26,6 +26,8 @@
 #include <NTTEngine/editor/editor.hpp>
 
 #include <NTTEngine/application/scene_system/scene_system.hpp>
+#include "rlImGui.h"
+#include "imgui.h"
 
 namespace ntt
 {
@@ -46,6 +48,9 @@ namespace ntt
 
         JSON s_config("{}");
 
+#ifdef _EDITOR
+        RenderTexture s_renderTexture;
+#endif
     } // namespace
 
     void ApplicationInit(u16 screenWidth,
@@ -60,8 +65,8 @@ namespace ntt
         HotReloadInit();
         ScriptStoreInit("CreateInstance", "DeleteInstance");
 
-        s_windowSize.width = static_cast<size_t>(screenWidth);
-        s_windowSize.height = static_cast<size_t>(screenHeight);
+        s_windowSize.width = static_cast<ntt_size_t>(screenWidth);
+        s_windowSize.height = static_cast<ntt_size_t>(screenHeight);
 
         RendererInit();
         ResourceInit();
@@ -104,7 +109,7 @@ namespace ntt
         ECSRegister(
             "Hovering System",
             CreateRef<MouseHoveringSystem>(),
-            {typeid(Hovering), typeid(Texture), typeid(Geometry)});
+            {typeid(Hovering), typeid(TextureComponent), typeid(Geometry)});
 
         ECSRegister(
             "Mass System",
@@ -114,7 +119,7 @@ namespace ntt
         ECSRegister(
             "Sprite Render System",
             CreateRef<SpriteRenderSystem>(),
-            {typeid(Sprite), typeid(Texture)});
+            {typeid(Sprite), typeid(TextureComponent)});
 
         /// Setup 3 layers in the predefined order GAME_LAYER -> UI_LAYER -> EDITOR_LAYER
         ///     then now the user's code will not affect the order of the layer
@@ -138,15 +143,21 @@ namespace ntt
 
         NTT_ENGINE_INFO("The application is started.");
 
-        EditorInit();
         s_timer.Reset();
 
+#ifdef _EDITOR
+        EditorInit();
+        rlImGuiSetup(true);
+        s_renderTexture = LoadRenderTexture(screenWidth, screenHeight);
         RegisterEvent(
             NTT_EDITOR_STOP,
             [](auto id, void *sender, EventContext context)
             {
                 SceneReload();
             });
+#else
+        EditorInit(FALSE);
+#endif
     }
 
     void LoadConfiguration(const String &path)
@@ -179,7 +190,9 @@ namespace ntt
         AudioUpdate(delta);
 
         BEGIN_DRAWING();
-
+#ifdef _EDITOR
+        BeginTextureMode(s_renderTexture);
+#endif
         ClearBackground(::BLACK);
         s_phrases.MainLoop(delta);
 
@@ -191,6 +204,52 @@ namespace ntt
         // acutally unload all resources of the scene if needed
         // it must be called after drawing
         ResourceUpdate(delta);
+#ifdef _EDITOR
+        EndTextureMode();
+#endif
+
+#ifdef _EDITOR
+        rlImGuiBegin();
+
+        ImGui::Begin("Viewport");
+        ImVec2 size = ImGui::GetContentRegionAvail();
+        ImVec2 viewportSize = {0, 0};
+
+        f32 aspectRatio = static_cast<f32>(s_windowSize.width) / static_cast<f32>(s_windowSize.height);
+
+        if (aspectRatio * size.y > size.x)
+        {
+            viewportSize.x = size.x;
+            viewportSize.y = size.x / aspectRatio;
+        }
+        else
+        {
+            viewportSize.x = size.y * aspectRatio;
+            viewportSize.y = size.y;
+        }
+
+        ImGui::SetCursorPosX(0);
+        ImGui::SetCursorPosX(size.x / 2 - viewportSize.x / 2);
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (size.y / 2 - viewportSize.y / 2));
+
+        rlImGuiImageRect(
+            &s_renderTexture.texture,
+            viewportSize.x,
+            viewportSize.y,
+            {0, 0,
+             static_cast<float>(s_renderTexture.texture.width),
+             -static_cast<float>(s_renderTexture.texture.height)});
+        ImGui::End();
+
+        static b8 show = TRUE;
+        if (show)
+        {
+            ImGui::ShowDemoWindow(&show);
+        }
+
+        rlImGuiEnd();
+#endif
+
         END_DRAWING();
         EditorUpdate(delta);
 

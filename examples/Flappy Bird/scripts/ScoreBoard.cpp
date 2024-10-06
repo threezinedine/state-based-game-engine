@@ -22,21 +22,21 @@ protected:
             "hundered",
             {
                 ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 - 50, 50, 20, 20),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
+                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0, TRUE),
             });
 
         m_tenNumber = ECSCreateEntity(
             "ten",
             {
                 ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, 50, 20, 20),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
+                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0, TRUE),
             });
 
         m_oneNumber = ECSCreateEntity(
             "one",
             {
                 ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 + 50, 50, 20, 20),
-                ECS_CREATE_COMPONENT(Texture, GetResourceID("numbers"), 0, 0, TRUE),
+                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0, TRUE),
             });
 
         Subscribe(SCORE_CHANGED_EVENT);
@@ -68,9 +68,9 @@ protected:
         auto tenGeo = ECS_GET_COMPONENT(m_tenNumber, Geometry);
         auto oneGeo = ECS_GET_COMPONENT(m_oneNumber, Geometry);
 
-        auto hunderedText = ECS_GET_COMPONENT(m_hunderedNumber, Texture);
-        auto tenText = ECS_GET_COMPONENT(m_tenNumber, Texture);
-        auto oneText = ECS_GET_COMPONENT(m_oneNumber, Texture);
+        auto hunderedText = ECS_GET_COMPONENT(m_hunderedNumber, TextureComponent);
+        auto tenText = ECS_GET_COMPONENT(m_tenNumber, TextureComponent);
+        auto oneText = ECS_GET_COMPONENT(m_oneNumber, TextureComponent);
 
         hundredGeo->y = geo->y;
         tenGeo->y = geo->y;

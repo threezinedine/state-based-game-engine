@@ -21,12 +21,12 @@ protected:
 
     void OnHoverEnter() override
     {
-        GetComponent<Texture>()->rowIndex = 5;
+        GetComponent<TextureComponent>()->rowIndex = 5;
     }
 
     void OnHoverExit() override
     {
-        GetComponent<Texture>()->rowIndex = 1;
+        GetComponent<TextureComponent>()->rowIndex = 1;
     }
 
     void OnHover(HoveringContext &context) override

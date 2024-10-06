@@ -26,7 +26,7 @@ namespace ntt
             }
 
             // Iterate through the vector in reverse order
-            for (size_t i = elements.size(); i > 0; --i)
+            for (ntt_size_t i = elements.size(); i > 0; --i)
             {
                 buffer += std::to_string(elements[i - 1]);
                 if (i != 1)
