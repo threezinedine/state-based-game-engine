@@ -78,7 +78,7 @@ namespace ntt
 
         RendererInit();
         ResourceInit();
-        InputInit();
+        InputInit(FALSE, editor);
 
         // TODO: Refactor this
         SetTraceLogLevel(LOG_NONE);

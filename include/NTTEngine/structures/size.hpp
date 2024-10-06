@@ -31,4 +31,6 @@ namespace ntt
             return width == other.width && height == other.height;
         }
     };
+
+    typedef Size (*SizeTransform)(const Size &size);
 } // namespace ntt

@@ -118,8 +118,13 @@ namespace ntt::input
      * @param test If it is true, then the input
      *      can be set by the user (currently only
      *      mouse position)
+     *
+     * @param editor is used for enabling the editor mode
+     *      if TRUE then the mouse position will be transformed
+     *      by the callback function (if it is set or the default)
+     *      else the default position is returned
      */
-    void InputInit(b8 test = FALSE);
+    void InputInit(b8 test = FALSE, b8 editor = FALSE);
 
     /**
      * Should be call at the loop of
@@ -136,10 +141,14 @@ namespace ntt::input
      *      editor mode, when the view port is not focused
      *      then the input like keyboard press, mouse press
      *      is not detected.
+     * This method is has no effect on the mouse position
      *
      * @param state The state of the input module
      *      if it is TRUE then the input module is active,
      *      otherwise it is not active
+     *      The TRUE state is used in normal game
+     *      The FALSE state is used in editor mode (for
+     *          mapping the editor viewport to the game cooridnate)
      */
     void SetInputModuleState(b8 state);
 
@@ -161,9 +170,19 @@ namespace ntt::input
     b8 IsMouseMoving();
 
     /**
-     * Get the current mouse position
+     * Get the current mouse position. In the TRUE state (active), then
+     *      the right position is returned, otherwise the position will be
+     *      transformed by the callback function (if it is set or the default
+     *      one is returned).
      */
     Position GetMousePosition();
+
+    /**
+     * The callback for transforming the mouse position
+     *      with a certain rule if the state of the module is FALSE else
+     *      the default position is returned
+     */
+    void SetMousePositionTransformCallback(PositionTransform callback);
 
     /**
      * Get scroll value of the mouse

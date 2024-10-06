@@ -21,4 +21,6 @@ namespace ntt
 
         Position(position_t x = POSITION_DEFAULT, position_t y = POSITION_DEFAULT) : x(x), y(y) {}
     };
+
+    typedef Position (*PositionTransform)(const Position &pos);
 } // namespace ntt

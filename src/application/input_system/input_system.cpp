@@ -78,11 +78,14 @@ namespace ntt::input
         // InputState s_mousePreStates[KEY_SIZE];
         InputState s_mouseStates[MOUSE_BUTTON_SIZE];
 
+        PositionTransform s_mouseTransform = nullptr;
+
         b8 s_test = FALSE;
         b8 s_active = TRUE;
+        b8 s_editor = FALSE;
     } // namespace
 
-    void InputInit(b8 test)
+    void InputInit(b8 test, b8 editor)
     {
         PROFILE_FUNCTION();
         s_test = test;
@@ -90,6 +93,8 @@ namespace ntt::input
         memset(s_mouseStates, InputState::NTT_UP, sizeof(s_mouseStates));
 
         s_active = TRUE;
+        s_editor = editor;
+        s_mouseTransform = nullptr;
     }
 
     void SetInputModuleState(b8 state)
@@ -239,7 +244,12 @@ namespace ntt::input
     {
         PROFILE_FUNCTION();
 
-        return s_active && s_mouseStates[button] == state;
+        if (!s_active)
+        {
+            return state == InputState::NTT_UP;
+        }
+
+        return s_mouseStates[button] == state;
     }
 
     b8 IsMouseMoving()
@@ -252,12 +262,18 @@ namespace ntt::input
     {
         PROFILE_FUNCTION();
 
-        if (!s_active)
+        if (s_editor & s_mouseTransform != nullptr)
         {
-            return {0, 0};
+            return s_mouseTransform(s_mousePos);
         }
 
         return s_mousePos;
+    }
+
+    void SetMousePositionTransformCallback(PositionTransform callback)
+    {
+        PROFILE_FUNCTION();
+        s_mouseTransform = callback;
     }
 
     i16 GetMouseScroll()
