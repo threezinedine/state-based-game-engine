@@ -56,11 +56,6 @@ foreach(SOURCE ${SOURCES})
 endforeach()
 
 
-add_compile_definitions(
-    ${PROJECT_NAME}
-    _EDITOR
-)
-
 if (NTT_BUILD_SHARED)
     add_library(
         ${PROJECT_NAME}

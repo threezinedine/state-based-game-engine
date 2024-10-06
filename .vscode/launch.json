@@ -5,7 +5,37 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Hero",
+			"name": "Editor",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/examples/Flappy Bird/FlappyBird_Editor.exe",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/examples/Flappy Bird",
+			"miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+			"environment": [],
+			"externalConsole": false,
+			"logging": {
+				"engineLogging": true,
+				"trace": true,
+				"traceResponse": true
+			},
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				},
+				{
+					"description": "Set Disassembly Flavor to Intel",
+					"text": "-gdb-set disassembly-flavor intel",
+					"ignoreFailures": true
+				}
+			]
+		},
+		{
+			"name": "Game",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/build/examples/Flappy Bird/FlappyBird.exe",

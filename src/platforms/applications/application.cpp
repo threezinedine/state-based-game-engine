@@ -47,19 +47,20 @@ namespace ntt
         Size s_windowSize = {0, 0};
 
         JSON s_config("{}");
+        b8 s_editor = FALSE;
 
-#ifdef _EDITOR
         RenderTexture s_renderTexture;
-#endif
     } // namespace
 
     void ApplicationInit(u16 screenWidth,
                          u16 screenHeight,
                          const char *title,
-                         const Phrases &phrases)
+                         const Phrases &phrases,
+                         b8 editor)
     {
         PROFILE_FUNCTION();
         s_phrases = phrases;
+        s_editor = editor;
 
         MemoryInit();
         HotReloadInit();
@@ -81,7 +82,18 @@ namespace ntt
 
         ResourceLoadConfig(JSON(resourceConfig));
 
+        if (s_editor)
+        {
+            SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+        }
+
         CREATE_WINDOW(screenWidth, screenHeight, title);
+
+        if (s_editor)
+        {
+            MaximizeWindow();
+        }
+
         ResourceStart();
 
         ECSInit();
@@ -145,19 +157,22 @@ namespace ntt
 
         s_timer.Reset();
 
-#ifdef _EDITOR
-        EditorInit();
-        rlImGuiSetup(true);
-        s_renderTexture = LoadRenderTexture(screenWidth, screenHeight);
-        RegisterEvent(
-            NTT_EDITOR_STOP,
-            [](auto id, void *sender, EventContext context)
-            {
-                SceneReload();
-            });
-#else
-        EditorInit(FALSE);
-#endif
+        if (editor)
+        {
+            EditorInit();
+            rlImGuiSetup(true);
+            s_renderTexture = LoadRenderTexture(screenWidth, screenHeight);
+            RegisterEvent(
+                NTT_EDITOR_STOP,
+                [](auto id, void *sender, EventContext context)
+                {
+                    SceneReload();
+                });
+        }
+        else
+        {
+            EditorInit(FALSE);
+        }
     }
 
     void LoadConfiguration(const String &path)
@@ -190,9 +205,11 @@ namespace ntt
         AudioUpdate(delta);
 
         BEGIN_DRAWING();
-#ifdef _EDITOR
-        BeginTextureMode(s_renderTexture);
-#endif
+
+        if (s_editor)
+        {
+            BeginTextureMode(s_renderTexture);
+        }
         ClearBackground(::BLACK);
         s_phrases.MainLoop(delta);
 
@@ -204,51 +221,53 @@ namespace ntt
         // acutally unload all resources of the scene if needed
         // it must be called after drawing
         ResourceUpdate(delta);
-#ifdef _EDITOR
-        EndTextureMode();
-#endif
-
-#ifdef _EDITOR
-        rlImGuiBegin();
-
-        ImGui::Begin("Viewport");
-        ImVec2 size = ImGui::GetContentRegionAvail();
-        ImVec2 viewportSize = {0, 0};
-
-        f32 aspectRatio = static_cast<f32>(s_windowSize.width) / static_cast<f32>(s_windowSize.height);
-
-        if (aspectRatio * size.y > size.x)
+        if (s_editor)
         {
-            viewportSize.x = size.x;
-            viewportSize.y = size.x / aspectRatio;
-        }
-        else
-        {
-            viewportSize.x = size.y * aspectRatio;
-            viewportSize.y = size.y;
+            EndTextureMode();
         }
 
-        ImGui::SetCursorPosX(0);
-        ImGui::SetCursorPosX(size.x / 2 - viewportSize.x / 2);
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (size.y / 2 - viewportSize.y / 2));
-
-        rlImGuiImageRect(
-            &s_renderTexture.texture,
-            viewportSize.x,
-            viewportSize.y,
-            {0, 0,
-             static_cast<float>(s_renderTexture.texture.width),
-             -static_cast<float>(s_renderTexture.texture.height)});
-        ImGui::End();
-
-        static b8 show = TRUE;
-        if (show)
+        if (s_editor)
         {
-            ImGui::ShowDemoWindow(&show);
-        }
+            rlImGuiBegin();
 
-        rlImGuiEnd();
-#endif
+            ImGui::Begin("Viewport");
+            ImVec2 size = ImGui::GetContentRegionAvail();
+            ImVec2 viewportSize = {0, 0};
+
+            f32 aspectRatio = static_cast<f32>(s_windowSize.width) / static_cast<f32>(s_windowSize.height);
+
+            if (aspectRatio * size.y > size.x)
+            {
+                viewportSize.x = size.x;
+                viewportSize.y = size.x / aspectRatio;
+            }
+            else
+            {
+                viewportSize.x = size.y * aspectRatio;
+                viewportSize.y = size.y;
+            }
+
+            ImGui::SetCursorPosX(0);
+            ImGui::SetCursorPosX(size.x / 2 - viewportSize.x / 2);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (size.y / 2 - viewportSize.y / 2));
+
+            rlImGuiImageRect(
+                &s_renderTexture.texture,
+                viewportSize.x,
+                viewportSize.y,
+                {0, 0,
+                 static_cast<float>(s_renderTexture.texture.width),
+                 -static_cast<float>(s_renderTexture.texture.height)});
+            ImGui::End();
+
+            static b8 show = TRUE;
+            if (show)
+            {
+                ImGui::ShowDemoWindow(&show);
+            }
+
+            rlImGuiEnd();
+        }
 
         END_DRAWING();
         EditorUpdate(delta);

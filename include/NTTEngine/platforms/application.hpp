@@ -30,7 +30,8 @@ namespace ntt
     void ApplicationInit(u16 screenWidth,
                          u16 screenHeight,
                          const char *title,
-                         const Phrases &phrases);
+                         const Phrases &phrases,
+                         b8 editor = FALSE);
 
     /**
      * Storing the JSON configuration data for the

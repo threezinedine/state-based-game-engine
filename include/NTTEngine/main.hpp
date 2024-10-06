@@ -42,7 +42,13 @@ int main()
         config.Get<u16>("screenWidth", 800),
         config.Get<u16>("screenHeight", 600),
         config.Get<String>("title", "NTT Engine").RawString().c_str(),
-        phrases);
+        phrases,
+#ifdef _EDITOR
+        TRUE
+#else
+        FALSE
+#endif
+    );
 
     b8 running = true;
 
