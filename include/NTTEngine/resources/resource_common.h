@@ -17,6 +17,7 @@ namespace ntt
         IMAGE = 0x00,  ///< Only .png files are supported.
         AUDIO = 0x01,  ///< Only .wav files are supported.
         SCRIPT = 0x02, ///< Only .cpp files are supported.
+        FSM = 0x03,    ///< Only .cpp files are supported.
 
         TEST = 0xFF, ///< Only for testing purposes.
     };

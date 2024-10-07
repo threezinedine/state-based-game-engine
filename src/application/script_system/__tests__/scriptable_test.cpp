@@ -59,6 +59,8 @@ public:
         Delete();
     }
 
+    void OnUpdate(f32 delta) override {}
+
 protected:
     void OnEvent(event_code_t code, void *sender, const EventContext &context) override
     {

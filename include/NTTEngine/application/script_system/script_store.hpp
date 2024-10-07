@@ -20,6 +20,10 @@ namespace ntt::script
     using script_object_id_t = u32;
     constexpr script_object_id_t INVALID_OBJECT_ID = -1;
 
+    using CreateFuncType = void *(*)(void *);
+    using DeleteFuncType = void (*)(void *);
+    using GetBaseTypeFunc = std::type_index (*)();
+
     /**
      * Specify some simple standards for the module which is loadded into the system, in that
      *      module (.dll or .so) file, they must provide a pair create-destroy method for
@@ -31,6 +35,8 @@ namespace ntt::script
      *              void DeleteInstance(void*);         ///< pass the pointer from CreateInstance
      *                                                  ///< for deleting it
      *                                                  ///< the deleteFunc now is "DeleteInstance"
+     *              std::type_index GetBaseType();      ///< the base type of the module like Script,
+     *                                                  ///< Component, State
      *          }
      *      ```
      * @param factoryName the name of the create function which the module must export
@@ -43,7 +49,8 @@ namespace ntt::script
      */
     void ScriptStoreInit(
         const char *createFunc,
-        const char *deleteFunc);
+        const char *deleteFunc,
+        const char *getBaseTypeFunc);
 
     /**
      * The script will be loaded into the system, the Create-Delete pair function will be loadded
@@ -68,8 +75,17 @@ namespace ntt::script
      */
     resource_id_t ScriptStoreLoad(
         const char *key,
-        void *(*createFunc)(void *),
-        void (*deleteFunc)(void *));
+        CreateFuncType createFunc,
+        DeleteFuncType deleteFunc,
+        GetBaseTypeFunc getBaseTypeFunc);
+
+    /**
+     * Retrieve the base type of the script (now how 2 options: Script and State)
+     *
+     * @param id the id of the script, if the id is not found
+     *      or INVALID_SCRIPT_ID, then return `std::type_index(typeid(void))`
+     */
+    std::type_index ScriptStoreGetBaseType(resource_id_t id);
 
     /**
      * Use for reloading the script, firstly, the module will be free, then the callback
@@ -134,7 +150,7 @@ namespace ntt::script
 /**
  * This macro must be used in all script files which needed to be loaded into the system.
  */
-#define SCRIPT_DEFINE(type)                                  \
+#define SCRIPT_DEFINE(type, base)                            \
     extern "C"                                               \
     {                                                        \
         void *CreateInstance(void *data)                     \
@@ -144,6 +160,10 @@ namespace ntt::script
         void DeleteInstance(void *obj)                       \
         {                                                    \
             delete reinterpret_cast<type *>(obj);            \
+        }                                                    \
+        std::type_index GetBaseType()                        \
+        {                                                    \
+            return std::type_index(typeid(base));            \
         }                                                    \
     }
 

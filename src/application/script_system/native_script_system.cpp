@@ -6,6 +6,7 @@
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
+#include <NTTEngine/application/script_system/script_component.hpp>
 
 namespace ntt::script
 {

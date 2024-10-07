@@ -50,7 +50,7 @@ protected:
         s_exitCalled = 0;
 
         EventInit();
-        ScriptStoreInit("CreateInstance", "DeleteInstance");
+        ScriptStoreInit("CreateInstance", "DeleteInstance", "GetBaseType");
         ECSInit();
 
         ECSRegister(
@@ -61,9 +61,11 @@ protected:
         testControllerId = ScriptStoreLoad(
             "TestController",
             [](auto data) -> void *
-            { return new TestController(); },
-            [](void *obj)
-            { delete static_cast<TestController *>(obj); });
+            { return reinterpret_cast<void *>(new TestController()); },
+            [](void *data)
+            { delete reinterpret_cast<TestController *>(data); },
+            []() -> std::type_index
+            { return std::type_index(typeid(Script)); });
     }
 
     void TearDown() override

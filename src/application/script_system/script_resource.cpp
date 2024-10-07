@@ -8,7 +8,6 @@
 
 namespace ntt
 {
-#define THIS(exp) this->m_impl->exp
     using namespace script;
     using namespace log;
 
@@ -19,18 +18,18 @@ namespace ntt
     class ScriptResource::Impl
     {
     public:
-        String m_path = "";
-        String m_outputPath = "";
-        resource_id_t m_scriptId = INVALID_SCRIPT_ID;
+        String path = "";
+        String outputPath = "";
+        resource_id_t scriptId = INVALID_SCRIPT_ID;
 
         void SetOutputPath()
         {
             PROFILE_FUNCTION();
 
-            String outputFile = GetFileName(m_path);
+            String outputFile = GetFileName(path);
             outputFile.Replace(".cpp", ".dll");
 
-            m_outputPath = JoinPath(
+            outputPath = JoinPath(
                 {CurrentDirectory(),
                  outputFile},
                 FALSE);
@@ -42,7 +41,7 @@ namespace ntt
 
             auto command = format(
                 "g++ -g -o \"{}\" -I \"{}\" -I \"{}\" \"{}\" -L \"{}\" -lNTTEngine -shared",
-                m_outputPath,
+                outputPath,
                 // "C:/Users/Acer/Games Dev/state-based-game-engine/include",
                 JoinPath({GetStoredPath(PathType::NTT_ENGINE), "include"}, FALSE),
                 // "C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird",
@@ -71,16 +70,16 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        THIS(m_path) = info.path;
-        THIS(SetOutputPath());
+        m_impl->path = info.path;
+        m_impl->SetOutputPath();
 
         HotReloadRegister(
-            THIS(m_path),
+            m_impl->path,
             [this](const String &file)
             {
-                THIS(CompileFile(file));
+                m_impl->CompileFile(file);
                 EventContext context;
-                context.u32_data[0] = THIS(m_scriptId);
+                context.u32_data[0] = m_impl->scriptId;
                 TriggerEvent(NTT_SCRIPT_FILE_CHANGED, nullptr, context);
             });
     }
@@ -94,14 +93,15 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        THIS(m_scriptId) = ScriptStoreLoad(THIS(m_outputPath).RawString().c_str(), []() {});
-        return THIS(m_scriptId);
+        m_impl->scriptId = ScriptStoreLoad(m_impl->outputPath.RawString().c_str(), []() {});
+
+        return m_impl->scriptId;
     }
 
     void ScriptResource::UnloadImpl()
     {
         PROFILE_FUNCTION();
 
-        ScriptStoreUnload(THIS(m_scriptId));
+        ScriptStoreUnload(m_impl->scriptId);
     }
 } // namespace ntt

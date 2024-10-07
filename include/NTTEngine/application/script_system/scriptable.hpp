@@ -16,6 +16,7 @@ namespace ntt::script
 
         virtual void OnEnter() = 0;
         virtual void OnExit() = 0;
+        virtual void OnUpdate(f32 delta) = 0;
 
         virtual inline void SetEntity(entity_id_t id) { entity_id = id; }
         inline entity_id_t GetEntity() const { return entity_id; }
@@ -24,6 +25,7 @@ namespace ntt::script
     protected:
         virtual void OnEnterImpl() {}
         virtual void OnExitImpl() {}
+        virtual void OnUpdateImpl(f32 delta) {}
 
         template <typename T>
         Ref<T> GetComponent()

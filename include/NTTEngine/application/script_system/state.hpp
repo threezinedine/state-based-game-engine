@@ -6,6 +6,8 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/ecs/data_com.hpp>
 #include <NTTEngine/application/script_system/scriptable.hpp>
+#include <NTTEngine/resources/resource_common.h>
+#include <NTTEngine/application/script_system/script_store.hpp>
 
 #define KEEP_STATE ""
 
@@ -21,7 +23,7 @@ namespace ntt
     class State : public Scriptable
     {
     public:
-        State(Dictionary<String, Ref<State>> children = {}, String defaultState = "");
+        State(Dictionary<String, State *> children = {}, String defaultState = "");
         virtual ~State();
 
         /**
@@ -41,14 +43,14 @@ namespace ntt
          * @return The next state name, if the state name is
          *      not exist or is KEEP_STATE, the current state will be kept.
          */
-        String OnUpdate(f32 delta);
+        void OnUpdate(f32 delta);
 
         /**
          * When adding a new child State, if there no child state, then the state will be
          *      the default state. If there's already child state with the same name, then
          *      the new state will replace the old one.
          */
-        void AddChild(const String &name, Ref<State> state);
+        void AddChild(const String &name, State *state);
 
         void SetEntity(entity_id_t id) override;
 
@@ -63,17 +65,19 @@ namespace ntt
 
     struct StateComponent : public ComponentBase
     {
-        Ref<State> fsm = nullptr;
-        // b8 isStart = FALSE;
+        Dictionary<String, resource_id_t> stateScriptIds;
+        String defaultState;
+        List<script_object_id_t> stateObjIds;
+        Ref<State> state;
 
-        StateComponent(Ref<State> fsm)
-            : fsm(fsm)
+        StateComponent(
+            Dictionary<String, resource_id_t> stateScriptIds,
+            String defaultState)
+            : stateScriptIds(stateScriptIds),
+              defaultState(defaultState),
+              state(nullptr)
         {
-        }
-
-        StateComponent(Dictionary<String, Ref<State>> children, String defaultState)
-            : fsm(CreateRef<State>(children, defaultState))
-        {
+            stateObjIds = {};
         }
     };
 

@@ -19,7 +19,6 @@
 #include <NTTEngine/physics/physics_dev.hpp>
 #include <NTTEngine/application/script_system/native_script_system.hpp>
 #include <NTTEngine/application/script_system/native_script.hpp>
-#include <NTTEngine/application/state_system/state_system.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/application/script_system/script_system.hpp>
@@ -71,7 +70,7 @@ namespace ntt
         NTT_ENGINE_CONFIG(LogLevel::DEBUG, handlers);
 
         HotReloadInit();
-        ScriptStoreInit("CreateInstance", "DeleteInstance");
+        ScriptStoreInit("CreateInstance", "DeleteInstance", "GetBaseType");
 
         s_windowSize.width = static_cast<ntt_size_t>(screenWidth);
         s_windowSize.height = static_cast<ntt_size_t>(screenHeight);

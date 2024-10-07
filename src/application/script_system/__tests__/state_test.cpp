@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <NTTEngine/application/state_system/state_system.hpp>
+#include <NTTEngine/application/script_system/state.hpp>
 #include <NTTEngine/core/memory.hpp>
 using namespace ntt;
 using namespace ntt::memory;
@@ -171,20 +171,29 @@ protected:
 
         m_machine = CreateScope<State>();
 
-        auto state1 = CreateRef<TestState>();
-        state1->AddChild(TEST_STATE_CHILD1, CreateRef<TestStateChild1>());
-        state1->AddChild(TEST_STATE_CHILD2, CreateRef<TestStateChild2>());
+        m_state1 = new TestState();
+        m_state2 = new TestState2();
+        m_stateChild1 = new TestStateChild1();
+        m_stateChild2 = new TestStateChild2();
 
-        m_machine->AddChild(TEST_STATE_1, state1);
-        m_machine->AddChild(TEST_STATE_2, CreateRef<TestState2>());
+        m_state1->AddChild(TEST_STATE_CHILD1, m_stateChild1);
+        m_state1->AddChild(TEST_STATE_CHILD2, m_stateChild2);
+
+        m_machine->AddChild(TEST_STATE_1, m_state1);
+        m_machine->AddChild(TEST_STATE_2, m_state2);
 
         m_machine->OnEnter();
     }
 
     void TearDown() override
     {
+        delete static_cast<TestState *>(m_state1);
+        delete static_cast<TestState2 *>(m_state2);
+        delete static_cast<TestStateChild1 *>(m_stateChild1);
+        delete static_cast<TestStateChild2 *>(m_stateChild2);
     }
 
+    State *m_state1, *m_state2, *m_stateChild1, *m_stateChild2;
     Scope<State> m_machine;
 };
 

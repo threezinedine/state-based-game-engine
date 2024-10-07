@@ -35,4 +35,4 @@ protected:
     }
 };
 
-SCRIPT_DEFINE(SettingButtonController)
+SCRIPT_DEFINE(SettingButtonController, Script)

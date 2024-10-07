@@ -6,14 +6,15 @@
 #include <functional>
 #include <NTTEngine/core/object.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/application/script_system/state.hpp>
+#include "defs.hpp"
+
+ntt::resource_id_t fsm_script_id = ntt::INVALID_SCRIPT_ID;
 
 namespace ntt::script
 {
     using namespace dev::store;
 #define EMPTY_FUNC_NAME ""
-
-    using CreateFuncType = void *(*)(void *);
-    using DeleteFuncType = void (*)(void *);
 
     namespace
     {
@@ -23,6 +24,7 @@ namespace ntt::script
             HMODULE module;
             CreateFuncType createFunc;
             DeleteFuncType deleteFunc;
+            GetBaseTypeFunc getBaseTypeFunc;
         };
 
         struct ScriptObjectData : public Object
@@ -35,12 +37,13 @@ namespace ntt::script
         Scope<Store<script_object_id_t, ScriptObjectData>> s_objects;
         String s_createFunc = EMPTY_FUNC_NAME;
         String s_deleteFunc = EMPTY_FUNC_NAME;
+        String s_getBaseTypeFunc = EMPTY_FUNC_NAME;
 
         GetFieldFunc<ScriptData, String> s_GetPath = [](Ref<ScriptData> obj) -> String
         { return obj->path; };
     } // namespace
 
-    void ScriptStoreInit(const char *createFunc, const char *deleteFunc)
+    void ScriptStoreInit(const char *createFunc, const char *deleteFunc, const char *getBaseTypeFunc)
     {
         PROFILE_FUNCTION();
 
@@ -53,6 +56,7 @@ namespace ntt::script
 
         s_createFunc = createFunc;
         s_deleteFunc = deleteFunc;
+        s_getBaseTypeFunc = getBaseTypeFunc;
     }
 
     resource_id_t ScriptStoreLoad(const char *file, std::function<void()> onLoad)
@@ -81,6 +85,10 @@ namespace ntt::script
 
             data->deleteFunc = reinterpret_cast<DeleteFuncType>(
                 GetProcAddress(data->module, s_deleteFunc.RawString().c_str()));
+
+            data->getBaseTypeFunc = reinterpret_cast<GetBaseTypeFunc>(
+                GetProcAddress(data->module, s_getBaseTypeFunc.RawString().c_str()));
+
             NTT_ENGINE_TRACE("The module {} is loaded",
                              GetFileName(file));
         }
@@ -99,8 +107,9 @@ namespace ntt::script
 
     resource_id_t ScriptStoreLoad(
         const char *key,
-        void *(*createFunc)(void *),
-        void (*deleteFunc)(void *))
+        CreateFuncType createFunc,
+        DeleteFuncType deleteFunc,
+        GetBaseTypeFunc getBaseTypeFunc)
     {
         PROFILE_FUNCTION();
 
@@ -118,6 +127,20 @@ namespace ntt::script
         data->deleteFunc = deleteFunc;
 
         return s_scripts->Add(data);
+    }
+
+    std::type_index ScriptStoreGetBaseType(resource_id_t id)
+    {
+        PROFILE_FUNCTION();
+
+        auto script = s_scripts->Get(id);
+
+        if (script == nullptr)
+        {
+            return std::type_index(typeid(void));
+        }
+
+        return script->getBaseTypeFunc();
     }
 
     void ScriptStoreReload(resource_id_t id, std::function<void()> callback)
@@ -147,11 +170,13 @@ namespace ntt::script
             GetProcAddress(script->module, s_createFunc.RawString().c_str()));
         script->deleteFunc = reinterpret_cast<DeleteFuncType>(
             GetProcAddress(script->module, s_deleteFunc.RawString().c_str()));
+        script->getBaseTypeFunc = reinterpret_cast<GetBaseTypeFunc>(
+            GetProcAddress(script->module, s_getBaseTypeFunc.RawString().c_str()));
 
         for (auto objId : objIds)
         {
             auto obj = s_objects->Get(objId);
-            obj->object = script->createFunc(obj->object);
+            obj->object = script->createFunc(nullptr);
         }
     }
 

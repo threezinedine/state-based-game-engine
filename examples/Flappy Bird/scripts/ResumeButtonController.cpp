@@ -43,4 +43,4 @@ protected:
     }
 };
 
-SCRIPT_DEFINE(ResumeButtonController)
+SCRIPT_DEFINE(ResumeButtonController, Script)

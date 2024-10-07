@@ -79,4 +79,4 @@ private:
     b8 m_isPassed = FALSE;
 };
 
-SCRIPT_DEFINE(PipeController)
+SCRIPT_DEFINE(PipeController, Script)

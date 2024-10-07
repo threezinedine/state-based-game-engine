@@ -34,6 +34,21 @@
 			"relPath": "scripts/GameController.cpp"
 		},
 		{
+			"name": "game-fsm-over",
+			"type": 2,
+			"relPath": "scripts/game_state/game_over.cpp"
+		},
+		{
+			"name": "game-fsm-playing",
+			"type": 2,
+			"relPath": "scripts/game_state/game_playing.cpp"
+		},
+		{
+			"name": "game-fsm-start",
+			"type": 2,
+			"relPath": "scripts/game_state/game_start.cpp"
+		},
+		{
 			"name": "numbers",
 			"type": 0,
 			"relPath": "assets/images/ui/numbers.png",

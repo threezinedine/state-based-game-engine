@@ -116,4 +116,4 @@ private:
     b8 m_isPlaying = FALSE;
 };
 
-SCRIPT_DEFINE(BirdController)
+SCRIPT_DEFINE(BirdController, Script)

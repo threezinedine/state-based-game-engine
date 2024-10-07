@@ -1,4 +1,4 @@
-#include <NTTEngine/application/state_system/state_system.hpp>
+#include <NTTEngine/application/script_system/state.hpp>
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
@@ -14,12 +14,12 @@ namespace ntt
     class State::Impl
     {
     public:
-        Dictionary<String, Ref<State>> m_children;
+        Dictionary<String, State *> m_children;
         String m_defaultState;
         String m_currentState;
     };
 
-    State::State(Dictionary<String, Ref<State>> children, String defaultState)
+    State::State(Dictionary<String, State *> children, String defaultState)
         : m_impl(CreateScope<Impl>())
     {
         PROFILE_FUNCTION();
@@ -49,7 +49,7 @@ namespace ntt
         }
     }
 
-    void State::AddChild(const String &name, Ref<State> state)
+    void State::AddChild(const String &name, State *state)
     {
         PROFILE_FUNCTION();
         if (THIS(m_children).empty())
@@ -88,14 +88,15 @@ namespace ntt
         THIS(m_children[THIS(m_currentState)]->OnExit());
     }
 
-    String State::OnUpdate(f32 delta)
+    void State::OnUpdate(f32 delta)
     {
         PROFILE_FUNCTION();
         auto navigatTo = OnNavigateImpl();
 
         if (navigatTo != KEEP_STATE)
         {
-            return navigatTo;
+            // return navigatTo;
+            return;
         }
 
         if (THIS(m_children).empty())
@@ -104,10 +105,14 @@ namespace ntt
             {
                 OnUpdateImpl(delta);
             }
-            return navigatTo;
+            // return navigatTo;
+            return;
         }
 
-        auto newState = THIS(m_children)[THIS(m_currentState)]->OnUpdate(delta);
+        auto newState = (THIS(m_children)[THIS(m_currentState)]->OnNavigateImpl());
+
+        THIS(m_children)
+        [THIS(m_currentState)]->OnUpdate(delta);
 
         if (THIS(m_currentState) != newState && newState != KEEP_STATE)
         {
@@ -118,7 +123,7 @@ namespace ntt
         }
 
         OnUpdateImpl(delta);
-        return navigatTo;
+        return;
     }
 
 } // namespace ntt

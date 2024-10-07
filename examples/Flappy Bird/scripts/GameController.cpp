@@ -129,4 +129,4 @@ protected:
 private:
 };
 
-SCRIPT_DEFINE(GameController)
+SCRIPT_DEFINE(GameController, Script)

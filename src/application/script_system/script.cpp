@@ -38,16 +38,15 @@ namespace ntt::script
         OnEnterImpl();
     }
 
-    void Script::OnExit()
-    {
-        PROFILE_FUNCTION();
-        Delete();
-    }
-
     void Script::OnUpdate(f32 deltaTime)
     {
         PROFILE_FUNCTION();
         OnUpdateImpl(deltaTime);
     }
 
+    void Script::OnExit()
+    {
+        PROFILE_FUNCTION();
+        Delete();
+    }
 }

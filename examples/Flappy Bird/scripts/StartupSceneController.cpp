@@ -46,4 +46,4 @@ private:
     b8 m_show = TRUE;
 };
 
-SCRIPT_DEFINE(StartupSceneController)
+SCRIPT_DEFINE(StartupSceneController, Script)

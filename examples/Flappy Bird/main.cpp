@@ -1,5 +1,4 @@
 #include <NTTEngine/main.hpp>
-#include "game_state/game_state.hpp"
 #include "defs.hpp"
 
 String GetSourceDir()
@@ -94,16 +93,18 @@ void CreateScene1()
             ECS_CREATE_COMPONENT(Collision),
         });
 
-    auto gameState = CreateRef<State>();
-    gameState->AddChild(START_STATE, CreateRef<GameStart>());
-    gameState->AddChild(PLAYING_STATE, CreateRef<GamePlaying>());
-    gameState->AddChild(GAME_OVER_STATE, CreateRef<GameOver>());
-
     ECSCreateEntity(
         "game-play",
         {
-            ECS_CREATE_COMPONENT(StateComponent, gameState),
             ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("game-controller")),
+            ECS_CREATE_COMPONENT(
+                StateComponent,
+                Dictionary<String, resource_id_t>{
+                    {START_STATE, GetResourceID("game-fsm-start")},
+                    {GAME_OVER_STATE, GetResourceID("game-fsm-over")},
+                    {PLAYING_STATE, GetResourceID("game-fsm-playing")},
+                },
+                START_STATE),
         });
 
     auto bird = ECSCreateEntity(

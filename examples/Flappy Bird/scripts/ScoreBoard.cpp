@@ -121,4 +121,4 @@ private:
     entity_id_t m_oneNumber;
 };
 
-SCRIPT_DEFINE(ScoreBoard)
+SCRIPT_DEFINE(ScoreBoard, Script)
