@@ -17,7 +17,7 @@ namespace ntt::script
                               script_object_id_t objId = INVALID_OBJECT_ID)
             : scriptId(scriptId), objId(objId) {}
 
-        Script *GetObj()
+        Ref<Script> GetObj()
         {
             if (scriptId == INVALID_SCRIPT_ID)
             {

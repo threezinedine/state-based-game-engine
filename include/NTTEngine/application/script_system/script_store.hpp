@@ -20,8 +20,8 @@ namespace ntt::script
     using script_object_id_t = u32;
     constexpr script_object_id_t INVALID_OBJECT_ID = -1;
 
-    using CreateFuncType = void *(*)(void *);
-    using DeleteFuncType = void (*)(void *);
+    using CreateFuncType = Ref<void> (*)(void *);
+    using DeleteFuncType = void (*)(Ref<void>);
     using GetBaseTypeFunc = std::type_index (*)();
 
     /**
@@ -123,7 +123,7 @@ namespace ntt::script
      *      if the object is not found or is invalidated (like the module is unloaded
      *      not reloaded), then return nullptr
      */
-    void *ScriptStoreGetObject(script_object_id_t id);
+    Ref<void> ScriptStoreGetObject(script_object_id_t id);
 
     /**
      * Free the object only, the module will not be unloaded.
@@ -145,26 +145,26 @@ namespace ntt::script
     void ScriptStoreShutdown();
 } // namespace ntt::script
 
-#define GET_SCRIPT(type, id) reinterpret_cast<type *>(ScriptStoreGetObject(id))
+#define GET_SCRIPT(type, id) std::reinterpret_pointer_cast<type>(ScriptStoreGetObject(id))
 
 /**
  * This macro must be used in all script files which needed to be loaded into the system.
  */
-#define SCRIPT_DEFINE(type, base)                            \
-    extern "C"                                               \
-    {                                                        \
-        void *CreateInstance(void *data)                     \
-        {                                                    \
-            return reinterpret_cast<void *>(new type(data)); \
-        }                                                    \
-        void DeleteInstance(void *obj)                       \
-        {                                                    \
-            delete reinterpret_cast<type *>(obj);            \
-        }                                                    \
-        std::type_index GetBaseType()                        \
-        {                                                    \
-            return std::type_index(typeid(base));            \
-        }                                                    \
+#define SCRIPT_DEFINE(type, base)                                              \
+    extern "C"                                                                 \
+    {                                                                          \
+        Ref<void> CreateInstance(void *data)                                   \
+        {                                                                      \
+            return std::reinterpret_pointer_cast<void>(CreateRef<type>(data)); \
+        }                                                                      \
+        void DeleteInstance(Ref<void> obj)                                     \
+        {                                                                      \
+            std::reinterpret_pointer_cast<type>(obj).reset();                  \
+        }                                                                      \
+        std::type_index GetBaseType()                                          \
+        {                                                                      \
+            return std::type_index(typeid(base));                              \
+        }                                                                      \
     }
 
 #include "native_script.hpp"

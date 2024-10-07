@@ -171,10 +171,10 @@ protected:
 
         m_machine = CreateScope<State>();
 
-        m_state1 = new TestState();
-        m_state2 = new TestState2();
-        m_stateChild1 = new TestStateChild1();
-        m_stateChild2 = new TestStateChild2();
+        m_state1 = CreateRef<TestState>();
+        m_state2 = CreateRef<TestState2>();
+        m_stateChild1 = CreateRef<TestStateChild1>();
+        m_stateChild2 = CreateRef<TestStateChild2>();
 
         m_state1->AddChild(TEST_STATE_CHILD1, m_stateChild1);
         m_state1->AddChild(TEST_STATE_CHILD2, m_stateChild2);
@@ -187,13 +187,9 @@ protected:
 
     void TearDown() override
     {
-        delete static_cast<TestState *>(m_state1);
-        delete static_cast<TestState2 *>(m_state2);
-        delete static_cast<TestStateChild1 *>(m_stateChild1);
-        delete static_cast<TestStateChild2 *>(m_stateChild2);
     }
 
-    State *m_state1, *m_state2, *m_stateChild1, *m_stateChild2;
+    Ref<State> m_state1, m_state2, m_stateChild1, m_stateChild2;
     Scope<State> m_machine;
 };
 

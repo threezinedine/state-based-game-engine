@@ -61,7 +61,7 @@ namespace ntt
 
         auto defaultStateId = ScriptStoreCreate(defaultScriptId, nullptr);
         machine->stateObjIds.push_back(defaultStateId);
-        auto defaultState = reinterpret_cast<State *>(ScriptStoreGetObject(defaultStateId));
+        auto defaultState = std::reinterpret_pointer_cast<State>(ScriptStoreGetObject(defaultStateId));
         machine->state->AddChild(machine->defaultState, defaultState);
 
         for (auto pair : machine->stateScriptIds)
@@ -80,7 +80,7 @@ namespace ntt
                 NTT_ENGINE_WARN("The State object is not created");
                 return;
             }
-            auto state = reinterpret_cast<State *>(stateVoid);
+            auto state = std::reinterpret_pointer_cast<State>(stateVoid);
             machine->state->AddChild(pair.first, state);
         }
 

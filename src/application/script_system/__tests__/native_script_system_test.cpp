@@ -60,10 +60,10 @@ protected:
 
         testControllerId = ScriptStoreLoad(
             "TestController",
-            [](auto data) -> void *
-            { return reinterpret_cast<void *>(new TestController()); },
-            [](void *data)
-            { delete reinterpret_cast<TestController *>(data); },
+            [](auto data) -> Ref<void>
+            { return std::reinterpret_pointer_cast<void>(CreateRef<TestController>()); },
+            [](Ref<void> data)
+            { std::reinterpret_pointer_cast<TestController>(data).reset(); },
             []() -> std::type_index
             { return std::type_index(typeid(Script)); });
     }

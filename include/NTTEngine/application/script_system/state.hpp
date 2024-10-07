@@ -23,7 +23,7 @@ namespace ntt
     class State : public Scriptable
     {
     public:
-        State(Dictionary<String, State *> children = {}, String defaultState = "");
+        State(Dictionary<String, Ref<State>> children = {}, String defaultState = "");
         virtual ~State();
 
         /**
@@ -50,7 +50,7 @@ namespace ntt
          *      the default state. If there's already child state with the same name, then
          *      the new state will replace the old one.
          */
-        void AddChild(const String &name, State *state);
+        void AddChild(const String &name, Ref<State> state);
 
         void SetEntity(entity_id_t id) override;
 

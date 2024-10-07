@@ -14,12 +14,12 @@ namespace ntt
     class State::Impl
     {
     public:
-        Dictionary<String, State *> m_children;
+        Dictionary<String, Ref<State>> m_children;
         String m_defaultState;
         String m_currentState;
     };
 
-    State::State(Dictionary<String, State *> children, String defaultState)
+    State::State(Dictionary<String, Ref<State>> children, String defaultState)
         : m_impl(CreateScope<Impl>())
     {
         PROFILE_FUNCTION();
@@ -49,7 +49,7 @@ namespace ntt
         }
     }
 
-    void State::AddChild(const String &name, State *state)
+    void State::AddChild(const String &name, Ref<State> state)
     {
         PROFILE_FUNCTION();
         if (THIS(m_children).empty())

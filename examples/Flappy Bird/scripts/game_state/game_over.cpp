@@ -46,7 +46,9 @@ protected:
         return KEEP_STATE;
     }
 
-    void OnUpdateImpl(f32 delta) override {}
+    void OnUpdateImpl(f32 delta) override
+    {
+    }
 
     void OnExitImpl() override
     {

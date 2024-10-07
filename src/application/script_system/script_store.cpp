@@ -29,7 +29,7 @@ namespace ntt::script
 
         struct ScriptObjectData : public Object
         {
-            void *object;
+            Ref<void> object;
             resource_id_t scriptId;
         };
 
@@ -233,7 +233,7 @@ namespace ntt::script
         return s_objects->Add(objData);
     }
 
-    void *ScriptStoreGetObject(script_object_id_t id)
+    Ref<void> ScriptStoreGetObject(script_object_id_t id)
     {
         PROFILE_FUNCTION();
 
