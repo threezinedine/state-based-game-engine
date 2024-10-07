@@ -52,6 +52,7 @@ namespace ntt
                          u16 screenHeight,
                          const char *title,
                          const Phrases &phrases,
+                         List<String> sceneNames,
                          b8 editor)
     {
         PROFILE_FUNCTION();
@@ -158,11 +159,6 @@ namespace ntt
         ECSBeginLayer(UI_LAYER_8);
         ECSBeginLayer(EDITOR_LAYER);
 
-        ECSBeginLayer(GAME_LAYER);
-        s_phrases.Begin();
-        ECSBeginLayer(GAME_LAYER);
-        ECSLayerMakeVisible(GAME_LAYER);
-
         NTT_ENGINE_INFO("The application is started.");
 
         s_timer.Reset();
@@ -180,6 +176,16 @@ namespace ntt
         else
         {
             EditorInit(FALSE);
+        }
+
+        ECSBeginLayer(GAME_LAYER);
+        s_phrases.Begin();
+        ECSBeginLayer(GAME_LAYER);
+        ECSLayerMakeVisible(GAME_LAYER);
+
+        if (editor)
+        {
+            TriggerEvent(NTT_EDITOR_STOP, {});
         }
     }
 

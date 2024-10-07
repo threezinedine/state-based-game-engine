@@ -31,6 +31,7 @@ namespace ntt
                          u16 screenHeight,
                          const char *title,
                          const Phrases &phrases,
+                         List<String> sceneNames,
                          b8 editor = FALSE);
 
     /**

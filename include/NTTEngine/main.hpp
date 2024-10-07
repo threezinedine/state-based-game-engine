@@ -23,9 +23,12 @@ int main()
     LogInit();
     ProfilingInit("assets/profiling");
     EventInit();
+
+    auto scenes = GetSceneFuncs();
+
     ntt::Phrases phrases = {
-        []()
-        { Begin(); ECSBeginLayer(GAME_LAYER) ;SceneInit(GetSceneFuncs(), ResourceChangeScene); },
+        [&scenes]()
+        { Begin(); ECSBeginLayer(GAME_LAYER); SceneInit(scenes, ResourceChangeScene); },
         MainLoop,
         []()
         { SceneShutdown(); Close(); }};
@@ -38,11 +41,18 @@ int main()
 
     ProfilingBegin("Initialization");
 
+    List<String> sceneNames = {};
+    for (auto &scene : scenes)
+    {
+        sceneNames.push_back(scene.first);
+    }
+
     ApplicationInit(
         config.Get<u16>("screenWidth", 800),
         config.Get<u16>("screenHeight", 600),
         config.Get<String>("title", "NTT Engine").RawString().c_str(),
         phrases,
+        sceneNames,
 #ifdef _EDITOR
         TRUE
 #else

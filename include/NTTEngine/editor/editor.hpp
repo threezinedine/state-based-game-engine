@@ -1,6 +1,8 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include "editor_log_handler.hpp"
+#include <NTTEngine/structures/list.hpp>
+#include <NTTEngine/structures/string.hpp>
 
 namespace ntt
 {
@@ -12,23 +14,29 @@ namespace ntt
      *      scene. If FALSE, the game will be run as normal and
      *      other command will be ignored.
      */
-    void EditorInit(b8 use = TRUE, u16 width = 800, u16 height = 600);
+    void EditorInit(
+        b8 use = TRUE,
+        u16 width = 800,
+        u16 height = 600,
+        List<String> sceneNames = List<String>{});
 
     /**
-     * Starting the game until the EditorStop is called.
-     * If the game is already running, then nothing will happen.
+     * When this function is called, at the end of the frame, the game
+     *      in the viewport window will be started, other features of the game
+     *      editor will be turn off.
      */
     void EditorRun();
 
     /**
-     * Stop the editor mode in the game engine. If the game
-     *      is already stand, then nothing will happen.
+     * When this function is called, at the end of the frame, the game
+     *      in the viewport window will be stopped, the scene will be
+     *      reload and the game can be run again.
      */
     void EditorStop();
 
     /**
-     * Where the `EditorRun` and `EditorStop` are called
-     *      actually in the game engine.
+     * Actually apply all the changes in the editor like `EditorRun` or `EditorStop`
+     *      and drawing the whole game editor.
      */
     void EditorUpdate(f32 delta);
 
@@ -41,11 +49,6 @@ namespace ntt
      * Called at the end of the drawing frame
      */
     void EditorEndDraw();
-
-    /**
-     * Append new log message into the editor log
-     */
-    void AppendLog(const char *log);
 
     /**
      * Shutdown the editor mode in the game engine

@@ -13,6 +13,7 @@ namespace ntt::ecs
     struct EntityInfo : public Object
     {
         Dictionary<std::type_index, Ref<ComponentBase>> components;
+        String name;
         b8 active = TRUE;
 
         EntityInfo(Dictionary<std::type_index, Ref<ComponentBase>> components)

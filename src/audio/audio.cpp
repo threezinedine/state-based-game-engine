@@ -54,8 +54,6 @@ namespace ntt::audio
 
     namespace
     {
-        b8 s_isInitialized = FALSE;
-
         Store<resource_id_t, AudioInfo> s_audioStore(
             RESOURCE_ID_DEFAULT,
             MAX_AUDIO, [](Ref<AudioInfo> audio, Ref<AudioInfo> other) -> b8
@@ -67,27 +65,14 @@ namespace ntt::audio
     void AudioInit()
     {
         PROFILE_FUNCTION();
-        if (s_isInitialized)
-        {
-            return;
-        }
-
         s_playingAudios = {};
 
         INIT_DEVICE();
-
-        // LoadAudio(RelativePath("assets/audios/default.wav"));
-
-        s_isInitialized = TRUE;
     }
 
     void SetVolume(resource_id_t audio_id, f32 volume)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         volume = volume < 0 ? 0 : volume;
         volume = volume > 1 ? 1 : volume;
@@ -106,10 +91,6 @@ namespace ntt::audio
     resource_id_t LoadAudio(const String &path)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return RESOURCE_ID_DEFAULT;
-        }
 
         auto existedAudioPaths = s_audioStore.GetByField<String>(
             path,
@@ -139,10 +120,6 @@ namespace ntt::audio
     void PlayAudio(resource_id_t audio_id, const AudioContext &context)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         if (audio_id == INVALID_RESOURCE_ID)
         {
@@ -165,10 +142,6 @@ namespace ntt::audio
     void StopAudio(resource_id_t audio_id)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         auto audioInfo = s_audioStore.Get(audio_id);
 
@@ -189,10 +162,6 @@ namespace ntt::audio
     void AudioUpdate(f32 delta)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         for (auto &playingAudioInfo : s_playingAudios)
         {
@@ -236,16 +205,12 @@ namespace ntt::audio
     void UnloadAudio(resource_id_t audio_id)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         auto audioInfo = s_audioStore.Get(audio_id);
 
         if (audioInfo == nullptr)
         {
-            NTT_ENGINE_WARN("The audio id {} is not existed or unloaded", audio_id);
+            NTT_ENGINE_TRACE("The audio id {} is not existed or unloaded", audio_id);
             return;
         }
 
@@ -257,10 +222,6 @@ namespace ntt::audio
     void AudioShutdown()
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
 
         auto availableIds = s_audioStore.GetAvailableIds();
 
@@ -268,7 +229,5 @@ namespace ntt::audio
         {
             UnloadAudio(audioId);
         }
-
-        s_isInitialized = FALSE;
     }
 } // namespace ntt::audio
