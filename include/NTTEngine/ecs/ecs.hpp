@@ -39,6 +39,18 @@ namespace ntt::ecs
                      b8 alwayUpdate = FALSE);
 
     /**
+     * Change the state of the system, if the system is not active, then
+     *      the system will not be updated.
+     *
+     * If the system is not found, then nothing will be changed and the warning
+     *     will be logged.
+     *
+     * @param name The name of the system which is registered in the ECS system
+     * @param active The state of the system
+     */
+    void ECSChangeSystemState(String name, b8 active = TRUE);
+
+    /**
      * The beginning of a new layer inside the system, the new layer will
      *      be on top of the previous layers, all entities which are created
      *      after this new layer will be attached to this layer.

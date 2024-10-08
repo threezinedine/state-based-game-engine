@@ -2,6 +2,7 @@
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/ecs/ecs.hpp>
 #include "rlImGui.h"
 #include "imgui.h"
 
@@ -13,6 +14,7 @@ namespace ntt
 {
     using namespace log;
     using namespace event;
+    using namespace ecs;
 
     namespace
     {
@@ -93,11 +95,13 @@ namespace ntt
         if (s_shouldStart)
         {
             TriggerEvent(NTT_EDITOR_START, {});
+            ECSChangeSystemState("Editor System", FALSE);
         }
 
         if (s_shouldStop)
         {
             TriggerEvent(NTT_EDITOR_STOP, {});
+            ECSChangeSystemState("Editor System", TRUE);
         }
 
         s_shouldStart = FALSE;

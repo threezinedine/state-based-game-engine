@@ -28,6 +28,7 @@ namespace ntt::ecs
         List<std::type_index> componentTypes;
         List<entity_id_t> entities;
         b8 alwayUpdate = FALSE;
+        b8 active = TRUE;
 
         SystemInfo(String name,
                    Ref<System> system,
@@ -35,7 +36,8 @@ namespace ntt::ecs
                    b8 alwayUpdate = FALSE)
             : name(name), system(system),
               componentTypes(componentTypes),
-              alwayUpdate(alwayUpdate)
+              alwayUpdate(alwayUpdate),
+              active(TRUE)
         {
         }
     };
@@ -207,7 +209,7 @@ namespace ntt::ecs
         PROFILE_FUNCTION();
 
         auto systemId = s_systemsStore->Add(CreateRef<SystemInfo>(
-            name,
+            GetName(name),
             system,
             componentTypes,
             alwayUpdate));
@@ -218,6 +220,24 @@ namespace ntt::ecs
         }
 
         system->InitSystem();
+    }
+
+    void ECSChangeSystemState(String name, b8 active)
+    {
+        PROFILE_FUNCTION();
+
+        auto system = s_systemsStore->GetByField<String>(
+            name,
+            [](Ref<SystemInfo> system) -> String
+            { return system->name; });
+
+        if (system.size() != 1)
+        {
+            NTT_ENGINE_WARN("The system with name {} is not found", name);
+            return;
+        }
+
+        system[0]->active = active;
     }
 
     void ECSBeginLayer(layer_t layer)
@@ -479,6 +499,12 @@ namespace ntt::ecs
         for (auto systemId : availableSystems)
         {
             auto system = s_systemsStore->Get(systemId);
+
+            if (!system->active)
+            {
+                continue;
+            }
+
             auto entities = system->entities;
 
             for (auto entityId : system->entities)
