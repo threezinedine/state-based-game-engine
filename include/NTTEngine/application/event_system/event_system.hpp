@@ -86,6 +86,9 @@ namespace ntt::event
 #define NTT_LAYER_CHANGED 0x0D         ///< When the layer is changed
 #define NTT_DEFINED_LAYER_CHANGED 0x17 ///< When the defined layer is changed (not visible layer)
 
+#define NTT_EDITOR_CHOOSE_ENTITY 0x18 ///< When the entity is chosen in the editor
+#define NTT_EDITOR_APPEND_ENTITY 0x19 ///< When the entity is appended in the editor
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

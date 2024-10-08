@@ -61,6 +61,76 @@ namespace ntt
 
             selectedEntities.clear();
         }
+
+        void ChooseNewEntity(entity_id_t entityId)
+        {
+            selectedEntities.push_back(entityId);
+
+            if (!drawnEntities.Contains(entityId))
+            {
+                drawnEntities[entityId] = List<entity_id_t>();
+            }
+
+            auto geo = ECS_GET_COMPONENT(entityId, Geometry);
+
+            if (geo == nullptr)
+            {
+                return;
+            }
+
+            ECSBeginLayer(EDITOR_LAYER);
+            auto center = ECSCreateEntity(
+                "Center Rect",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x,
+                        geo->y,
+                        CENTER_SIZE,
+                        CENTER_SIZE,
+                        geo->rotation,
+                        PRIORITY_0,
+                        NTT_RED),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        moveAroundControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &entityId),
+                });
+
+            position_t axisWidth = 100;
+
+            auto xAxis = ECSCreateEntity(
+                "X Axis",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x + axisWidth / 2 + CENTER_SIZE / 2, geo->y, axisWidth, 3, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                });
+
+            drawnEntities[entityId].push_back(center);
+            drawnEntities[entityId].push_back(xAxis);
+
+            allDrawnEntities.push_back(center);
+            allDrawnEntities.push_back(xAxis);
+
+            ECSBeginLayer(GAME_LAYER);
+        }
+
+        void OnEditorChooseEntity(event_code_t code, void *sender, const EventContext &context)
+        {
+            auto entityId = context.u32_data[0];
+            Clear();
+            ChooseNewEntity(entityId);
+        }
+
+        void OnEditorAppendEntity(event_code_t code, void *sender, const EventContext &context)
+        {
+            auto entityId = context.u32_data[0];
+            ChooseNewEntity(entityId);
+        }
     };
 
     EditorSystem::EditorSystem()
@@ -113,6 +183,20 @@ namespace ntt
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_CHOOSE_ENTITY,
+                      std::bind(&Impl::OnEditorChooseEntity,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_APPEND_ENTITY,
+                      std::bind(&Impl::OnEditorAppendEntity,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
     }
 
     void EditorSystem::InitEntity(entity_id_t entityId)
@@ -149,62 +233,16 @@ namespace ntt
         if (!CheckState(NTT_KEY_LEFT_CONTROL, NTT_DOWN) &&
             !CheckState(NTT_KEY_RIGHT_CONTROL, NTT_DOWN))
         {
-            m_impl->Clear();
+            EventContext context;
+            context.u32_data[0] = entityId;
+            TriggerEvent(NTT_EDITOR_CHOOSE_ENTITY, nullptr, context);
         }
-
-        m_impl->selectedEntities.push_back(entityId);
-
-        if (!m_impl->drawnEntities.Contains(entityId))
+        else
         {
-            m_impl->drawnEntities[entityId] = List<entity_id_t>();
+            EventContext context;
+            context.u32_data[0] = entityId;
+            TriggerEvent(NTT_EDITOR_APPEND_ENTITY, nullptr, context);
         }
-
-        auto geo = ECS_GET_COMPONENT(entityId, Geometry);
-
-        if (geo == nullptr)
-        {
-            return;
-        }
-
-        ECSBeginLayer(EDITOR_LAYER);
-        auto center = ECSCreateEntity(
-            "Center Rect",
-            {
-                ECS_CREATE_COMPONENT(
-                    Geometry,
-                    geo->x,
-                    geo->y,
-                    CENTER_SIZE,
-                    CENTER_SIZE,
-                    geo->rotation,
-                    PRIORITY_0,
-                    NTT_RED),
-                ECS_CREATE_COMPONENT(Hovering),
-                ECS_CREATE_COMPONENT(
-                    NativeScriptComponent,
-                    m_impl->moveAroundControllerScriptId,
-                    INVALID_OBJECT_ID,
-                    &entityId),
-            });
-
-        position_t axisWidth = 100;
-
-        auto xAxis = ECSCreateEntity(
-            "X Axis",
-            {
-                ECS_CREATE_COMPONENT(
-                    Geometry,
-                    geo->x + axisWidth / 2 + CENTER_SIZE / 2, geo->y, axisWidth, 3, 0.0f,
-                    PRIORITY_0, NTT_GREEN),
-            });
-
-        m_impl->drawnEntities[entityId].push_back(center);
-        m_impl->drawnEntities[entityId].push_back(xAxis);
-
-        m_impl->allDrawnEntities.push_back(center);
-        m_impl->allDrawnEntities.push_back(xAxis);
-
-        ECSBeginLayer(GAME_LAYER);
     }
 
     void EditorSystem::ShutdownEntity(entity_id_t entityId)
