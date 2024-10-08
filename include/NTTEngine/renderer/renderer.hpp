@@ -26,3 +26,4 @@ namespace ntt::renderer
 #include "Sprite.hpp"
 #include "Hovering.hpp"
 #include "Text.hpp"
+#include "Parent.hpp"

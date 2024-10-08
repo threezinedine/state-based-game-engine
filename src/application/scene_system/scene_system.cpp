@@ -38,7 +38,7 @@ namespace ntt
 
             if (s_entities.Contains(id))
             {
-                NTT_ENGINE_TRACE("The entity {0} is already created", id);
+                NTT_ENGINE_TRACE("The entity {} is already created", id);
                 return;
             }
 

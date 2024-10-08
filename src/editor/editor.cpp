@@ -52,8 +52,11 @@ namespace ntt
         s_openLog = TRUE;
         s_openScene = TRUE;
 
-        s_sceneNames = sceneNames;
-        s_currentScene = s_sceneNames[0];
+        if (use)
+        {
+            s_sceneNames = sceneNames;
+            s_currentScene = s_sceneNames[0];
+        }
 
         EditorViewportWindowInit(s_screenWidth, s_screenHeight);
         EditorLogWindowInit();

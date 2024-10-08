@@ -13,6 +13,11 @@
 			"name": "resume-btn-controller",
 			"type": 2,
 			"relPath": "scripts/ResumeButtonController.cpp"
+		},
+		{
+			"name": "background",
+			"type": 0,
+			"relPath": "assets/images/game-objects/background-day.png"
 		}
 	],
 	"startup": [
@@ -25,6 +30,18 @@
 			"name": "startup-scene-controller",
 			"type": 2,
 			"relPath": "scripts/StartupSceneController.cpp"
+		}
+	],
+	"start": [
+		{
+			"name": "game-start-controller",
+			"type": 2,
+			"relPath": "scripts/GameStartController.cpp"
+		},
+		{
+			"name": "message",
+			"type": 0,
+			"relPath": "assets/images/ui/message.png"
 		}
 	],
 	"game": [
@@ -42,11 +59,6 @@
 			"name": "game-fsm-playing",
 			"type": 2,
 			"relPath": "scripts/game_state/game_playing.cpp"
-		},
-		{
-			"name": "game-fsm-start",
-			"type": 2,
-			"relPath": "scripts/game_state/game_start.cpp"
 		},
 		{
 			"name": "numbers",
@@ -94,16 +106,6 @@
 				"row": 12,
 				"col": 12
 			}
-		},
-		{
-			"name": "message",
-			"type": 0,
-			"relPath": "assets/images/ui/message.png"
-		},
-		{
-			"name": "background",
-			"type": 0,
-			"relPath": "assets/images/game-objects/background-day.png"
 		},
 		{
 			"name": "wing",

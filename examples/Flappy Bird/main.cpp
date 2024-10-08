@@ -15,11 +15,13 @@ void ConfigureStoredPath()
 
 void CreateStartupScene();
 void CreateScene1();
+void CreateStart();
 
 List<std::pair<String, SceneContext>> GetSceneFuncs()
 {
     return {
         {"startup", {CreateStartupScene, nullptr}},
+        {"start", {CreateStart, nullptr}},
         {"game", {CreateScene1, nullptr}},
     };
 }
@@ -41,6 +43,38 @@ void CreateStartupScene()
             ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("startup-scene-controller")),
             ECS_CREATE_COMPONENT(Hovering),
             ECS_CREATE_COMPONENT(Mass, 1.0f),
+        });
+}
+
+void CreateStart()
+{
+    auto windowSize = GetWindowSize();
+
+    ECSCreateEntity(
+        "start-message",
+        {
+            ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 200,
+                                 SIZE_DEFAULT, 0.0f, PRIORITY_2),
+            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("message")),
+        });
+
+    ECSCreateEntity(
+        "background",
+        {
+            ECS_CREATE_COMPONENT(Geometry,
+                                 windowSize.width / 2,
+                                 windowSize.height / 2,
+                                 windowSize.width,
+                                 windowSize.height),
+            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("background")),
+        });
+
+    ECSCreateEntity(
+        "start",
+        {
+            ECS_CREATE_COMPONENT(
+                NativeScriptComponent,
+                GetResourceID("game-start-controller")),
         });
 }
 
@@ -108,11 +142,10 @@ void CreateScene1()
             ECS_CREATE_COMPONENT(
                 StateComponent,
                 Dictionary<String, resource_id_t>{
-                    {START_STATE, GetResourceID("game-fsm-start")},
                     {GAME_OVER_STATE, GetResourceID("game-fsm-over")},
                     {PLAYING_STATE, GetResourceID("game-fsm-playing")},
                 },
-                START_STATE),
+                PLAYING_STATE),
         });
 
     auto bird = ECSCreateEntity(
@@ -131,6 +164,16 @@ void CreateScene1()
                                  200),
             ECS_CREATE_COMPONENT(Hovering),
             ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("bird-controller")),
+        });
+
+    ECSCreateEntity(
+        "test",
+        {
+            ECS_CREATE_COMPONENT(Geometry,
+                                 windowSize.width / 2,
+                                 windowSize.height / 2,
+                                 10, 10, 0.0f, PRIORITY_3),
+            ECS_CREATE_COMPONENT(Parent, ECSGetEntityByName("bird"), -40, -40),
         });
 
     ECSCreateEntity(
@@ -224,29 +267,6 @@ void Begin()
 
 void MainLoop(f32 delta)
 {
-    if (CHECK_PRESS(NTT_KEY_R))
-    {
-        SceneReload();
-    }
-
-    if (CHECK_PRESS(NTT_KEY_P))
-    {
-        NTT_APP_INFO("P is pressed");
-    }
-
-    if (CHECK_PRESS(NTT_KEY_TWO))
-    {
-        SceneOpen("game");
-    }
-
-    if (CHECK_PRESS(NTT_KEY_ONE) && CheckState(NTT_KEY_LEFT_CONTROL, NTT_DOWN))
-    {
-        NTT_APP_DEBUG("Ctrl + 1 is pressed");
-    }
-    else if (CHECK_PRESS(NTT_KEY_ONE))
-    {
-        NTT_APP_DEBUG("1 is pressed");
-    }
 }
 
 void Close()

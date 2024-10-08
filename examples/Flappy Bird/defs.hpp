@@ -11,6 +11,5 @@
 
 #define NEW_PIPE_EVENT 0xa5
 
-#define START_STATE "Start"
 #define PLAYING_STATE "Playing"
 #define GAME_OVER_STATE "GameOver"

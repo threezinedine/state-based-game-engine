@@ -74,8 +74,7 @@ protected:
         ASSERT_M(GetComponent<Mass>() != nullptr, "Mass component is not found!");
         GetComponent<Mass>()->AddForceConst(0, 0.001);
 
-        ASSERT_M(GetComponent<Geometry>() != nullptr, "Geometry component is not found!");
-        SetComponentState<Geometry>(FALSE);
+        TriggerEvent(PLAY_AGAIN_EVENT);
     }
 
     void OnUpdateImpl(f32 delta) override

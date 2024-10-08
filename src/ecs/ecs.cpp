@@ -401,6 +401,23 @@ namespace ntt::ecs
         return s_entityStore->Get(id);
     }
 
+    entity_id_t ECSGetEntityByName(const String &name)
+    {
+        PROFILE_FUNCTION();
+
+        List<entity_id_t> ids = s_entityStore->GetIdsByField<String>(
+            name,
+            [](Ref<EntityInfo> entity) -> String
+            { return entity->name; });
+
+        if (ids.size() != 1)
+        {
+            return INVALID_ENTITY_ID;
+        }
+
+        return ids[0];
+    }
+
     Ref<ComponentBase> ECSGetEntityComponent(entity_id_t id, std::type_index type)
     {
         PROFILE_FUNCTION();

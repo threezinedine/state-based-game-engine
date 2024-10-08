@@ -122,6 +122,17 @@ namespace ntt::ecs
     Ref<EntityInfo> ECSGetEntity(entity_id_t id);
 
     /**
+     * Retreive the entity id based on the name of the entity.
+     * The name is case-sensitive and be the name which is generated
+     *      automattically (see the core/auto_naming.hpp)
+     *
+     * @param name The name of the entity
+     * @return The ID of the entity, if the entity is not found, then return
+     *      INVALID_ENTITY_ID
+     */
+    entity_id_t ECSGetEntityByName(const String &name);
+
+    /**
      * Retrieve the component with the certain type from the entity.
      * If the entity is not found, then return nullptr
      */

@@ -24,6 +24,7 @@
 #include <NTTEngine/application/script_system/script_system.hpp>
 #include <NTTEngine/editor/editor.hpp>
 #include <NTTEngine/editor/editor_system.hpp>
+#include <NTTEngine/renderer/ParentSystem.hpp>
 
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 
@@ -109,6 +110,15 @@ namespace ntt
         ResourceStart();
 
         ECSInit();
+
+        // Parent system must be front of the render system for
+        //      child entity's position to be updated before rendering
+        ECSRegister(
+            "Parent System",
+            CreateRef<ParentSystem>(),
+            {typeid(Parent)},
+            TRUE);
+
         ECSRegister(
             "Render System",
             CreateRef<RenderSystem>(),

@@ -9,6 +9,7 @@
 #include <NTTEngine/application/script_system/script_store.hpp>
 #include <NTTEngine/application/script_system/native_script.hpp>
 #include <NTTEngine/application/script_system/script_component.hpp>
+#include <NTTEngine/renderer/Parent.hpp>
 
 #include "controllers/MoveXController.hpp"
 #include "controllers/MoveAroundController.hpp"
@@ -100,6 +101,9 @@ namespace ntt
                         moveAroundControllerScriptId,
                         INVALID_OBJECT_ID,
                         &entityId),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, 0),
                 });
 
             position_t axisWidth = 100;

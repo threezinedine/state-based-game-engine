@@ -14,7 +14,6 @@ namespace ntt
     {
     public:
         entity_id_t entity;
-        entity_id_t selfEntity;
 
         // True if the left button is pressed
         b8 preState = FALSE;
@@ -29,14 +28,6 @@ namespace ntt
                 return;
             }
 
-            auto geo = ECS_GET_COMPONENT(selfEntity, Geometry);
-            if (geo == nullptr)
-            {
-                NTT_ENGINE_WARN("The entity with ID {} does not have a geometry component",
-                                selfEntity);
-                return;
-            }
-
             auto entGeo = ECS_GET_COMPONENT(entity, Geometry);
             if (entGeo == nullptr)
             {
@@ -45,10 +36,18 @@ namespace ntt
                 return;
             }
 
-            geo->x += x;
-            geo->y += y;
-            entGeo->x += x;
-            entGeo->y += y;
+            auto entParent = ECS_GET_COMPONENT(entity, Parent);
+
+            if (entParent == nullptr)
+            {
+                entGeo->x += x;
+                entGeo->y += y;
+            }
+            else
+            {
+                entParent->posX += x;
+                entParent->posY += y;
+            }
         }
     };
 
@@ -68,7 +67,6 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        m_impl->selfEntity = GetEntity();
         Subscribe(NTT_EDITOR_SELECTED_MOVE);
     }
 

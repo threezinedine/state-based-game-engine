@@ -37,7 +37,7 @@ protected:
     {
         if (m_timer.GetSeconds() > 1.0f)
         {
-            SceneOpen("game");
+            SceneOpen("start");
         }
     }
 
