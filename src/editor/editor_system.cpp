@@ -7,6 +7,7 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/renderer/renderer.hpp>
 #include <NTTEngine/application/script_system/script_store.hpp>
+#include <NTTEngine/application/script_system/native_script.hpp>
 #include <NTTEngine/application/script_system/script_component.hpp>
 
 #include "controllers/MoveXController.hpp"
@@ -33,6 +34,8 @@ namespace ntt
         resource_id_t moveAroundControllerScriptId;
 
         u16 currentLayer = EDITOR_LAYER;
+
+        Position s_preMouse = {-1, -1};
 
         void OnLayerChanged(event_code_t code, void *sender, const EventContext &context)
         {
@@ -131,6 +134,55 @@ namespace ntt
             auto entityId = context.u32_data[0];
             ChooseNewEntity(entityId);
         }
+
+        void OnEditorSelectedMoveRequestStart(
+            event_code_t code,
+            void *sender,
+            const EventContext &context)
+        {
+            return;
+        }
+
+        void OnEditorSelectedMoveRequestEnd(
+            event_code_t code,
+            void *sender,
+            const EventContext &context)
+        {
+            s_preMouse = {-1, -1};
+            return;
+        }
+
+        void OnEditorSelectedMoveRequest(event_code_t code, void *sender, const EventContext &context)
+        {
+            f32 x = context.f32_data[0];
+            f32 y = context.f32_data[1];
+
+            if (s_preMouse.x == -1 && s_preMouse.y == -1)
+            {
+                s_preMouse = {x, y};
+            }
+
+            entity_id_t entityId = reinterpret_cast<Script *>(sender)->GetEntity();
+
+            if (selectedEntities.size() == 0)
+            {
+                return;
+            }
+
+            if (selectedEntities.Contains(entityId))
+            {
+                return;
+            }
+
+            EventContext moveContext;
+            moveContext.f32_data[0] = x - s_preMouse.x;
+            moveContext.f32_data[1] = y - s_preMouse.y;
+
+            TriggerEvent(NTT_EDITOR_SELECTED_MOVE, &selectedEntities, moveContext);
+
+            s_preMouse = {x, y};
+            return;
+        }
     };
 
     EditorSystem::EditorSystem()
@@ -193,6 +245,27 @@ namespace ntt
 
         RegisterEvent(NTT_EDITOR_APPEND_ENTITY,
                       std::bind(&Impl::OnEditorAppendEntity,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_SELECTED_MOVE_REQUEST,
+                      std::bind(&Impl::OnEditorSelectedMoveRequest,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_SELECTED_MOVE_START,
+                      std::bind(&Impl::OnEditorSelectedMoveRequestStart,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_SELECTED_MOVE_END,
+                      std::bind(&Impl::OnEditorSelectedMoveRequestEnd,
                                 m_impl.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,

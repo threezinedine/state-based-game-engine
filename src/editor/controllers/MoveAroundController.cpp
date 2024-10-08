@@ -14,6 +14,42 @@ namespace ntt
     {
     public:
         entity_id_t entity;
+        entity_id_t selfEntity;
+
+        // True if the left button is pressed
+        b8 preState = FALSE;
+
+        void OnSelectedMove(event_code_t code, void *sender, const EventContext &context)
+        {
+            f32 x = context.f32_data[0];
+            f32 y = context.f32_data[1];
+
+            if (!reinterpret_cast<List<entity_id_t> *>(sender)->Contains(entity))
+            {
+                return;
+            }
+
+            auto geo = ECS_GET_COMPONENT(selfEntity, Geometry);
+            if (geo == nullptr)
+            {
+                NTT_ENGINE_WARN("The entity with ID {} does not have a geometry component",
+                                selfEntity);
+                return;
+            }
+
+            auto entGeo = ECS_GET_COMPONENT(entity, Geometry);
+            if (entGeo == nullptr)
+            {
+                NTT_ENGINE_WARN("The entity with ID {} does not have a geometry component",
+                                entity);
+                return;
+            }
+
+            geo->x += x;
+            geo->y += y;
+            entGeo->x += x;
+            entGeo->y += y;
+        }
     };
 
     MoveAroundController::MoveAroundController(void *data)
@@ -31,6 +67,21 @@ namespace ntt
     void MoveAroundController::OnEnterImpl()
     {
         PROFILE_FUNCTION();
+
+        m_impl->selfEntity = GetEntity();
+        Subscribe(NTT_EDITOR_SELECTED_MOVE);
+    }
+
+    void MoveAroundController::OnEvent(event_code_t code, void *sender, const EventContext &context)
+    {
+        PROFILE_FUNCTION();
+
+        switch (code)
+        {
+        case NTT_EDITOR_SELECTED_MOVE:
+            m_impl->OnSelectedMove(code, sender, context);
+            break;
+        }
     }
 
     void MoveAroundController::OnExitImpl()
@@ -49,6 +100,12 @@ namespace ntt
 
         if (CheckState(NTT_BUTTON_LEFT, NTT_DOWN))
         {
+            if (m_impl->preState == FALSE)
+            {
+                TriggerEvent(NTT_EDITOR_SELECTED_MOVE_START, nullptr, {});
+                m_impl->preState = TRUE;
+            }
+
             // NTT_ENGINE_DEBUG("MoveAroundController: Left button pressed");
             auto geo = GetComponent<Geometry>();
             auto entGeo = ECS_GET_COMPONENT(m_impl->entity, Geometry);
@@ -67,12 +124,19 @@ namespace ntt
                 return;
             }
 
+            EventContext context;
             auto mouse = GetMousePosition();
-
-            geo->x = mouse.x;
-            geo->y = mouse.y;
-            entGeo->x = mouse.x;
-            entGeo->y = mouse.y;
+            context.f32_data[0] = mouse.x;
+            context.f32_data[1] = mouse.y;
+            TriggerEvent(NTT_EDITOR_SELECTED_MOVE_REQUEST, this, context);
+        }
+        else
+        {
+            if (m_impl->preState == TRUE)
+            {
+                TriggerEvent(NTT_EDITOR_SELECTED_MOVE_END, nullptr, {});
+                m_impl->preState = FALSE;
+            }
         }
     }
 

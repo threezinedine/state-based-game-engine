@@ -20,6 +20,7 @@ namespace ntt
         void OnUpdateImpl(f32 deltaTime) override;
 
         void OnHover(HoveringContext &) override;
+        void OnEvent(event_code_t, void *, const EventContext &) override;
 
     private:
         class Impl;
