@@ -13,6 +13,7 @@
 
 #include "controllers/MoveXController.hpp"
 #include "controllers/MoveAroundController.hpp"
+#include "controllers/MoveYController.hpp"
 
 #define CENTER_SIZE 20 ///< The size of the center rect
 
@@ -35,8 +36,6 @@ namespace ntt
         resource_id_t moveAroundControllerScriptId;
 
         u16 currentLayer = EDITOR_LAYER;
-
-        Position s_preMouse = {-1, -1};
 
         void OnLayerChanged(event_code_t code, void *sender, const EventContext &context)
         {
@@ -115,13 +114,70 @@ namespace ntt
                         Geometry,
                         geo->x + axisWidth / 2 + CENTER_SIZE / 2, geo->y, axisWidth, 3, 0.0f,
                         PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, axisWidth / 2 + CENTER_SIZE / 2, 0),
+                });
+
+            auto xPoint = ECSCreateEntity(
+                "X point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x + axisWidth + CENTER_SIZE / 2, geo->y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_0, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, axisWidth + CENTER_SIZE / 2, 0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        moveXControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &entityId),
+                });
+
+            auto yAxis = ECSCreateEntity(
+                "Y Axis",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x, geo->y - axisWidth / 2 - CENTER_SIZE / 2, 3, axisWidth, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, -axisWidth / 2 - CENTER_SIZE / 2),
+                });
+
+            auto yPoint = ECSCreateEntity(
+                "Y point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x, geo->y - axisWidth - CENTER_SIZE / 2, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_0, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, -axisWidth - CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        moveYControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &entityId),
                 });
 
             drawnEntities[entityId].push_back(center);
             drawnEntities[entityId].push_back(xAxis);
+            drawnEntities[entityId].push_back(xPoint);
+            drawnEntities[entityId].push_back(yAxis);
+            drawnEntities[entityId].push_back(yPoint);
 
             allDrawnEntities.push_back(center);
             allDrawnEntities.push_back(xAxis);
+            allDrawnEntities.push_back(yAxis);
+            allDrawnEntities.push_back(xPoint);
+            allDrawnEntities.push_back(yPoint);
 
             ECSBeginLayer(GAME_LAYER);
         }
@@ -139,32 +195,10 @@ namespace ntt
             ChooseNewEntity(entityId);
         }
 
-        void OnEditorSelectedMoveRequestStart(
-            event_code_t code,
-            void *sender,
-            const EventContext &context)
-        {
-            return;
-        }
-
-        void OnEditorSelectedMoveRequestEnd(
-            event_code_t code,
-            void *sender,
-            const EventContext &context)
-        {
-            s_preMouse = {-1, -1};
-            return;
-        }
-
         void OnEditorSelectedMoveRequest(event_code_t code, void *sender, const EventContext &context)
         {
             f32 x = context.f32_data[0];
             f32 y = context.f32_data[1];
-
-            if (s_preMouse.x == -1 && s_preMouse.y == -1)
-            {
-                s_preMouse = {x, y};
-            }
 
             entity_id_t entityId = reinterpret_cast<Script *>(sender)->GetEntity();
 
@@ -178,13 +212,7 @@ namespace ntt
                 return;
             }
 
-            EventContext moveContext;
-            moveContext.f32_data[0] = x - s_preMouse.x;
-            moveContext.f32_data[1] = y - s_preMouse.y;
-
-            TriggerEvent(NTT_EDITOR_SELECTED_MOVE, &selectedEntities, moveContext);
-
-            s_preMouse = {x, y};
+            TriggerEvent(NTT_EDITOR_SELECTED_MOVE, &selectedEntities, context);
             return;
         }
     };
@@ -233,6 +261,19 @@ namespace ntt
                 return typeid(Script);
             });
 
+        m_impl->moveYControllerScriptId = ScriptStoreLoad(
+            "move-y-controller",
+            [](void *data) -> Ref<void>
+            { return std::reinterpret_pointer_cast<void>(CreateRef<MoveYController>(data)); },
+            [](Ref<void> script)
+            {
+                std::reinterpret_pointer_cast<MoveYController>(script).reset();
+            },
+            []() -> std::type_index
+            {
+                return typeid(Script);
+            });
+
         RegisterEvent(NTT_LAYER_CHANGED,
                       std::bind(&Impl::OnLayerChanged,
                                 m_impl.get(),
@@ -261,19 +302,10 @@ namespace ntt
                                 std::placeholders::_2,
                                 std::placeholders::_3));
 
-        RegisterEvent(NTT_EDITOR_SELECTED_MOVE_START,
-                      std::bind(&Impl::OnEditorSelectedMoveRequestStart,
-                                m_impl.get(),
-                                std::placeholders::_1,
-                                std::placeholders::_2,
-                                std::placeholders::_3));
-
-        RegisterEvent(NTT_EDITOR_SELECTED_MOVE_END,
-                      std::bind(&Impl::OnEditorSelectedMoveRequestEnd,
-                                m_impl.get(),
-                                std::placeholders::_1,
-                                std::placeholders::_2,
-                                std::placeholders::_3));
+        RegisterEvent(
+            NTT_SCENE_CHANGED,
+            [&](event_code_t code, void *sender, const EventContext &context)
+            { m_impl->Clear(); });
     }
 
     void EditorSystem::InitEntity(entity_id_t entityId)

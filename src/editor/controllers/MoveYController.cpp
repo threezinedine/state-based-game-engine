@@ -1,4 +1,4 @@
-#include "MoveXController.hpp"
+#include "MoveYController.hpp"
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
@@ -10,7 +10,7 @@ namespace ntt
     using namespace ecs;
     using namespace input;
 
-    class MoveXController::Impl
+    class MoveYController::Impl
     {
     public:
         entity_id_t entity;
@@ -19,61 +19,61 @@ namespace ntt
         // FALSE if the button is released
         b8 active = FALSE;
 
-        f32 preMouseX = -1.0f;
+        f32 preMouseY = -1.0f;
     };
 
-    MoveXController::MoveXController(void *data)
+    MoveYController::MoveYController(void *data)
         : m_impl(CreateScope<Impl>())
     {
         PROFILE_FUNCTION();
         m_impl->entity = *static_cast<entity_id_t *>(data);
     }
 
-    MoveXController::~MoveXController()
+    MoveYController::~MoveYController()
     {
         PROFILE_FUNCTION();
     }
 
-    void MoveXController::OnEnterImpl()
+    void MoveYController::OnEnterImpl()
     {
         PROFILE_FUNCTION();
     }
 
-    void MoveXController::OnExitImpl()
+    void MoveYController::OnExitImpl()
     {
         PROFILE_FUNCTION();
     }
 
-    void MoveXController::OnUpdateImpl(f32 deltaTime)
+    void MoveYController::OnUpdateImpl(f32 deltaTime)
     {
         PROFILE_FUNCTION();
 
         if (CheckState(NTT_BUTTON_LEFT, NTT_DOWN) && m_impl->active)
         {
-            f32 mouseX = GetMousePosition().x;
+            f32 mouseY = GetMousePosition().y;
             EventContext context;
-            context.f32_data[0] = mouseX - m_impl->preMouseX;
-            context.f32_data[1] = 0.0f;
+            context.f32_data[0] = 0.0f;
+            context.f32_data[1] = mouseY - m_impl->preMouseY;
             TriggerEvent(NTT_EDITOR_SELECTED_MOVE_REQUEST, this, context);
 
-            m_impl->preMouseX = mouseX;
+            m_impl->preMouseY = mouseY;
         }
 
         if (CheckState(NTT_BUTTON_LEFT, NTT_UP))
         {
             m_impl->active = FALSE;
-            m_impl->preMouseX = -1.0f;
+            m_impl->preMouseY = -1.0f;
         }
     }
 
-    void MoveXController::OnHover(HoveringContext &)
+    void MoveYController::OnHover(HoveringContext &)
     {
         PROFILE_FUNCTION();
 
         if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
         {
             m_impl->active = TRUE;
-            m_impl->preMouseX = GetMousePosition().x;
+            m_impl->preMouseY = GetMousePosition().y;
         }
     }
 

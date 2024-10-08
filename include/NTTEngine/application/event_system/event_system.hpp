@@ -91,8 +91,6 @@ namespace ntt::event
 
 #define NTT_EDITOR_SELECTED_MOVE 0x1A         ///< When the entity need to be moved
 #define NTT_EDITOR_SELECTED_MOVE_REQUEST 0x1B ///< When the entity has request to be moved
-#define NTT_EDITOR_SELECTED_MOVE_START 0x1C   ///< When the entity start to be moved
-#define NTT_EDITOR_SELECTED_MOVE_END 0x1D     ///< When the entity end to be moved
 
     // TODO: Change the default event < 255 and the user's event >= 255
 

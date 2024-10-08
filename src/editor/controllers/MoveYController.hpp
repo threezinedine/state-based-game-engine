@@ -8,11 +8,11 @@ namespace ntt
     using namespace script;
     using namespace memory;
 
-    class MoveXController : public Script
+    class MoveYController : public Script
     {
     public:
-        MoveXController(void *);
-        ~MoveXController() override;
+        MoveYController(void *);
+        ~MoveYController() override;
 
     protected:
         void OnEnterImpl() override;

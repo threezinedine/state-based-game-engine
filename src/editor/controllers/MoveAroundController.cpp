@@ -16,7 +16,8 @@ namespace ntt
         entity_id_t entity;
 
         // True if the left button is pressed
-        b8 preState = FALSE;
+        b8 active = FALSE;
+        Position preMousePos = {-1, -1};
 
         void OnSelectedMove(event_code_t code, void *sender, const EventContext &context)
         {
@@ -90,21 +91,9 @@ namespace ntt
     void MoveAroundController::OnUpdateImpl(f32 deltaTime)
     {
         PROFILE_FUNCTION();
-    }
 
-    void MoveAroundController::OnHover(HoveringContext &)
-    {
-        PROFILE_FUNCTION();
-
-        if (CheckState(NTT_BUTTON_LEFT, NTT_DOWN))
+        if (CheckState(NTT_BUTTON_LEFT, NTT_DOWN) && m_impl->active)
         {
-            if (m_impl->preState == FALSE)
-            {
-                TriggerEvent(NTT_EDITOR_SELECTED_MOVE_START, nullptr, {});
-                m_impl->preState = TRUE;
-            }
-
-            // NTT_ENGINE_DEBUG("MoveAroundController: Left button pressed");
             auto geo = GetComponent<Geometry>();
             auto entGeo = ECS_GET_COMPONENT(m_impl->entity, Geometry);
 
@@ -124,17 +113,28 @@ namespace ntt
 
             EventContext context;
             auto mouse = GetMousePosition();
-            context.f32_data[0] = mouse.x;
-            context.f32_data[1] = mouse.y;
+            context.f32_data[0] = mouse.x - m_impl->preMousePos.x;
+            context.f32_data[1] = mouse.y - m_impl->preMousePos.y;
             TriggerEvent(NTT_EDITOR_SELECTED_MOVE_REQUEST, this, context);
+
+            m_impl->preMousePos = {mouse.x, mouse.y};
         }
-        else
+
+        if (CheckState(NTT_BUTTON_LEFT, NTT_UP))
         {
-            if (m_impl->preState == TRUE)
-            {
-                TriggerEvent(NTT_EDITOR_SELECTED_MOVE_END, nullptr, {});
-                m_impl->preState = FALSE;
-            }
+            m_impl->active = FALSE;
+            m_impl->preMousePos = {-1, -1};
+        }
+    }
+
+    void MoveAroundController::OnHover(HoveringContext &)
+    {
+        PROFILE_FUNCTION();
+
+        if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
+        {
+            m_impl->preMousePos = {GetMousePosition().x, GetMousePosition().y};
+            m_impl->active = TRUE;
         }
     }
 

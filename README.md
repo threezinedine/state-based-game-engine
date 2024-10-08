@@ -32,3 +32,6 @@ Another scene
 
 At the same time, a .exe file of built game is created beside the editor version.
 ![alt text](images/game-version.png)
+
+The entity can be drag (support multiple selection) and drop to the scene.
+![alt text](images/drag-drop-entity.png)
