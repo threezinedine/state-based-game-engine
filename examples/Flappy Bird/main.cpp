@@ -35,7 +35,9 @@ void CreateStartupScene()
                                  windowSize.width / 2,
                                  windowSize.height / 2,
                                  windowSize.width * 2 / 3),
-            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("startup")),
+            ECS_CREATE_COMPONENT(
+                TextureComponent,
+                GetResourceID("startup")),
             ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("startup-scene-controller")),
             ECS_CREATE_COMPONENT(Hovering),
             ECS_CREATE_COMPONENT(Mass, 1.0f),
@@ -59,10 +61,14 @@ void CreateScene1()
     ECSCreateEntity(
         "menu-btn",
         {
-            ECS_CREATE_COMPONENT(Geometry, windowSize.width * 0.95, windowSize.height * 0.05, 30),
+            ECS_CREATE_COMPONENT(
+                Geometry,
+                windowSize.width * 0.95,
+                windowSize.height * 0.05,
+                30, SIZE_DEFAULT,
+                0.0f, PRIORITY_2),
             ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("buttons"),
                                  9, 11,
-                                 PRIORITY_2,
                                  "Setting"),
             ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("setting-btn-controller")),
             ECS_CREATE_COMPONENT(Hovering),
@@ -76,8 +82,9 @@ void CreateScene1()
                                  windowSize.height / 20,
                                  windowSize.width,
                                  windowSize.height / 10,
-                                 180),
-            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("base"), 0, 0, PRIORITY_1),
+                                 180,
+                                 PRIORITY_1),
+            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("base"), 0, 0),
             ECS_CREATE_COMPONENT(Collision),
         });
 
@@ -88,8 +95,9 @@ void CreateScene1()
                                  windowSize.width / 2,
                                  windowSize.height / 20 * 19,
                                  windowSize.width,
-                                 windowSize.height / 10),
-            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("base"), 0, 0, PRIORITY_1),
+                                 windowSize.height / 10,
+                                 0.0f, PRIORITY_1),
+            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("base"), 0, 0),
             ECS_CREATE_COMPONENT(Collision),
         });
 
@@ -110,10 +118,12 @@ void CreateScene1()
     auto bird = ECSCreateEntity(
         "bird",
         {
-            ECS_CREATE_COMPONENT(Geometry, GetConfiguration().Get<position_t>("bird-start-x", 200),
-                                 windowSize.height / 2, 70),
-            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("bird"), 0, 0, PRIORITY_2,
-                                 "The bird"),
+            ECS_CREATE_COMPONENT(
+                Geometry,
+                GetConfiguration().Get<position_t>("bird-start-x", 200),
+                windowSize.height / 2,
+                70, SIZE_DEFAULT, 0.0f, PRIORITY_2),
+            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("bird"), 0, 0, "The bird"),
             ECS_CREATE_COMPONENT(Mass, 1.0f),
             ECS_CREATE_COMPONENT(Collision),
             ECS_CREATE_COMPONENT(Sprite,
@@ -133,8 +143,16 @@ void CreateScene1()
     ECSCreateEntity(
         "hello world text",
         {
-            ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2),
-            ECS_CREATE_COMPONENT(Text, "Hello World", 20, PRIORITY_0, NTT_CYAN),
+            ECS_CREATE_COMPONENT(
+                Geometry,
+                windowSize.width / 2,
+                windowSize.height / 2,
+                SIZE_DEFAULT,
+                SIZE_DEFAULT,
+                0.0f,
+                PRIORITY_3,
+                NTT_CYAN),
+            ECS_CREATE_COMPONENT(Text, "Hello World", 20),
         });
 
     RegisterEvent(
@@ -159,12 +177,33 @@ void Begin()
     ECSCreateEntity(
         "resume-btn",
         {
-            ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, windowSize.height / 2, 100),
-            ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("menu-btn"), 1, 1,
-                                 PRIORITY_0,
-                                 "Resume"),
+            ECS_CREATE_COMPONENT(
+                Geometry,
+                windowSize.width / 2,
+                windowSize.height / 2,
+                100,
+                SIZE_DEFAULT,
+                0.0f,
+                PRIORITY_0),
+            ECS_CREATE_COMPONENT(
+                TextureComponent,
+                GetResourceID("menu-btn"), 1, 1,
+                "Resume"),
             ECS_CREATE_COMPONENT(Hovering),
             ECS_CREATE_COMPONENT(NativeScriptComponent, GetResourceID("resume-btn-controller")),
+        });
+
+    ECSCreateEntity(
+        "test-rect",
+        {
+            ECS_CREATE_COMPONENT(
+                Geometry,
+                50,
+                50,
+                100,
+                100,
+                0.0f,
+                PRIORITY_0),
         });
 
     RegisterEvent(
@@ -195,24 +234,18 @@ void MainLoop(f32 delta)
         NTT_APP_INFO("P is pressed");
     }
 
-    if (CHECK_PRESS(NTT_KEY_D))
-    {
-        EditorRun();
-    }
-
-    if (CHECK_PRESS(NTT_KEY_S))
-    {
-        EditorStop();
-    }
-
-    if (CHECK_PRESS(NTT_KEY_ONE))
-    {
-        SceneOpen("startup");
-    }
-
     if (CHECK_PRESS(NTT_KEY_TWO))
     {
         SceneOpen("game");
+    }
+
+    if (CHECK_PRESS(NTT_KEY_ONE) && CheckState(NTT_KEY_LEFT_CONTROL, NTT_DOWN))
+    {
+        NTT_APP_DEBUG("Ctrl + 1 is pressed");
+    }
+    else if (CHECK_PRESS(NTT_KEY_ONE))
+    {
+        NTT_APP_DEBUG("1 is pressed");
     }
 }
 

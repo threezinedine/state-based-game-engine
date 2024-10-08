@@ -28,8 +28,9 @@ protected:
                                          windowSize.width / 2,
                                          windowSize.height / 2,
                                          300,
-                                         100),
-                    ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("gameover"), 0, 0, PRIORITY_4),
+                                         100,
+                                         0, PRIORITY_4),
+                    ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("gameover"), 0, 0),
                 });
         }
 

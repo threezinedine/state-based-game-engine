@@ -55,7 +55,7 @@ namespace ntt::script
             return;
         }
 
-        script->objId = ScriptStoreCreate(script->scriptId, nullptr);
+        script->objId = ScriptStoreCreate(script->scriptId, script->data);
         auto obj = GET_SCRIPT(Script, script->objId);
 
         if (obj == nullptr)

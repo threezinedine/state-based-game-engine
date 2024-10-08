@@ -21,17 +21,18 @@ namespace ntt::renderer
             f32 x,
             f32 y,
             i32 fontSize,
-            Color color) override;
+            const RGBAColor &color) override;
 
         u32 GetTextWidth(const String &text, i32 fontSize) override;
 
-        void DrawRectangle(f32 x, f32 y, f32 width, f32 height) override;
+        void DrawRectangle(f32 x, f32 y, f32 width, f32 height, const RGBAColor &color) override;
         void DrawRectanglePro(
             f32 x,
             f32 y,
             f32 width,
             f32 height,
-            f32 rotation) override;
+            f32 rotation,
+            const RGBAColor &color) override;
 
         void DrawTexture(Texture2D texture,
                          f32 fx,

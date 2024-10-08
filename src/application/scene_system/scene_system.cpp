@@ -14,13 +14,26 @@ namespace ntt
     {
         Dictionary<String, SceneContext> s_scenes;
         List<entity_id_t> s_entities;
+        u16 s_currentLayer = 0;
 
         String s_currentScene = "";
         std::function<void(const String &)> s_onSceneChanged = nullptr;
 
+        void OnSceneChanged(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+            s_currentLayer = context.u16_data[0];
+        }
+
         void CreateEntity(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
+
+            if (s_currentLayer != GAME_LAYER)
+            {
+                return;
+            }
+
             entity_id_t id = context.u32_data[0];
 
             if (s_entities.Contains(id))
@@ -35,6 +48,12 @@ namespace ntt
         void DeleteEntity(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
+
+            if (s_currentLayer != GAME_LAYER)
+            {
+                return;
+            }
+
             entity_id_t id = context.u32_data[0];
 
             s_entities.RemoveItem(id);
@@ -55,6 +74,8 @@ namespace ntt
 
         RegisterEvent(NTT_ENTITY_CREATED, CreateEntity);
         RegisterEvent(NTT_ENTITY_DESTROYED, DeleteEntity);
+
+        RegisterEvent(NTT_DEFINED_LAYER_CHANGED, OnSceneChanged);
 
         s_scenes.clear();
         s_currentScene = "";

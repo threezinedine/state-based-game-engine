@@ -46,7 +46,7 @@ namespace ntt::renderer
         f32 x,
         f32 y,
         i32 fontSize,
-        Color color)
+        const RGBAColor &color)
     {
         m_drawTextCalled++;
 
@@ -58,7 +58,7 @@ namespace ntt::renderer
         return 0;
     }
 
-    void FakeGraphicAPI::DrawRectangle(f32 x, f32 y, f32 width, f32 height)
+    void FakeGraphicAPI::DrawRectangle(f32 x, f32 y, f32 width, f32 height, const RGBAColor &color)
     {
         m_drawRectangleCalled++;
     }
@@ -68,7 +68,8 @@ namespace ntt::renderer
         f32 y,
         f32 width,
         f32 height,
-        f32 rotation)
+        f32 rotation,
+        const RGBAColor &color)
     {
         m_drawRectangleProCalled++;
     }

@@ -69,8 +69,6 @@ namespace ntt::event
 #define NTT_END_FRAME 0x0C ///< When an update frame is finished (trigger
                            ///< at the end of the game loop)
 
-#define NTT_LAYER_CHANGED 0x0D ///< When the layer is changed
-
 #define NTT_SCENE_CHANGED 0x0E ///< When the scene is changed
 
 #define NTT_RESOURCE_LOADED 0x0F   ///< When the resource is loaded
@@ -84,6 +82,9 @@ namespace ntt::event
 #define NTT_EDITOR_START 0x14 ///< When the editor is started
 #define NTT_EDITOR_PAUSE 0x15 ///< When the editor is paused
 #define NTT_EDITOR_STOP 0x16  ///< When the editor is stopped
+
+#define NTT_LAYER_CHANGED 0x0D         ///< When the layer is changed
+#define NTT_DEFINED_LAYER_CHANGED 0x17 ///< When the defined layer is changed (not visible layer)
 
     // TODO: Change the default event < 255 and the user's event >= 255
 

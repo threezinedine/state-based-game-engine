@@ -12,10 +12,15 @@ namespace ntt::script
     {
         resource_id_t scriptId = INVALID_SCRIPT_ID;
         script_object_id_t objId = INVALID_OBJECT_ID;
+        void *data;
 
         NativeScriptComponent(resource_id_t scriptId,
-                              script_object_id_t objId = INVALID_OBJECT_ID)
-            : scriptId(scriptId), objId(objId) {}
+                              script_object_id_t objId = INVALID_OBJECT_ID,
+                              void *data = nullptr)
+            : scriptId(scriptId), objId(objId),
+              data(data)
+        {
+        }
 
         Ref<Script> GetObj()
         {

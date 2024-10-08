@@ -21,22 +21,22 @@ protected:
         m_hunderedNumber = ECSCreateEntity(
             "hundered",
             {
-                ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 - 50, 50, 20, 20),
-                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0, TRUE),
+                ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 - 50, 50, 20, 20, 0, PRIORITY_1),
+                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0),
             });
 
         m_tenNumber = ECSCreateEntity(
             "ten",
             {
-                ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, 50, 20, 20),
-                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0, TRUE),
+                ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2, 50, 20, 20, 0, PRIORITY_1),
+                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0),
             });
 
         m_oneNumber = ECSCreateEntity(
             "one",
             {
-                ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 + 50, 50, 20, 20),
-                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0, TRUE),
+                ECS_CREATE_COMPONENT(Geometry, windowSize.width / 2 + 50, 50, 20, 20, 0, PRIORITY_1),
+                ECS_CREATE_COMPONENT(TextureComponent, GetResourceID("numbers"), 0, 0),
             });
 
         Subscribe(SCORE_CHANGED_EVENT);

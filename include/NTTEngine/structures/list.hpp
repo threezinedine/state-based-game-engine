@@ -2,6 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/core/exception.hpp>
+#include <NTTEngine/core/formatter.hpp>
 
 #include <string>
 #include <vector>

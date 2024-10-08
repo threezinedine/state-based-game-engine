@@ -42,7 +42,7 @@ namespace ntt::renderer
         f32 x,
         f32 y,
         i32 fontSize,
-        Color color)
+        const RGBAColor &color)
     {
         ::DrawText(text.RawString().c_str(), x, y, fontSize, ::Color{color.r, color.g, color.b, color.a});
     }
@@ -52,9 +52,9 @@ namespace ntt::renderer
         return ::MeasureText(text.RawString().c_str(), fontSize);
     }
 
-    void RaylibGraphicAPI::DrawRectangle(f32 x, f32 y, f32 width, f32 height)
+    void RaylibGraphicAPI::DrawRectangle(f32 x, f32 y, f32 width, f32 height, const RGBAColor &color)
     {
-        ::DrawRectangle(x, y, width, height, ::YELLOW);
+        ::DrawRectangle(x, y, width, height, ::Color{color.r, color.g, color.b, color.a});
     }
 
     void RaylibGraphicAPI::DrawRectanglePro(
@@ -62,7 +62,8 @@ namespace ntt::renderer
         f32 y,
         f32 width,
         f32 height,
-        f32 rotation)
+        f32 rotation,
+        const RGBAColor &color)
     {
         ::DrawRectanglePro(
             {x,
@@ -71,7 +72,7 @@ namespace ntt::renderer
              static_cast<f32>(height)},
             {width / 2, height / 2},
             rotation,
-            ::Color{0, 0, 255, 95});
+            ::Color{color.r, color.g, color.b, color.a});
     }
 
     void RaylibGraphicAPI::DrawTexture(Texture2D texture,

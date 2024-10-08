@@ -14,14 +14,29 @@ namespace ntt
 
     namespace
     {
+        u16 s_currentDefinedLayer = 0;
+
+        void OnDefinedLayerChanged(event_code_t code, void *sender, const EventContext &context)
+        {
+            s_currentDefinedLayer = context.u16_data[0];
+        }
+
         void OnCreateEntity(event_code_t code, void *sender, const EventContext context)
         {
+            if (s_currentDefinedLayer != GAME_LAYER)
+            {
+                return;
+            }
             entity_id_t id = context.u32_data[0];
             s_entities.push_back(id);
         }
 
         void OnDestroyEntity(event_code_t code, void *sender, const EventContext context)
         {
+            if (s_currentDefinedLayer != GAME_LAYER)
+            {
+                return;
+            }
             entity_id_t id = context.u32_data[0];
             s_entities.RemoveItem(id);
         }
@@ -31,18 +46,21 @@ namespace ntt
     {
         RegisterEvent(NTT_ENTITY_CREATED, OnCreateEntity);
         RegisterEvent(NTT_ENTITY_DESTROYED, OnDestroyEntity);
+        RegisterEvent(NTT_DEFINED_LAYER_CHANGED, OnDefinedLayerChanged);
     }
 
     void EditorSceneWindowUpdate(b8 *p_open, b8 isRunning)
     {
         if (ImGui::Begin("Scene", p_open, isRunning ? ImGuiWindowFlags_NoInputs : 0))
         {
-            if (ImGui::TreeNode("Entities"))
+            if (ImGui::TreeNodeEx("Entities", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 for (auto id : s_entities)
                 {
                     auto entityInfo = ECSGetEntity(id);
-                    ImGui::Text("Entity %s", entityInfo->name.RawString().c_str());
+                    ImGui::Text("Entity %s id - %d",
+                                entityInfo->name.RawString().c_str(),
+                                id);
                 }
                 ImGui::TreePop();
             }

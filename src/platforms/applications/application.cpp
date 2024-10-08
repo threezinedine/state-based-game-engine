@@ -23,6 +23,7 @@
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/application/script_system/script_system.hpp>
 #include <NTTEngine/editor/editor.hpp>
+#include <NTTEngine/editor/editor_system.hpp>
 
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 
@@ -115,6 +116,12 @@ namespace ntt
             TRUE);
 
         ECSRegister(
+            "Editor System",
+            CreateRef<EditorSystem>(),
+            {typeid(Geometry)},
+            TRUE);
+
+        ECSRegister(
             "Native Script System",
             CreateRef<ScriptSystem>(),
             {typeid(NativeScriptComponent)});
@@ -132,7 +139,7 @@ namespace ntt
         ECSRegister(
             "Hovering System",
             CreateRef<MouseHoveringSystem>(),
-            {typeid(Hovering), typeid(TextureComponent), typeid(Geometry)});
+            {typeid(Hovering), typeid(Geometry)});
 
         ECSRegister(
             "Mass System",

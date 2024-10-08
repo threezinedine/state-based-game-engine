@@ -33,16 +33,23 @@ namespace ntt::renderer
             f32 x,
             f32 y,
             i32 fontSize,
-            Color color) = 0;
+            const RGBAColor &color = {0, 0, 0, 0}) = 0;
         virtual u32 GetTextWidth(const String &text, i32 fontSize) = 0;
 
-        virtual void DrawRectangle(f32 x, f32 y, f32 width, f32 height) = 0;
+        virtual void DrawRectangle(
+            f32 x,
+            f32 y,
+            f32 width,
+            f32 height,
+            const RGBAColor &color = {0, 0, 255, 95}) = 0;
+
         virtual void DrawRectanglePro(
             f32 x,
             f32 y,
             f32 width,
             f32 height,
-            f32 rotation) = 0;
+            f32 rotation,
+            const RGBAColor &color = {0, 0, 255, 95}) = 0;
 
         virtual void DrawTexture(Texture2D texture,
                                  f32 fx,

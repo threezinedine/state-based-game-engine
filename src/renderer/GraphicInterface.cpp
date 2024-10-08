@@ -67,12 +67,11 @@ namespace ntt::renderer
         b8 drawText = FALSE;
         String text;
         u32 fontSize;
-        Color color;
+        RGBAColor color;
     };
 
     namespace
     {
-        b8 s_isInitialized = FALSE;
         Scope<Store<resource_id_t, TextureInfo>> s_textureStore;
 
         // List<DrawInfo> s_drawList;
@@ -97,10 +96,6 @@ namespace ntt::renderer
     void RendererInit(b8 test)
     {
         PROFILE_FUNCTION();
-        if (s_isInitialized)
-        {
-            return;
-        }
 
         s_textureStore = CreateScope<Store<resource_id_t, TextureInfo>>(
             RESOURCE_ID_DEFAULT,
@@ -119,18 +114,11 @@ namespace ntt::renderer
         s_test = test;
 
         memset(s_drawLists, 0, sizeof(s_drawLists));
-
-        s_isInitialized = TRUE;
     }
 
     resource_id_t LoadTexture(const String &path, const Grid &grid)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            NTT_ENGINE_ERROR("The renderer is not initialized yet");
-            return RESOURCE_ID_DEFAULT;
-        }
 
         if (!s_test)
         {
@@ -216,11 +204,6 @@ namespace ntt::renderer
                      const DrawContext &drawContext)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            NTT_ENGINE_ERROR("The renderer is not initialized yet");
-            return;
-        }
 
         if (texture_id == INVALID_RESOURCE_ID)
         {
@@ -254,7 +237,8 @@ namespace ntt::renderer
 
         if (drawContext.priority >= MAX_PRIORITIES)
         {
-            NTT_ENGINE_WARN("The priority of the texture is out of range: {}", drawContext.priority);
+            NTT_ENGINE_WARN("The priority of the texture is out of range: {}",
+                            static_cast<u32>(drawContext.priority));
             return;
         }
 
@@ -286,11 +270,6 @@ namespace ntt::renderer
                   const DrawContext &drawContext)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            NTT_ENGINE_ERROR("The renderer is not initialized yet");
-            return;
-        }
 
         if (s_drawLists[drawContext.priority] == nullptr)
         {
@@ -309,6 +288,35 @@ namespace ntt::renderer
         info.toX = static_cast<f32>(position.x);
         info.toY = static_cast<f32>(position.y);
         info.fontSize = drawContext.fontSize;
+        info.color = drawContext.color;
+
+        s_drawLists[drawContext.priority]->push_back(info);
+    }
+
+    void DrawRectangle(const RectContext &rect, const DrawContext &drawContext)
+    {
+        PROFILE_FUNCTION();
+
+        if (s_drawLists[drawContext.priority] == nullptr)
+        {
+            s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
+        }
+
+        if (s_drawLists[drawContext.priority] == nullptr)
+        {
+            s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
+        }
+
+        DrawInfo info;
+        info.entity_id = drawContext.entity_id;
+        info.drawText = FALSE;
+        info.toX = static_cast<f32>(rect.position.x);
+        info.toY = static_cast<f32>(rect.position.y);
+        info.toWidth = static_cast<f32>(rect.size.width);
+        info.toHeight = static_cast<f32>(rect.size.height);
+        info.rotate = rect.rotate;
+        info.tooltip = drawContext.tooltip;
+        info.texture_id = INVALID_RESOURCE_ID;
         info.color = drawContext.color;
 
         s_drawLists[drawContext.priority]->push_back(info);
@@ -361,17 +369,30 @@ namespace ntt::renderer
                 }
                 else
                 {
-                    s_graphicAPI->DrawTexture(
-                        s_textureStore->Get(info.texture_id)->texture,
-                        info.fromX,
-                        info.fromY,
-                        info.fromWidth,
-                        info.fromHeight,
-                        info.toX,
-                        info.toY,
-                        info.toWidth,
-                        info.toHeight,
-                        info.rotate);
+                    if (info.texture_id == INVALID_RESOURCE_ID)
+                    {
+                        s_graphicAPI->DrawRectanglePro(
+                            info.toX,
+                            info.toY,
+                            info.toWidth,
+                            info.toHeight,
+                            info.rotate,
+                            info.color);
+                    }
+                    else
+                    {
+                        s_graphicAPI->DrawTexture(
+                            s_textureStore->Get(info.texture_id)->texture,
+                            info.fromX,
+                            info.fromY,
+                            info.fromWidth,
+                            info.fromHeight,
+                            info.toX,
+                            info.toY,
+                            info.toWidth,
+                            info.toHeight,
+                            info.rotate);
+                    }
 
                     if (info.entity_id == INVALID_ENTITY_ID)
                     {
@@ -429,7 +450,8 @@ namespace ntt::renderer
                                 toolTipX,
                                 toolTipY,
                                 textWidth + TOOL_TIP_PADDING * 2,
-                                textHeight + TOOL_TIP_PADDING * 2);
+                                textHeight + TOOL_TIP_PADDING * 2,
+                                {0, 255, 255, 255});
 
                             s_graphicAPI->DrawText(info.tooltip,
                                                    toolTipX + TOOL_TIP_PADDING,
@@ -475,11 +497,6 @@ namespace ntt::renderer
     void UnloadTexture(resource_id_t texture_id)
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            NTT_ENGINE_ERROR("The renderer is not initialized yet");
-            return;
-        }
 
         if (s_textureStore->Get(texture_id) == nullptr)
         {
@@ -502,11 +519,6 @@ namespace ntt::renderer
     void RendererShutdown()
     {
         PROFILE_FUNCTION();
-        if (!s_isInitialized)
-        {
-            return;
-        }
-
         ForEachFunc<resource_id_t, TextureInfo> func = [&](Ref<TextureInfo> texture, resource_id_t id)
         {
             NTT_ENGINE_WARN("The texture with the ID {} is not unloaded, unloading ...", id);
@@ -514,8 +526,6 @@ namespace ntt::renderer
         };
 
         s_textureStore->ForEach(func);
-
-        s_isInitialized = FALSE;
 
         ASSERT_M(s_textureStore->GetAvailableIds().size() == 0,
                  "The texture store is not empty");

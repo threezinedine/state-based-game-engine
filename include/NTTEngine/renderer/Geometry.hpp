@@ -3,6 +3,7 @@
 #include <NTTEngine/structures/position.hpp>
 #include <NTTEngine/structures/size.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include "GraphicInterface.hpp"
 
 namespace ntt::renderer
 {
@@ -19,11 +20,14 @@ namespace ntt::renderer
         ntt_size_t width;  ///< The width in pixel
         ntt_size_t height; ///< The height in pixel
         f32 rotation;
+        u8 priority;
+        RGBAColor color;
 
         Geometry(position_t x = POSITION_DEFAULT, position_t y = POSITION_DEFAULT,
                  ntt_size_t width = SIZE_DEFAULT, ntt_size_t height = SIZE_DEFAULT,
-                 f32 rotation = 0.0f)
-            : x(x), y(y), width(width), height(height), rotation(rotation)
+                 f32 rotation = 0.0f, u8 priority = PRIORITY_0, RGBAColor color = NTT_WHITE)
+            : x(x), y(y), width(width), height(height), rotation(rotation),
+              priority(priority), color(color)
         {
         }
     };

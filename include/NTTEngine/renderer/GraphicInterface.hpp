@@ -119,7 +119,7 @@ namespace ntt::renderer
         /**
          * The color of the text (only) which should be displayed
          */
-        Color color;
+        RGBAColor color;
 
         DrawContext() : entity_id(INVALID_ENTITY_ID),
                         priority(PRIORITY_0),
@@ -172,13 +172,22 @@ namespace ntt::renderer
                   const DrawContext &drawContext = DrawContext{});
 
     /**
+     * Draw the rectangle on the screen with the given position and size
+     *
+     * @param rect: The context which the renderer used for drawing
+     * @param color: The color of the rectangle
+     */
+    void DrawRectangle(const RectContext &rect = RectContext{},
+                       const DrawContext &drawContext = DrawContext{});
+
+    /**
      * Each texture which is hovered by the mouse will be returned
      *      in the list of the texture ID. If the mouse is not hovered
      *      on any texture, then the empty  list will be returned.
      * This result is the result from the previouse Update call.
      *
      * @return The list of the texture ID which is hovered by the mouse
-     *      the higher priority texture will be on the top of the list
+     *      the higher priority texture will be at the end of the list
      */
     const List<entity_id_t> &GetHoveredTexture();
 

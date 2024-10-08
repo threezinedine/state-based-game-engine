@@ -3,8 +3,7 @@
 
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
-#include <NTTEngine/renderer/Text.hpp>
-#include <NTTEngine/renderer/TextureComponent.hpp>
+#include <NTTEngine/renderer/Geometry.hpp>
 
 using namespace ntt;
 using namespace ntt::ecs;
@@ -580,22 +579,22 @@ TEST_F(ECSTest, CreateEntityWithPriority)
     auto textureEnt = ECSCreateEntity(
         "test-entity",
         {
-            ECS_CREATE_COMPONENT(TextureComponent, 1, 0, 0, PRIORITY_0),
+            ECS_CREATE_COMPONENT(Geometry, 0, 0, 0, 0, 0, PRIORITY_0),
             ECS_CREATE_COMPONENT(TestLayerData),
         });
 
     auto textEnt = ECSCreateEntity(
         "test-entity-2",
         {
-            ECS_CREATE_COMPONENT(Text, "test", 10, PRIORITY_1),
+            ECS_CREATE_COMPONENT(Geometry, 0, 0, 0, 0, 0, PRIORITY_1),
             ECS_CREATE_COMPONENT(TestLayerData),
         });
 
-    auto textEntTexture = ECS_GET_COMPONENT(textureEnt, TextureComponent);
-    EXPECT_EQ(textEntTexture->priority, PRIORITY_0);
+    auto textureEntGeo = ECS_GET_COMPONENT(textureEnt, Geometry);
+    EXPECT_EQ(textureEntGeo->priority, PRIORITY_0);
 
-    auto textEntText = ECS_GET_COMPONENT(textEnt, Text);
-    EXPECT_EQ(textEntText->priority, PRIORITY_1);
+    auto textEntGeo = ECS_GET_COMPONENT(textEnt, Geometry);
+    EXPECT_EQ(textEntGeo->priority, PRIORITY_1);
 
     TriggerEvent(NTT_ENTITY_CREATED, nullptr, {textEnt});
     ECSUpdate(0.0f);
@@ -607,18 +606,18 @@ TEST_F(ECSTest, CreateEntityWithPriority)
     auto textureEnt2 = ECSCreateEntity(
         "test-entity-3",
         {
-            ECS_CREATE_COMPONENT(TextureComponent, 1, 0, 0, PRIORITY_0),
+            ECS_CREATE_COMPONENT(Geometry, 1, 0, 0, 0, 0, PRIORITY_0),
         });
 
     auto textEnt2 = ECSCreateEntity(
         "test-entity-4",
         {
-            ECS_CREATE_COMPONENT(Text, "test", 10, PRIORITY_1),
+            ECS_CREATE_COMPONENT(Geometry, 1, 0, 0, 0, 0, PRIORITY_1),
         });
 
-    auto textEntTexture2 = ECS_GET_COMPONENT(textureEnt2, TextureComponent);
-    EXPECT_EQ(textEntTexture2->priority, PRIORITY_0 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
+    auto textureEntGeo2 = ECS_GET_COMPONENT(textureEnt2, Geometry);
+    EXPECT_EQ(textureEntGeo2->priority, PRIORITY_0 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
 
-    auto textEntText2 = ECS_GET_COMPONENT(textEnt2, Text);
-    EXPECT_EQ(textEntText2->priority, PRIORITY_1 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
+    auto textEntGeo2 = ECS_GET_COMPONENT(textEnt2, Geometry);
+    EXPECT_EQ(textEntGeo2->priority, PRIORITY_1 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
 }

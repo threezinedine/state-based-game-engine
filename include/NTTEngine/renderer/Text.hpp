@@ -16,16 +16,13 @@ namespace ntt::renderer
     {
         String text;
         u32 fontSize;
-        u8 priority;
-        Color color;
+        RGBAColor color;
 
         Text(String text = "",
              u32 fontSize = 10,
-             u8 priority = PRIORITY_0,
-             Color color = NTT_WHITE)
+             RGBAColor color = NTT_WHITE)
             : text(text),
               fontSize(fontSize),
-              priority(priority),
               color(color)
         {
         }

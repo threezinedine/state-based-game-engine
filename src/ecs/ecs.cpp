@@ -6,8 +6,7 @@
 #include <NTTEngine/ecs/data_com.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
-#include <NTTEngine/renderer/TextureComponent.hpp>
-#include <NTTEngine/renderer/Text.hpp>
+#include <NTTEngine/renderer/Geometry.hpp>
 #include <NTTEngine/core/object.hpp>
 #include <cstring>
 
@@ -56,6 +55,8 @@ namespace ntt::ecs
         layer_t currentRunningLayer = GAME_LAYER;
         layer_t preLayer = GAME_LAYER;
         u8 uiLayerVisible = INVALID_UI_LAYER;
+
+        List<entity_id_t> s_selectedEntities;
 
         void InitEditor(event_code_t code, void *sender, const EventContext &context)
         {
@@ -180,6 +181,8 @@ namespace ntt::ecs
         s_UpdatedEntities.clear();
         s_deletedEntities.clear();
 
+        s_selectedEntities.clear();
+
         // RegisterEvent(NTT_LAYER_CHANGED, std::bind(OnSceneOpened));
         memset(layers, 0, sizeof(layers));
 
@@ -226,6 +229,10 @@ namespace ntt::ecs
         }
 
         currentLayer = layer;
+
+        EventContext context;
+        context.u16_data[0] = currentLayer;
+        TriggerEvent(NTT_DEFINED_LAYER_CHANGED, nullptr, context);
     }
 
     void ECSLayerMakeVisible(layer_t layer)
@@ -346,18 +353,11 @@ namespace ntt::ecs
 
         layers[currentLayer]->push_back(entityId);
 
-        auto texture = ECS_GET_COMPONENT(entityId, TextureComponent);
+        auto geo = ECS_GET_COMPONENT(entityId, Geometry);
 
-        if (texture != nullptr)
+        if (geo != nullptr)
         {
-            texture->priority += (currentLayer * LAYER_PRIORITY_RANGE);
-        }
-
-        auto text = ECS_GET_COMPONENT(entityId, Text);
-
-        if (text != nullptr)
-        {
-            text->priority += (currentLayer * LAYER_PRIORITY_RANGE);
+            geo->priority += (currentLayer * LAYER_PRIORITY_RANGE);
         }
 
         ResetEntitiesState();
