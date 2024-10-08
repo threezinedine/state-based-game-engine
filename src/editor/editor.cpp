@@ -6,6 +6,7 @@
 #include "rlImGui.h"
 #include "imgui.h"
 #include <NTTEngine/application/scene_system/scene_system.hpp>
+#include <array>
 
 #include "editor_log_window.hpp"
 #include "editor_scene_window.hpp"
@@ -149,7 +150,8 @@ namespace ntt
 
             if (ImGui::BeginCombo(
                     "Scene",
-                    s_currentScene.RawString().c_str()))
+                    s_currentScene.RawString().c_str(),
+                    ImGuiComboFlags_WidthFitPreview))
             {
                 for (i32 i = 0; i < s_sceneNames.size(); i++)
                 {
@@ -165,6 +167,43 @@ namespace ntt
                         ImGui::SetItemDefaultFocus();
                     }
                 }
+                ImGui::EndCombo();
+            }
+
+            ImGui::SameLine();
+
+            static std::array<const char *, 10> layers = {
+                "Game",
+                "UI_0",
+                "UI_1",
+                "UI_2",
+                "UI_3",
+                "UI_4",
+                "UI_5",
+                "UI_6",
+                "UI_7",
+                "UI_8",
+            };
+            static u32 currentLayer = GAME_LAYER;
+
+            if (ImGui::BeginCombo("Layers", layers[currentLayer], ImGuiComboFlags_WidthFitPreview))
+            {
+                for (i32 i = 0; i < layers.size(); i++)
+                {
+                    const b8 isSelected = (i == currentLayer);
+                    if (ImGui::Selectable(layers[i], isSelected))
+                    {
+                        ECSLayerMakeVisible(static_cast<layer_t>(i));
+                        ECSLayerMakeVisible(static_cast<layer_t>(EDITOR_LAYER));
+                        currentLayer = i;
+                    }
+
+                    if (isSelected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+
                 ImGui::EndCombo();
             }
         }
