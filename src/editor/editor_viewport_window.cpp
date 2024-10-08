@@ -49,7 +49,7 @@ namespace ntt
         }
     }
 
-    void EditorViewportWindowInit(f32 width, f32 height, List<String> sceneNames)
+    void EditorViewportWindowInit(f32 width, f32 height)
     {
         s_renderTexture = LoadRenderTexture(width, height);
         input::SetMousePositionTransformCallback(EditorToViewportPosTransform);

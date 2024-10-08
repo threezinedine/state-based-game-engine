@@ -5,6 +5,7 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include "rlImGui.h"
 #include "imgui.h"
+#include <NTTEngine/application/scene_system/scene_system.hpp>
 
 #include "editor_log_window.hpp"
 #include "editor_scene_window.hpp"
@@ -30,6 +31,8 @@ namespace ntt
         b8 s_openLog = TRUE;
         b8 s_openScene = TRUE;
 
+        List<String> s_sceneNames;
+        String s_currentScene;
     }
 
     void EditorInit(b8 use, u16 width, u16 height, List<String> sceneNames)
@@ -48,7 +51,10 @@ namespace ntt
         s_openLog = TRUE;
         s_openScene = TRUE;
 
-        EditorViewportWindowInit(s_screenWidth, s_screenHeight, sceneNames);
+        s_sceneNames = sceneNames;
+        s_currentScene = s_sceneNames[0];
+
+        EditorViewportWindowInit(s_screenWidth, s_screenHeight);
         EditorLogWindowInit();
         EditorSceneWindowInit();
     }
@@ -137,6 +143,29 @@ namespace ntt
                     EditorRun();
                     ImGui::SetWindowFocus("Viewport");
                 }
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::BeginCombo(
+                    "Scene",
+                    s_currentScene.RawString().c_str()))
+            {
+                for (i32 i = 0; i < s_sceneNames.size(); i++)
+                {
+                    const b8 isSelected = (s_currentScene == s_sceneNames[i]);
+                    if (ImGui::Selectable(s_sceneNames[i].RawString().c_str(), isSelected))
+                    {
+                        s_currentScene = s_sceneNames[i];
+                        SceneOpen(s_currentScene);
+                    }
+
+                    if (isSelected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
             }
         }
         ImGui::End();

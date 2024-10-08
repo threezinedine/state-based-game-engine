@@ -172,7 +172,7 @@ namespace ntt
 
         if (editor)
         {
-            EditorInit(TRUE, screenWidth, screenHeight);
+            EditorInit(TRUE, screenWidth, screenHeight, sceneNames);
             RegisterEvent(
                 NTT_EDITOR_STOP,
                 [](auto id, void *sender, EventContext context)

@@ -5,7 +5,7 @@
 
 namespace ntt
 {
-    void EditorViewportWindowInit(f32 width, f32 height, List<String> sceneNames);
+    void EditorViewportWindowInit(f32 width, f32 height);
     void EditorViewportWindowStartDraw();
     void EditorViewportWindowUpdate(b8 *p_open, b8 isRunning);
     void EditorViewportWindowEndDraw();
