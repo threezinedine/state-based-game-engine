@@ -9,6 +9,7 @@
 #include <NTTEngine/renderer/Geometry.hpp>
 #include <NTTEngine/core/object.hpp>
 #include <cstring>
+#include <NTTEngine/core/auto_naming.hpp>
 
 namespace ntt::ecs
 {
@@ -312,7 +313,7 @@ namespace ntt::ecs
         components[typeid(DataComponent)] = CreateRef<DataComponent>();
 
         auto entityId = s_entityStore->Add(CreateRef<EntityInfo>(components));
-        s_entityStore->Get(entityId)->name = name;
+        s_entityStore->Get(entityId)->name = GetName(name);
 
         components.ForEach(
             [&entityId](const std::type_index &,
