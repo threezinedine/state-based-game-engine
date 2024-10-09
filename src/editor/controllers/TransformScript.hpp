@@ -11,7 +11,7 @@ namespace ntt
 
     using OnTransformFunc = std::function<void(
         const Position,
-        const Position,
+        const f32,
         Ref<Geometry>)>;
 
     using OnAddEntResetFunc = std::function<void(const entity_id_t)>;

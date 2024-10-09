@@ -88,9 +88,9 @@ protected:
             tenGeo->pos.x = geo->pos.x + hundredGeo->size.width + SCORE_DIGIT_GAP;
             oneGeo->pos.x = geo->pos.x + hundredGeo->size.width + tenGeo->size.width + SCORE_DIGIT_GAP * 2;
 
-            hunderedText->colIndex = static_cast<u8>(score / 100);
-            tenText->colIndex = static_cast<u8>((score % 100) / 10);
-            oneText->colIndex = score % 10;
+            hunderedText->currentCell.col = static_cast<u8>(score / 100);
+            tenText->currentCell.col = static_cast<u8>((score % 100) / 10);
+            oneText->currentCell.col = score % 10;
         }
 
         if (score < 10)
@@ -98,7 +98,7 @@ protected:
             ECSSetComponentActive(m_tenNumber, typeid(Geometry), FALSE);
 
             oneGeo->pos.x = geo->pos.x;
-            oneText->colIndex = score;
+            oneText->currentCell.col = score;
         }
         else
         {
@@ -110,8 +110,8 @@ protected:
             tenGeo->pos.x = geo->pos.x;
             oneGeo->pos.x = geo->pos.x + tenGeo->size.width + SCORE_DIGIT_GAP;
 
-            oneText->colIndex = score % 10;
-            tenText->colIndex = static_cast<u8>(score / 10);
+            oneText->currentCell.col = score % 10;
+            tenText->currentCell.col = static_cast<u8>(score / 10);
         }
     }
 

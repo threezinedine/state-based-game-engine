@@ -61,6 +61,7 @@ namespace ntt
                     allDrawnEntities.RemoveItem(btnId);
                     moveEntities.RemoveItem(btnId);
                     resizeEntities.RemoveItem(btnId);
+                    rotateEntities.RemoveItem(btnId);
                 }
 
                 drawnEntities[selected].clear();
@@ -92,12 +93,22 @@ namespace ntt
             centerData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->pos.x += delta.x;
                 geo->pos.y += delta.y;
             };
+
+#define ADD_ALL(entity)                        \
+    drawnEntities[entityId].push_back(entity); \
+    allDrawnEntities.push_back(entity);        \
+    // NTT_ENGINE_DEBUG("Entity {} is added with the id {}", #entity, entity);     \
+    // NTT_ENGINE_DEBUG("Drawn entities: {}", drawnEntities[entityId].ToString()); \
+    // NTT_ENGINE_DEBUG("All drawn entities: {}", allDrawnEntities.ToString());    \
+    // NTT_ENGINE_DEBUG("Move entities: {}", moveEntities.ToString());             \
+    // NTT_ENGINE_DEBUG("Resize entities: {}", resizeEntities.ToString());         \
+    // NTT_ENGINE_DEBUG("Rotate entities: {}", rotateEntities.ToString());
 
             auto center = ECSCreateEntity(
                 "Center Rect",
@@ -122,6 +133,9 @@ namespace ntt
                         entityId, 0, 0),
                 });
 
+            moveEntities.push_back(center);
+            ADD_ALL(center);
+
             position_t axisWidth = 100;
 
             auto xAxis = ECSCreateEntity(
@@ -137,6 +151,9 @@ namespace ntt
                         entityId, axisWidth / 2 + CENTER_SIZE / 2, 0),
                 });
 
+            moveEntities.push_back(xAxis);
+            ADD_ALL(xAxis);
+
             auto xAxisNeg = ECSCreateEntity(
                 "X Axis Neg",
                 {
@@ -150,12 +167,15 @@ namespace ntt
                         entityId, -axisWidth / 2 - CENTER_SIZE / 2, 0),
                 });
 
+            moveEntities.push_back(xAxisNeg);
+            ADD_ALL(xAxisNeg);
+
             TransformScriptData xPointData;
             xPointData.entity = entityId;
             xPointData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->pos.x += delta.x;
@@ -180,15 +200,18 @@ namespace ntt
                         &xPointData),
                 });
 
+            moveEntities.push_back(xPoint);
+            ADD_ALL(xPoint);
+
             TransformScriptData xPointNegData;
             xPointNegData.entity = entityId;
             xPointNegData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                geo->pos.x += pos.x;
+                geo->pos.x += delta.x;
             };
 
             auto xPointNeg = ECSCreateEntity(
@@ -210,6 +233,9 @@ namespace ntt
                         &xPointNegData),
                 });
 
+            moveEntities.push_back(xPointNeg);
+            ADD_ALL(xPointNeg);
+
             auto yAxis = ECSCreateEntity(
                 "Y Axis",
                 {
@@ -222,6 +248,9 @@ namespace ntt
                         Parent,
                         entityId, 0, -axisWidth / 2 - CENTER_SIZE / 2),
                 });
+
+            moveEntities.push_back(yAxis);
+            ADD_ALL(yAxis);
 
             auto yAxisNeg = ECSCreateEntity(
                 "Y Axis Neg",
@@ -236,12 +265,15 @@ namespace ntt
                         entityId, 0, axisWidth / 2 + CENTER_SIZE / 2),
                 });
 
+            moveEntities.push_back(yAxisNeg);
+            ADD_ALL(yAxisNeg);
+
             TransformScriptData yPointData;
             yPointData.entity = entityId;
             yPointData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->pos.y += delta.y;
@@ -266,12 +298,15 @@ namespace ntt
                         &yPointData),
                 });
 
+            moveEntities.push_back(yPoint);
+            ADD_ALL(yPoint);
+
             TransformScriptData yPointNegData;
             yPointNegData.entity = entityId;
             yPointNegData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->pos.y += delta.y;
@@ -296,6 +331,9 @@ namespace ntt
                         &yPointNegData),
                 });
 
+            moveEntities.push_back(yPointNeg);
+            ADD_ALL(yPointNeg);
+
             TransformScriptData leftTopData;
             leftTopData.entity = entityId;
             leftTopData.onAddEntReset =
@@ -311,7 +349,7 @@ namespace ntt
             leftTopData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->size.width -= delta.x * 2;
@@ -339,6 +377,9 @@ namespace ntt
                         &leftTopData),
                 });
 
+            resizeEntities.push_back(leftTopPoint);
+            ADD_ALL(leftTopPoint);
+
             TransformScriptData rightTopData;
             rightTopData.entity = entityId;
             rightTopData.onAddEntReset =
@@ -355,7 +396,7 @@ namespace ntt
             rightTopData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->size.width += delta.x * 2;
@@ -386,6 +427,9 @@ namespace ntt
                         &rightTopData),
                 });
 
+            resizeEntities.push_back(rightTopPoint);
+            ADD_ALL(rightTopPoint);
+
             TransformScriptData rightBottomData;
             rightBottomData.entity = entityId;
             rightBottomData.onAddEntReset =
@@ -401,7 +445,7 @@ namespace ntt
             rightBottomData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->size.width += delta.x * 2;
@@ -432,6 +476,9 @@ namespace ntt
                         &rightBottomData),
                 });
 
+            resizeEntities.push_back(rightBottomPoint);
+            ADD_ALL(rightBottomPoint);
+
             TransformScriptData leftBottomData;
             leftBottomData.entity = entityId;
             leftBottomData.onAddEntReset =
@@ -447,7 +494,7 @@ namespace ntt
             leftBottomData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->size.width -= delta.x * 2;
@@ -478,12 +525,15 @@ namespace ntt
                         &leftBottomData),
                 });
 
+            resizeEntities.push_back(leftBottomPoint);
+            ADD_ALL(leftBottomPoint);
+
             TransformScriptData leftPointData;
             leftPointData.entity = entityId;
             leftPointData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->size.width -= delta.x * 2;
@@ -519,12 +569,15 @@ namespace ntt
                         &leftPointData),
                 });
 
+            resizeEntities.push_back(leftPoint);
+            ADD_ALL(leftPoint);
+
             TransformScriptData rightPointData;
             rightPointData.entity = entityId;
             rightPointData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->size.width += delta.x * 2;
@@ -560,12 +613,15 @@ namespace ntt
                         &rightPointData),
                 });
 
+            resizeEntities.push_back(rightPoint);
+            ADD_ALL(rightPoint);
+
             TransformScriptData topPointData;
             topPointData.entity = entityId;
             topPointData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->size.height -= delta.y * 2;
@@ -601,12 +657,15 @@ namespace ntt
                         &topPointData),
                 });
 
+            resizeEntities.push_back(topPoint);
+            ADD_ALL(topPoint);
+
             TransformScriptData bottomPointData;
             bottomPointData.entity = entityId;
             bottomPointData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    const f32 angularDelta,
                     Ref<Geometry> geo)
             {
                 geo->size.height += delta.y * 2;
@@ -642,28 +701,31 @@ namespace ntt
                         &bottomPointData),
                 });
 
+            resizeEntities.push_back(bottomPoint);
+            ADD_ALL(bottomPoint);
+
             TransformScriptData rotatePointData;
             rotatePointData.entity = entityId;
             rotatePointData.onResizeMain =
                 [](
                     const Position delta,
-                    const Position pos,
+                    f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                f32 newAngle = atan2(pos.y - geo->pos.y, pos.x - geo->pos.x) * 180 / 3.14;
+                geo->rotation += angularDelta;
 
-                NTT_ENGINE_DEBUG("New angle: {}", newAngle);
-
-                if (newAngle < 0)
+                if (geo->rotation > 360.0f)
                 {
-                    newAngle += 360;
+                    geo->rotation -= 360.0f;
                 }
-
-                geo->rotation = newAngle;
+                else if (geo->rotation < 0.0f)
+                {
+                    geo->rotation += 360.0f;
+                }
             };
 
             auto rotatePoint = ECSCreateEntity(
-                "rotate-point",
+                "rotate point",
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
@@ -684,6 +746,9 @@ namespace ntt
                         &rotatePointData),
                 });
 
+            rotateEntities.push_back(rotatePoint);
+            ADD_ALL(rotatePoint);
+
             auto xRotateAxis = ECSCreateEntity(
                 "X Axis Rotate",
                 {
@@ -697,67 +762,72 @@ namespace ntt
                         entityId, axisWidth / 2 + CENTER_SIZE / 2, 0),
                 });
 
-            drawnEntities[entityId].push_back(center);
-            drawnEntities[entityId].push_back(xAxis);
-            drawnEntities[entityId].push_back(xPoint);
-            drawnEntities[entityId].push_back(yAxis);
-            drawnEntities[entityId].push_back(yPoint);
-            drawnEntities[entityId].push_back(leftTopPoint);
-            drawnEntities[entityId].push_back(rightTopPoint);
-            drawnEntities[entityId].push_back(leftBottomPoint);
-            drawnEntities[entityId].push_back(rightBottomPoint);
-            drawnEntities[entityId].push_back(xAxisNeg);
-            drawnEntities[entityId].push_back(xPointNeg);
-            drawnEntities[entityId].push_back(yAxisNeg);
-            drawnEntities[entityId].push_back(yPointNeg);
-            drawnEntities[entityId].push_back(leftPoint);
-            drawnEntities[entityId].push_back(rightPoint);
-            drawnEntities[entityId].push_back(topPoint);
-            drawnEntities[entityId].push_back(bottomPoint);
-            drawnEntities[entityId].push_back(rotatePoint);
-            drawnEntities[entityId].push_back(xRotateAxis);
-
-            moveEntities.push_back(center);
-            moveEntities.push_back(xPoint);
-            moveEntities.push_back(yPoint);
-            moveEntities.push_back(xAxis);
-            moveEntities.push_back(yAxis);
-            moveEntities.push_back(xAxisNeg);
-            moveEntities.push_back(xPointNeg);
-            moveEntities.push_back(yAxisNeg);
-            moveEntities.push_back(yPointNeg);
-
-            resizeEntities.push_back(leftTopPoint);
-            resizeEntities.push_back(rightTopPoint);
-            resizeEntities.push_back(leftBottomPoint);
-            resizeEntities.push_back(rightBottomPoint);
-            resizeEntities.push_back(leftPoint);
-            resizeEntities.push_back(rightPoint);
-            resizeEntities.push_back(topPoint);
-            resizeEntities.push_back(bottomPoint);
-
-            rotateEntities.push_back(rotatePoint);
             rotateEntities.push_back(xRotateAxis);
+            ADD_ALL(xRotateAxis);
 
-            allDrawnEntities.push_back(center);
-            allDrawnEntities.push_back(xAxis);
-            allDrawnEntities.push_back(yAxis);
-            allDrawnEntities.push_back(xPoint);
-            allDrawnEntities.push_back(yPoint);
-            allDrawnEntities.push_back(leftTopPoint);
-            allDrawnEntities.push_back(rightTopPoint);
-            allDrawnEntities.push_back(leftBottomPoint);
-            allDrawnEntities.push_back(rightBottomPoint);
-            allDrawnEntities.push_back(xAxisNeg);
-            allDrawnEntities.push_back(xPointNeg);
-            allDrawnEntities.push_back(yAxisNeg);
-            allDrawnEntities.push_back(yPointNeg);
-            allDrawnEntities.push_back(leftPoint);
-            allDrawnEntities.push_back(rightPoint);
-            allDrawnEntities.push_back(topPoint);
-            allDrawnEntities.push_back(bottomPoint);
-            allDrawnEntities.push_back(rotatePoint);
-            allDrawnEntities.push_back(xRotateAxis);
+            // drawnEntities[entityId].push_back(center);
+            // drawnEntities[entityId].push_back(xAxis);
+            // drawnEntities[entityId].push_back(xPoint);
+            // drawnEntities[entityId].push_back(yAxis);
+            // drawnEntities[entityId].push_back(yPoint);
+            // drawnEntities[entityId].push_back(xAxisNeg);
+            // drawnEntities[entityId].push_back(xPointNeg);
+            // drawnEntities[entityId].push_back(yAxisNeg);
+            // drawnEntities[entityId].push_back(yPointNeg);
+
+            // drawnEntities[entityId].push_back(leftTopPoint);
+            // drawnEntities[entityId].push_back(rightTopPoint);
+            // drawnEntities[entityId].push_back(leftBottomPoint);
+            // drawnEntities[entityId].push_back(rightBottomPoint);
+            // drawnEntities[entityId].push_back(leftPoint);
+            // drawnEntities[entityId].push_back(rightPoint);
+            // drawnEntities[entityId].push_back(topPoint);
+            // drawnEntities[entityId].push_back(bottomPoint);
+
+            // drawnEntities[entityId].push_back(rotatePoint);
+            // drawnEntities[entityId].push_back(xRotateAxis);
+
+            // moveEntities.push_back(center);
+            // moveEntities.push_back(xPoint);
+            // moveEntities.push_back(yPoint);
+            // moveEntities.push_back(xAxis);
+            // moveEntities.push_back(yAxis);
+            // moveEntities.push_back(xAxisNeg);
+            // moveEntities.push_back(xPointNeg);
+            // moveEntities.push_back(yAxisNeg);
+            // moveEntities.push_back(yPointNeg);
+
+            // resizeEntities.push_back(leftTopPoint);
+            // resizeEntities.push_back(rightTopPoint);
+            // resizeEntities.push_back(leftBottomPoint);
+            // resizeEntities.push_back(rightBottomPoint);
+            // resizeEntities.push_back(leftPoint);
+            // resizeEntities.push_back(rightPoint);
+            // resizeEntities.push_back(topPoint);
+            // resizeEntities.push_back(bottomPoint);
+
+            // rotateEntities.push_back(rotatePoint);
+            // rotateEntities.push_back(xRotateAxis);
+
+            // allDrawnEntities.push_back(center);
+            // allDrawnEntities.push_back(xAxis);
+            // allDrawnEntities.push_back(yAxis);
+            // allDrawnEntities.push_back(xPoint);
+            // allDrawnEntities.push_back(yPoint);
+            // allDrawnEntities.push_back(leftTopPoint);
+            // allDrawnEntities.push_back(rightTopPoint);
+            // allDrawnEntities.push_back(leftBottomPoint);
+            // allDrawnEntities.push_back(rightBottomPoint);
+            // allDrawnEntities.push_back(xAxisNeg);
+            // allDrawnEntities.push_back(xPointNeg);
+            // allDrawnEntities.push_back(yAxisNeg);
+            // allDrawnEntities.push_back(yPointNeg);
+            // allDrawnEntities.push_back(leftPoint);
+            // allDrawnEntities.push_back(rightPoint);
+            // allDrawnEntities.push_back(topPoint);
+            // allDrawnEntities.push_back(bottomPoint);
+            // allDrawnEntities.push_back(rotatePoint);
+            // allDrawnEntities.push_back(xRotateAxis);
 
             ChangeMoveState(currentTool == MOVE);
             ChangeResizeState(currentTool == SCALE);
@@ -786,6 +856,27 @@ namespace ntt
             f32 x = context.f32_data[2];
             f32 y = context.f32_data[3];
 
+            f32 angularDelta = 0.0f;
+
+            if (selectedEntities.size() != 0)
+            {
+                auto geo = ECS_GET_COMPONENT(selectedEntities[0], Geometry);
+                if (geo == nullptr)
+                {
+                    return;
+                }
+
+                angularDelta = atan2(y - geo->pos.y, x - geo->pos.x) -
+                               atan2(y - deltaY - geo->pos.y, x - deltaX - geo->pos.x);
+
+                angularDelta *= 180.0f / 3.14;
+
+                if (angularDelta < 0)
+                {
+                    angularDelta += 360.0f;
+                }
+            }
+
             for (auto entityId : selectedEntities)
             {
                 auto geo = ECS_GET_COMPONENT(entityId, Geometry);
@@ -800,7 +891,7 @@ namespace ntt
 
                 if (onResizeMain != nullptr)
                 {
-                    onResizeMain({deltaX, deltaY}, {x, y}, geo);
+                    onResizeMain({deltaX, deltaY}, angularDelta, geo);
                 }
             }
 

@@ -75,7 +75,8 @@ namespace ntt
                 for (auto id : s_entities)
                 {
                     auto entityInfo = ECSGetEntity(id);
-                    if (ImGui::Selectable(entityInfo->name.RawString().c_str(),
+                    String display = format("{} - {}", id, entityInfo->name);
+                    if (ImGui::Selectable(display.RawString().c_str(),
                                           s_chosenEntities.Contains(id)))
                     {
                         EventContext context;
