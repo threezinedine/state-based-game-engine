@@ -11,10 +11,7 @@
 #include <NTTEngine/application/script_system/script_component.hpp>
 #include <NTTEngine/renderer/Parent.hpp>
 
-#include "controllers/MoveXController.hpp"
-#include "controllers/MoveAroundController.hpp"
-#include "controllers/MoveYController.hpp"
-#include "controllers/ResizeController.hpp"
+#include "controllers/TransformScript.hpp"
 #include "editor_tool.hpp"
 
 #define CENTER_SIZE 20 ///< The size of the center rect
@@ -35,10 +32,7 @@ namespace ntt
         List<entity_id_t> moveEntities;
         List<entity_id_t> resizeEntities;
 
-        resource_id_t moveXControllerScriptId;
-        resource_id_t moveYControllerScriptId;
-        resource_id_t moveAroundControllerScriptId;
-        resource_id_t resizeControllerScriptId;
+        resource_id_t transformScriptId;
 
         u16 currentLayer = EDITOR_LAYER;
         ToolType currentTool = MOVE;
@@ -91,6 +85,17 @@ namespace ntt
 
             ECSBeginLayer(EDITOR_LAYER);
 
+            TransformScriptData centerData;
+            centerData.entity = entityId;
+            centerData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->x += x;
+                geo->y += y;
+            };
+
             auto center = ECSCreateEntity(
                 "Center Rect",
                 {
@@ -106,9 +111,9 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        moveAroundControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
-                        &entityId),
+                        &centerData),
                     ECS_CREATE_COMPONENT(
                         Parent,
                         entityId, 0, 0),
@@ -140,6 +145,16 @@ namespace ntt
                         entityId, -axisWidth / 2 - CENTER_SIZE / 2, 0),
                 });
 
+            TransformScriptData xPointData;
+            xPointData.entity = entityId;
+            xPointData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->x += x;
+            };
+
             auto xPoint = ECSCreateEntity(
                 "X point",
                 {
@@ -153,10 +168,20 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        moveXControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
-                        &entityId),
+                        &xPointData),
                 });
+
+            TransformScriptData xPointNegData;
+            xPointNegData.entity = entityId;
+            xPointNegData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->x += x;
+            };
 
             auto xPointNeg = ECSCreateEntity(
                 "X point Neg",
@@ -171,9 +196,9 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        moveXControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
-                        &entityId),
+                        &xPointNegData),
                 });
 
             auto yAxis = ECSCreateEntity(
@@ -200,6 +225,16 @@ namespace ntt
                         entityId, 0, axisWidth / 2 + CENTER_SIZE / 2),
                 });
 
+            TransformScriptData yPointData;
+            yPointData.entity = entityId;
+            yPointData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->y += y;
+            };
+
             auto yPoint = ECSCreateEntity(
                 "Y point",
                 {
@@ -213,10 +248,20 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        moveYControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
-                        &entityId),
+                        &yPointData),
                 });
+
+            TransformScriptData yPointNegData;
+            yPointNegData.entity = entityId;
+            yPointNegData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->y += y;
+            };
 
             auto yPointNeg = ECSCreateEntity(
                 "Y point Neg",
@@ -231,21 +276,21 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        moveYControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
-                        &entityId),
+                        &yPointNegData),
                 });
 
-            ResizeControllerData leftTopData;
+            TransformScriptData leftTopData;
             leftTopData.entity = entityId;
-            leftTopData.onResize =
-                [](
-                    f32 x, f32 y,
-                    Ref<Geometry> geo,
-                    Ref<Parent> topLeft)
+            leftTopData.onAddEntReset =
+                [](entity_id_t entityId)
             {
-                topLeft->posX = -geo->width / 2 - CENTER_SIZE / 2;
-                topLeft->posY = -geo->height / 2 - CENTER_SIZE / 2;
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->posX = -geo->width / 2 - CENTER_SIZE / 2;
+                parent->posY = -geo->height / 2 - CENTER_SIZE / 2;
             };
 
             leftTopData.onResizeMain =
@@ -253,10 +298,8 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->x += x / 2;
-                geo->y += y / 2;
-                geo->width -= x;
-                geo->height -= y;
+                geo->width -= x * 2;
+                geo->height -= y * 2;
             };
 
             auto leftTopPoint = ECSCreateEntity(
@@ -275,21 +318,22 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        resizeControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
                         &leftTopData),
                 });
 
-            ResizeControllerData rightTopData;
+            TransformScriptData rightTopData;
             rightTopData.entity = entityId;
-            rightTopData.onResize =
+            rightTopData.onAddEntReset =
                 [](
-                    f32 x, f32 y,
-                    Ref<Geometry> geo,
-                    Ref<Parent> topRight)
+                    entity_id_t entityId)
             {
-                topRight->posX = geo->width / 2 + CENTER_SIZE / 2;
-                topRight->posY = -geo->height / 2 - CENTER_SIZE / 2;
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->posX = geo->width / 2 + CENTER_SIZE / 2;
+                parent->posY = -geo->height / 2 - CENTER_SIZE / 2;
             };
 
             rightTopData.onResizeMain =
@@ -297,10 +341,8 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->x += x / 2;
-                geo->y += y / 2;
-                geo->width += x;
-                geo->height -= y;
+                geo->width += x * 2;
+                geo->height -= y * 2;
             };
 
             auto rightTopPoint = ECSCreateEntity(
@@ -322,31 +364,30 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        resizeControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
                         &rightTopData),
                 });
 
-            ResizeControllerData rightBottomData;
+            TransformScriptData rightBottomData;
             rightBottomData.entity = entityId;
-            rightBottomData.onResize =
-                [](
-                    f32 x, f32 y,
-                    Ref<Geometry> geo,
-                    Ref<Parent> bottomRight)
+            rightBottomData.onAddEntReset =
+                [](entity_id_t entityId)
             {
-                bottomRight->posX = geo->width / 2 + CENTER_SIZE / 2;
-                bottomRight->posY = geo->height / 2 + CENTER_SIZE / 2;
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->posX = geo->width / 2 + CENTER_SIZE / 2;
+                parent->posY = geo->height / 2 + CENTER_SIZE / 2;
             };
 
-            rightBottomData.onResizeMain = [](
-                                               f32 x, f32 y,
-                                               Ref<Geometry> geo)
+            rightBottomData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
             {
-                geo->x += x / 2;
-                geo->y += y / 2;
-                geo->width += x;
-                geo->height += y;
+                geo->width += x * 2;
+                geo->height += y * 2;
             };
 
             auto rightBottomPoint = ECSCreateEntity(
@@ -368,30 +409,28 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        resizeControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
                         &rightBottomData),
                 });
 
-            ResizeControllerData leftBottomData;
+            TransformScriptData leftBottomData;
             leftBottomData.entity = entityId;
-            leftBottomData.onResize =
-                [](
-                    f32 x, f32 y,
-                    Ref<Geometry> geo,
-                    Ref<Parent> bottomLeft)
+            leftBottomData.onAddEntReset =
+                [](entity_id_t entityId)
             {
-                bottomLeft->posX = -geo->width / 2 - CENTER_SIZE / 2;
-                bottomLeft->posY = geo->height / 2 + CENTER_SIZE / 2;
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->posX = -geo->width / 2 - CENTER_SIZE / 2;
+                parent->posY = geo->height / 2 + CENTER_SIZE / 2;
             };
 
             leftBottomData.onResizeMain =
                 [](f32 x, f32 y, Ref<Geometry> geo)
             {
-                geo->x += x / 2;
-                geo->y += y / 2;
-                geo->width -= x;
-                geo->height += y;
+                geo->width -= x * 2;
+                geo->height += y * 2;
             };
 
             auto leftBottomPoint = ECSCreateEntity(
@@ -413,9 +452,169 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        resizeControllerScriptId,
+                        transformScriptId,
                         INVALID_OBJECT_ID,
                         &leftBottomData),
+                });
+
+            TransformScriptData leftPointData;
+            leftPointData.entity = entityId;
+            leftPointData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->width -= x * 2;
+            };
+
+            leftPointData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->posX = -geo->width / 2 - CENTER_SIZE / 2;
+            };
+
+            auto leftPoint = ECSCreateEntity(
+                "left-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x - geo->width / 2 - CENTER_SIZE / 2,
+                        geo->y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        -geo->width / 2 - CENTER_SIZE / 2,
+                        0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &leftPointData),
+                });
+
+            TransformScriptData rightPointData;
+            rightPointData.entity = entityId;
+            rightPointData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->width += x * 2;
+            };
+
+            rightPointData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->posX = geo->width / 2 + CENTER_SIZE / 2;
+            };
+
+            auto rightPoint = ECSCreateEntity(
+                "right-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x + geo->width / 2 + CENTER_SIZE / 2,
+                        geo->y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        geo->width / 2 + CENTER_SIZE / 2,
+                        0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &rightPointData),
+                });
+
+            TransformScriptData topPointData;
+            topPointData.entity = entityId;
+            topPointData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->height -= y * 2;
+            };
+
+            topPointData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->posY = -geo->height / 2 - CENTER_SIZE / 2;
+            };
+
+            auto topPoint = ECSCreateEntity(
+                "top-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x, geo->y - geo->height / 2 - CENTER_SIZE / 2,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        0,
+                        -geo->height / 2 - CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &topPointData),
+                });
+
+            TransformScriptData bottomPointData;
+            bottomPointData.entity = entityId;
+            bottomPointData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->height += y * 2;
+            };
+
+            bottomPointData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->posY = geo->height / 2 + CENTER_SIZE / 2;
+            };
+
+            auto bottomPoint = ECSCreateEntity(
+                "bottom-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x, geo->y + geo->height / 2 + CENTER_SIZE / 2,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        0,
+                        geo->height / 2 + CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &bottomPointData),
                 });
 
             drawnEntities[entityId].push_back(center);
@@ -431,6 +630,10 @@ namespace ntt
             drawnEntities[entityId].push_back(xPointNeg);
             drawnEntities[entityId].push_back(yAxisNeg);
             drawnEntities[entityId].push_back(yPointNeg);
+            drawnEntities[entityId].push_back(leftPoint);
+            drawnEntities[entityId].push_back(rightPoint);
+            drawnEntities[entityId].push_back(topPoint);
+            drawnEntities[entityId].push_back(bottomPoint);
 
             moveEntities.push_back(center);
             moveEntities.push_back(xPoint);
@@ -446,6 +649,10 @@ namespace ntt
             resizeEntities.push_back(rightTopPoint);
             resizeEntities.push_back(leftBottomPoint);
             resizeEntities.push_back(rightBottomPoint);
+            resizeEntities.push_back(leftPoint);
+            resizeEntities.push_back(rightPoint);
+            resizeEntities.push_back(topPoint);
+            resizeEntities.push_back(bottomPoint);
 
             allDrawnEntities.push_back(center);
             allDrawnEntities.push_back(xAxis);
@@ -460,6 +667,10 @@ namespace ntt
             allDrawnEntities.push_back(xPointNeg);
             allDrawnEntities.push_back(yAxisNeg);
             allDrawnEntities.push_back(yPointNeg);
+            allDrawnEntities.push_back(leftPoint);
+            allDrawnEntities.push_back(rightPoint);
+            allDrawnEntities.push_back(topPoint);
+            allDrawnEntities.push_back(bottomPoint);
 
             ChangeMoveState(currentTool == MOVE);
             ChangeResizeState(currentTool == SCALE);
@@ -485,43 +696,25 @@ namespace ntt
             f32 x = context.f32_data[0];
             f32 y = context.f32_data[1];
 
-            entity_id_t entityId = reinterpret_cast<Script *>(sender)->GetEntity();
-
-            if (selectedEntities.size() == 0)
+            for (auto entityId : selectedEntities)
             {
-                return;
-            }
-
-            if (selectedEntities.Contains(entityId))
-            {
-                return;
-            }
-
-            switch (code)
-            {
-            case NTT_EDITOR_SELECTED_MOVE_REQUEST:
-                TriggerEvent(NTT_EDITOR_SELECTED_MOVE, &selectedEntities, context);
-                break;
-            case NTT_EDITOR_SELECTED_RESIZE_REQUEST:
-                for (auto entityId : selectedEntities)
+                auto geo = ECS_GET_COMPONENT(entityId, Geometry);
+                if (geo == nullptr)
                 {
-                    auto geo = ECS_GET_COMPONENT(entityId, Geometry);
-                    if (geo == nullptr)
-                    {
-                        continue;
-                    }
-
-                    OnResizeMainFunc onResizeMain = static_cast<ResizeControllerData *>(
-                                                        sender)
-                                                        ->onResizeMain;
-
-                    onResizeMain(x, y, geo);
+                    continue;
                 }
 
-                TriggerEvent(NTT_EDITOR_SELECTED_RESIZE, &selectedEntities, context);
-                break;
+                OnTransformFunc onResizeMain =
+                    static_cast<TransformScriptData *>(sender)
+                        ->onResizeMain;
+
+                if (onResizeMain != nullptr)
+                {
+                    onResizeMain(x, y, geo);
+                }
             }
-            return;
+
+            TriggerEvent(NTT_EDITOR_TRANSFORM_CHANGED, nullptr, context);
         }
 
         void ChangeMoveState(b8 active)
@@ -573,52 +766,13 @@ namespace ntt
         m_impl->selectedEntities.clear();
         m_impl->drawnEntities.clear();
 
-        m_impl->moveXControllerScriptId = ScriptStoreLoad(
-            "move-x-controller",
+        m_impl->transformScriptId = ScriptStoreLoad(
+            "transform-script",
             [](void *data) -> Ref<void>
-            { return std::reinterpret_pointer_cast<void>(CreateRef<MoveXController>(data)); },
+            { return std::reinterpret_pointer_cast<void>(CreateRef<TransformScript>(data)); },
             [](Ref<void> script)
             {
-                std::reinterpret_pointer_cast<MoveXController>(script).reset();
-            },
-            []() -> std::type_index
-            {
-                return typeid(MoveXController);
-            });
-
-        m_impl->moveAroundControllerScriptId = ScriptStoreLoad(
-            "move-around-controller",
-            [](void *data) -> Ref<void>
-            { return std::reinterpret_pointer_cast<void>(CreateRef<MoveAroundController>(data)); },
-            [](Ref<void> script)
-            {
-                std::reinterpret_pointer_cast<MoveAroundController>(script).reset();
-            },
-            []() -> std::type_index
-            {
-                return typeid(Script);
-            });
-
-        m_impl->moveYControllerScriptId = ScriptStoreLoad(
-            "move-y-controller",
-            [](void *data) -> Ref<void>
-            { return std::reinterpret_pointer_cast<void>(CreateRef<MoveYController>(data)); },
-            [](Ref<void> script)
-            {
-                std::reinterpret_pointer_cast<MoveYController>(script).reset();
-            },
-            []() -> std::type_index
-            {
-                return typeid(Script);
-            });
-
-        m_impl->resizeControllerScriptId = ScriptStoreLoad(
-            "resize-controller",
-            [](void *data) -> Ref<void>
-            { return std::reinterpret_pointer_cast<void>(CreateRef<ResizeController>(data)); },
-            [](Ref<void> script)
-            {
-                std::reinterpret_pointer_cast<ResizeController>(script).reset();
+                std::reinterpret_pointer_cast<TransformScript>(script).reset();
             },
             []() -> std::type_index
             {
@@ -659,6 +813,14 @@ namespace ntt
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
+
+        RegisterEvent(
+            NTT_EDITOR_TRANSFORM_CHANGED_REQUEST,
+            std::bind(&Impl::OnEditorSelectedRequest,
+                      m_impl.get(),
+                      std::placeholders::_1,
+                      std::placeholders::_2,
+                      std::placeholders::_3));
 
         RegisterEvent(
             NTT_SCENE_CHANGED,

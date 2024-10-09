@@ -11,7 +11,7 @@
 #include "editor_log_window.hpp"
 #include "editor_scene_window.hpp"
 #include "editor_viewport_window.hpp"
-#include "editor_entity_window.hpp"
+#include "entity_window/editor_entity_window.hpp"
 #include "editor_tool.hpp"
 
 namespace ntt

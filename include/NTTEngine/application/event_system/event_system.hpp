@@ -98,7 +98,10 @@ namespace ntt::event
 #define NTT_EDITOR_SELECTED_ROTATE 0x1E         ///< When the entity need to be rotated
 #define NTT_EDITOR_SELECTED_ROTATE_REQUEST 0x1F ///< When the entity has request to be rotated
 
-#define NTT_EDITOR_TOOL_TYPE_CHANGED 0x20 ///< When the tool type is changed
+#define NTT_EDITOR_TRANSFORM_CHANGED 0x20         ///< When the transform of the entity is changed
+#define NTT_EDITOR_TRANSFORM_CHANGED_REQUEST 0x21 ///< When the transform of the entity is changed
+
+#define NTT_EDITOR_TOOL_TYPE_CHANGED 0x22 ///< When the tool type is changed
 
     // TODO: Change the default event < 255 and the user's event >= 255
 

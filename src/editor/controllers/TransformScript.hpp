@@ -9,28 +9,25 @@ namespace ntt
     using namespace script;
     using namespace memory;
 
-    using OnResizeFunc = std::function<void(
-        const f32,
-        const f32,
-        Ref<Geometry>,
-        Ref<Parent>)>;
-    using OnResizeMainFunc = std::function<void(
+    using OnTransformFunc = std::function<void(
         const f32,
         const f32,
         Ref<Geometry>)>;
 
-    struct ResizeControllerData
+    using OnAddEntResetFunc = std::function<void(const entity_id_t)>;
+
+    struct TransformScriptData
     {
         entity_id_t entity;
-        OnResizeFunc onResize;
-        OnResizeMainFunc onResizeMain;
+        OnTransformFunc onResizeMain;
+        OnAddEntResetFunc onAddEntReset;
     };
 
-    class ResizeController : public Script
+    class TransformScript : public Script
     {
     public:
-        ResizeController(void *);
-        ~ResizeController() override;
+        TransformScript(void *);
+        ~TransformScript() override;
 
     protected:
         void OnEnterImpl() override;

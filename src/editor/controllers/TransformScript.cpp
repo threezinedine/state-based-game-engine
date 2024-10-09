@@ -1,4 +1,4 @@
-#include "ResizeController.hpp"
+#include "TransformScript.hpp"
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include "raylib.h"
@@ -7,10 +7,10 @@ namespace ntt
 {
     using namespace input;
 
-    class ResizeController::Impl
+    class TransformScript::Impl
     {
     public:
-        ResizeControllerData data;
+        TransformScriptData data;
         entity_id_t self;
 
         // TRUE if the button is hoverred and pressed
@@ -20,66 +20,45 @@ namespace ntt
 
         void OnSelectedResize(event_code_t code, void *sender, const EventContext &context)
         {
-            f32 x = context.f32_data[0];
-            f32 y = context.f32_data[1];
-
-            auto selfParent = ECS_GET_COMPONENT(self, Parent);
-
-            if (selfParent == nullptr)
-            {
-                NTT_ENGINE_WARN("The entity with ID {} does not have a parent component", self);
-                return;
-            }
-
-            List<entity_id_t> selectedEntities = *reinterpret_cast<List<entity_id_t> *>(sender);
-            if (!selectedEntities.Contains(data.entity))
+            if (data.onResizeMain == nullptr)
             {
                 return;
             }
 
-            auto parentGeo = ECS_GET_COMPONENT(data.entity, Geometry);
-
-            if (parentGeo == nullptr)
-            {
-                NTT_ENGINE_WARN("The entity with ID {} does not have a geometry component",
-                                selfParent->parentId);
-                return;
-            }
-
-            if (data.onResize == nullptr)
+            if (data.onAddEntReset == nullptr)
             {
                 return;
             }
 
-            data.onResize(x, y, parentGeo, selfParent);
+            data.onAddEntReset(self);
         }
     };
 
-    ResizeController::ResizeController(void *data)
+    TransformScript::TransformScript(void *data)
         : m_impl(CreateScope<Impl>())
     {
         PROFILE_FUNCTION();
-        m_impl->data = *static_cast<ResizeControllerData *>(data);
+        m_impl->data = *static_cast<TransformScriptData *>(data);
     }
 
-    ResizeController::~ResizeController()
+    TransformScript::~TransformScript()
     {
         PROFILE_FUNCTION();
     }
 
-    void ResizeController::OnEnterImpl()
+    void TransformScript::OnEnterImpl()
     {
         PROFILE_FUNCTION();
-        Subscribe(NTT_EDITOR_SELECTED_RESIZE);
         m_impl->self = GetEntity();
+        Subscribe(NTT_EDITOR_TRANSFORM_CHANGED);
     }
 
-    void ResizeController::OnExitImpl()
+    void TransformScript::OnExitImpl()
     {
         PROFILE_FUNCTION();
     }
 
-    void ResizeController::OnUpdateImpl(f32 deltaTime)
+    void TransformScript::OnUpdateImpl(f32 deltaTime)
     {
         PROFILE_FUNCTION();
 
@@ -89,8 +68,9 @@ namespace ntt
             EventContext context;
             context.f32_data[0] = mouse.x - m_impl->preMousePos.x;
             context.f32_data[1] = mouse.y - m_impl->preMousePos.y;
+
             TriggerEvent(
-                NTT_EDITOR_SELECTED_RESIZE_REQUEST,
+                NTT_EDITOR_TRANSFORM_CHANGED_REQUEST,
                 &m_impl->data,
                 context);
 
@@ -103,14 +83,14 @@ namespace ntt
         }
     }
 
-    void ResizeController::OnHoverEnter()
+    void TransformScript::OnHoverEnter()
     {
         PROFILE_FUNCTION();
 
         SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
     }
 
-    void ResizeController::OnHover(HoveringContext &)
+    void TransformScript::OnHover(HoveringContext &)
     {
         PROFILE_FUNCTION();
 
@@ -121,19 +101,19 @@ namespace ntt
         }
     }
 
-    void ResizeController::OnHoverExit()
+    void TransformScript::OnHoverExit()
     {
         PROFILE_FUNCTION();
         SetMouseCursor(MOUSE_CURSOR_DEFAULT);
     }
 
-    void ResizeController::OnEvent(event_code_t code, void *sender, const EventContext &context)
+    void TransformScript::OnEvent(event_code_t code, void *sender, const EventContext &context)
     {
         PROFILE_FUNCTION();
 
         switch (code)
         {
-        case NTT_EDITOR_SELECTED_RESIZE:
+        case NTT_EDITOR_TRANSFORM_CHANGED:
             m_impl->OnSelectedResize(code, sender, context);
         }
     }

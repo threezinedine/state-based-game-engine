@@ -15,11 +15,18 @@ namespace ntt::renderer
      */
     struct Geometry : public ComponentBase
     {
-        position_t x;      ///< The x position in pixel
-        position_t y;      ///< The y position in pixel
+        // x, y must be adjecent to each other for editor working
+
+        position_t x; ///< The x position in pixel
+        position_t y; ///< The y position in pixel
+
+        // width and height must be adjecent to each other for editor working
+
         ntt_size_t width;  ///< The width in pixel
         ntt_size_t height; ///< The height in pixel
+
         f32 rotation;
+
         u8 priority;
         RGBAColor color;
 

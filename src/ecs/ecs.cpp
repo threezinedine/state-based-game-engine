@@ -214,7 +214,8 @@ namespace ntt::ecs
         PROFILE_FUNCTION();
 
         auto systemId = s_systemsStore->Add(CreateRef<SystemInfo>(
-            GetName(name),
+            // GetName(name),
+            name,
             system,
             componentTypes,
             alwayUpdate));
