@@ -11,6 +11,7 @@
 #include "editor_log_window.hpp"
 #include "editor_scene_window.hpp"
 #include "editor_viewport_window.hpp"
+#include "editor_entity_window.hpp"
 #include "editor_tool.hpp"
 
 namespace ntt
@@ -32,6 +33,7 @@ namespace ntt
 
         b8 s_openLog = TRUE;
         b8 s_openScene = TRUE;
+        b8 s_openEntity = TRUE;
 
         List<String> s_sceneNames;
         String s_currentScene;
@@ -52,6 +54,7 @@ namespace ntt
         rlImGuiSetup(true);
         s_openLog = TRUE;
         s_openScene = TRUE;
+        s_openEntity = TRUE;
 
         if (use)
         {
@@ -62,6 +65,7 @@ namespace ntt
         EditorViewportWindowInit(s_screenWidth, s_screenHeight);
         EditorLogWindowInit();
         EditorSceneWindowInit();
+        EditorEntityWindowInit();
         EditorToolInit();
     }
 
@@ -234,6 +238,11 @@ namespace ntt
             EditorLogWindowUpdate(&s_openLog, s_isRunning);
         }
 
+        if (s_openEntity)
+        {
+            EditorEntityWindowUpdate(&s_openEntity, s_isRunning);
+        }
+
         rlImGuiEnd();
     }
 
@@ -260,6 +269,7 @@ namespace ntt
     void EditorShutdown()
     {
         EditorLogWindowShutdown();
+        EditorEntityWindowShutdown();
         EditorSceneWindowShutdown();
         EditorViewportWindowShutdown();
         EditorToolShutdown();

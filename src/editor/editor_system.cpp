@@ -503,6 +503,21 @@ namespace ntt
                 TriggerEvent(NTT_EDITOR_SELECTED_MOVE, &selectedEntities, context);
                 break;
             case NTT_EDITOR_SELECTED_RESIZE_REQUEST:
+                for (auto entityId : selectedEntities)
+                {
+                    auto geo = ECS_GET_COMPONENT(entityId, Geometry);
+                    if (geo == nullptr)
+                    {
+                        continue;
+                    }
+
+                    OnResizeMainFunc onResizeMain = static_cast<ResizeControllerData *>(
+                                                        sender)
+                                                        ->onResizeMain;
+
+                    onResizeMain(x, y, geo);
+                }
+
                 TriggerEvent(NTT_EDITOR_SELECTED_RESIZE, &selectedEntities, context);
                 break;
             }

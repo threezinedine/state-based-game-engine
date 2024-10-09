@@ -89,14 +89,10 @@ namespace ntt
             EventContext context;
             context.f32_data[0] = mouse.x - m_impl->preMousePos.x;
             context.f32_data[1] = mouse.y - m_impl->preMousePos.y;
-            TriggerEvent(NTT_EDITOR_SELECTED_RESIZE_REQUEST, this, context);
-
-            auto geo = ECS_GET_COMPONENT(m_impl->data.entity, Geometry);
-
-            if (geo != nullptr)
-            {
-                m_impl->data.onResizeMain(context.f32_data[0], context.f32_data[1], geo);
-            }
+            TriggerEvent(
+                NTT_EDITOR_SELECTED_RESIZE_REQUEST,
+                &m_impl->data,
+                context);
 
             m_impl->preMousePos = {mouse.x, mouse.y};
         }
