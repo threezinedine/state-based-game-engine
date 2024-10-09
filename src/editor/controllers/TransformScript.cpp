@@ -68,6 +68,8 @@ namespace ntt
             EventContext context;
             context.f32_data[0] = mouse.x - m_impl->preMousePos.x;
             context.f32_data[1] = mouse.y - m_impl->preMousePos.y;
+            context.f32_data[2] = mouse.x;
+            context.f32_data[3] = mouse.y;
 
             TriggerEvent(
                 NTT_EDITOR_TRANSFORM_CHANGED_REQUEST,

@@ -131,6 +131,7 @@ namespace ntt
             {
                 ImGui::MenuItem("Log", NULL, &s_openLog);
                 ImGui::MenuItem("Scene", NULL, &s_openScene);
+                ImGui::MenuItem("Entity", NULL, &s_openEntity);
                 ImGui::EndMenu();
             }
 

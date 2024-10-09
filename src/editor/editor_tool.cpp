@@ -43,7 +43,7 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        if (CHECK_PRESS(NTT_KEY_M))
+        if (CHECK_PRESS(NTT_KEY_Q))
         {
             s_currentTool = MOVE;
             EventContext context;
@@ -51,9 +51,17 @@ namespace ntt
             TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);
         }
 
-        if (CHECK_PRESS(NTT_KEY_S))
+        if (CHECK_PRESS(NTT_KEY_W))
         {
             s_currentTool = SCALE;
+            EventContext context;
+            context.u8_data[0] = s_currentTool;
+            TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);
+        }
+
+        if (CHECK_PRESS(NTT_KEY_E))
+        {
+            s_currentTool = ROTATE;
             EventContext context;
             context.u8_data[0] = s_currentTool;
             TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);

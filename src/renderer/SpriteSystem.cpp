@@ -43,8 +43,8 @@ namespace ntt::renderer
         auto sprite = ECS_GET_COMPONENT(id, Sprite);
         auto texture = ECS_GET_COMPONENT(id, TextureComponent);
 
-        auto colIndex = texture->colIndex;
-        auto rowIndex = texture->rowIndex;
+        auto rowIndex = texture->currentCell.row;
+        auto colIndex = texture->currentCell.col;
 
         auto currentCell = sprite->cells[sprite->currentCell];
 
@@ -54,10 +54,10 @@ namespace ntt::renderer
             sprite->currentCell = (sprite->currentCell + 1) % sprite->cells.size();
         }
 
-        if (colIndex != currentCell.first || rowIndex != currentCell.second)
+        if (rowIndex != currentCell.first || rowIndex != currentCell.second)
         {
-            texture->rowIndex = currentCell.first;
-            texture->colIndex = currentCell.second;
+            texture->currentCell.row = currentCell.first;
+            texture->currentCell.col = currentCell.second;
         }
     }
 

@@ -5,6 +5,7 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 
 #include "geometry_component.hpp"
+#include "texture_component.hpp"
 
 namespace ntt
 {
@@ -63,6 +64,11 @@ namespace ntt
                         if (pair.first == typeid(Geometry))
                         {
                             GeometryComponentDraw(std::static_pointer_cast<Geometry>(pair.second));
+                        }
+                        else if (pair.first == typeid(TextureComponent))
+                        {
+                            TextureComponentDraw(
+                                std::static_pointer_cast<TextureComponent>(pair.second));
                         }
                     }
                     ImGui::TreePop();

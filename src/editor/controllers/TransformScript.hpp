@@ -10,8 +10,8 @@ namespace ntt
     using namespace memory;
 
     using OnTransformFunc = std::function<void(
-        const f32,
-        const f32,
+        const Position,
+        const Position,
         Ref<Geometry>)>;
 
     using OnAddEntResetFunc = std::function<void(const entity_id_t)>;

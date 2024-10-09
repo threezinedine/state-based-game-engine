@@ -54,6 +54,8 @@ namespace ntt::renderer
             geo->size.height = 100;
         }
 
+        texture->textureGrid = GetTextureGrid(texture->id);
+
         auto size = ValidateSize(texture->id,
                                  {geo->pos,
                                   geo->size,
@@ -100,8 +102,8 @@ namespace ntt::renderer
             context.size = geo->size;
             context.rotate = geo->rotation;
 
-            cell.row = texture->rowIndex;
-            cell.col = texture->colIndex;
+            cell.row = texture->currentCell.row;
+            cell.col = texture->currentCell.col;
 
             drawContext.tooltip = texture->tooltip;
 

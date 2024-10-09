@@ -137,6 +137,17 @@ namespace ntt::renderer
     Size ValidateSize(resource_id_t textureId, const RectContext &context);
 
     /**
+     * Get the configuration of the number of rows and columns
+     *      of the certain texture.
+     *
+     * @param textureId: The ID of the texture which is loaded
+     *
+     * @return The grid of the texture which are how many rows and columns.
+     *      if the textureId is not found, then the default grid {1, 1} will be returned.
+     */
+    const Grid GetTextureGrid(resource_id_t textureId);
+
+    /**
      * Draw the texture, if the Size in the context is default
      *      then the size of the texture will be used. The object
      *      will not be drawn immediately, it will be drawn

@@ -14,16 +14,16 @@ namespace ntt::renderer
     struct TextureComponent : public ComponentBase
     {
         resource_id_t id;
-        u8 rowIndex;
-        u8 colIndex;
+        Grid currentCell;
+        Grid textureGrid;
         String tooltip;
 
         TextureComponent(resource_id_t id = RESOURCE_ID_DEFAULT,
                          u8 rowIndex = 0,
                          u8 colIndex = 0,
                          const String &tooltip = "")
-            : id(id), rowIndex(rowIndex),
-              colIndex(colIndex),
+            : id(id),
+              currentCell(rowIndex, colIndex),
               tooltip(tooltip)
         {
         }

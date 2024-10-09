@@ -198,6 +198,25 @@ namespace ntt::renderer
         return {static_cast<ntt_size_t>(width), static_cast<ntt_size_t>(height)};
     }
 
+    const Grid GetTextureGrid(resource_id_t texture_id)
+    {
+        PROFILE_FUNCTION();
+
+        if (!s_textureStore->Contains(texture_id))
+        {
+            NTT_ENGINE_WARN("The texture with the ID {} is not found", texture_id);
+            return {1, 1};
+        }
+
+        auto textureInfo = s_textureStore->Get(texture_id);
+        if (textureInfo == nullptr)
+        {
+            return {1, 1};
+        }
+
+        return textureInfo->grid;
+    }
+
     void DrawTexture(resource_id_t texture_id,
                      const RectContext &context,
                      const Grid &cell,
