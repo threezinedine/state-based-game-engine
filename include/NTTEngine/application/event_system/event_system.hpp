@@ -92,6 +92,14 @@ namespace ntt::event
 #define NTT_EDITOR_SELECTED_MOVE 0x1A         ///< When the entity need to be moved
 #define NTT_EDITOR_SELECTED_MOVE_REQUEST 0x1B ///< When the entity has request to be moved
 
+#define NTT_EDITOR_SELECTED_RESIZE 0x1C         ///< When the entity need to be resized
+#define NTT_EDITOR_SELECTED_RESIZE_REQUEST 0x1D ///< When the entity has request to be resized
+
+#define NTT_EDITOR_SELECTED_ROTATE 0x1E         ///< When the entity need to be rotated
+#define NTT_EDITOR_SELECTED_ROTATE_REQUEST 0x1F ///< When the entity has request to be rotated
+
+#define NTT_EDITOR_TOOL_TYPE_CHANGED 0x20 ///< When the tool type is changed
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

@@ -14,6 +14,8 @@
 #include "controllers/MoveXController.hpp"
 #include "controllers/MoveAroundController.hpp"
 #include "controllers/MoveYController.hpp"
+#include "controllers/ResizeController.hpp"
+#include "editor_tool.hpp"
 
 #define CENTER_SIZE 20 ///< The size of the center rect
 
@@ -30,12 +32,16 @@ namespace ntt
         List<entity_id_t> selectedEntities;
         Dictionary<entity_id_t, List<entity_id_t>> drawnEntities;
         List<entity_id_t> allDrawnEntities;
+        List<entity_id_t> moveEntities;
+        List<entity_id_t> resizeEntities;
 
         resource_id_t moveXControllerScriptId;
         resource_id_t moveYControllerScriptId;
         resource_id_t moveAroundControllerScriptId;
+        resource_id_t resizeControllerScriptId;
 
         u16 currentLayer = EDITOR_LAYER;
+        ToolType currentTool = MOVE;
 
         void OnLayerChanged(event_code_t code, void *sender, const EventContext &context)
         {
@@ -57,6 +63,8 @@ namespace ntt
                 {
                     ECSDeleteEntity(btnId);
                     allDrawnEntities.RemoveItem(btnId);
+                    moveEntities.RemoveItem(btnId);
+                    resizeEntities.RemoveItem(btnId);
                 }
 
                 drawnEntities[selected].clear();
@@ -82,6 +90,7 @@ namespace ntt
             }
 
             ECSBeginLayer(EDITOR_LAYER);
+
             auto center = ECSCreateEntity(
                 "Center Rect",
                 {
@@ -167,17 +176,221 @@ namespace ntt
                         &entityId),
                 });
 
+            ResizeControllerData leftTopData;
+            leftTopData.entity = entityId;
+            leftTopData.onResize =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo,
+                    Ref<Parent> topLeft)
+            {
+                topLeft->posX = -geo->width / 2 - CENTER_SIZE / 2;
+                topLeft->posY = -geo->height / 2 - CENTER_SIZE / 2;
+            };
+
+            leftTopData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->x += x / 2;
+                geo->y += y / 2;
+                geo->width -= x;
+                geo->height -= y;
+            };
+
+            auto leftTopPoint = ECSCreateEntity(
+                "left-top-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x - geo->width / 2 - CENTER_SIZE / 2,
+                        geo->y - geo->height / 2 - CENTER_SIZE / 2,
+                        CENTER_SIZE, CENTER_SIZE,
+                        0.0f, PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent, entityId,
+                        -geo->width / 2 - CENTER_SIZE / 2,
+                        -geo->height / 2 - CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        resizeControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &leftTopData),
+                });
+
+            ResizeControllerData rightTopData;
+            rightTopData.entity = entityId;
+            rightTopData.onResize =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo,
+                    Ref<Parent> topRight)
+            {
+                topRight->posX = geo->width / 2 + CENTER_SIZE / 2;
+                topRight->posY = -geo->height / 2 - CENTER_SIZE / 2;
+            };
+
+            rightTopData.onResizeMain =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo)
+            {
+                geo->x += x / 2;
+                geo->y += y / 2;
+                geo->width += x;
+                geo->height -= y;
+            };
+
+            auto rightTopPoint = ECSCreateEntity(
+                "right-top-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x + geo->width / 2 + CENTER_SIZE / 2,
+                        geo->y - geo->height / 2 - CENTER_SIZE / 2,
+                        CENTER_SIZE,
+                        CENTER_SIZE, 0.0f,
+                        PRIORITY_1,
+                        NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        geo->width / 2 + CENTER_SIZE / 2,
+                        -geo->height / 2 - CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        resizeControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &rightTopData),
+                });
+
+            ResizeControllerData rightBottomData;
+            rightBottomData.entity = entityId;
+            rightBottomData.onResize =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo,
+                    Ref<Parent> bottomRight)
+            {
+                bottomRight->posX = geo->width / 2 + CENTER_SIZE / 2;
+                bottomRight->posY = geo->height / 2 + CENTER_SIZE / 2;
+            };
+
+            rightBottomData.onResizeMain = [](
+                                               f32 x, f32 y,
+                                               Ref<Geometry> geo)
+            {
+                geo->x += x / 2;
+                geo->y += y / 2;
+                geo->width += x;
+                geo->height += y;
+            };
+
+            auto rightBottomPoint = ECSCreateEntity(
+                "right-bottom-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x + geo->width / 2 + CENTER_SIZE / 2,
+                        geo->y + geo->height / 2 + CENTER_SIZE / 2,
+                        CENTER_SIZE,
+                        CENTER_SIZE, 0.0f,
+                        PRIORITY_1,
+                        NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        geo->width / 2 + CENTER_SIZE / 2,
+                        geo->height / 2 + CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        resizeControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &rightBottomData),
+                });
+
+            ResizeControllerData leftBottomData;
+            leftBottomData.entity = entityId;
+            leftBottomData.onResize =
+                [](
+                    f32 x, f32 y,
+                    Ref<Geometry> geo,
+                    Ref<Parent> bottomLeft)
+            {
+                bottomLeft->posX = -geo->width / 2 - CENTER_SIZE / 2;
+                bottomLeft->posY = geo->height / 2 + CENTER_SIZE / 2;
+            };
+
+            leftBottomData.onResizeMain =
+                [](f32 x, f32 y, Ref<Geometry> geo)
+            {
+                geo->x += x / 2;
+                geo->y += y / 2;
+                geo->width -= x;
+                geo->height += y;
+            };
+
+            auto leftBottomPoint = ECSCreateEntity(
+                "left-bottom-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x - geo->width / 2 - CENTER_SIZE / 2,
+                        geo->y + geo->height / 2 + CENTER_SIZE / 2,
+                        CENTER_SIZE,
+                        CENTER_SIZE, 0.0f,
+                        PRIORITY_1,
+                        NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        -geo->width / 2 - CENTER_SIZE / 2,
+                        geo->height / 2 + CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        resizeControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &leftBottomData),
+                });
+
             drawnEntities[entityId].push_back(center);
             drawnEntities[entityId].push_back(xAxis);
             drawnEntities[entityId].push_back(xPoint);
             drawnEntities[entityId].push_back(yAxis);
             drawnEntities[entityId].push_back(yPoint);
+            drawnEntities[entityId].push_back(leftTopPoint);
+            drawnEntities[entityId].push_back(rightTopPoint);
+            drawnEntities[entityId].push_back(leftBottomPoint);
+            drawnEntities[entityId].push_back(rightBottomPoint);
+
+            moveEntities.push_back(center);
+            moveEntities.push_back(xPoint);
+            moveEntities.push_back(yPoint);
+            moveEntities.push_back(xAxis);
+            moveEntities.push_back(yAxis);
+
+            resizeEntities.push_back(leftTopPoint);
+            resizeEntities.push_back(rightTopPoint);
+            resizeEntities.push_back(leftBottomPoint);
+            resizeEntities.push_back(rightBottomPoint);
 
             allDrawnEntities.push_back(center);
             allDrawnEntities.push_back(xAxis);
             allDrawnEntities.push_back(yAxis);
             allDrawnEntities.push_back(xPoint);
             allDrawnEntities.push_back(yPoint);
+            allDrawnEntities.push_back(leftTopPoint);
+            allDrawnEntities.push_back(rightTopPoint);
+            allDrawnEntities.push_back(leftBottomPoint);
+            allDrawnEntities.push_back(rightBottomPoint);
+
+            ChangeMoveState(currentTool == MOVE);
+            ChangeResizeState(currentTool == SCALE);
 
             ECSBeginLayer(GAME_LAYER);
         }
@@ -195,7 +408,7 @@ namespace ntt
             ChooseNewEntity(entityId);
         }
 
-        void OnEditorSelectedMoveRequest(event_code_t code, void *sender, const EventContext &context)
+        void OnEditorSelectedRequest(event_code_t code, void *sender, const EventContext &context)
         {
             f32 x = context.f32_data[0];
             f32 y = context.f32_data[1];
@@ -212,8 +425,46 @@ namespace ntt
                 return;
             }
 
-            TriggerEvent(NTT_EDITOR_SELECTED_MOVE, &selectedEntities, context);
+            switch (code)
+            {
+            case NTT_EDITOR_SELECTED_MOVE_REQUEST:
+                TriggerEvent(NTT_EDITOR_SELECTED_MOVE, &selectedEntities, context);
+                break;
+            case NTT_EDITOR_SELECTED_RESIZE_REQUEST:
+                TriggerEvent(NTT_EDITOR_SELECTED_RESIZE, &selectedEntities, context);
+                break;
+            }
             return;
+        }
+
+        void ChangeMoveState(b8 active)
+        {
+            for (auto entityId : moveEntities)
+            {
+                ECSSetComponentActive(entityId, typeid(NativeScriptComponent), active);
+                ECSSetComponentActive(entityId, typeid(Geometry), active);
+            }
+        }
+
+        void ChangeResizeState(b8 active)
+        {
+            for (auto entityId : resizeEntities)
+            {
+                ECSSetComponentActive(entityId, typeid(NativeScriptComponent), active);
+                ECSSetComponentActive(entityId, typeid(Geometry), active);
+            }
+        }
+
+        void OnToolTypeChanged(event_code_t code, void *sender, const EventContext &context)
+        {
+            auto tool = static_cast<ToolType>(context.u8_data[0]);
+            currentTool = tool;
+
+            for (auto entityId : allDrawnEntities)
+            {
+                ChangeMoveState(currentTool == MOVE);
+                ChangeResizeState(currentTool == SCALE);
+            }
         }
     };
 
@@ -274,6 +525,19 @@ namespace ntt
                 return typeid(Script);
             });
 
+        m_impl->resizeControllerScriptId = ScriptStoreLoad(
+            "resize-controller",
+            [](void *data) -> Ref<void>
+            { return std::reinterpret_pointer_cast<void>(CreateRef<ResizeController>(data)); },
+            [](Ref<void> script)
+            {
+                std::reinterpret_pointer_cast<ResizeController>(script).reset();
+            },
+            []() -> std::type_index
+            {
+                return typeid(Script);
+            });
+
         RegisterEvent(NTT_LAYER_CHANGED,
                       std::bind(&Impl::OnLayerChanged,
                                 m_impl.get(),
@@ -296,7 +560,14 @@ namespace ntt
                                 std::placeholders::_3));
 
         RegisterEvent(NTT_EDITOR_SELECTED_MOVE_REQUEST,
-                      std::bind(&Impl::OnEditorSelectedMoveRequest,
+                      std::bind(&Impl::OnEditorSelectedRequest,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_SELECTED_RESIZE_REQUEST,
+                      std::bind(&Impl::OnEditorSelectedRequest,
                                 m_impl.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
@@ -306,6 +577,13 @@ namespace ntt
             NTT_SCENE_CHANGED,
             [&](event_code_t code, void *sender, const EventContext &context)
             { m_impl->Clear(); });
+
+        RegisterEvent(NTT_EDITOR_TOOL_TYPE_CHANGED,
+                      std::bind(&Impl::OnToolTypeChanged,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
     }
 
     void EditorSystem::InitEntity(entity_id_t entityId)
@@ -348,6 +626,11 @@ namespace ntt
         }
         else
         {
+            if (m_impl->selectedEntities.Contains(entityId))
+            {
+                return;
+            }
+
             EventContext context;
             context.u32_data[0] = entityId;
             TriggerEvent(NTT_EDITOR_APPEND_ENTITY, nullptr, context);

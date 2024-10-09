@@ -11,6 +11,7 @@
 #include "editor_log_window.hpp"
 #include "editor_scene_window.hpp"
 #include "editor_viewport_window.hpp"
+#include "editor_tool.hpp"
 
 namespace ntt
 {
@@ -61,6 +62,7 @@ namespace ntt
         EditorViewportWindowInit(s_screenWidth, s_screenHeight);
         EditorLogWindowInit();
         EditorSceneWindowInit();
+        EditorToolInit();
     }
 
     void EditorRun()
@@ -225,6 +227,8 @@ namespace ntt
             ImGui::ShowDemoWindow(&show);
         }
 
+        EditorToolUpdate();
+
         if (s_openLog)
         {
             EditorLogWindowUpdate(&s_openLog, s_isRunning);
@@ -258,6 +262,7 @@ namespace ntt
         EditorLogWindowShutdown();
         EditorSceneWindowShutdown();
         EditorViewportWindowShutdown();
+        EditorToolShutdown();
         NTT_ENGINE_INFO("The editor mode is shutdown");
     }
 } // namespace ntt

@@ -127,6 +127,11 @@ namespace ntt::ecs
 
             auto availabeSystems = s_systemsStore->GetAvailableIds();
 
+            for (auto entityCom : entityInfo->components.Keys())
+            {
+                ECSSetComponentActive(id, entityCom, TRUE);
+            }
+
             for (auto systemId : availabeSystems)
             {
                 auto system = s_systemsStore->Get(systemId);
