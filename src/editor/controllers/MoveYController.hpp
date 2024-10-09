@@ -19,7 +19,9 @@ namespace ntt
         void OnExitImpl() override;
         void OnUpdateImpl(f32 deltaTime) override;
 
+        void OnHoverEnter() override;
         void OnHover(HoveringContext &) override;
+        void OnHoverExit() override;
 
     private:
         class Impl;

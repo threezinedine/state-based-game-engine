@@ -4,6 +4,8 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
 
+#include "raylib.h"
+
 namespace ntt
 {
     using namespace log;
@@ -77,4 +79,15 @@ namespace ntt
         }
     }
 
+    void MoveYController::OnHoverEnter()
+    {
+        PROFILE_FUNCTION();
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+    }
+
+    void MoveYController::OnHoverExit()
+    {
+        PROFILE_FUNCTION();
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+    }
 } // namespace ntt

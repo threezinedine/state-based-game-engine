@@ -128,6 +128,18 @@ namespace ntt
                         entityId, axisWidth / 2 + CENTER_SIZE / 2, 0),
                 });
 
+            auto xAxisNeg = ECSCreateEntity(
+                "X Axis Neg",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x - axisWidth / 2 - CENTER_SIZE / 2, geo->y, axisWidth, 3, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, -axisWidth / 2 - CENTER_SIZE / 2, 0),
+                });
+
             auto xPoint = ECSCreateEntity(
                 "X point",
                 {
@@ -137,7 +149,25 @@ namespace ntt
                         PRIORITY_0, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
-                        entityId, axisWidth + CENTER_SIZE / 2, 0),
+                        entityId, axisWidth + CENTER_SIZE, 0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        moveXControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &entityId),
+                });
+
+            auto xPointNeg = ECSCreateEntity(
+                "X point Neg",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x - axisWidth - CENTER_SIZE / 2, geo->y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_0, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, -axisWidth - CENTER_SIZE, 0),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
@@ -158,6 +188,18 @@ namespace ntt
                         entityId, 0, -axisWidth / 2 - CENTER_SIZE / 2),
                 });
 
+            auto yAxisNeg = ECSCreateEntity(
+                "Y Axis Neg",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x, geo->y + axisWidth / 2 + CENTER_SIZE / 2, 3, axisWidth, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, axisWidth / 2 + CENTER_SIZE / 2),
+                });
+
             auto yPoint = ECSCreateEntity(
                 "Y point",
                 {
@@ -167,7 +209,25 @@ namespace ntt
                         PRIORITY_0, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
-                        entityId, 0, -axisWidth - CENTER_SIZE / 2),
+                        entityId, 0, -axisWidth - CENTER_SIZE),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        moveYControllerScriptId,
+                        INVALID_OBJECT_ID,
+                        &entityId),
+                });
+
+            auto yPointNeg = ECSCreateEntity(
+                "Y point Neg",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->x, geo->y + axisWidth + CENTER_SIZE / 2, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_0, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, axisWidth + CENTER_SIZE),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
@@ -367,12 +427,20 @@ namespace ntt
             drawnEntities[entityId].push_back(rightTopPoint);
             drawnEntities[entityId].push_back(leftBottomPoint);
             drawnEntities[entityId].push_back(rightBottomPoint);
+            drawnEntities[entityId].push_back(xAxisNeg);
+            drawnEntities[entityId].push_back(xPointNeg);
+            drawnEntities[entityId].push_back(yAxisNeg);
+            drawnEntities[entityId].push_back(yPointNeg);
 
             moveEntities.push_back(center);
             moveEntities.push_back(xPoint);
             moveEntities.push_back(yPoint);
             moveEntities.push_back(xAxis);
             moveEntities.push_back(yAxis);
+            moveEntities.push_back(xAxisNeg);
+            moveEntities.push_back(xPointNeg);
+            moveEntities.push_back(yAxisNeg);
+            moveEntities.push_back(yPointNeg);
 
             resizeEntities.push_back(leftTopPoint);
             resizeEntities.push_back(rightTopPoint);
@@ -388,6 +456,10 @@ namespace ntt
             allDrawnEntities.push_back(rightTopPoint);
             allDrawnEntities.push_back(leftBottomPoint);
             allDrawnEntities.push_back(rightBottomPoint);
+            allDrawnEntities.push_back(xAxisNeg);
+            allDrawnEntities.push_back(xPointNeg);
+            allDrawnEntities.push_back(yAxisNeg);
+            allDrawnEntities.push_back(yPointNeg);
 
             ChangeMoveState(currentTool == MOVE);
             ChangeResizeState(currentTool == SCALE);
