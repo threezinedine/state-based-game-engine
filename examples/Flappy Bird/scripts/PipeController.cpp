@@ -49,23 +49,23 @@ public:
 
         if (geo->rotation == 0)
         {
-            if (geo->x < m_getScoreX && m_isPassed == FALSE)
+            if (geo->pos.x < m_getScoreX && m_isPassed == FALSE)
             {
                 m_isPassed = TRUE;
                 TriggerEvent(ADD_SCORE);
                 audio::PlayAudio(GetResourceID("point"));
             }
 
-            if (geo->x < GetWindowSize().width && m_hasAfter == FALSE)
+            if (geo->pos.x < GetWindowSize().width && m_hasAfter == FALSE)
             {
                 m_hasAfter = TRUE;
                 auto context = EventContext();
-                context.f32_data[0] = GetComponent<Geometry>()->x + config.Get<position_t>("pipe-distance", 200);
+                context.f32_data[0] = GetComponent<Geometry>()->pos.x + config.Get<position_t>("pipe-distance", 200);
                 TriggerEvent(NEW_PIPE_EVENT, this, context);
             }
         }
 
-        if (geo->x + geo->width < 0)
+        if (geo->pos.x + geo->size.width < 0)
         {
             Delete();
         }

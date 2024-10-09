@@ -25,12 +25,12 @@ protected:
 
     void OnHoverEnter() override
     {
-        GetComponent<Geometry>()->x += 10;
+        GetComponent<Geometry>()->pos.x += 10;
     }
 
     void OnHoverExit() override
     {
-        GetComponent<Geometry>()->x -= 10;
+        GetComponent<Geometry>()->pos.x -= 10;
     }
 
     void OnUpdateImpl(f32 deltaTime) override

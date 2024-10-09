@@ -14,16 +14,14 @@ namespace ntt::renderer
     struct Parent : public ComponentBase
     {
         entity_id_t parentId;
-        position_t posX;
-        position_t posY;
+        Position relPos;
         f32 angle;
 
         Parent(entity_id_t parentId = INVALID_ENTITY_ID,
                position_t posX = 0,
                position_t posY = 0,
                f32 angle = 0)
-            : parentId(parentId), posX(posX),
-              posY(posY), angle(angle)
+            : parentId(parentId), relPos(posX, posY), angle(angle)
         {
         }
     };

@@ -50,17 +50,17 @@ namespace ntt::renderer
 
         if (texture->id == INVALID_RESOURCE_ID)
         {
-            geo->width = 100;
-            geo->height = 100;
+            geo->size.width = 100;
+            geo->size.height = 100;
         }
 
         auto size = ValidateSize(texture->id,
-                                 {{geo->x, geo->y},
-                                  {geo->width, geo->height},
+                                 {geo->pos,
+                                  geo->size,
                                   geo->rotation});
 
-        geo->width = size.width;
-        geo->height = size.height;
+        geo->size.width = size.width;
+        geo->size.height = size.height;
     }
 
     void RenderSystem::Update(f32 delta, entity_id_t id)
@@ -83,10 +83,10 @@ namespace ntt::renderer
 
         // check if the texture is in the window or not
         // if not, then don't draw it
-        if (geo->x + geo->width / 2 < 0 ||
-            geo->x - geo->width / 2 > windowSize.width ||
-            geo->y + geo->height / 2 < 0 ||
-            geo->y - geo->height / 2 > windowSize.height)
+        if (geo->pos.x + geo->size.width / 2 < 0 ||
+            geo->pos.x - geo->size.width / 2 > windowSize.width ||
+            geo->pos.y + geo->size.height / 2 < 0 ||
+            geo->pos.y - geo->size.height / 2 > windowSize.height)
         {
             return;
         }
@@ -96,8 +96,8 @@ namespace ntt::renderer
 
         if (texture != nullptr)
         {
-            context.position = {geo->x, geo->y};
-            context.size = {geo->width, geo->height};
+            context.position = geo->pos;
+            context.size = geo->size;
             context.rotate = geo->rotation;
 
             cell.row = texture->rowIndex;
@@ -112,12 +112,12 @@ namespace ntt::renderer
             drawContext.fontSize = text->fontSize;
             drawContext.color = geo->color;
 
-            DrawText(text->text, {geo->x, geo->y}, drawContext);
+            DrawText(text->text, {geo->pos.x, geo->pos.y}, drawContext);
         }
         else
         {
-            context.position = {geo->x, geo->y};
-            context.size = {geo->width, geo->height};
+            context.position = geo->pos;
+            context.size = geo->size;
             context.rotate = geo->rotation;
 
             drawContext.color = geo->color;

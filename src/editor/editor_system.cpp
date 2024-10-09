@@ -92,8 +92,8 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->x += x;
-                geo->y += y;
+                geo->pos.x += x;
+                geo->pos.y += y;
             };
 
             auto center = ECSCreateEntity(
@@ -101,8 +101,8 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x,
-                        geo->y,
+                        geo->pos.x,
+                        geo->pos.y,
                         CENTER_SIZE,
                         CENTER_SIZE,
                         geo->rotation,
@@ -126,7 +126,7 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x + axisWidth / 2 + CENTER_SIZE / 2, geo->y, axisWidth, 3, 0.0f,
+                        geo->pos.x + axisWidth / 2 + CENTER_SIZE / 2, geo->pos.y, axisWidth, 3, 0.0f,
                         PRIORITY_0, NTT_GREEN),
                     ECS_CREATE_COMPONENT(
                         Parent,
@@ -138,7 +138,7 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x - axisWidth / 2 - CENTER_SIZE / 2, geo->y, axisWidth, 3, 0.0f,
+                        geo->pos.x - axisWidth / 2 - CENTER_SIZE / 2, geo->pos.y, axisWidth, 3, 0.0f,
                         PRIORITY_0, NTT_GREEN),
                     ECS_CREATE_COMPONENT(
                         Parent,
@@ -152,7 +152,7 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->x += x;
+                geo->pos.x += x;
             };
 
             auto xPoint = ECSCreateEntity(
@@ -160,7 +160,7 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x + axisWidth + CENTER_SIZE / 2, geo->y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        geo->pos.x + axisWidth + CENTER_SIZE / 2, geo->pos.y, CENTER_SIZE, CENTER_SIZE, 0.0f,
                         PRIORITY_0, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
@@ -180,7 +180,7 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->x += x;
+                geo->pos.x += x;
             };
 
             auto xPointNeg = ECSCreateEntity(
@@ -188,7 +188,7 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x - axisWidth - CENTER_SIZE / 2, geo->y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        geo->pos.x - axisWidth - CENTER_SIZE / 2, geo->pos.y, CENTER_SIZE, CENTER_SIZE, 0.0f,
                         PRIORITY_0, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
@@ -206,7 +206,7 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x, geo->y - axisWidth / 2 - CENTER_SIZE / 2, 3, axisWidth, 0.0f,
+                        geo->pos.x, geo->pos.y - axisWidth / 2 - CENTER_SIZE / 2, 3, axisWidth, 0.0f,
                         PRIORITY_0, NTT_GREEN),
                     ECS_CREATE_COMPONENT(
                         Parent,
@@ -218,7 +218,7 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x, geo->y + axisWidth / 2 + CENTER_SIZE / 2, 3, axisWidth, 0.0f,
+                        geo->pos.x, geo->pos.y + axisWidth / 2 + CENTER_SIZE / 2, 3, axisWidth, 0.0f,
                         PRIORITY_0, NTT_GREEN),
                     ECS_CREATE_COMPONENT(
                         Parent,
@@ -232,7 +232,7 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->y += y;
+                geo->pos.y += y;
             };
 
             auto yPoint = ECSCreateEntity(
@@ -240,7 +240,7 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x, geo->y - axisWidth - CENTER_SIZE / 2, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        geo->pos.x, geo->pos.y - axisWidth - CENTER_SIZE / 2, CENTER_SIZE, CENTER_SIZE, 0.0f,
                         PRIORITY_0, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
@@ -260,7 +260,7 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->y += y;
+                geo->pos.y += y;
             };
 
             auto yPointNeg = ECSCreateEntity(
@@ -268,7 +268,7 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x, geo->y + axisWidth + CENTER_SIZE / 2, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        geo->pos.x, geo->pos.y + axisWidth + CENTER_SIZE / 2, CENTER_SIZE, CENTER_SIZE, 0.0f,
                         PRIORITY_0, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
@@ -289,8 +289,8 @@ namespace ntt
                 auto parent = ECS_GET_COMPONENT(entityId, Parent);
                 auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
 
-                parent->posX = -geo->width / 2 - CENTER_SIZE / 2;
-                parent->posY = -geo->height / 2 - CENTER_SIZE / 2;
+                parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
+                parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
             };
 
             leftTopData.onResizeMain =
@@ -298,8 +298,8 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->width -= x * 2;
-                geo->height -= y * 2;
+                geo->size.width -= x * 2;
+                geo->size.height -= y * 2;
             };
 
             auto leftTopPoint = ECSCreateEntity(
@@ -307,14 +307,14 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x - geo->width / 2 - CENTER_SIZE / 2,
-                        geo->y - geo->height / 2 - CENTER_SIZE / 2,
+                        geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
+                        geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
                         CENTER_SIZE, CENTER_SIZE,
                         0.0f, PRIORITY_1, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent, entityId,
-                        -geo->width / 2 - CENTER_SIZE / 2,
-                        -geo->height / 2 - CENTER_SIZE / 2),
+                        -geo->size.width / 2 - CENTER_SIZE / 2,
+                        -geo->size.height / 2 - CENTER_SIZE / 2),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
@@ -332,8 +332,8 @@ namespace ntt
                 auto parent = ECS_GET_COMPONENT(entityId, Parent);
                 auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
 
-                parent->posX = geo->width / 2 + CENTER_SIZE / 2;
-                parent->posY = -geo->height / 2 - CENTER_SIZE / 2;
+                parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
+                parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
             };
 
             rightTopData.onResizeMain =
@@ -341,8 +341,8 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->width += x * 2;
-                geo->height -= y * 2;
+                geo->size.width += x * 2;
+                geo->size.height -= y * 2;
             };
 
             auto rightTopPoint = ECSCreateEntity(
@@ -350,8 +350,8 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x + geo->width / 2 + CENTER_SIZE / 2,
-                        geo->y - geo->height / 2 - CENTER_SIZE / 2,
+                        geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
+                        geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
                         CENTER_SIZE,
                         CENTER_SIZE, 0.0f,
                         PRIORITY_1,
@@ -359,8 +359,8 @@ namespace ntt
                     ECS_CREATE_COMPONENT(
                         Parent,
                         entityId,
-                        geo->width / 2 + CENTER_SIZE / 2,
-                        -geo->height / 2 - CENTER_SIZE / 2),
+                        geo->size.width / 2 + CENTER_SIZE / 2,
+                        -geo->size.height / 2 - CENTER_SIZE / 2),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
@@ -377,8 +377,8 @@ namespace ntt
                 auto parent = ECS_GET_COMPONENT(entityId, Parent);
                 auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
 
-                parent->posX = geo->width / 2 + CENTER_SIZE / 2;
-                parent->posY = geo->height / 2 + CENTER_SIZE / 2;
+                parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
+                parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
             };
 
             rightBottomData.onResizeMain =
@@ -386,8 +386,8 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->width += x * 2;
-                geo->height += y * 2;
+                geo->size.width += x * 2;
+                geo->size.height += y * 2;
             };
 
             auto rightBottomPoint = ECSCreateEntity(
@@ -395,8 +395,8 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x + geo->width / 2 + CENTER_SIZE / 2,
-                        geo->y + geo->height / 2 + CENTER_SIZE / 2,
+                        geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
+                        geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
                         CENTER_SIZE,
                         CENTER_SIZE, 0.0f,
                         PRIORITY_1,
@@ -404,8 +404,8 @@ namespace ntt
                     ECS_CREATE_COMPONENT(
                         Parent,
                         entityId,
-                        geo->width / 2 + CENTER_SIZE / 2,
-                        geo->height / 2 + CENTER_SIZE / 2),
+                        geo->size.width / 2 + CENTER_SIZE / 2,
+                        geo->size.height / 2 + CENTER_SIZE / 2),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
@@ -422,15 +422,15 @@ namespace ntt
                 auto parent = ECS_GET_COMPONENT(entityId, Parent);
                 auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
 
-                parent->posX = -geo->width / 2 - CENTER_SIZE / 2;
-                parent->posY = geo->height / 2 + CENTER_SIZE / 2;
+                parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
+                parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
             };
 
             leftBottomData.onResizeMain =
                 [](f32 x, f32 y, Ref<Geometry> geo)
             {
-                geo->width -= x * 2;
-                geo->height += y * 2;
+                geo->size.width -= x * 2;
+                geo->size.height += y * 2;
             };
 
             auto leftBottomPoint = ECSCreateEntity(
@@ -438,8 +438,8 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x - geo->width / 2 - CENTER_SIZE / 2,
-                        geo->y + geo->height / 2 + CENTER_SIZE / 2,
+                        geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
+                        geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
                         CENTER_SIZE,
                         CENTER_SIZE, 0.0f,
                         PRIORITY_1,
@@ -447,8 +447,8 @@ namespace ntt
                     ECS_CREATE_COMPONENT(
                         Parent,
                         entityId,
-                        -geo->width / 2 - CENTER_SIZE / 2,
-                        geo->height / 2 + CENTER_SIZE / 2),
+                        -geo->size.width / 2 - CENTER_SIZE / 2,
+                        geo->size.height / 2 + CENTER_SIZE / 2),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
@@ -464,7 +464,7 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->width -= x * 2;
+                geo->size.width -= x * 2;
             };
 
             leftPointData.onAddEntReset =
@@ -473,7 +473,7 @@ namespace ntt
                 auto parent = ECS_GET_COMPONENT(entityId, Parent);
                 auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
 
-                parent->posX = -geo->width / 2 - CENTER_SIZE / 2;
+                parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
             };
 
             auto leftPoint = ECSCreateEntity(
@@ -481,13 +481,13 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x - geo->width / 2 - CENTER_SIZE / 2,
-                        geo->y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
+                        geo->pos.y, CENTER_SIZE, CENTER_SIZE, 0.0f,
                         PRIORITY_1, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
                         entityId,
-                        -geo->width / 2 - CENTER_SIZE / 2,
+                        -geo->size.width / 2 - CENTER_SIZE / 2,
                         0),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
@@ -504,7 +504,7 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->width += x * 2;
+                geo->size.width += x * 2;
             };
 
             rightPointData.onAddEntReset =
@@ -513,7 +513,7 @@ namespace ntt
                 auto parent = ECS_GET_COMPONENT(entityId, Parent);
                 auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
 
-                parent->posX = geo->width / 2 + CENTER_SIZE / 2;
+                parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
             };
 
             auto rightPoint = ECSCreateEntity(
@@ -521,13 +521,13 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x + geo->width / 2 + CENTER_SIZE / 2,
-                        geo->y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
+                        geo->pos.y, CENTER_SIZE, CENTER_SIZE, 0.0f,
                         PRIORITY_1, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
                         entityId,
-                        geo->width / 2 + CENTER_SIZE / 2,
+                        geo->size.width / 2 + CENTER_SIZE / 2,
                         0),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
@@ -544,7 +544,7 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->height -= y * 2;
+                geo->size.height -= y * 2;
             };
 
             topPointData.onAddEntReset =
@@ -553,7 +553,7 @@ namespace ntt
                 auto parent = ECS_GET_COMPONENT(entityId, Parent);
                 auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
 
-                parent->posY = -geo->height / 2 - CENTER_SIZE / 2;
+                parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
             };
 
             auto topPoint = ECSCreateEntity(
@@ -561,14 +561,14 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x, geo->y - geo->height / 2 - CENTER_SIZE / 2,
+                        geo->pos.x, geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
                         CENTER_SIZE, CENTER_SIZE, 0.0f,
                         PRIORITY_1, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
                         entityId,
                         0,
-                        -geo->height / 2 - CENTER_SIZE / 2),
+                        -geo->size.height / 2 - CENTER_SIZE / 2),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
@@ -584,7 +584,7 @@ namespace ntt
                     f32 x, f32 y,
                     Ref<Geometry> geo)
             {
-                geo->height += y * 2;
+                geo->size.height += y * 2;
             };
 
             bottomPointData.onAddEntReset =
@@ -593,7 +593,7 @@ namespace ntt
                 auto parent = ECS_GET_COMPONENT(entityId, Parent);
                 auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
 
-                parent->posY = geo->height / 2 + CENTER_SIZE / 2;
+                parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
             };
 
             auto bottomPoint = ECSCreateEntity(
@@ -601,14 +601,14 @@ namespace ntt
                 {
                     ECS_CREATE_COMPONENT(
                         Geometry,
-                        geo->x, geo->y + geo->height / 2 + CENTER_SIZE / 2,
+                        geo->pos.x, geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
                         CENTER_SIZE, CENTER_SIZE, 0.0f,
                         PRIORITY_1, NTT_RED),
                     ECS_CREATE_COMPONENT(
                         Parent,
                         entityId,
                         0,
-                        geo->height / 2 + CENTER_SIZE / 2),
+                        geo->size.height / 2 + CENTER_SIZE / 2),
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,

@@ -59,8 +59,8 @@ namespace ntt::renderer
         }
 
         f32 rotation = parentGeo->rotation * 3.14 / 180;
-        geo->x = parentGeo->x + parent->posX * cos(rotation) - parent->posY * sin(rotation);
-        geo->y = parentGeo->y + parent->posX * sin(rotation) + parent->posY * cos(rotation);
+        geo->pos.x = parentGeo->pos.x + parent->relPos.x * cos(rotation) - parent->relPos.y * sin(rotation);
+        geo->pos.y = parentGeo->pos.y + parent->relPos.x * sin(rotation) + parent->relPos.y * cos(rotation);
 
         geo->rotation = parentGeo->rotation;
     }

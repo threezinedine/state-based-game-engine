@@ -124,8 +124,8 @@ TEST_F(CollisionTest, TestNormalPath)
     EXPECT_EQ(entity2_collision, 0);
     EXPECT_EQ(entity3_collision, 0);
 
-    geometry->x = 0.5f;
-    geometry->y = 0.5f;
+    geometry->pos.x = 0.5f;
+    geometry->pos.y = 0.5f;
 
     ECSUpdate(0.0f);
 
@@ -133,8 +133,8 @@ TEST_F(CollisionTest, TestNormalPath)
     EXPECT_EQ(entity2_collision, 1);
     EXPECT_EQ(entity3_collision, 0);
 
-    geometry2->x = 0.5f;
-    geometry2->y = 0.5f;
+    geometry2->pos.x = 0.5f;
+    geometry2->pos.y = 0.5f;
 
     ECSUpdate(0.0f);
 
@@ -142,8 +142,8 @@ TEST_F(CollisionTest, TestNormalPath)
     EXPECT_EQ(entity2_collision, 2);
     EXPECT_EQ(entity3_collision, 0);
 
-    geometry3->x = 0.5f;
-    geometry3->y = 0.5f;
+    geometry3->pos.x = 0.5f;
+    geometry3->pos.y = 0.5f;
 
     ECSUpdate(0.0f);
 
@@ -151,16 +151,16 @@ TEST_F(CollisionTest, TestNormalPath)
     EXPECT_EQ(entity2_collision, 4);
     EXPECT_EQ(entity3_collision, 2);
 
-    geometry->x = -0.5f;
-    geometry->y = -0.5f;
+    geometry->pos.x = -0.5f;
+    geometry->pos.y = -0.5f;
     ECSUpdate(0.0f);
 
     EXPECT_EQ(entity_collision, 4);
     EXPECT_EQ(entity2_collision, 5);
     EXPECT_EQ(entity3_collision, 3);
 
-    geometry2->x = 2.0f;
-    geometry2->y = 2.0f;
+    geometry2->pos.x = 2.0f;
+    geometry2->pos.y = 2.0f;
 
     ECSUpdate(0.0f);
 

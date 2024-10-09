@@ -47,8 +47,8 @@ namespace ntt::physics
         mass->velocity_x += mass->acc_x * delta;
         mass->velocity_y += mass->acc_y * delta;
 
-        geo->x += mass->velocity_x * delta;
-        geo->y += mass->velocity_y * delta;
+        geo->pos.x += mass->velocity_x * delta;
+        geo->pos.y += mass->velocity_y * delta;
     }
 
     void MassSystem::ShutdownEntity(entity_id_t id)

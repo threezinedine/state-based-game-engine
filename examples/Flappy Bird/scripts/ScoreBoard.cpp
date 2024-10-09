@@ -72,9 +72,9 @@ protected:
         auto tenText = ECS_GET_COMPONENT(m_tenNumber, TextureComponent);
         auto oneText = ECS_GET_COMPONENT(m_oneNumber, TextureComponent);
 
-        hundredGeo->y = geo->y;
-        tenGeo->y = geo->y;
-        oneGeo->y = geo->y;
+        hundredGeo->pos.y = geo->pos.y;
+        tenGeo->pos.y = geo->pos.y;
+        oneGeo->pos.y = geo->pos.y;
 
         if (score < 100)
         {
@@ -84,9 +84,9 @@ protected:
         {
             ECSSetComponentActive(m_hunderedNumber, typeid(Geometry), TRUE);
 
-            hundredGeo->x = geo->x;
-            tenGeo->x = geo->x + hundredGeo->width + SCORE_DIGIT_GAP;
-            oneGeo->x = geo->x + hundredGeo->width + tenGeo->width + SCORE_DIGIT_GAP * 2;
+            hundredGeo->pos.x = geo->pos.x;
+            tenGeo->pos.x = geo->pos.x + hundredGeo->size.width + SCORE_DIGIT_GAP;
+            oneGeo->pos.x = geo->pos.x + hundredGeo->size.width + tenGeo->size.width + SCORE_DIGIT_GAP * 2;
 
             hunderedText->colIndex = static_cast<u8>(score / 100);
             tenText->colIndex = static_cast<u8>((score % 100) / 10);
@@ -97,7 +97,7 @@ protected:
         {
             ECSSetComponentActive(m_tenNumber, typeid(Geometry), FALSE);
 
-            oneGeo->x = geo->x;
+            oneGeo->pos.x = geo->pos.x;
             oneText->colIndex = score;
         }
         else
@@ -107,8 +107,8 @@ protected:
 
         if (score < 100 && score >= 10)
         {
-            tenGeo->x = geo->x;
-            oneGeo->x = geo->x + tenGeo->width + SCORE_DIGIT_GAP;
+            tenGeo->pos.x = geo->pos.x;
+            oneGeo->pos.x = geo->pos.x + tenGeo->size.width + SCORE_DIGIT_GAP;
 
             oneText->colIndex = score % 10;
             tenText->colIndex = static_cast<u8>(score / 10);

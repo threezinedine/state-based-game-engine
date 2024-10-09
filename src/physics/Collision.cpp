@@ -53,8 +53,8 @@ namespace ntt::physics
 
         List<entity_id_t> colliedEntities;
         auto geo = ECS_GET_COMPONENT(entity_id, Geometry);
-        auto halfWidth = geo->width / 2;
-        auto halfHeight = geo->height / 2;
+        auto halfWidth = geo->size.width / 2;
+        auto halfHeight = geo->size.height / 2;
 
         if (geo->active == FALSE)
         {
@@ -79,11 +79,11 @@ namespace ntt::physics
         {
             auto otherGeo = ECS_GET_COMPONENT(other, Geometry);
 
-            auto halfOtherWidth = otherGeo->width / 2;
-            auto halfOtherHeight = otherGeo->height / 2;
+            auto halfOtherWidth = otherGeo->size.width / 2;
+            auto halfOtherHeight = otherGeo->size.height / 2;
 
-            b8 overlapX = std::abs(geo->x - otherGeo->x) < halfWidth + halfOtherWidth;
-            b8 overlapY = std::abs(geo->y - otherGeo->y) < halfHeight + halfOtherHeight;
+            b8 overlapX = std::abs(geo->pos.x - otherGeo->pos.x) < halfWidth + halfOtherWidth;
+            b8 overlapY = std::abs(geo->pos.y - otherGeo->pos.y) < halfHeight + halfOtherHeight;
 
             if (overlapX && overlapY)
             {

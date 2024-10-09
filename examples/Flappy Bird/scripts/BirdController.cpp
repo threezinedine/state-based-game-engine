@@ -53,7 +53,7 @@ protected:
         SetComponentState<Geometry>(TRUE);
         SetComponentState<Mass>(TRUE);
         SetComponentState<Sprite>(TRUE);
-        GetComponent<Geometry>()->y = GetWindowSize().height / 2;
+        GetComponent<Geometry>()->pos.y = GetWindowSize().height / 2;
         GetComponent<Mass>()->velocity_y = 0;
         m_isPlaying = TRUE;
     }
