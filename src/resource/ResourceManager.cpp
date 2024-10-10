@@ -23,8 +23,6 @@ namespace ntt
 
     namespace
     {
-        b8 s_initialized = FALSE;
-
         // All resouces objects which are not the default
         //      resources and can be loaded and unloaded and the
         //      key is the scene name.
@@ -41,6 +39,9 @@ namespace ntt
         //      The key is the resource name.
         Dictionary<String, resource_id_t> s_defaultResourcesDict;
 
+        // All resources' names which are loaded and unloaded
+        List<String> s_allResourceNames;
+
         b8 s_start = FALSE;
 
         std::vector<Scope<Resource>> s_defaultResourcesObjects;
@@ -55,7 +56,7 @@ namespace ntt
 
             for (auto &resource : sceneResources)
             {
-                s_resourcesDictionary[resource->GetName()] = resource->Load();
+                s_resourcesDictionary[resource->GetInfo()->name] = resource->Load();
             }
         }
 
@@ -72,30 +73,20 @@ namespace ntt
     void ResourceInit()
     {
         PROFILE_FUNCTION();
-        if (s_initialized)
-        {
-            NTT_ENGINE_WARN("Resource manager is already initialized.");
-            return;
-        }
 
         s_resources.clear();
         s_resourcesDictionary.clear();
         s_defaultResourcesDict.clear();
         s_defaultResourcesObjects.clear();
+        s_allResourceNames.clear();
         s_currentScene = EMPTY_SCENE;
 
-        s_initialized = TRUE;
         s_start = FALSE;
     }
 
     void RegisterResource(const String &sceneName, const ResourceInfo &info)
     {
         PROFILE_FUNCTION();
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Resource manager is not initialized.");
-            return;
-        }
 
         Scope<Resource> resource = nullptr;
 
@@ -115,6 +106,8 @@ namespace ntt
             resource = CreateScope<ResourceTest>(info);
         }
         // =============== End of handling the incoming resource ===============
+
+        s_allResourceNames.push_back(info.name);
 
         if (sceneName == "default")
         {
@@ -145,11 +138,6 @@ namespace ntt
     void ResourceLoadConfig(const JSON &config)
     {
         PROFILE_FUNCTION();
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Resource manager is not initialized.");
-            return;
-        }
 
         auto keys = config.GetKeys();
 
@@ -198,11 +186,6 @@ namespace ntt
     void ResourceStart()
     {
         PROFILE_FUNCTION();
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Resource manager is not initialized.");
-            return;
-        }
 
         if (s_start)
         {
@@ -214,18 +197,45 @@ namespace ntt
 
         for (auto &resource : s_defaultResourcesObjects)
         {
-            s_defaultResourcesDict[resource->GetName()] = resource->Load();
+            s_defaultResourcesDict[resource->GetInfo()->name] = resource->Load();
         }
+    }
+
+    List<String> GetAllResourcesNames()
+    {
+        PROFILE_FUNCTION();
+        return s_allResourceNames;
+    }
+
+    ResourceInfo *GetResourceInfo(const String &name)
+    {
+        PROFILE_FUNCTION();
+
+        for (auto &resource : s_defaultResourcesObjects)
+        {
+            if (resource->GetInfo()->name == name)
+            {
+                return resource->GetInfo();
+            }
+        }
+
+        for (auto &resources : s_resources)
+        {
+            for (auto &resource : resources.second)
+            {
+                if (resource->GetInfo()->name == name)
+                {
+                    return resource->GetInfo();
+                }
+            }
+        }
+
+        return nullptr;
     }
 
     void ResourceChangeScene(const String &sceneName)
     {
         PROFILE_FUNCTION();
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Resource manager is not initialized.");
-            return;
-        }
 
         if (!s_start)
         {
@@ -271,11 +281,6 @@ namespace ntt
     resource_id_t GetResourceID(const String &name)
     {
         PROFILE_FUNCTION();
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Resource manager is not initialized.");
-            return INVALID_RESOURCE_ID;
-        }
 
         if (s_defaultResourcesDict.Contains(name))
         {
@@ -293,11 +298,6 @@ namespace ntt
     void ResourceShutdown()
     {
         PROFILE_FUNCTION();
-        if (!s_initialized)
-        {
-            NTT_ENGINE_WARN("Resource manager is not initialized.");
-            return;
-        }
 
         if (s_currentScene != EMPTY_SCENE && s_resources.Contains(s_currentScene))
         {
@@ -316,6 +316,5 @@ namespace ntt
         s_resourcesDictionary.clear();
         s_defaultResourcesObjects.clear();
         s_defaultResourcesDict.clear();
-        s_initialized = FALSE;
     }
 } // namespace ntt

@@ -110,6 +110,19 @@ namespace ntt
         }
 
         /**
+         * Concatenate another list to the current list
+         *
+         * @param list: The list to be extended
+         */
+        void Extend(const List<T> &list)
+        {
+            for (u32 i = 0; i < list.size(); i++)
+            {
+                this->push_back(list[i]);
+            }
+        }
+
+        /**
          * @param list: The list to be compared with
          * @param callback: The comparison callback which
          *      must be provided if the default comparison

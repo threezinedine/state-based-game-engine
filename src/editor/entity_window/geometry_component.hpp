@@ -8,5 +8,7 @@ namespace ntt
     using namespace renderer;
     using namespace memory;
 
+    void GeometryComponentInit();
     void GeometryComponentDraw(Ref<Geometry> geo);
+    void GeometryComponentShutdown();
 } // namespace ntt

@@ -104,7 +104,15 @@ namespace ntt::renderer
             {
                 continue;
             }
-            s_callbacks[hovers[i]](context);
+
+            try
+            {
+                s_callbacks[hovers[i]](context);
+            }
+            catch (const std::exception &e)
+            {
+                NTT_ENGINE_ERROR("Error: {}", e.what());
+            }
 
             if (context.goNext == FALSE)
             {

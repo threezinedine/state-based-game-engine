@@ -25,6 +25,7 @@ namespace ntt
         return newStr;
     }
 
+    CHECK_AND_CAST(u8)
     CHECK_AND_CAST(u16)
     CHECK_AND_CAST(u32)
     CHECK_AND_CAST(u64)

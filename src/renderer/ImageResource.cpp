@@ -36,7 +36,7 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
         if (m_Impl->isLoaded)
         {
-            NTT_ENGINE_TRACE("The image {} resource is already loaded.", GetName());
+            NTT_ENGINE_TRACE("The image {} resource is already loaded.", GetInfo()->name);
             return RESOURCE_ID_DEFAULT;
         }
 
@@ -57,7 +57,7 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
         if (!m_Impl->isLoaded)
         {
-            NTT_ENGINE_TRACE("The image resource {} is already unloaded.", GetName());
+            NTT_ENGINE_TRACE("The image resource {} is already unloaded.", GetInfo()->name);
             return;
         }
 

@@ -94,20 +94,20 @@ namespace ntt
 
         ResourceLoadConfig(JSON(resourceConfig));
 
-        // TODO: Refactor this
-        if (s_editor)
-        {
-            SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-        }
+        // // TODO: Refactor this
+        // if (s_editor)
+        // {
+        //     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+        // }
 
-        CREATE_WINDOW(screenWidth, screenHeight, title);
+        // CREATE_WINDOW(screenWidth, screenHeight, title);
 
-        if (s_editor)
-        {
-            MaximizeWindow();
-        }
+        // if (s_editor)
+        // {
+        //     MaximizeWindow();
+        // }
 
-        ResourceStart();
+        // ResourceStart();
 
         ECSInit();
 
@@ -180,6 +180,19 @@ namespace ntt
 
         s_timer.Reset();
 
+        // TODO: Refactor this
+        if (s_editor)
+        {
+            SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+        }
+
+        CREATE_WINDOW(screenWidth, screenHeight, title);
+
+        if (s_editor)
+        {
+            MaximizeWindow();
+        }
+
         if (editor)
         {
             EditorInit(TRUE, screenWidth, screenHeight, sceneNames);
@@ -195,6 +208,7 @@ namespace ntt
             EditorInit(FALSE);
         }
 
+        ResourceStart();
         ECSBeginLayer(GAME_LAYER);
         s_phrases.Begin();
         ECSBeginLayer(GAME_LAYER);

@@ -49,6 +49,8 @@ TEST_F(ResourceManagerTest, TestNotResourceChangeScene)
 
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
 
+    EXPECT_EQ(GetAllResourcesNames(), List<String>{"test"});
+
     ResourceShutdown();
     ResourceTest::s_resources;
     EXPECT_EQ(GET_UNLOAD_CALL("test"), 1);
@@ -133,6 +135,9 @@ TEST_F(ResourceManagerTest, SceneChangingTest)
                 ]
             }
         )"));
+
+    EXPECT_EQ(GetAllResourcesNames(),
+              List<String>({"test-default", "test-scene1", "test-scene2"}));
 
     ResourceStart();
 

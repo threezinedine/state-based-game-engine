@@ -6,6 +6,7 @@
 
 #include "geometry_component.hpp"
 #include "texture_component.hpp"
+#include "mass_component.hpp"
 
 namespace ntt
 {
@@ -40,6 +41,9 @@ namespace ntt
         RegisterEvent(NTT_EDITOR_CHOOSE_ENTITY, OnEntitySelected);
         RegisterEvent(NTT_EDITOR_APPEND_ENTITY, OnEntityAppend);
         RegisterEvent(NTT_SCENE_CHANGED, OnSceneChanged);
+
+        GeometryComponentInit();
+        TextureComponentInit();
     }
 
     void EditorEntityWindowUpdate(b8 *p_open, b8 isRunning)
@@ -61,14 +65,40 @@ namespace ntt
                 {
                     for (auto pair : components)
                     {
+                        String activeName = "";
                         if (pair.first == typeid(Geometry))
                         {
-                            GeometryComponentDraw(std::static_pointer_cast<Geometry>(pair.second));
+                            GeometryComponentDraw(
+                                std::static_pointer_cast<Geometry>(pair.second));
+
+                            activeName = "Geometry Active";
                         }
                         else if (pair.first == typeid(TextureComponent))
                         {
                             TextureComponentDraw(
                                 std::static_pointer_cast<TextureComponent>(pair.second));
+
+                            activeName = "Texture Active";
+                        }
+                        else if (pair.first == typeid(Mass))
+                        {
+                            MassComponentDraw(
+                                std::static_pointer_cast<Mass>(pair.second));
+                            activeName = "Mass Active";
+                        }
+
+                        b8 active = pair.second->active;
+
+                        if (activeName != "")
+                        {
+                            active = pair.second->active;
+                            if (ImGui::Checkbox(activeName.RawString().c_str(), &active))
+                            {
+                                ECSSetComponentActive(
+                                    s_selectedEntities[0],
+                                    pair.first,
+                                    active);
+                            }
                         }
                     }
                     ImGui::TreePop();
@@ -85,5 +115,7 @@ namespace ntt
 
     void EditorEntityWindowShutdown()
     {
+        GeometryComponentShutdown();
+        TextureComponentShutdown();
     }
 } // namespace ntt

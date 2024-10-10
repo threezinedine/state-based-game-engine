@@ -1,9 +1,14 @@
 #pragma once
 #include "resource_common.h"
 #include <NTTEngine/core/parser/json.hpp>
+#include <NTTEngine/structures/list.hpp>
+#include <NTTEngine/structures/string.hpp>
+#include <NTTEngine/core/memory.hpp>
 
 namespace ntt
 {
+    using namespace memory;
+
     constexpr resource_id_t INVALID_RESOURCE_ID = -1;
 
     /**
@@ -43,6 +48,24 @@ namespace ntt
      * @param name The name of the resource.
      */
     resource_id_t GetResourceID(const String &name);
+
+    /**
+     * Retrieve all resources' names of the game engine (both unloadded
+     *      and loadded resources).
+     *
+     * @return The list of all resources' names.
+     */
+    List<String> GetAllResourcesNames();
+
+    /**
+     * Retrieve the resource info by the resource name.
+     *
+     * @param name The name of the resource.
+     *      if the resource is not found, the nullptr will be returned.
+     *
+     * @return The pointer to the resource info.
+     */
+    ResourceInfo *GetResourceInfo(const String &name);
 
     /**
      * When new scene is loaded, all resources which are not

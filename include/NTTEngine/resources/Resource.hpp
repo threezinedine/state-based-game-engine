@@ -17,7 +17,7 @@ namespace ntt
         Resource(const ResourceInfo &info);
         virtual ~Resource();
 
-        const String &GetName() const;
+        ResourceInfo *GetInfo();
 
         /**
          * Actually load the resource into the memory

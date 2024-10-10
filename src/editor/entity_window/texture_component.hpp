@@ -8,5 +8,7 @@ namespace ntt
     using namespace renderer;
     using namespace memory;
 
+    void TextureComponentInit();
     void TextureComponentDraw(Ref<TextureComponent> texture);
+    void TextureComponentShutdown();
 } // namespace ntt

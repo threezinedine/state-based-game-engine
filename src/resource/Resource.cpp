@@ -12,7 +12,7 @@ namespace ntt
     {
     public:
         resource_id_t id;
-        String name;
+        ResourceInfo info;
     };
 
     Resource::Resource(const ResourceInfo &info)
@@ -21,7 +21,7 @@ namespace ntt
         PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
 
-        m_impl->name = info.name;
+        m_impl->info = info;
     }
 
     Resource::~Resource()
@@ -29,10 +29,10 @@ namespace ntt
         PROFILE_FUNCTION();
     }
 
-    const String &Resource::GetName() const
+    ResourceInfo *Resource::GetInfo()
     {
         PROFILE_FUNCTION();
-        return m_impl->name;
+        return &(m_impl->info);
     }
 
     resource_id_t Resource::Load()

@@ -110,6 +110,8 @@ namespace ntt::ecs
             }
         }
 
+        List<entity_id_t> s_deletedEntities;
+
         void InternalEntityDelete(entity_id_t id)
         {
             PROFILE_FUNCTION();
@@ -166,7 +168,29 @@ namespace ntt::ecs
             TriggerEvent(NTT_ENTITY_DESTROYED, nullptr, context);
         }
 
-        List<entity_id_t> s_deletedEntities;
+        b8 IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)
+        {
+            PROFILE_FUNCTION();
+            auto system = s_systemsStore->Get(system_id);
+            auto entities = system->entities;
+            auto systemTypes = system->componentTypes;
+
+            auto components = s_entityStore->Get(entity_id)->components;
+
+            b8 isValid = TRUE;
+            for (auto j = 0; j < systemTypes.size(); j++)
+            {
+                auto type = systemTypes[j];
+
+                if (!components.Contains(type))
+                {
+                    return FALSE;
+                }
+            }
+
+            return isValid;
+        }
+
     } // namespace
 
     void ECSInit()
@@ -307,29 +331,6 @@ namespace ntt::ecs
         return system[0]->entities;
     }
 
-    static b8 _IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)
-    {
-        PROFILE_FUNCTION();
-        auto system = s_systemsStore->Get(system_id);
-        auto entities = system->entities;
-        auto systemTypes = system->componentTypes;
-
-        auto components = s_entityStore->Get(entity_id)->components;
-
-        b8 isValid = TRUE;
-        for (auto j = 0; j < systemTypes.size(); j++)
-        {
-            auto type = systemTypes[j];
-
-            if (!components.Contains(type))
-            {
-                return FALSE;
-            }
-        }
-
-        return isValid;
-    }
-
     entity_id_t ECSCreateEntity(
         const String &name,
         Dictionary<std::type_index, Ref<ComponentBase>> components)
@@ -350,7 +351,7 @@ namespace ntt::ecs
 
         for (auto systemId : availableSystems)
         {
-            if (_IsEntityInSystem(systemId, entityId))
+            if (IsEntityInSystem(systemId, entityId))
             {
                 auto system = s_systemsStore->Get(systemId);
                 system->entities.push_back(entityId);
@@ -485,7 +486,7 @@ namespace ntt::ecs
                     continue;
                 }
 
-                if (_IsEntityInSystem(systemId, id))
+                if (IsEntityInSystem(systemId, id))
                 {
                     system->entities.push_back(id);
                 }
