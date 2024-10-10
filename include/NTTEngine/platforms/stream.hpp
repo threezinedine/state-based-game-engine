@@ -1,6 +1,6 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
-#include <NTTEngine/core/color.hpp>
+#include <NTTEngine/core/terminal_color.hpp>
 
 namespace ntt::platforms
 {
@@ -9,6 +9,6 @@ namespace ntt::platforms
     template <typename... Args>
     void Print(const char *message, Args... args)
     {
-        Print(TerminalColor::WHITE, message, args...);
+        Print(TerminalColor::NTT_TERMINAL_COLOR_WHITE, message, args...);
     }
 } // namespace ntt::platforms

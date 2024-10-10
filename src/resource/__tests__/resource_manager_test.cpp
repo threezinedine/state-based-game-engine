@@ -40,7 +40,7 @@ TEST_F(ResourceManagerTest, TestNotResourceChangeScene)
         ResourceInfo{
             "test",
             ResourceType::TEST,
-            JoinPath({GetFileFolder(__FILE__), "test.json"}),
+            JoinPath({GetFileFolder(__FILE__), "test.json"}, TRUE),
             JSON(R"(
                 {}
             )")});
@@ -63,7 +63,7 @@ TEST_F(ResourceManagerTest, TestRegisterResource)
         ResourceInfo{
             "test",
             ResourceType::TEST,
-            JoinPath({GetFileFolder(__FILE__), "test.json"}),
+            JoinPath({GetFileFolder(__FILE__), "test.json"}, TRUE),
             JSON(R"(
                 {}
             )")});

@@ -14,11 +14,7 @@ namespace ntt
      *      scene. If FALSE, the game will be run as normal and
      *      other command will be ignored.
      */
-    void EditorInit(
-        b8 use = TRUE,
-        u16 width = 800,
-        u16 height = 600,
-        List<String> sceneNames = List<String>{});
+    void EditorInit(const String &assetPath);
 
     /**
      * When this function is called, at the end of the frame, the game

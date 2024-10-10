@@ -68,7 +68,7 @@ namespace ntt
 
     String RelativePath(const String &path)
     {
-        return JoinPath({s_sourcePath, path}, false);
+        return JoinPath({s_sourcePath, path});
     }
 
     String SubtractPath(const String &path, const String &base)

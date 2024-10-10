@@ -13,7 +13,7 @@
 #include <math.h>
 
 #include "controllers/TransformScript.hpp"
-#include "editor_tool.hpp"
+#include "editor_tool/editor_tool.hpp"
 
 #define CENTER_SIZE 20 ///< The size of the center rect
 

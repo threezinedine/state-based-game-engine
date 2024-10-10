@@ -5,14 +5,21 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include "rlImGui.h"
 #include "imgui.h"
+#include "raylib.h"
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 #include <array>
 
-#include "editor_log_window.hpp"
-#include "editor_scene_window.hpp"
-#include "editor_viewport_window.hpp"
+#include "editor_windows/editor_windows.hpp"
+
+#include "editor_scene/editor_scene_window.hpp"
+#include "editor_viewport/editor_viewport_window.hpp"
 #include "entity_window/editor_entity_window.hpp"
-#include "editor_tool.hpp"
+#include "editor_tool/editor_tool.hpp"
+#include <NTTEngine/platforms/path.hpp>
+#include "ImGuiFileDialog.h"
+#include "editor_project_dialog/editor_project_dialog.hpp"
+
+#include "types.hpp"
 
 namespace ntt
 {
@@ -22,210 +29,304 @@ namespace ntt
 
     namespace
     {
-        b8 s_useEditor = FALSE;
         b8 s_isRunning = FALSE;
-
-        b8 s_shouldStop = FALSE;
-        b8 s_shouldStart = FALSE;
-
-        f32 s_screenWidth = 800;
-        f32 s_screenHeight = 600;
+        b8 s_hasProject = FALSE;
 
         b8 s_openLog = TRUE;
         b8 s_openScene = TRUE;
         b8 s_openEntity = TRUE;
+        b8 s_newProjectConfig = FALSE;
 
         List<String> s_sceneNames;
         String s_currentScene;
-    }
+        String s_assetPath;
+        String s_configFilePath;
 
-    void EditorInit(b8 use, u16 width, u16 height, List<String> sceneNames)
-    {
-        s_useEditor = use;
+        // JSON s_project;
+        // JSON s_config;
 
-        if (s_useEditor)
+        Ref<ProjectInfo> s_project;
+        Ref<EditorConfig> s_config;
+
+        Scope<EditorFileDialog> s_newProjectDialog;
+        Scope<EditorFileDialog> s_openProjectDialog;
+        Scope<EditorFileDialog> s_saveAsProjectDialog;
+
+        List<Scope<OpenClosableWindow>> s_openClosableWindows;
+        Scope<NewProjectWindow> s_newProjectWindow;
+
+        void OnProjectLoadded(event_code_t code, void *sender, const EventContext &context)
         {
-            TriggerEvent(NTT_EDITOR_STOP, {});
+            s_hasProject = TRUE;
+            SetWindowTitle(
+                s_project->title.RawString().c_str());
         }
 
-        s_screenWidth = static_cast<f32>(width);
-        s_screenHeight = static_cast<f32>(height);
+        void OnEditorSaveConfig(event_code_t code, void *sender, const EventContext &context)
+        {
+            JSON config = JSON("{}");
+            config.Set("lastProjectPath", s_config->lastProjectPath);
+            OpenFile(s_configFilePath);
+            Write(config.ToString());
+            CloseFile();
+        }
 
+        void OnOpenProject()
+        {
+            String projectFile = JoinPath(
+                {s_project->path,
+                 s_project->name});
+
+            JSON project = JSON(ReadFile(projectFile));
+
+            s_project->title = project.Get<String>("title");
+            s_project->width = project.Get<i32>("width", 800);
+            s_project->height = project.Get<i32>("height", 600);
+
+            TriggerEvent(NTT_EDITOR_PROJECT_LOADED);
+        }
+
+        void OnEditorSaveProject(event_code_t code, void *sender, const EventContext &context)
+        {
+            String projectFile = JoinPath(
+                {s_project->path,
+                 s_project->name});
+
+            JSON project = JSON("{}");
+            project.Set("name", s_project->name);
+            project.Set("path", s_project->path);
+            project.Set("width", s_project->width < 0 ? 800 : s_project->width);
+            project.Set("height", s_project->height < 0 ? 600 : s_project->height);
+            project.Set("title", s_project->title);
+
+            OpenFile(projectFile);
+            Write(project.ToString());
+            CloseFile();
+        }
+
+        void OnNewProjectPathIsSelected()
+        {
+            s_newProjectWindow->Open();
+        }
+
+        b8 CheckProjectExistance(const String &fileName)
+        {
+            return IsExist(fileName);
+        }
+    }
+
+    void EditorInit(const String &assetPath)
+    {
         rlImGuiSetup(true);
         s_openLog = TRUE;
         s_openScene = TRUE;
         s_openEntity = TRUE;
+        s_newProjectConfig = FALSE;
+        s_assetPath = assetPath;
+        s_hasProject = FALSE;
 
-        if (use)
+        // Imgui configuration below
+        ImGuiIO &io = ImGui::GetIO();
+        io.FontGlobalScale = 2.0f;
+        // Imgui configuration above
+
+        s_configFilePath = JoinPath({CurrentDirectory(), "config.json"});
+
+        s_project = CreateRef<ProjectInfo>();
+        s_config = CreateRef<EditorConfig>();
+
+        if (IsExist(s_configFilePath))
         {
-            s_sceneNames = sceneNames;
-            s_currentScene = s_sceneNames[0];
+            auto config = JSON(ReadFile(s_configFilePath));
+            s_config->lastProjectPath = config.Get<String>("lastProjectPath", ".");
         }
 
-        EditorViewportWindowInit(s_screenWidth, s_screenHeight);
-        EditorLogWindowInit();
-        EditorSceneWindowInit();
-        EditorEntityWindowInit();
-        EditorToolInit();
-    }
+        s_openClosableWindows.push_back(CreateScope<LogWindow>());
 
-    void EditorRun()
-    {
-        if (!s_useEditor)
+        s_newProjectWindow = CreateScope<NewProjectWindow>(s_project, s_config);
+        // EditorSceneWindowInit();
+        // EditorEntityWindowInit();
+        // EditorToolInit();
+
+        RegisterEvent(NTT_EDITOR_SAVE_CONFIG, OnEditorSaveConfig);
+        RegisterEvent(NTT_EDITOR_SAVE_PROJECT, OnEditorSaveProject);
+        RegisterEvent(NTT_EDITOR_PROJECT_LOADED, OnProjectLoadded);
+
+        s_newProjectDialog = CreateScope<EditorFileDialog>(
+            s_project,
+            s_config,
+            EditorFileDialogData{
+                "newProject",
+                "Create a new project",
+                CheckProjectExistance,
+                OnNewProjectPathIsSelected});
+
+        s_openProjectDialog = CreateScope<EditorFileDialog>(
+            s_project,
+            s_config,
+            EditorFileDialogData{
+                "openProject",
+                "Open the project",
+                nullptr,
+                OnOpenProject});
+
+        s_saveAsProjectDialog = CreateScope<EditorFileDialog>(
+            s_project,
+            s_config,
+            EditorFileDialogData{
+                "saveAsProject",
+                "Save the project as",
+                nullptr,
+                [&]() {
+                }});
+
+        s_newProjectWindow->Init();
+
+        for (auto &window : s_openClosableWindows)
         {
-            return;
+            window->Init();
+            window->Open();
         }
-
-        if (s_isRunning)
-        {
-            return;
-        }
-
-        s_shouldStart = TRUE;
-        s_isRunning = TRUE;
-    }
-
-    void EditorStop()
-    {
-        if (!s_useEditor)
-        {
-            return;
-        }
-
-        if (!s_isRunning)
-        {
-            return;
-        }
-
-        s_shouldStop = TRUE;
-        s_isRunning = FALSE;
     }
 
     void EditorUpdate(f32 delta)
     {
-        if (!s_useEditor)
-        {
-            return;
-        }
-
-        if (s_shouldStart)
-        {
-            TriggerEvent(NTT_EDITOR_START, {});
-            ECSChangeSystemState("Editor System", FALSE);
-        }
-
-        if (s_shouldStop)
-        {
-            TriggerEvent(NTT_EDITOR_STOP, {});
-            ECSChangeSystemState("Editor System", TRUE);
-            SceneOpen(s_currentScene);
-        }
-
-        s_shouldStart = FALSE;
-        s_shouldStop = FALSE;
-
         rlImGuiBegin();
 
         if (ImGui::BeginMainMenuBar())
         {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("New", "Ctrl+N"))
+                {
+                    s_newProjectDialog->Open();
+                }
+
+                if (ImGui::MenuItem("Open", "Ctrl+O"))
+                {
+                    s_openProjectDialog->Open();
+                }
+
+                if (ImGui::MenuItem("Save", "Ctrl+S"))
+                {
+                    NTT_ENGINE_DEBUG("Save");
+                }
+
+                if (ImGui::MenuItem("Save As", "Ctrl+Shift+S", !s_hasProject))
+                {
+                    s_saveAsProjectDialog->Open();
+                }
+
+                ImGui::EndMenu();
+            }
+
             if (ImGui::BeginMenu("View"))
             {
-                ImGui::MenuItem("Log", NULL, &s_openLog);
+                // ImGui::MenuItem("Log", NULL, &s_openLog);
+                for (auto &window : s_openClosableWindows)
+                {
+                    window->DrawMenuItem();
+                }
                 ImGui::MenuItem("Scene", NULL, &s_openScene);
                 ImGui::MenuItem("Entity", NULL, &s_openEntity);
                 ImGui::EndMenu();
             }
-
             ImGui::EndMainMenuBar();
         }
 
-        if (ImGui::Begin("Toolbars", nullptr, ImGuiWindowFlags_NoTitleBar))
-        {
-            if (s_isRunning)
-            {
-                if (ImGui::Button("Stop"))
-                {
-                    EditorStop();
-                }
-            }
-            else
-            {
-                if (ImGui::Button("Run"))
-                {
-                    EditorRun();
-                    ImGui::SetWindowFocus("Viewport");
-                }
-            }
+        s_newProjectDialog->Update();
+        s_openProjectDialog->Update();
+        s_saveAsProjectDialog->Update();
 
-            ImGui::SameLine();
+        s_newProjectWindow->Update();
 
-            if (ImGui::BeginCombo(
-                    "Scene",
-                    s_currentScene.RawString().c_str(),
-                    ImGuiComboFlags_WidthFitPreview))
-            {
-                for (i32 i = 0; i < s_sceneNames.size(); i++)
-                {
-                    const b8 isSelected = (s_currentScene == s_sceneNames[i]);
-                    if (ImGui::Selectable(s_sceneNames[i].RawString().c_str(), isSelected))
-                    {
-                        s_currentScene = s_sceneNames[i];
-                        SceneOpen(s_currentScene);
-                    }
+        // if (ImGui::Begin("Toolbars", nullptr, ImGuiWindowFlags_NoTitleBar))
+        // {
+        //     if (s_isRunning)
+        //     {
+        //         if (ImGui::Button("Stop"))
+        //         {
+        //             EditorStop();
+        //         }
+        //     }
+        //     else
+        //     {
+        //         if (ImGui::Button("Run"))
+        //         {
+        //             EditorRun();
+        //             ImGui::SetWindowFocus("Viewport");
+        //         }
+        //     }
 
-                    if (isSelected)
-                    {
-                        ImGui::SetItemDefaultFocus();
-                    }
-                }
-                ImGui::EndCombo();
-            }
+        //     ImGui::SameLine();
 
-            ImGui::SameLine();
+        //     if (ImGui::BeginCombo(
+        //             "Scene",
+        //             s_currentScene.RawString().c_str(),
+        //             ImGuiComboFlags_WidthFitPreview))
+        //     {
+        //         for (i32 i = 0; i < s_sceneNames.size(); i++)
+        //         {
+        //             const b8 isSelected = (s_currentScene == s_sceneNames[i]);
+        //             if (ImGui::Selectable(s_sceneNames[i].RawString().c_str(), isSelected))
+        //             {
+        //                 s_currentScene = s_sceneNames[i];
+        //                 SceneOpen(s_currentScene);
+        //             }
 
-            static std::array<const char *, 10> layers = {
-                "Game",
-                "UI_0",
-                "UI_1",
-                "UI_2",
-                "UI_3",
-                "UI_4",
-                "UI_5",
-                "UI_6",
-                "UI_7",
-                "UI_8",
-            };
-            static u32 currentLayer = GAME_LAYER;
+        //             if (isSelected)
+        //             {
+        //                 ImGui::SetItemDefaultFocus();
+        //             }
+        //         }
+        //         ImGui::EndCombo();
+        //     }
 
-            if (ImGui::BeginCombo("Layers", layers[currentLayer], ImGuiComboFlags_WidthFitPreview))
-            {
-                for (i32 i = 0; i < layers.size(); i++)
-                {
-                    const b8 isSelected = (i == currentLayer);
-                    if (ImGui::Selectable(layers[i], isSelected))
-                    {
-                        ECSLayerMakeVisible(static_cast<layer_t>(i));
-                        ECSLayerMakeVisible(static_cast<layer_t>(EDITOR_LAYER));
-                        currentLayer = i;
-                    }
+        //     ImGui::SameLine();
 
-                    if (isSelected)
-                    {
-                        ImGui::SetItemDefaultFocus();
-                    }
-                }
+        //     static std::array<const char *, 10> layers = {
+        //         "Game",
+        //         "UI_0",
+        //         "UI_1",
+        //         "UI_2",
+        //         "UI_3",
+        //         "UI_4",
+        //         "UI_5",
+        //         "UI_6",
+        //         "UI_7",
+        //         "UI_8",
+        //     };
+        //     static u32 currentLayer = GAME_LAYER;
 
-                ImGui::EndCombo();
-            }
-        }
-        ImGui::End();
+        //     if (ImGui::BeginCombo("Layers", layers[currentLayer], ImGuiComboFlags_WidthFitPreview))
+        //     {
+        //         for (i32 i = 0; i < layers.size(); i++)
+        //         {
+        //             const b8 isSelected = (i == currentLayer);
+        //             if (ImGui::Selectable(layers[i], isSelected))
+        //             {
+        //                 ECSLayerMakeVisible(static_cast<layer_t>(i));
+        //                 ECSLayerMakeVisible(static_cast<layer_t>(EDITOR_LAYER));
+        //                 currentLayer = i;
+        //             }
 
-        if (s_openScene)
-        {
-            EditorSceneWindowUpdate(&s_openScene, s_isRunning);
-        }
+        //             if (isSelected)
+        //             {
+        //                 ImGui::SetItemDefaultFocus();
+        //             }
+        //         }
 
-        EditorViewportWindowUpdate(nullptr, s_isRunning);
+        //         ImGui::EndCombo();
+        //     }
+        // }
+        // ImGui::End();
+
+        // if (s_openScene)
+        // {
+        //     EditorSceneWindowUpdate(&s_openScene, s_isRunning);
+        // }
+
+        // EditorViewportWindowUpdate(nullptr, s_isRunning);
 
         static b8 show = TRUE;
         if (show)
@@ -233,48 +334,46 @@ namespace ntt
             ImGui::ShowDemoWindow(&show);
         }
 
-        EditorToolUpdate();
+        // EditorToolUpdate();
 
-        if (s_openLog)
+        for (auto &window : s_openClosableWindows)
         {
-            EditorLogWindowUpdate(&s_openLog, s_isRunning);
+            window->Update();
         }
 
-        if (s_openEntity)
-        {
-            EditorEntityWindowUpdate(&s_openEntity, s_isRunning);
-        }
+        // if (s_openEntity)
+        // {
+        //     EditorEntityWindowUpdate(&s_openEntity, s_isRunning);
+        // }
 
         rlImGuiEnd();
     }
 
     void EditorBeginDraw()
     {
-        if (!s_useEditor)
-        {
-            return;
-        }
-
-        EditorViewportWindowStartDraw();
+        // EditorViewportWindowStartDraw();
     }
 
     void EditorEndDraw()
     {
-        if (!s_useEditor)
-        {
-            return;
-        }
-
-        EditorViewportWindowEndDraw();
+        // EditorViewportWindowEndDraw();
     }
 
     void EditorShutdown()
     {
-        EditorLogWindowShutdown();
-        EditorEntityWindowShutdown();
-        EditorSceneWindowShutdown();
-        EditorViewportWindowShutdown();
-        EditorToolShutdown();
+        for (auto &window : s_openClosableWindows)
+        {
+            window->Shutdown();
+            window.reset();
+        }
+
+        s_newProjectWindow->Shutdown();
+        s_newProjectWindow.reset();
+
+        // EditorEntityWindowShutdown();
+        // EditorSceneWindowShutdown();
+        // EditorViewportWindowShutdown();
+        // EditorToolShutdown();
         NTT_ENGINE_INFO("The editor mode is shutdown");
     }
 } // namespace ntt

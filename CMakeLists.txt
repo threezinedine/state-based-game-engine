@@ -95,6 +95,22 @@ if (NTT_BUILD_SHARED)
 endif()
 
 add_executable(
+    Editor
+    editor_main.cpp
+)
+
+target_link_libraries(
+    Editor
+    PUBLIC
+    ${PROJECT_NAME}
+    raylib
+    ImGui_Raylib
+)
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets
+     DESTINATION ${CMAKE_BINARY_DIR})
+
+add_executable(
     ${PROJECT_NAME}_Test
     ${TEST_SOURCES}
     _test.cpp

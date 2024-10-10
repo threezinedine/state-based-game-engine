@@ -202,20 +202,7 @@ namespace ntt
             MaximizeWindow();
         }
 
-        if (editor)
-        {
-            EditorInit(TRUE, screenWidth, screenHeight, sceneNames);
-            RegisterEvent(
-                NTT_EDITOR_STOP,
-                [](auto id, void *sender, EventContext context)
-                {
-                    SceneOpen();
-                });
-        }
-        else
-        {
-            EditorInit(FALSE);
-        }
+        EditorInit("");
 
         ResourceStart();
         ECSBeginLayer(GAME_LAYER);

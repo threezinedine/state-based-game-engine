@@ -116,6 +116,7 @@
 		"strstream": "cpp",
 		"syncstream": "cpp",
 		"resumable": "cpp",
-		"*.ipp": "cpp"
+		"*.ipp": "cpp",
+		"*.def": "cpp"
 	}
 }

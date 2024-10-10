@@ -31,8 +31,7 @@ namespace ntt
 
             outputPath = JoinPath(
                 {CurrentDirectory(),
-                 outputFile},
-                FALSE);
+                 outputFile});
         }
 
         void CompileFile(const String &file)
@@ -43,7 +42,7 @@ namespace ntt
                 "g++ -g -o \"{}\" -I \"{}\" -I \"{}\" \"{}\" -L \"{}\" -lNTTEngine -shared",
                 outputPath,
                 // "C:/Users/Acer/Games Dev/state-based-game-engine/include",
-                JoinPath({GetStoredPath(PathType::NTT_ENGINE), "include"}, FALSE),
+                JoinPath({GetStoredPath(PathType::NTT_ENGINE), "include"}),
                 // "C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird",
                 GetStoredPath(PathType::NTT_SOURCE),
                 file,

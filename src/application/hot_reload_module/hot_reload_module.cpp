@@ -118,8 +118,7 @@ namespace ntt
         data.tempPath = SubtractPath(filePath, GetStoredPath(PathType::NTT_SOURCE));
         data.tempPath = JoinPath({CurrentDirectory(),
                                   "temp",
-                                  data.tempPath},
-                                 FALSE);
+                                  data.tempPath});
         data.onLoad = callback;
         s_registered[filePath] = data;
 

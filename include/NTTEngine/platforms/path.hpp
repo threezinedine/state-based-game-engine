@@ -167,7 +167,7 @@ namespace ntt
      *          __test__/config and the file file.txt
      * @param containBase: If true then the base path will be the source path which is
      *      configured by ConfigureSourcePath, else the current working directory will
-     *      be only the paths you provided (default is true)
+     *      be only the paths you provided (default is FALSE)
      */
-    String JoinPath(List<String> paths, b8 useBase = true);
+    String JoinPath(List<String> paths, b8 useBase = FALSE);
 } // namespace ntt

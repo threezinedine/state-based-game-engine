@@ -1,0 +1,27 @@
+#pragma once
+
+namespace ntt
+{
+    /**
+     * All supported color in the engine
+     */
+    enum TerminalColor
+    {
+        NTT_TERMINAL_COLOR_RED,
+        NTT_TERMINAL_COLOR_GREEN,
+        NTT_TERMINAL_COLOR_BLUE,
+        NTT_TERMINAL_COLOR_WHITE,
+        NTT_TERMINAL_COLOR_BLACK,
+        NTT_TERMINAL_COLOR_YELLOW,
+        NTT_TERMINAL_COLOR_CYAN,
+        NTT_TERMINAL_COLOR_GRAY,
+        NTT_TERMINAL_COLOR_PURPLE,
+        NTT_TERMINAL_COLOR_LIGHT_BLUE,
+        NTT_TERMINAL_COLOR_LIGHT_GREEN,
+        NTT_TERMINAL_COLOR_LIGHT_RED,
+        NTT_TERMINAL_COLOR_LIGHT_YELLOW,
+        NTT_TERMINAL_COLOR_LIGHT_CYAN,
+        NTT_TERMINAL_COLOR_LIGHT_PURPLE,
+        NTT_TERMINAL_COLOR_LIGHT_WHITE,
+    };
+} // namespace ntt

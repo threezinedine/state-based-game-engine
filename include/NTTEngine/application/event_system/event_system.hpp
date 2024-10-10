@@ -105,6 +105,10 @@ namespace ntt::event
 
 #define NTT_APPLICATION_RESET 0x23 ///< When the application is reset
 
+#define NTT_EDITOR_SAVE_CONFIG 0x24    ///< When the editor configuration is saved
+#define NTT_EDITOR_SAVE_PROJECT 0x25   ///< When the editor project is saved
+#define NTT_EDITOR_PROJECT_LOADED 0x26 ///< When the editor project is loaded
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

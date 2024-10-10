@@ -11,24 +11,24 @@ namespace ntt::log
 
     void ConsoleHandler::Handle(const LogMessage &message)
     {
-        TerminalColor color = TerminalColor::WHITE;
+        TerminalColor color = TerminalColor::NTT_TERMINAL_COLOR_WHITE;
 
         switch (message.level)
         {
         case LogLevel::DEBUG:
-            color = TerminalColor::LIGHT_CYAN;
+            color = TerminalColor::NTT_TERMINAL_COLOR_LIGHT_CYAN;
             break;
         case LogLevel::INFO:
-            color = TerminalColor::LIGHT_GREEN;
+            color = TerminalColor::NTT_TERMINAL_COLOR_LIGHT_GREEN;
             break;
         case LogLevel::WARN:
-            color = TerminalColor::LIGHT_YELLOW;
+            color = TerminalColor::NTT_TERMINAL_COLOR_LIGHT_YELLOW;
             break;
         case LogLevel::ERROR:
-            color = TerminalColor::LIGHT_RED;
+            color = TerminalColor::NTT_TERMINAL_COLOR_LIGHT_RED;
             break;
         case LogLevel::FATAL:
-            color = TerminalColor::LIGHT_PURPLE;
+            color = TerminalColor::NTT_TERMINAL_COLOR_LIGHT_PURPLE;
             break;
         }
 

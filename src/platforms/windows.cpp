@@ -13,9 +13,9 @@ namespace ntt::platforms
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         int c = 0;
 
-#define WINDOW_COLOR(color, value) \
-    case TerminalColor::color:     \
-        c = value;                 \
+#define WINDOW_COLOR(color, value)                  \
+    case TerminalColor::NTT_TERMINAL_COLOR_##color: \
+        c = value;                                  \
         break;
 
         switch (color)
@@ -44,7 +44,7 @@ namespace ntt::platforms
         va_start(args, message);
         vprintf(message, args);
         va_end(args);
-        SetConsoleTextAttribute(hConsole, WHITE);
+        SetConsoleTextAttribute(hConsole, 7);
     }
 } // namespace ntt::platforms
 

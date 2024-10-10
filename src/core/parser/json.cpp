@@ -242,7 +242,7 @@ namespace ntt
 
     String JSON::ToString() const
     {
-        return String(m_Impl->data.dump());
+        return String(m_Impl->data.dump(4));
     }
 
     template <typename T>

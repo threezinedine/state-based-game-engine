@@ -1,12 +1,14 @@
-file(
-    GLOB 
-    EXAMPLES
-    *
-)
+# file(
+#     GLOB 
+#     EXAMPLES
+#     *
+# )
 
 
-foreach(EXAMPLE ${EXAMPLES})
-    if(IS_DIRECTORY ${EXAMPLE})
-        add_subdirectory(${EXAMPLE})
-    endif()
-endforeach()
+# foreach(EXAMPLE ${EXAMPLES})
+#     if(IS_DIRECTORY ${EXAMPLE})
+#         add_subdirectory(${EXAMPLE})
+#     endif()
+# endforeach()
+
+add_subdirectory("Flappy Bird")

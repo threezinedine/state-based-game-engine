@@ -1,6 +1,6 @@
 #include <NTTEngine/editor/editor_log_handler.hpp>
 #include <NTTEngine/editor/editor.hpp>
-#include "editor_log_window.hpp"
+#include "editor_windows/log_window/log_window.hpp"
 
 namespace ntt
 {

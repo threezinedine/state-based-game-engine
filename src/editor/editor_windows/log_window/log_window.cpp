@@ -3,6 +3,7 @@
 #include <NTTEngine/core/logging/logging.hpp>
 #include "imgui.h"
 #include "rlImGui.h"
+#include "log_window.hpp"
 
 namespace ntt
 {
@@ -13,13 +14,34 @@ namespace ntt
         ImGuiTextBuffer s_buf;
         ImGuiTextFilter s_filter;
         ImVector<i32> s_lineOffsets;
-        b8 s_autoScroll = TRUE;
 
+        b8 s_autoScroll = TRUE;
     } // namespace
 
-    void EditorLogWindowUpdate(b8 *p_open, b8 isRunning)
+    class LogWindow::Impl
     {
-        if (ImGui::Begin("Log", p_open, isRunning ? ImGuiWindowFlags_NoInputs : 0))
+    public:
+    };
+
+    LogWindow::LogWindow()
+        : m_impl(CreateScope<Impl>())
+    {
+    }
+
+    LogWindow::~LogWindow()
+    {
+    }
+
+    void LogWindow::InitImpl()
+    {
+        s_buf.clear();
+        s_lineOffsets.clear();
+        s_lineOffsets.push_back(0);
+    }
+
+    void LogWindow::UpdateImpl(b8 *p_open)
+    {
+        if (ImGui::Begin("Log", p_open))
         {
             if (ImGui::BeginPopup("Options"))
             {
@@ -87,30 +109,21 @@ namespace ntt
                     ImGui::SetScrollHereY(1.0f);
                 }
             }
+            ImGui::EndChild();
         }
-        ImGui::EndChild();
         ImGui::End();
+    }
+
+    void LogWindow::ShutdownImpl()
+    {
+        s_buf.clear();
+        s_lineOffsets.clear();
     }
 
     void AppendLog(const char *log)
     {
         auto oldSize = s_buf.size();
-
         s_buf.append(log);
-
         s_lineOffsets.push_back(oldSize);
-    }
-
-    void EditorLogWindowInit()
-    {
-        s_buf.clear();
-        s_lineOffsets.clear();
-        s_lineOffsets.push_back(0);
-    }
-
-    void EditorLogWindowShutdown()
-    {
-        s_buf.clear();
-        s_lineOffsets.clear();
     }
 } // namespace ntt
