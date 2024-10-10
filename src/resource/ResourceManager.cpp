@@ -26,7 +26,7 @@ namespace ntt
         // All resouces objects which are not the default
         //      resources and can be loaded and unloaded and the
         //      key is the scene name.
-        Dictionary<String, std::vector<Scope<Resource>>> s_resources;
+        Dictionary<String, std::vector<Ref<Resource>>> s_resources;
 
         // The dictionary which stores the resource name and its ID
         //      if the change scene is called, then the resources
@@ -44,7 +44,7 @@ namespace ntt
 
         b8 s_start = FALSE;
 
-        std::vector<Scope<Resource>> s_defaultResourcesObjects;
+        std::vector<Ref<Resource>> s_defaultResourcesObjects;
 #define EMPTY_SCENE ""
         String s_currentScene = EMPTY_SCENE;
         String s_deletedScene = EMPTY_SCENE;
@@ -88,22 +88,22 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        Scope<Resource> resource = nullptr;
+        Ref<Resource> resource = nullptr;
 
         // =============== Begin of handling the incoming resource ===============
         switch (info.type)
         {
         case ResourceType::AUDIO:
-            resource = CreateScope<AudioResource>(info);
+            resource = CreateRef<AudioResource>(info);
             break;
         case ResourceType::IMAGE:
-            resource = CreateScope<ImageResource>(info);
+            resource = CreateRef<ImageResource>(info);
             break;
         case ResourceType::SCRIPT:
-            resource = CreateScope<ScriptResource>(info);
+            resource = CreateRef<ScriptResource>(info);
             break;
         default:
-            resource = CreateScope<ResourceTest>(info);
+            resource = CreateRef<ResourceTest>(info);
         }
         // =============== End of handling the incoming resource ===============
 
@@ -128,7 +128,7 @@ namespace ntt
         {
             if (!s_resources.Contains(sceneName))
             {
-                s_resources[sceneName] = std::vector<Scope<Resource>>();
+                s_resources[sceneName] = std::vector<Ref<Resource>>();
             }
 
             s_resources[sceneName].push_back(std::move(resource));
@@ -299,7 +299,6 @@ namespace ntt
             };
             resource->Unload();
         }
-
         s_deletedScene = EMPTY_SCENE;
     }
 

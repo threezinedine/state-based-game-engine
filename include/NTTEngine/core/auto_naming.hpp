@@ -34,6 +34,25 @@ namespace ntt
     String GetName(const String &name);
 
     /**
+     * Reset the states of the name, now every name can be used without any additional
+     *      information.
+     *
+     * Example:
+     *      ```C++
+     *      auto name = GetName("Player");
+     *      auto name2 = GetName("Player ");    /// The name2 will be "Player (1)"
+     *                                          /// the space will be irgnored
+     *      auto name3 = GetName("Player"); /// The name3 will be "Player (2)"
+     *      auto name4 = GetName("Player (4)"); /// The name4 will be "Player (3)"
+     *
+     *      NamingSystemReset();
+     *      auto name5 = GetName("Player (4)"); /// The name5 will be "Player"
+     *      auto name6 = GetName("Player"); /// The name5 will be "Player (1)"
+     *      ```
+     */
+    void NamingSystemReset();
+
+    /**
      * Reset all the internal states to the initial state.
      * Should be used when the application is ended.
      */

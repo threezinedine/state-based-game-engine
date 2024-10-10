@@ -45,3 +45,19 @@ TEST_F(NamingModuleTest, GetNameTest)
 
     EXPECT_STR_EQ(testing, "Testing");
 }
+
+TEST_F(NamingModuleTest, NamingSystemResetTest)
+{
+    auto name = GetName("Player");
+    auto name2 = GetName("Player ");    /// The name2 will be "Player (1)"
+                                        /// the space will be irgnored
+    auto name3 = GetName("Player");     /// The name3 will be "Player (2)"
+    auto name4 = GetName("Player (4)"); /// The name4 will be "Player (3)"
+
+    NamingSystemReset();
+    auto name5 = GetName("Player (4)"); /// The name5 will be "Player"
+    auto name6 = GetName("Player");     /// The name5 will be "Player (1)"
+
+    EXPECT_STR_EQ(name5, "Player");
+    EXPECT_STR_EQ(name6, "Player (1)");
+}

@@ -19,28 +19,28 @@ namespace ntt
         String temp = name;
         temp.Trim();
 
-        if (s_nameCount.Contains(temp))
+        if (temp.MatchPattern("@ (@)"))
         {
-            s_nameCount[temp]++;
-            return format("{} ({})", temp, s_nameCount[temp]);
+            i32 index = temp.FindFirst(" (");
+            auto subStr = temp.SubString(0, index);
+
+            if (s_nameCount.Contains(subStr))
+            {
+                s_nameCount[subStr]++;
+                return format("{} ({})", subStr, s_nameCount[subStr]);
+            }
+            else
+            {
+                s_nameCount[subStr] = 0;
+                return subStr;
+            }
         }
         else
         {
-            if (temp.MatchPattern("@ (@)"))
+            if (s_nameCount.Contains(temp))
             {
-                i32 index = temp.FindFirst(" (");
-                auto subStr = temp.SubString(0, index);
-
-                if (s_nameCount.Contains(subStr))
-                {
-                    s_nameCount[subStr]++;
-                    return format("{} ({})", subStr, s_nameCount[subStr]);
-                }
-                else
-                {
-                    s_nameCount[subStr] = 0;
-                    return temp;
-                }
+                s_nameCount[temp]++;
+                return format("{} ({})", temp, s_nameCount[temp]);
             }
             else
             {
@@ -50,6 +50,11 @@ namespace ntt
         }
 
         return temp;
+    }
+
+    void NamingSystemReset()
+    {
+        s_nameCount.clear();
     }
 
     void NamingSystemShutdown()
