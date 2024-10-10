@@ -103,6 +103,8 @@ namespace ntt::event
 
 #define NTT_EDITOR_TOOL_TYPE_CHANGED 0x22 ///< When the tool type is changed
 
+#define NTT_APPLICATION_RESET 0x23 ///< When the application is reset
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

@@ -263,10 +263,30 @@ void Begin()
         {
             NTT_APP_DEBUG("Scene is changed");
         });
+
+    // RegisterEvent(
+    //     NTT_RESOURCE_LOADED,
+    //     [](auto id, void *sender, EventContext context)
+    //     {
+    //         auto resourceId = context.u32_data[0];
+    //         NTT_APP_DEBUG("Resource {} is loaded", resourceId);
+    //     });
+
+    // RegisterEvent(
+    //     NTT_RESOURCE_UNLOADED,
+    //     [](auto id, void *sender, EventContext context)
+    //     {
+    //         auto resourceId = context.u32_data[0];
+    //         NTT_APP_DEBUG("Resource {} is unloaded", resourceId);
+    //     });
 }
 
 void MainLoop(f32 delta)
 {
+    if (CHECK_PRESS(NTT_KEY_A))
+    {
+        // TriggerEvent(NTT_APPLICATION_RESET);
+    }
 }
 
 void Close()

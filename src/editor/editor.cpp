@@ -118,6 +118,7 @@ namespace ntt
         {
             TriggerEvent(NTT_EDITOR_STOP, {});
             ECSChangeSystemState("Editor System", TRUE);
+            SceneOpen(s_currentScene);
         }
 
         s_shouldStart = FALSE;

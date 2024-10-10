@@ -10,7 +10,6 @@ namespace ntt::audio
         String path;
         JSON additionalInfo;
 
-        b8 isLoaded = FALSE;
         b8 forever = FALSE;
         b8 runAtStart = FALSE;
         f32 volume = 1.0f;
@@ -38,11 +37,6 @@ namespace ntt::audio
     resource_id_t AudioResource::LoadImpl()
     {
         PROFILE_FUNCTION();
-        if (m_Impl->isLoaded)
-        {
-            NTT_ENGINE_WARN("The audio resource is already loaded.");
-            return RESOURCE_ID_DEFAULT;
-        }
 
         m_Impl->audioId = LoadAudio(m_Impl->path);
 
@@ -60,22 +54,13 @@ namespace ntt::audio
             PlayAudio(m_Impl->audioId, context);
         }
 
-        m_Impl->isLoaded = TRUE;
-
         return m_Impl->audioId;
     }
 
     void AudioResource::UnloadImpl()
     {
         PROFILE_FUNCTION();
-        if (!m_Impl->isLoaded)
-        {
-            NTT_ENGINE_WARN("The audio resource is already unloaded.");
-            return;
-        }
 
         UnloadAudio(m_Impl->audioId);
-
-        m_Impl->isLoaded = FALSE;
     }
 } // namespace ntt::audio

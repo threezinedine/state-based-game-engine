@@ -572,6 +572,18 @@ namespace ntt::ecs
         s_deletedEntities.clear();
     }
 
+    void ECSRemoveAllEntities()
+    {
+        PROFILE_FUNCTION();
+
+        auto availableIds = s_entityStore->GetAvailableIds();
+
+        for (auto entityId : availableIds)
+        {
+            InternalEntityDelete(entityId);
+        }
+    }
+
     void ECSShutdown()
     {
         PROFILE_FUNCTION();

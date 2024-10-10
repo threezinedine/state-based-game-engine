@@ -48,6 +48,15 @@ namespace ntt
         JSON s_config("{}");
         b8 s_editor = FALSE;
 
+        void ApplicationReload()
+        {
+            ECSRemoveAllEntities();
+            ResourceStart();
+            ECSBeginLayer(GAME_LAYER);
+            s_phrases.Begin();
+            ECSBeginLayer(GAME_LAYER);
+            ECSLayerMakeVisible(GAME_LAYER);
+        }
     } // namespace
 
     void ApplicationInit(u16 screenWidth,
@@ -200,7 +209,7 @@ namespace ntt
                 NTT_EDITOR_STOP,
                 [](auto id, void *sender, EventContext context)
                 {
-                    SceneReload();
+                    SceneOpen();
                 });
         }
         else
@@ -218,6 +227,13 @@ namespace ntt
         {
             TriggerEvent(NTT_EDITOR_STOP, {});
         }
+
+        RegisterEvent(
+            NTT_APPLICATION_RESET,
+            [](auto id, void *sender, EventContext context)
+            {
+                ApplicationReload();
+            });
     }
 
     void LoadConfiguration(const String &path)

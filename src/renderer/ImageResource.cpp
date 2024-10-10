@@ -12,8 +12,6 @@ namespace ntt::renderer
     public:
         String path;
         JSON additionalInfo;
-
-        b8 isLoaded = FALSE;
         resource_id_t textureId = RESOURCE_ID_DEFAULT;
     };
 
@@ -34,14 +32,6 @@ namespace ntt::renderer
     resource_id_t ImageResource::LoadImpl()
     {
         PROFILE_FUNCTION();
-        if (m_Impl->isLoaded)
-        {
-            NTT_ENGINE_TRACE("The image {} resource is already loaded.", GetInfo()->name);
-            return RESOURCE_ID_DEFAULT;
-        }
-
-        m_Impl->isLoaded = TRUE;
-
         Grid grid(1, 1);
         auto gridInfo = m_Impl->additionalInfo.Get<JSON>("grid");
         grid.row = gridInfo.Get("row", grid.row);
@@ -55,13 +45,6 @@ namespace ntt::renderer
     void ImageResource::UnloadImpl()
     {
         PROFILE_FUNCTION();
-        if (!m_Impl->isLoaded)
-        {
-            NTT_ENGINE_TRACE("The image resource {} is already unloaded.", GetInfo()->name);
-            return;
-        }
-
         UnloadTexture(m_Impl->textureId);
-        m_Impl->isLoaded = FALSE;
     }
 } // namespace ntt::renderer

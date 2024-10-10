@@ -133,6 +133,11 @@ namespace ntt::ecs
     entity_id_t ECSGetEntityByName(const String &name);
 
     /**
+     * Remove all the entity from the whole system.
+     */
+    void ECSRemoveAllEntities();
+
+    /**
      * Retrieve the component with the certain type from the entity.
      * If the entity is not found, then return nullptr
      */

@@ -35,8 +35,10 @@ namespace ntt
     void RegisterResource(const String &sceneName, const ResourceInfo &info);
 
     /**
-     * Starting the resource manager, now all DEFAULT resources will be loadded,
-     *     and the ResourceChangeScene function can be called.
+     * Starting the resource manager, now all DEFAULT resources (and scene resources if has)
+     *      will be loadded, and the ResourceChangeScene function can be called. If the
+     *      ResourceStart is already called, then the whole loadded resources will be unloaded
+     *      and reload again.
      */
     void ResourceStart();
 

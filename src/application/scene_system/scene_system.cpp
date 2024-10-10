@@ -19,6 +19,8 @@ namespace ntt
         String s_currentScene = "";
         std::function<void(const String &)> s_onSceneChanged = nullptr;
 
+        String s_defaultScene;
+
         void OnSceneChanged(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
@@ -87,10 +89,16 @@ namespace ntt
 
         s_entities.clear();
 
+        s_defaultScene = scenes[0].first;
         SceneOpen(scenes[0].first);
     }
 
-    void SceneOpen(const String &sceneName)
+    void SceneOpen()
+    {
+        SceneOpen(s_defaultScene, TRUE);
+    }
+
+    void SceneOpen(const String &sceneName, b8 force)
     {
         PROFILE_FUNCTION();
 
@@ -100,7 +108,7 @@ namespace ntt
             return;
         }
 
-        if (s_currentScene == sceneName)
+        if (s_currentScene == sceneName && !force)
         {
             NTT_ENGINE_WARN("The scene {} is already opened", sceneName);
             return;
@@ -125,26 +133,6 @@ namespace ntt
         if (s_onSceneChanged != nullptr)
         {
             s_onSceneChanged(sceneName);
-        }
-
-        if (s_scenes[s_currentScene].createFunc != nullptr)
-        {
-            s_scenes[s_currentScene].createFunc();
-        }
-    }
-
-    void SceneReload()
-    {
-        PROFILE_FUNCTION();
-
-        for (auto &entityId : s_entities)
-        {
-            ECSDeleteEntity(entityId);
-        }
-
-        if (s_scenes[s_currentScene].onExit != nullptr)
-        {
-            s_scenes[s_currentScene].onExit();
         }
 
         if (s_scenes[s_currentScene].createFunc != nullptr)

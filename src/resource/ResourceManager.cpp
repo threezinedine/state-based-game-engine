@@ -187,17 +187,38 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        if (s_start)
-        {
-            NTT_ENGINE_WARN("Resource manager is already started.");
-            return;
-        }
+        // if (s_start)
+        // {
+        //     NTT_ENGINE_WARN("Resource manager is already started.");
+        //     return;
+        // }
 
         s_start = TRUE;
 
         for (auto &resource : s_defaultResourcesObjects)
         {
+            if (resource->IsLoaded())
+            {
+                resource->Unload();
+            }
+
             s_defaultResourcesDict[resource->GetInfo()->name] = resource->Load();
+        }
+
+        NTT_ENGINE_DEBUG("Current scene", s_currentScene);
+
+        s_resourcesDictionary.clear();
+        for (auto &resource : s_resources[s_currentScene])
+        {
+            if (resource->IsLoaded())
+            {
+                resource->Unload();
+            }
+
+            s_resourcesDictionary[resource->GetInfo()->name] = resource->Load();
+            NTT_ENGINE_DEBUG("Resource with name {} is loaded with id {}",
+                             resource->GetInfo()->name,
+                             s_resourcesDictionary[resource->GetInfo()->name]);
         }
     }
 
@@ -272,6 +293,10 @@ namespace ntt
 
         for (auto &resource : s_resources[s_deletedScene])
         {
+            if (!resource->IsLoaded())
+            {
+                continue;
+            };
             resource->Unload();
         }
 
@@ -303,12 +328,20 @@ namespace ntt
         {
             for (auto &resource : s_resources[s_currentScene])
             {
+                if (!resource->IsLoaded())
+                {
+                    continue;
+                };
                 resource->Unload();
             }
         }
 
         for (auto &resource : s_defaultResourcesObjects)
         {
+            if (!resource->IsLoaded())
+            {
+                continue;
+            };
             resource->Unload();
         }
 
