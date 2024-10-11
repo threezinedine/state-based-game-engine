@@ -69,8 +69,10 @@ namespace ntt
                 imageWindow->Open();
             }
             ImGui::SameLine();
-            if (ImGui::Button(format("Delete", info.name).RawString().c_str()))
+            if (ImGui::Button("Delete"))
             {
+                ResourceUnload({info});
+
                 resources.RemoveItem(info, [](const ResourceInfo &a, const ResourceInfo &b) -> b8
                                      { return a.name == b.name; });
 
@@ -142,6 +144,8 @@ namespace ntt
                 m_impl->resources.push_back(resource);
             }
         }
+
+        ResourceLoad(m_impl->resources);
     }
 
     ResourceWindow::~ResourceWindow() {}
@@ -206,12 +210,16 @@ namespace ntt
             ImGui::SameLine();
             if (ImGui::Button("Save"))
             {
+                ResourceUnload(m_impl->resources);
+
                 SaveResourceFile(
                     JoinPath({
                         m_impl->project->path,
                         m_impl->project->defaultResourceFile,
                     }),
                     m_impl->resources);
+
+                ResourceLoad(m_impl->resources);
             }
             ImGui::Separator();
 
@@ -305,6 +313,9 @@ namespace ntt
                 m_impl->currentTypeIndex = 0;
 
                 m_impl->resources.push_back(info);
+
+                // load the new resource into the system
+                ResourceLoad({info});
 
                 SaveResourceFile(
                     JoinPath({

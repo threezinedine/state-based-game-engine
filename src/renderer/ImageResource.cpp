@@ -39,7 +39,7 @@ namespace ntt::renderer
 
         m_Impl->textureId = LoadTexture(m_Impl->path, grid);
 
-        NTT_ENGINE_DEBUG("Loaded image resource: {}", m_Impl->path);
+        NTT_ENGINE_DEBUG("Loaded image resource: {}", GetInfo()->name);
         return m_Impl->textureId;
     }
 
@@ -47,6 +47,6 @@ namespace ntt::renderer
     {
         PROFILE_FUNCTION();
         UnloadTexture(m_Impl->textureId);
-        NTT_ENGINE_DEBUG("Unloaded image resource: {}", m_Impl->path);
+        NTT_ENGINE_DEBUG("Unloaded image resource: {}", GetInfo()->name);
     }
 } // namespace ntt::renderer

@@ -277,6 +277,11 @@ namespace ntt
         {
             window->Init();
         }
+
+        for (auto &window : s_openClosableWindows)
+        {
+            window->Open();
+        }
         // ========================================
         // Window initialization below
         // ========================================
