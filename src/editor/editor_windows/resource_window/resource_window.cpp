@@ -6,12 +6,14 @@
 #include "ImGuiFileDialog.h"
 #include "image_window.hpp"
 #include <NTTEngine/renderer/GraphicInterface.hpp>
+#include <NTTEngine/audio/audio.hpp>
 
 #include "utils.hpp"
 
 namespace ntt
 {
     using namespace renderer;
+    using namespace audio;
 
     class ResourceWindow::Impl
     {
@@ -68,6 +70,38 @@ namespace ntt
 
                 imageWindow->Open();
             }
+        }
+
+        void ComponentAudioDraw(ResourceInfo &info)
+        {
+            if (ImGui::Button("Play"))
+            {
+                PlayAudio(GetResourceID(info.name));
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Stop"))
+            {
+                StopAudio(GetResourceID(info.name));
+            }
+        }
+
+        void EditorWindowDraw(ResourceInfo &info)
+        {
+            auto path = SubtractPath(info.path, project->path);
+
+            ImGui::Text("Name: %s", info.name.RawString().c_str());
+            ImGui::Text("Type: %s", resourceTypes[static_cast<u32>(info.type)]);
+            ImGui::Text("Path: %s", path.RawString().c_str());
+
+            switch (info.type)
+            {
+            case ResourceType::IMAGE:
+                ComponentImageDraw(info);
+                break;
+            case ResourceType::AUDIO:
+                ComponentAudioDraw(info);
+                break;
+            }
             ImGui::SameLine();
             if (ImGui::Button("Delete"))
             {
@@ -83,32 +117,6 @@ namespace ntt
                     }),
                     resources);
             }
-        }
-
-        void EditorWindowDraw(ResourceInfo &info)
-        {
-            auto path = SubtractPath(info.path, project->path);
-
-            ImGui::PushID(info.name.RawString().c_str());
-            if (ImGui::TreeNode(info.name.RawString().c_str()))
-            {
-                ImGui::Text("Name: %s", info.name.RawString().c_str());
-                ImGui::Text("Type: %s", resourceTypes[static_cast<u32>(info.type)]);
-                ImGui::Text("Path: %s", path.RawString().c_str());
-
-                switch (info.type)
-                {
-                case ResourceType::IMAGE:
-                {
-                    ComponentImageDraw(info);
-                    break;
-                }
-                }
-
-                ImGui::TreePop();
-            }
-
-            ImGui::PopID();
         }
     };
 
@@ -223,14 +231,16 @@ namespace ntt
             }
             ImGui::Separator();
 
-            if (ImGui::TreeNode("Resources"))
+            ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
+            for (auto &info : m_impl->resources)
             {
-                ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
-                for (auto &info : m_impl->resources)
+                ImGui::PushID(info.name.RawString().c_str());
+                if (ImGui::TreeNode(info.name.RawString().c_str()))
                 {
                     m_impl->EditorWindowDraw(info);
+                    ImGui::TreePop();
                 }
-                ImGui::TreePop();
+                ImGui::PopID();
             }
         }
 

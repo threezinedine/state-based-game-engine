@@ -8,3 +8,4 @@
 #include "viewport/viewport_window.hpp"
 #include "setting/setting.hpp"
 #include "resource_window/resource_window.hpp"
+#include "new_scene/new_scene.hpp"

@@ -15,6 +15,7 @@ namespace ntt
         i32 height = 600;
         String title;
         String defaultResourceFile;
+        List<String> sceneNames;
 
         ProjectInfo() = default;
 
@@ -26,6 +27,7 @@ namespace ntt
             height = project.Get<i32>("height", 600);
             title = project.Get<String>("title");
             defaultResourceFile = project.Get<String>("defaultResourceFile");
+            sceneNames = project.GetList<String>("sceneNames");
         }
 
         JSON ToJSON()
@@ -37,6 +39,7 @@ namespace ntt
             project.Set("height", height);
             project.Set("title", title);
             project.Set("defaultResourceFile", defaultResourceFile);
+            project.Set("sceneNames", sceneNames);
             return project;
         }
 

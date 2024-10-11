@@ -112,6 +112,8 @@ namespace ntt::event
 #define NTT_HISTORY_EMPTY 0x27     ///< When the history stack is empty
 #define NTT_HISTORY_NOT_EMPTY 0x28 ///< When the history stack is not empty
 
+#define NTT_EDITOR_CREATE_NEW_SCENE 0x29 ///< When the new scene is created
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

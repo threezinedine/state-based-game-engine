@@ -53,6 +53,7 @@ namespace ntt
         Ref<ViewportWindow> s_viewportWindow;
         Ref<LogWindow> s_logWindow;
         Ref<ResourceWindow> s_resourceWindow;
+        Ref<NewSceneWindow> s_newSceneWindow;
 
         List<Ref<EditorWindow>> s_normalWindows;
         List<Ref<ProjectReloadWindow>> s_reloadWindows;
@@ -77,6 +78,28 @@ namespace ntt
             {
                 window->OnReloadProject();
             }
+        }
+
+        void OnNewSceneCreated(event_code_t code, void *sender, const EventContext &context)
+        {
+            if (!IsExist(JoinPath({s_project->path, "scenes"})))
+            {
+                CreateFolder(JoinPath({s_project->path, "scenes"}));
+            }
+
+            for (auto &sceneName : s_project->sceneNames)
+            {
+                String sceneFile = JoinPath({s_project->path, "scenes", format("{}.json", sceneName)});
+
+                if (!IsExist(sceneFile))
+                {
+                    OpenFile(sceneFile);
+                    Write("{}");
+                    CloseFile();
+                }
+            }
+
+            TriggerEvent(NTT_EDITOR_SAVE_PROJECT);
         }
 
         void OnHistoryEmpty(event_code_t code, void *sender, const EventContext &context)
@@ -207,6 +230,7 @@ namespace ntt
         RegisterEvent(NTT_EDITOR_PROJECT_LOADED, OnProjectLoadded);
         RegisterEvent(NTT_HISTORY_EMPTY, OnHistoryEmpty);
         RegisterEvent(NTT_HISTORY_NOT_EMPTY, OnHistoryNotEmpty);
+        RegisterEvent(NTT_EDITOR_CREATE_NEW_SCENE, OnNewSceneCreated);
         // ========================================
         // Event registration above
         // ========================================
@@ -238,6 +262,9 @@ namespace ntt
 
         s_settingWindow = CreateRef<SettingWindow>(s_project, s_config);
         s_normalWindows.push_back(s_settingWindow);
+
+        s_newSceneWindow = CreateRef<NewSceneWindow>(s_project, s_config);
+        s_normalWindows.push_back(s_newSceneWindow);
 
         s_newProjectDialog = CreateScope<EditorFileDialog>(
             s_project,
@@ -295,14 +322,33 @@ namespace ntt
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("New", "Ctrl+N"))
+                if (ImGui::BeginMenu("New"))
                 {
-                    s_newProjectDialog->Open();
+                    if (ImGui::MenuItem("New Project", "Ctrl+Shift+N"))
+                    {
+                        s_newProjectDialog->Open();
+                    }
+
+                    if (ImGui::MenuItem("New Scene", "Ctrl+N", false, s_hasProject))
+                    {
+                        s_newSceneWindow->Open();
+                    }
+                    ImGui::EndMenu();
                 }
 
-                if (ImGui::MenuItem("Open", "Ctrl+O"))
+                if (ImGui::BeginMenu("Open"))
                 {
-                    s_openProjectDialog->Open();
+                    if (ImGui::MenuItem("Open", "Ctrl+Shift+O"))
+                    {
+                        s_openProjectDialog->Open();
+                    }
+
+                    if (ImGui::MenuItem("Open Scene", "Ctrl+O", false, s_hasProject))
+                    {
+                        NTT_ENGINE_DEBUG("Open Scene");
+                    }
+
+                    ImGui::EndMenu();
                 }
 
                 if (ImGui::MenuItem("Save", "Ctrl+S", false, s_hasProject))
@@ -342,11 +388,15 @@ namespace ntt
         }
 
         ImGuiIO &io = ImGui::GetIO();
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_N)))
+        if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_N)))
         {
             s_newProjectDialog->Open();
         }
-        else if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O)))
+        else if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_N)))
+        {
+            s_newSceneWindow->Open();
+        }
+        else if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O)))
         {
             s_openProjectDialog->Open();
         }
