@@ -14,7 +14,7 @@ namespace ntt
 
         b8 isRunning = FALSE;
 
-        char title[128] = "";
+        char title[128] = "NTT Game";
     }; // namespace
 
     NewProjectWindow::NewProjectWindow(Ref<ProjectInfo> project, Ref<EditorConfig> config)
@@ -40,6 +40,8 @@ namespace ntt
             ImGui::Text("Create a new project");
             ImGui::Separator();
 
+            ImGui::Text(format("Project path: {}", m_impl->project->path).RawString().c_str());
+            ImGui::Separator();
             ImGui::InputText("Title", m_impl->title, sizeof(m_impl->title));
             ImGui::InputInt("Width", &m_impl->project->width);
             ImGui::InputInt("Height", &m_impl->project->height);

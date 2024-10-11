@@ -1,5 +1,6 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
+#include <functional>
 
 namespace ntt
 {
@@ -22,5 +23,6 @@ namespace ntt
         Position(position_t x = POSITION_DEFAULT, position_t y = POSITION_DEFAULT) : x(x), y(y) {}
     };
 
-    typedef Position (*PositionTransform)(const Position &pos);
+    using PositionTransform = std::function<Position(const Position &pos)>;
+    // typedef Position (*PositionTransform)(const Position &pos);
 } // namespace ntt

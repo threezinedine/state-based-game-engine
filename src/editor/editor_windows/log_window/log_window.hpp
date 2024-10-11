@@ -11,7 +11,7 @@ namespace ntt
     {
     public:
         LogWindow();
-        ~LogWindow();
+        ~LogWindow() override;
 
     protected:
         void InitImpl() override;

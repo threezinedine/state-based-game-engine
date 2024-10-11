@@ -258,4 +258,64 @@ namespace ntt
             } });
         return fs::path(path.RawString()).make_preferred().string();
     }
+
+    b8 CheckFileExtension(const String &file, const String &extension)
+    {
+        auto sysPath = fs::path(file.RawString()).make_preferred();
+        return sysPath.extension().string() == extension.RawString();
+    }
+
+    List<String> ListFiles(const String &folder, b8 containBase)
+    {
+        List<String> files;
+
+        if (!IsExist(folder))
+        {
+            NTT_ENGINE_WARN("The folder {} does not exist", folder);
+            return files;
+        }
+
+        auto sysFolder = fs::path(folder.RawString()).make_preferred();
+
+        for (const auto &entry : fs::directory_iterator(sysFolder))
+        {
+            auto path = entry.path();
+            if (containBase)
+            {
+                files.push_back(path.make_preferred().string());
+            }
+            else
+            {
+                files.push_back(path.filename().make_preferred().string());
+            }
+        }
+
+        return files;
+    }
+
+    void ClearFolder(const String &folder)
+    {
+        if (!IsExist(folder))
+        {
+            NTT_ENGINE_WARN("The folder {} does not exist", folder);
+            return;
+        }
+
+        auto sysFolder = fs::path(folder.RawString()).make_preferred();
+
+        for (const auto &entry : fs::directory_iterator(sysFolder))
+        {
+            auto path = entry.path();
+            try
+            {
+                fs::remove_all(path);
+            }
+            catch (const ::std::exception &e)
+            {
+                NTT_ENGINE_WARN("The file/folder {} cannot be deleted with error {}",
+                                path.string(),
+                                e.what());
+            }
+        }
+    }
 } // namespace ntt

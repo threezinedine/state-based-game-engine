@@ -10,7 +10,7 @@ namespace ntt
     {
     public:
         NewProjectWindow(Ref<ProjectInfo> project, Ref<EditorConfig> config);
-        ~NewProjectWindow();
+        ~NewProjectWindow() override;
 
     protected:
         void InitImpl() override;

@@ -170,4 +170,37 @@ namespace ntt
      *      be only the paths you provided (default is FALSE)
      */
     String JoinPath(List<String> paths, b8 useBase = FALSE);
+
+    /**
+     * Verify the file extension is the same as the given extension or not
+     *
+     * @param file: The path of the file if the file does not exist then
+     *      return FALSE
+     *
+     * @param extension: The extension to be checked, the extension must
+     *      be started with the dot (.)
+     */
+    b8 CheckFileExtension(const String &file, const String &extension);
+
+    /**
+     * Return the whole files inside the folder.
+     *
+     * @param folder: The path of the folder if the folder does not exist
+     *      then the empty list will be returned
+     *
+     * @param containBase: If TRUE then the base path will be the source path
+     *      for ex: the source path is "C:/Users/Acer/Games Dev/state-based-game-engine"
+     *      then the example of the file path is "C:/Users/Acer/Games Dev/state-based-game-engine/test.txt"
+     *      else only "test.txt" will be returned with FALSE (default is FALSE)
+     */
+    List<String> ListFiles(const String &folder, b8 containBase = FALSE);
+
+    /**
+     * Deleting all existed files and folders inside the
+     *      provided folder
+     *
+     * @param folder: The path of the folder if the folder is not exist
+     *      nothing will be deleted and the warning will be logged
+     */
+    void ClearFolder(const String &folder);
 } // namespace ntt

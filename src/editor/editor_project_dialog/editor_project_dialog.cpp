@@ -72,7 +72,7 @@ namespace ntt
 
                     if (m_impl->data.onOk != nullptr)
                     {
-                        m_impl->data.onOk();
+                        m_impl->data.onOk(FALSE);
                     }
                     ImGui::CloseCurrentPopup();
                 }
@@ -99,7 +99,7 @@ namespace ntt
 
                 if (m_impl->data.onOk != nullptr)
                 {
-                    m_impl->data.onOk();
+                    m_impl->data.onOk(TRUE);
                 }
 
                 ImGui::CloseCurrentPopup();

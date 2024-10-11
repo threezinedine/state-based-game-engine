@@ -10,10 +10,20 @@ namespace ntt
 
     struct EditorFileDialogData
     {
+        // the string which is used for identifying the differenet file dialog
+        //      around the editor
         String id;
+
+        // the title of the file dialog
         String windowTitle;
+
+        // callback which is used for checking any existance project in the selected
+        //      folder
         std::function<b8(const String &)> checkExistance;
-        std::function<void()> onOk;
+
+        // callback which is used for the ok button, the parameter is the override
+        //      flag which is used for overriding the existing project.
+        std::function<void(b8)> onOk;
     };
 
     class EditorFileDialog

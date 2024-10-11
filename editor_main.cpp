@@ -141,13 +141,18 @@ void Update()
     BeginDrawing();
 
     EditorBeginDraw();
+    // ===================================================
     // code of the game loop below
+    // ===================================================
 
     ClearBackground(::BLACK);
 
+    // ===================================================
     // code of the game loop above
-    EditorUpdate(delta);
+    // ===================================================
     EditorEndDraw();
+
+    EditorUpdate(delta);
 
     EndDrawing();
 }
