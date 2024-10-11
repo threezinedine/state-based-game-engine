@@ -106,13 +106,15 @@ namespace ntt::event
 #define NTT_APPLICATION_RESET 0x23 ///< When the application is reset
 
 #define NTT_EDITOR_SAVE_CONFIG 0x24    ///< When the editor configuration is saved
-#define NTT_EDITOR_SAVE_PROJECT 0x25   ///< When the editor project is saved
+#define NTT_EDITOR_CREATE_PROJECT 0x25 ///< When the editor project is created
 #define NTT_EDITOR_PROJECT_LOADED 0x26 ///< When the editor project is loaded
 
 #define NTT_HISTORY_EMPTY 0x27     ///< When the history stack is empty
 #define NTT_HISTORY_NOT_EMPTY 0x28 ///< When the history stack is not empty
 
 #define NTT_EDITOR_CREATE_NEW_SCENE 0x29 ///< When the new scene is created
+#define NTT_EDITOR_SAVE_PROJECT 0x2A     ///< When the editor project is saved
+#define NTT_EDITOR_OPEN_SCENE 0x2B       ///< When the scene is opened
 
     // TODO: Change the default event < 255 and the user's event >= 255
 

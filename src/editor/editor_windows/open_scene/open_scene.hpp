@@ -6,13 +6,13 @@ namespace ntt
 {
     using namespace memory;
 
-    class NewSceneWindow : public OpenClosableWindow
+    class OpenSceneWindow : public OpenClosableWindow
     {
     public:
-        NewSceneWindow(Ref<ProjectInfo> project,
-                       Ref<EditorConfig> config,
-                       Ref<SceneInfo> scene);
-        ~NewSceneWindow();
+        OpenSceneWindow(Ref<ProjectInfo> project,
+                        Ref<EditorConfig> config,
+                        Ref<SceneInfo> scene);
+        ~OpenSceneWindow();
 
     protected:
         void InitImpl() override;

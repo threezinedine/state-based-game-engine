@@ -4,7 +4,9 @@
     "name": "test.nttproj",
     "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard",
     "sceneNames": [
-        "huang"
+        "huang",
+        "johsua",
+        "test"
     ],
     "title": "NTT Game",
     "width": 800

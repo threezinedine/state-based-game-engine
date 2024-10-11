@@ -54,6 +54,7 @@ namespace ntt::audio
             PlayAudio(m_Impl->audioId, context);
         }
 
+        NTT_ENGINE_DEBUG("The Audio {} is loaded", GetInfo()->name);
         return m_Impl->audioId;
     }
 
@@ -62,5 +63,6 @@ namespace ntt::audio
         PROFILE_FUNCTION();
 
         UnloadAudio(m_Impl->audioId);
+        NTT_ENGINE_DEBUG("The Audio {} is unloaded", GetInfo()->name);
     }
 } // namespace ntt::audio

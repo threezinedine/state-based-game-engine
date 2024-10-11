@@ -4,9 +4,70 @@
 #include <NTTEngine/core/parser/json.hpp>
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/platforms/path.hpp>
+#include <NTTEngine/resources/resources.hpp>
+#include <NTTEngine/resources/resource_common.h>
 
 namespace ntt
 {
+    struct SceneInfo
+    {
+        String sceneName;
+        String filePath;
+
+        JSON ToJSON() const
+        {
+            JSON scene = JSON("{}");
+            scene.Set("sceneName", sceneName);
+            scene.Set("filePath", filePath);
+            return scene;
+        }
+
+        void FromJSON(const JSON &scene)
+        {
+            sceneName = scene.Get<String>("sceneName");
+            filePath = scene.Get<String>("filePath");
+        }
+
+        List<ResourceInfo> GetResourceInfo()
+        {
+            List<ResourceInfo> resourcesInfo;
+            JSON config = ReadFile(filePath);
+
+            List<JSON> resourcesCfg = config.GetList<JSON>("resources");
+
+            for (auto &resource : resourcesCfg)
+            {
+                ResourceInfo info;
+                info.From(resource);
+                resourcesInfo.push_back(info);
+            }
+
+            return resourcesInfo;
+        }
+
+        void SaveResourceInfo(List<ResourceInfo> resourcesInfo)
+        {
+            JSON config = ReadFile(filePath);
+            List<JSON> resourceJSONs =
+                resourcesInfo.Map<JSON>([](const ResourceInfo &info, ...) -> JSON
+                                        { return info.ToJSON(); });
+
+            config.Set("resources", resourceJSONs);
+
+            OpenFile(filePath);
+            Write(config.ToString());
+            CloseFile();
+        }
+    };
+
+    template <>
+    inline String format(const String &str, const SceneInfo &info)
+    {
+        String newStr = str;
+        newStr.Replace("{}", info.ToJSON().ToString(), FALSE);
+        return newStr;
+    }
+
     struct ProjectInfo
     {
         String name;
@@ -15,7 +76,7 @@ namespace ntt
         i32 height = 600;
         String title;
         String defaultResourceFile;
-        List<String> sceneNames;
+        Dictionary<String, Ref<SceneInfo>> scenes;
 
         ProjectInfo() = default;
 
@@ -27,7 +88,17 @@ namespace ntt
             height = project.Get<i32>("height", 600);
             title = project.Get<String>("title");
             defaultResourceFile = project.Get<String>("defaultResourceFile");
-            sceneNames = project.GetList<String>("sceneNames");
+
+            List<String> sceneNames = project.GetList<String>("sceneNames");
+            scenes.clear();
+
+            for (auto sceneName : sceneNames)
+            {
+                Ref<SceneInfo> scene = CreateRef<SceneInfo>();
+                scene->sceneName = sceneName;
+                scene->filePath = JoinPath({path, "scenes", format("{}.json", sceneName)});
+                scenes[sceneName] = scene;
+            }
         }
 
         JSON ToJSON()
@@ -39,13 +110,36 @@ namespace ntt
             project.Set("height", height);
             project.Set("title", title);
             project.Set("defaultResourceFile", defaultResourceFile);
-            project.Set("sceneNames", sceneNames);
+            project.Set("sceneNames", scenes.Keys());
             return project;
         }
 
         String GetProjectFilePath()
         {
             return JoinPath({path, name});
+        }
+
+        void AddNewScene(const String &sceneName)
+        {
+            Ref<SceneInfo> scene = CreateRef<SceneInfo>();
+            scene->sceneName = sceneName;
+            scene->filePath = JoinPath({path, "scenes", format("{}.json", sceneName)});
+            scenes[sceneName] = scene;
+
+            if (!IsExist(JoinPath({path, "scenes"})))
+            {
+                CreateFolder(JoinPath({path, "scenes"}));
+            }
+
+            if (!IsExist(scene->filePath))
+            {
+                OpenFile(scene->filePath);
+                Write(R"({
+                        "resources": [],
+                        "entities": [] 
+                    })");
+                CloseFile();
+            }
         }
     };
 

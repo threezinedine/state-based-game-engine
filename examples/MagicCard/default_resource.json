@@ -1,1 +1,11 @@
-[]
+[
+    {
+        "extra": {
+            "numCol": 12,
+            "numRow": 12
+        },
+        "name": "buttons",
+        "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\buttons.png",
+        "type": 0
+    }
+]

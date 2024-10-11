@@ -11,7 +11,6 @@
 
 #include "editor_windows/editor_windows.hpp"
 
-#include "editor_scene/editor_scene_window.hpp"
 #include "entity_window/editor_entity_window.hpp"
 #include "editor_tool/editor_tool.hpp"
 #include <NTTEngine/platforms/path.hpp>
@@ -43,6 +42,7 @@ namespace ntt
 
         Ref<ProjectInfo> s_project;
         Ref<EditorConfig> s_config;
+        Ref<SceneInfo> s_scene;
 
         Ref<EditorFileDialog> s_newProjectDialog;
         Ref<EditorFileDialog> s_openProjectDialog;
@@ -54,6 +54,8 @@ namespace ntt
         Ref<LogWindow> s_logWindow;
         Ref<ResourceWindow> s_resourceWindow;
         Ref<NewSceneWindow> s_newSceneWindow;
+        Ref<SceneWindow> s_sceneWindow;
+        Ref<OpenSceneWindow> s_openSceneWindow;
 
         List<Ref<EditorWindow>> s_normalWindows;
         List<Ref<ProjectReloadWindow>> s_reloadWindows;
@@ -80,25 +82,16 @@ namespace ntt
             }
         }
 
+        void OnSceneChanged(event_code_t code, void *sender, const EventContext &context)
+        {
+            if (s_project->scenes.Contains(s_scene->sceneName))
+            {
+                s_scene->filePath = s_project->scenes[s_scene->sceneName]->filePath;
+            }
+        }
+
         void OnNewSceneCreated(event_code_t code, void *sender, const EventContext &context)
         {
-            if (!IsExist(JoinPath({s_project->path, "scenes"})))
-            {
-                CreateFolder(JoinPath({s_project->path, "scenes"}));
-            }
-
-            for (auto &sceneName : s_project->sceneNames)
-            {
-                String sceneFile = JoinPath({s_project->path, "scenes", format("{}.json", sceneName)});
-
-                if (!IsExist(sceneFile))
-                {
-                    OpenFile(sceneFile);
-                    Write("{}");
-                    CloseFile();
-                }
-            }
-
             TriggerEvent(NTT_EDITOR_SAVE_PROJECT);
         }
 
@@ -116,6 +109,13 @@ namespace ntt
         {
             OpenFile(s_config->GetConfigFilePath());
             Write(s_config->ToJSON().ToString());
+            CloseFile();
+        }
+
+        void OnSaveProject(event_code_t code, void *sender, const EventContext &context)
+        {
+            OpenFile(s_project->GetProjectFilePath());
+            Write(s_project->ToJSON().ToString());
             CloseFile();
         }
 
@@ -144,10 +144,6 @@ namespace ntt
             CreateFolder(JoinPath({s_project->path,
                                    "scripts"}));
 
-            OpenFile(s_project->GetProjectFilePath());
-            Write(s_project->ToJSON().ToString());
-            CloseFile();
-
             String currentGameFile = JoinPath({CurrentDirectory(),
                                                "Game.exe"});
 
@@ -163,8 +159,7 @@ namespace ntt
                                              "libNTTEngine.dll"});
 
             NTTCopyFile(currentDllFile, targetDllFile);
-
-            NTT_ENGINE_INFO("Project created");
+            TriggerEvent(NTT_EDITOR_SAVE_PROJECT);
         }
 
         void OnNewProjectPathIsSelected(b8 override)
@@ -204,6 +199,7 @@ namespace ntt
 
         s_project = CreateRef<ProjectInfo>();
         s_config = CreateRef<EditorConfig>();
+        s_scene = CreateRef<SceneInfo>();
 
         if (IsExist(s_configFilePath))
         {
@@ -226,11 +222,13 @@ namespace ntt
         // Event registration below
         // ========================================
         RegisterEvent(NTT_EDITOR_SAVE_CONFIG, OnEditorSaveConfig);
-        RegisterEvent(NTT_EDITOR_SAVE_PROJECT, OnEditorCreateProject);
+        RegisterEvent(NTT_EDITOR_CREATE_PROJECT, OnEditorCreateProject);
         RegisterEvent(NTT_EDITOR_PROJECT_LOADED, OnProjectLoadded);
         RegisterEvent(NTT_HISTORY_EMPTY, OnHistoryEmpty);
         RegisterEvent(NTT_HISTORY_NOT_EMPTY, OnHistoryNotEmpty);
         RegisterEvent(NTT_EDITOR_CREATE_NEW_SCENE, OnNewSceneCreated);
+        RegisterEvent(NTT_EDITOR_SAVE_PROJECT, OnSaveProject);
+        RegisterEvent(NTT_EDITOR_OPEN_SCENE, OnSceneChanged);
         // ========================================
         // Event registration above
         // ========================================
@@ -263,8 +261,18 @@ namespace ntt
         s_settingWindow = CreateRef<SettingWindow>(s_project, s_config);
         s_normalWindows.push_back(s_settingWindow);
 
-        s_newSceneWindow = CreateRef<NewSceneWindow>(s_project, s_config);
+        s_newSceneWindow = CreateRef<NewSceneWindow>(s_project, s_config, s_scene);
         s_normalWindows.push_back(s_newSceneWindow);
+
+        s_sceneWindow = CreateRef<SceneWindow>(s_project, s_scene, s_config);
+        s_normalWindows.push_back(s_sceneWindow);
+        s_openClosableWindows.push_back(s_sceneWindow);
+        s_reloadWindows.push_back(s_sceneWindow);
+
+        s_openSceneWindow = CreateRef<OpenSceneWindow>(s_project, s_config, s_scene);
+        s_normalWindows.push_back(s_openSceneWindow);
+
+        s_normalWindows.push_back(s_viewportWindow);
 
         s_newProjectDialog = CreateScope<EditorFileDialog>(
             s_project,
@@ -302,7 +310,10 @@ namespace ntt
         // ========================================
         for (auto &window : s_normalWindows)
         {
-            window->Init();
+            if (window != nullptr)
+            {
+                window->Init();
+            }
         }
 
         for (auto &window : s_openClosableWindows)
@@ -345,7 +356,7 @@ namespace ntt
 
                     if (ImGui::MenuItem("Open Scene", "Ctrl+O", false, s_hasProject))
                     {
-                        NTT_ENGINE_DEBUG("Open Scene");
+                        s_openSceneWindow->Open();
                     }
 
                     ImGui::EndMenu();
@@ -400,6 +411,10 @@ namespace ntt
         {
             s_openProjectDialog->Open();
         }
+        else if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O)))
+        {
+            s_openSceneWindow->Open();
+        }
         else if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
         {
             NTT_ENGINE_DEBUG("Save");
@@ -413,11 +428,6 @@ namespace ntt
         s_openProjectDialog->Update();
         s_saveAsProjectDialog->Update();
 
-        if (s_viewportWindow != nullptr)
-        {
-            s_viewportWindow->Update();
-        }
-
         static b8 show = TRUE;
         if (show)
         {
@@ -426,7 +436,10 @@ namespace ntt
 
         for (auto &window : s_normalWindows)
         {
-            window->Update();
+            if (window != nullptr)
+            {
+                window->Update();
+            }
         }
 
         rlImGuiEnd();
@@ -452,15 +465,12 @@ namespace ntt
     {
         for (auto &window : s_normalWindows)
         {
-            window->Shutdown();
+            if (window != nullptr)
+            {
+                window->Shutdown();
+            }
         }
         s_openClosableWindows.clear();
-
-        if (s_viewportWindow != nullptr)
-        {
-            s_viewportWindow->Shutdown();
-            s_viewportWindow.reset();
-        }
 
         s_normalWindows.clear();
         s_reloadWindows.clear();

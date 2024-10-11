@@ -85,6 +85,25 @@ namespace ntt
             }
         }
 
+        void Save()
+        {
+            if (currentIndex == 0)
+            {
+                SaveResourceFile(
+                    JoinPath({
+                        project->path,
+                        project->defaultResourceFile,
+                    }),
+                    resources);
+            }
+            else
+            {
+                String sceneName = resourceFiles[currentIndex];
+
+                project->scenes[sceneName]->SaveResourceInfo(resources);
+            }
+        }
+
         void EditorWindowDraw(ResourceInfo &info)
         {
             auto path = SubtractPath(info.path, project->path);
@@ -110,13 +129,39 @@ namespace ntt
                 resources.RemoveItem(info, [](const ResourceInfo &a, const ResourceInfo &b) -> b8
                                      { return a.name == b.name; });
 
-                SaveResourceFile(
-                    JoinPath({
-                        project->path,
-                        project->defaultResourceFile,
-                    }),
-                    resources);
+                Save();
             }
+        }
+
+        void LoadDefaultResource()
+        {
+            auto defaultConfigFile =
+                JoinPath({project->path, project->defaultResourceFile});
+
+            if (IsExist(defaultConfigFile))
+            {
+                JSON config(ReadFile(defaultConfigFile));
+
+                auto resourcesInfo = ExtractInfoFromJSON(config);
+
+                for (auto &resource : resourcesInfo)
+                {
+                    resources.push_back(resource);
+                }
+            }
+        }
+
+        void ResourceInit()
+        {
+            resourceFiles.clear();
+            resourceFiles.push_back(GetFileWithoutExtension("default_resource.json"));
+            resourceFiles.Extend(project->scenes.Keys());
+            currentIndex = 0;
+
+            resources.clear();
+
+            LoadDefaultResource();
+            ResourceLoad(resources);
         }
     };
 
@@ -128,32 +173,11 @@ namespace ntt
         m_impl->project = project;
         m_impl->config = config;
 
-        m_impl->resourceFiles.clear();
-        m_impl->resourceFiles.push_back(GetFileWithoutExtension("default_resource.json"));
-        m_impl->currentIndex = 0;
-
         memset(m_impl->resourceName, 0, sizeof(m_impl->resourceName));
         m_impl->currentTypeIndex = 0;
         m_impl->resourcePath = "";
 
-        m_impl->resources.clear();
-
-        auto defaultConfigFile =
-            JoinPath({m_impl->project->path, m_impl->project->defaultResourceFile});
-
-        if (IsExist(defaultConfigFile))
-        {
-            JSON config(ReadFile(defaultConfigFile));
-
-            auto resources = ExtractInfoFromJSON(config);
-
-            for (auto &resource : resources)
-            {
-                m_impl->resources.push_back(resource);
-            }
-        }
-
-        ResourceLoad(m_impl->resources);
+        m_impl->ResourceInit();
     }
 
     ResourceWindow::~ResourceWindow() {}
@@ -164,21 +188,8 @@ namespace ntt
 
     void ResourceWindow::OnReloadProject()
     {
-        auto defaultConfigFile =
-            JoinPath({m_impl->project->path, m_impl->project->defaultResourceFile});
-
-        m_impl->resources.clear();
-        if (IsExist(defaultConfigFile))
-        {
-            JSON config(ReadFile(defaultConfigFile));
-
-            auto resources = ExtractInfoFromJSON(config);
-
-            for (auto &resource : resources)
-            {
-                m_impl->resources.push_back(resource);
-            }
-        }
+        m_impl->currentIndex = 0;
+        m_impl->ResourceInit();
     }
 
     void ResourceWindow::UpdateImpl(b8 *p_open)
@@ -201,6 +212,30 @@ namespace ntt
                     bool is_selected = (m_impl->currentIndex == i);
                     if (ImGui::Selectable(m_impl->resourceFiles[i].RawString().c_str(), is_selected))
                     {
+                        if (m_impl->currentIndex != i)
+                        {
+                            String sceneName = m_impl->resourceFiles[i];
+
+                            if (m_impl->currentIndex != 0)
+                            {
+                                ResourceUnload(m_impl->resources);
+                            }
+
+                            m_impl->resources.clear();
+
+                            if (i != 0)
+                            {
+                                m_impl->resources =
+                                    m_impl->project->scenes[sceneName]->GetResourceInfo();
+                            }
+                            else
+                            {
+                                m_impl->LoadDefaultResource();
+                            }
+
+                            ResourceLoad(m_impl->resources);
+                        }
+
                         m_impl->currentIndex = i;
                     }
                     if (is_selected)
@@ -327,12 +362,7 @@ namespace ntt
                 // load the new resource into the system
                 ResourceLoad({info});
 
-                SaveResourceFile(
-                    JoinPath({
-                        m_impl->project->path,
-                        m_impl->project->defaultResourceFile,
-                    }),
-                    m_impl->resources);
+                m_impl->Save();
 
                 ImGui::CloseCurrentPopup();
             }

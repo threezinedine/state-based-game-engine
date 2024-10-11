@@ -13,17 +13,21 @@ namespace ntt
     public:
         Ref<ProjectInfo> project;
         Ref<EditorConfig> config;
+        Ref<SceneInfo> scene;
 
         char sceneName[128];
     };
 
-    NewSceneWindow::NewSceneWindow(Ref<ProjectInfo> project, Ref<EditorConfig> config)
+    NewSceneWindow::NewSceneWindow(Ref<ProjectInfo> project,
+                                   Ref<EditorConfig> config,
+                                   Ref<SceneInfo> scene)
         : OpenClosableWindow("New Scene")
     {
         m_impl = CreateScope<Impl>();
 
         m_impl->project = project;
         m_impl->config = config;
+        m_impl->scene = scene;
     }
 
     NewSceneWindow::~NewSceneWindow() {}
@@ -44,6 +48,10 @@ namespace ntt
 
         if (ImGui::Begin("New Scene", p_open, 0))
         {
+            b8 canCreate = !m_impl->project->scenes.Keys()
+                                .Contains(m_impl->sceneName);
+            b8 emptySceneName = m_impl->sceneName == "";
+
             ImGui::Text("New Scene Window");
             ImGui::InputText("Scene Name", m_impl->sceneName, sizeof(m_impl->sceneName));
             ImGui::Separator();
@@ -55,12 +63,15 @@ namespace ntt
 
             ImGui::SameLine();
 
+            ImGui::BeginDisabled(!canCreate || emptySceneName);
             if (ImGui::Button("Ok"))
             {
-                m_impl->project->sceneNames.push_back(m_impl->sceneName);
+                m_impl->project->AddNewScene(m_impl->sceneName);
+                m_impl->scene->sceneName = m_impl->project->scenes[m_impl->sceneName]->sceneName;
                 TriggerEvent(NTT_EDITOR_CREATE_NEW_SCENE);
                 Close();
             }
+            ImGui::EndDisabled();
 
             ImGui::End();
         }
