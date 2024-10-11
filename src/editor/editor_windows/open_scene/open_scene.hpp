@@ -1,4 +1,6 @@
 #include "../OpenClosableWindow.hpp"
+#include "../SceneReloadWindow.hpp"
+#include "../ProjectReloadWindow.hpp"
 #include "../../types.hpp"
 #include <NTTEngine/core/memory.hpp>
 
@@ -6,13 +8,18 @@ namespace ntt
 {
     using namespace memory;
 
-    class OpenSceneWindow : public OpenClosableWindow
+    class OpenSceneWindow : public OpenClosableWindow,
+                            public ProjectReloadWindow,
+                            public SceneReloadWindow
     {
     public:
         OpenSceneWindow(Ref<ProjectInfo> project,
                         Ref<EditorConfig> config,
                         Ref<SceneInfo> scene);
         ~OpenSceneWindow();
+
+        void OnReloadProject() override;
+        void OnReloadScene() override;
 
     protected:
         void InitImpl() override;

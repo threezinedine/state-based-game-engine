@@ -144,6 +144,8 @@ namespace ntt
 
         void ResourceInit()
         {
+            ResourceUnload(default_resources);
+
             default_resources.clear();
             scene_resources.clear();
 
@@ -152,6 +154,7 @@ namespace ntt
 
             if (HasScene())
             {
+                ResourceUnload(scene_resources);
                 scene_resources = scene->GetResourceInfo();
                 ResourceLoad(scene_resources);
             }

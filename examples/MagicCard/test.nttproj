@@ -4,7 +4,12 @@
     "name": "test.nttproj",
     "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard",
     "sceneNames": [
-        "startup"
+        "aaaaaa",
+        "game",
+        "okela",
+        "startup",
+        "test",
+        "testa"
     ],
     "title": "Flappy Bird",
     "width": 800

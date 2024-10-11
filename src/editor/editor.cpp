@@ -98,6 +98,7 @@ namespace ntt
 
         void OnNewSceneCreated(event_code_t code, void *sender, const EventContext &context)
         {
+            TriggerEvent(NTT_EDITOR_OPEN_SCENE);
             TriggerEvent(NTT_EDITOR_SAVE_PROJECT);
         }
 
@@ -278,6 +279,8 @@ namespace ntt
 
         s_openSceneWindow = CreateRef<OpenSceneWindow>(s_project, s_config, s_scene);
         s_normalWindows.push_back(s_openSceneWindow);
+        s_reloadWindows.push_back(s_openSceneWindow);
+        s_sceneChangeWindows.push_back(s_openSceneWindow);
 
         s_normalWindows.push_back(s_viewportWindow);
 

@@ -88,6 +88,16 @@ namespace ntt
         ImGui::End();
     }
 
+    void OpenSceneWindow::OnReloadProject()
+    {
+        m_impl->sceneNames = m_impl->project->scenes.Keys();
+    }
+
+    void OpenSceneWindow::OnReloadScene()
+    {
+        m_impl->sceneNames = m_impl->project->scenes.Keys();
+    }
+
     void OpenSceneWindow::ShutdownImpl()
     {
     }
