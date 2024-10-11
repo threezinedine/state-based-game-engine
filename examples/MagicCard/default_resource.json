@@ -1,11 +1,17 @@
 [
     {
         "extra": {
-            "numCol": 12,
-            "numRow": 12
+            "numCol": 1,
+            "numRow": 1
         },
-        "name": "buttons",
-        "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\buttons.png",
+        "name": "background",
+        "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\background-day.png",
         "type": 0
+    },
+    {
+        "extra": null,
+        "name": "background-sound",
+        "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\audios\\sunflower-street.wav",
+        "type": 1
     }
 ]

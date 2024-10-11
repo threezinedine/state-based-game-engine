@@ -49,8 +49,8 @@ namespace ntt
             if (ImGui::Button("Create"))
             {
                 m_impl->project->title = m_impl->title;
+                TriggerEvent(NTT_EDITOR_CREATE_PROJECT);
                 TriggerEvent(NTT_EDITOR_PROJECT_LOADED);
-                TriggerEvent(NTT_EDITOR_SAVE_PROJECT);
                 Close();
             }
 

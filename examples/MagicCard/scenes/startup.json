@@ -1,0 +1,20 @@
+{
+    "entities": [],
+    "resources": [
+        {
+            "extra": null,
+            "name": "q",
+            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\audios\\wing.wav",
+            "type": 1
+        },
+        {
+            "extra": {
+                "numCol": 1,
+                "numRow": 3
+            },
+            "name": "bird",
+            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\bird.png",
+            "type": 0
+        }
+    ]
+}

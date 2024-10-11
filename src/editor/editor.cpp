@@ -59,6 +59,7 @@ namespace ntt
 
         List<Ref<EditorWindow>> s_normalWindows;
         List<Ref<ProjectReloadWindow>> s_reloadWindows;
+        List<Ref<SceneReloadWindow>> s_sceneChangeWindows;
         List<Ref<OpenClosableWindow>> s_openClosableWindows;
 
         void OnProjectLoadded(event_code_t code, void *sender, const EventContext &context)
@@ -87,6 +88,11 @@ namespace ntt
             if (s_project->scenes.Contains(s_scene->sceneName))
             {
                 s_scene->filePath = s_project->scenes[s_scene->sceneName]->filePath;
+            }
+
+            for (auto &window : s_sceneChangeWindows)
+            {
+                window->OnReloadScene();
             }
         }
 
@@ -250,10 +256,11 @@ namespace ntt
         s_normalWindows.push_back(s_logWindow);
         s_reloadWindows.push_back(s_logWindow);
 
-        s_resourceWindow = CreateRef<ResourceWindow>(s_project, s_config);
+        s_resourceWindow = CreateRef<ResourceWindow>(s_project, s_config, s_scene);
         s_openClosableWindows.push_back(s_resourceWindow);
         s_normalWindows.push_back(s_resourceWindow);
         s_reloadWindows.push_back(s_resourceWindow);
+        s_sceneChangeWindows.push_back(s_resourceWindow);
 
         s_newProjectWindow = CreateRef<NewProjectWindow>(s_project, s_config);
         s_normalWindows.push_back(s_newProjectWindow);

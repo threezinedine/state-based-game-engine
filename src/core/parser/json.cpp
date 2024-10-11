@@ -18,7 +18,13 @@ namespace ntt
     JSON::JSON(String data)
         : JSON()
     {
-        m_Impl->data = nlohmann::json::parse(data.RawString());
+        try
+        {
+            m_Impl->data = nlohmann::json::parse(data.RawString());
+        }
+        catch (const std::exception &e)
+        {
+        }
     }
 
     JSON::JSON(const JSON &other)
@@ -256,15 +262,12 @@ namespace ntt
     JSON JSON::FromList(List<JSON> list)
     {
         JSON result;
-        // nlohmann::json arr = nlohmann::json::array();
         for (auto item : list)
         {
             result.m_Impl->data.push_back(
                 item.m_Impl->data);
-            // arr.push_back(nlohmann::json::parse(item.ToString().RawString()));
         }
 
-        // result.m_Impl->data = arr;
         return result;
     }
 

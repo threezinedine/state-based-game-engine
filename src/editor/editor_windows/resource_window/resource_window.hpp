@@ -2,16 +2,22 @@
 #include "../../types.hpp"
 #include "../OpenClosableWindow.hpp"
 #include "../ProjectReloadWindow.hpp"
+#include "../SceneReloadWindow.hpp"
 
 namespace ntt
 {
-    class ResourceWindow : public OpenClosableWindow, public ProjectReloadWindow
+    class ResourceWindow : public OpenClosableWindow,
+                           public ProjectReloadWindow,
+                           public SceneReloadWindow
     {
     public:
-        ResourceWindow(Ref<ProjectInfo> project, Ref<EditorConfig> config);
+        ResourceWindow(Ref<ProjectInfo> project,
+                       Ref<EditorConfig> config,
+                       Ref<SceneInfo> scene);
         ~ResourceWindow() override;
 
         void OnReloadProject() override;
+        void OnReloadScene() override;
 
     protected:
         void InitImpl() override;

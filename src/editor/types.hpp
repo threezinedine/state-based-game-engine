@@ -141,6 +141,48 @@ namespace ntt
                 CloseFile();
             }
         }
+
+        List<ResourceInfo> GetDefaultResourcesInfo()
+        {
+            List<ResourceInfo> resources;
+
+            auto defaultConfigFile =
+                JoinPath({path, defaultResourceFile});
+
+            if (IsExist(defaultConfigFile))
+            {
+                JSON config(ReadFile(defaultConfigFile));
+
+                auto resourcesInfo = ExtractInfoFromJSON(config);
+
+                for (auto &resource : resourcesInfo)
+                {
+                    resources.push_back(resource);
+                }
+            }
+
+            return resources;
+        }
+
+        void SaveDefaultResources(List<ResourceInfo> resources)
+        {
+            List<JSON> jsons =
+                resources
+                    .Map<JSON>([](const ResourceInfo &info, ...) -> JSON
+                               { return info.ToJSON(); });
+
+            auto defaultConfigFile =
+                JoinPath({path, defaultResourceFile});
+
+            OpenFile(defaultConfigFile);
+            Write(JSON::FromList(jsons).ToString());
+            CloseFile();
+        }
+
+        b8 ContainScene(Ref<SceneInfo> scene)
+        {
+            return scenes.Contains(scene->sceneName);
+        }
     };
 
     struct EditorConfig

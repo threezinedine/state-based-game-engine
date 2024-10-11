@@ -97,16 +97,16 @@ namespace ntt
         Color gridColor = RED; // Set the color for the grid lines
 
         // Draw vertical lines
-        for (u8 row = 1; row < numRow; ++row)
+        for (u8 col = 1; col < numCol; ++col)
         {
-            float x = row * (width / numRow);
+            float x = col * (width / numCol);
             DrawLine(x, 0, x, height, gridColor);
         }
 
         // Draw horizontal lines
-        for (u8 col = 1; col < numCol; ++col)
+        for (u8 row = 1; row < numRow; ++row)
         {
-            float y = col * (height / numCol);
+            float y = row * (height / numRow);
             DrawLine(0, y, width, y, gridColor);
         }
 
