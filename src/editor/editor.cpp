@@ -92,7 +92,7 @@ namespace ntt
             TriggerEvent(NTT_EDITOR_PROJECT_LOADED);
         }
 
-        void OnEditorSaveProject(event_code_t code, void *sender, const EventContext &context)
+        void OnEditorCreateProject(event_code_t code, void *sender, const EventContext &context)
         {
             String projectFile = JoinPath(
                 {s_project->path,
@@ -108,6 +108,24 @@ namespace ntt
             OpenFile(projectFile);
             Write(project.ToString());
             CloseFile();
+
+            String currentGameFile = JoinPath({CurrentDirectory(),
+                                               "Game.exe"});
+
+            String targetGameFile = JoinPath({s_project->path,
+                                              "Game.exe"});
+
+            NTTCopyFile(currentGameFile, targetGameFile);
+
+            String currentDllFile = JoinPath({CurrentDirectory(),
+                                              "libNTTEngine.dll"});
+
+            String targetDllFile = JoinPath({s_project->path,
+                                             "libNTTEngine.dll"});
+
+            NTTCopyFile(currentDllFile, targetDllFile);
+
+            NTT_ENGINE_INFO("Project created");
         }
 
         void OnNewProjectPathIsSelected(b8 override)
@@ -164,7 +182,7 @@ namespace ntt
         s_newProjectWindow = CreateScope<NewProjectWindow>(s_project, s_config);
 
         RegisterEvent(NTT_EDITOR_SAVE_CONFIG, OnEditorSaveConfig);
-        RegisterEvent(NTT_EDITOR_SAVE_PROJECT, OnEditorSaveProject);
+        RegisterEvent(NTT_EDITOR_SAVE_PROJECT, OnEditorCreateProject);
         RegisterEvent(NTT_EDITOR_PROJECT_LOADED, OnProjectLoadded);
 
         s_newProjectDialog = CreateScope<EditorFileDialog>(

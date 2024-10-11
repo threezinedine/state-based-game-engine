@@ -1,7 +1,7 @@
 {
-    "height": 200,
-    "name": "game.nttproj",
+    "height": 600,
+    "name": "test.nttproj",
     "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard",
-    "title": "My Craft",
-    "width": 400
+    "title": "Test Game",
+    "width": 800
 }

@@ -107,6 +107,19 @@ target_link_libraries(
     ImGui_Raylib
 )
 
+add_executable(
+    Game
+    game_main.cpp
+)
+
+target_link_libraries(
+    Game
+    PUBLIC
+    ${PROJECT_NAME}
+    raylib
+    ImGui_Raylib
+)
+
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets
      DESTINATION ${CMAKE_BINARY_DIR})
 
