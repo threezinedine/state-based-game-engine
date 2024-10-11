@@ -33,189 +33,43 @@ protected:
     }
 };
 
-TEST_F(ResourceManagerTest, TestNotResourceChangeScene)
+TEST_F(ResourceManagerTest, TestResourceAutoUnload)
 {
-    RegisterResource(
-        "default",
-        ResourceInfo{
+    ResourceLoad(
+        {ResourceInfo{
             "test",
             ResourceType::TEST,
             JoinPath({GetFileFolder(__FILE__), "test.json"}, TRUE),
             JSON(R"(
                 {}
-            )")});
-
-    ResourceStart();
+            )")}});
 
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
-
-    EXPECT_EQ(GetAllResourcesNames(), List<String>{"test"});
 
     ResourceShutdown();
     ResourceTest::s_resources;
     EXPECT_EQ(GET_UNLOAD_CALL("test"), 1);
 }
 
-TEST_F(ResourceManagerTest, TestRegisterResource)
+TEST_F(ResourceManagerTest, TestResourceUnloadManually)
 {
-    RegisterResource(
-        "scene1",
-        ResourceInfo{
+    List<ResourceInfo> infos =
+        {ResourceInfo{
             "test",
             ResourceType::TEST,
             JoinPath({GetFileFolder(__FILE__), "test.json"}, TRUE),
             JSON(R"(
                 {}
-            )")});
+            )")}};
 
-    ResourceStart();
+    ResourceLoad(infos);
 
-    EXPECT_EQ(GET_LOAD_CALL("test"), 0);
-
-    ResourceChangeScene("scene1");
+    ResourceTest::s_resources;
     EXPECT_EQ(GET_LOAD_CALL("test"), 1);
-    EXPECT_EQ(GET_UNLOAD_CALL("test"), 0);
+
+    ResourceUnload(infos);
+    EXPECT_EQ(GET_UNLOAD_CALL("test"), 1);
 
     ResourceShutdown();
     EXPECT_EQ(GET_UNLOAD_CALL("test"), 1);
-}
-
-TEST_F(ResourceManagerTest, RegisterAtDefaultScene)
-{
-    RegisterResource(
-        "default",
-        ResourceInfo{
-            "test",
-            ResourceType::TEST,
-            JoinPath({GetFileFolder(__FILE__), "test.json"}),
-            JSON(R"(
-                {}
-            )")});
-
-    ResourceStart();
-
-    EXPECT_EQ(GET_LOAD_CALL("test"), 1);
-
-    ResourceChangeScene("scene1");
-    EXPECT_EQ(GET_LOAD_CALL("test"), 1);
-
-    ResourceShutdown();
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test"), 1);
-}
-
-TEST_F(ResourceManagerTest, SceneChangingTest)
-{
-    ResourceLoadConfig(
-        JSON(R"(
-            {
-                "default": [
-                    {
-                        "name": "test-default",
-                        "type": 255,
-                        "path": "test.json",
-                        "data": {}
-                    }
-                ],
-                "scene1": [
-                    {
-                        "name": "test-scene1",
-                        "type": 255, 
-                        "path": "test.json",
-                        "data": {}
-                    }
-                ],
-                "scene2": [
-                    {
-                        "name": "test-scene2",
-                        "type": 255,
-                        "path": "test.json",
-                        "data": {}
-                    }
-                ]
-            }
-        )"));
-
-    EXPECT_EQ(GetAllResourcesNames(),
-              List<String>({"test-default", "test-scene1", "test-scene2"}));
-
-    ResourceStart();
-
-    EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 0);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 0);
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 0);
-
-    ResourceChangeScene("scene1");
-    EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 0);
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 0);
-
-    ResourceChangeScene("scene2");
-    EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
-
-    ResourceUpdate(0);
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 0);
-
-    ResourceChangeScene("scene2");
-    EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
-
-    ResourceUpdate(0);
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 0);
-
-    ResourceChangeScene("scene1");
-    EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 2);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
-
-    ResourceUpdate(0);
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 1);
-
-    ResourceChangeScene("unknown");
-    EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 2);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
-
-    ResourceUpdate(0);
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 1);
-
-    ResourceChangeScene("");
-    EXPECT_EQ(GET_LOAD_CALL("test-default"), 1);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene1"), 2);
-    EXPECT_EQ(GET_LOAD_CALL("test-scene2"), 1);
-
-    ResourceUpdate(0);
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 0);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 1);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 1);
-
-    ResourceShutdown();
-
-    EXPECT_EQ(GET_UNLOAD_CALL("test-default"), 1);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene1"), 2);
-    EXPECT_EQ(GET_UNLOAD_CALL("test-scene2"), 1);
 }

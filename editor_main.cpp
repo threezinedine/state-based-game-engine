@@ -24,6 +24,7 @@ int main(void)
     LogInit();
     ProfilingBegin("Initialization");
     EventInit();
+    HistoryManager_Init();
 
     NTT_ENGINE_CONFIG(
         LogLevel::DEBUG,
@@ -126,6 +127,7 @@ int main(void)
     CloseWindow();
     NTT_ENGINE_DEBUG("Editor shutdown.");
 
+    HistoryManager_Shutdown();
     EventShutdown();
     ProfilingShutdown();
     LogShutdown();

@@ -23,51 +23,8 @@ namespace ntt
 
     namespace
     {
-        // All resouces objects which are not the default
-        //      resources and can be loaded and unloaded and the
-        //      key is the scene name.
-        Dictionary<String, std::vector<Ref<Resource>>> s_resources;
-
-        // The dictionary which stores the resource name and its ID
-        //      if the change scene is called, then the resources
-        //      will be reset and new resources will be loaded.
-        //      The key is the resource name.
-        Dictionary<String, resource_id_t> s_resourcesDictionary;
-
-        // These default resources will be loaded from the beginning
-        //      and will be unloaded when the program is finished.
-        //      The key is the resource name.
-        Dictionary<String, resource_id_t> s_defaultResourcesDict;
-
-        // All resources' names which are loaded and unloaded
-        List<String> s_allResourceNames;
-
-        b8 s_start = FALSE;
-
-        std::vector<Ref<Resource>> s_defaultResourcesObjects;
-#define EMPTY_SCENE ""
-        String s_currentScene = EMPTY_SCENE;
-        String s_deletedScene = EMPTY_SCENE;
-
-        void LoadSceneResources(const String &sceneName)
-        {
-            PROFILE_FUNCTION();
-            auto &sceneResources = s_resources[sceneName];
-
-            for (auto &resource : sceneResources)
-            {
-                s_resourcesDictionary[resource->GetInfo()->name] = resource->Load();
-            }
-        }
-
-        void UnloadCurrentScene()
-        {
-            PROFILE_FUNCTION();
-
-            s_resourcesDictionary.clear();
-            s_deletedScene = s_currentScene;
-        }
-
+        Dictionary<String, Scope<Resource>> s_resources;
+        Dictionary<String, resource_id_t> s_resourceIDs;
     } // namespace
 
     void ResourceInit()
@@ -75,245 +32,117 @@ namespace ntt
         PROFILE_FUNCTION();
 
         s_resources.clear();
-        s_resourcesDictionary.clear();
-        s_defaultResourcesDict.clear();
-        s_defaultResourcesObjects.clear();
-        s_allResourceNames.clear();
-        s_currentScene = EMPTY_SCENE;
-
-        s_start = FALSE;
     }
 
-    void RegisterResource(const String &sceneName, const ResourceInfo &info)
+    void ResourceLoad(List<ResourceInfo> infos)
     {
         PROFILE_FUNCTION();
 
-        Ref<Resource> resource = nullptr;
-
-        // =============== Begin of handling the incoming resource ===============
-        switch (info.type)
+        for (auto info : infos)
         {
-        case ResourceType::AUDIO:
-            resource = CreateRef<AudioResource>(info);
-            break;
-        case ResourceType::IMAGE:
-            resource = CreateRef<ImageResource>(info);
-            break;
-        case ResourceType::SCRIPT:
-            resource = CreateRef<ScriptResource>(info);
-            break;
-        default:
-            resource = CreateRef<ResourceTest>(info);
-        }
-        // =============== End of handling the incoming resource ===============
-
-        s_allResourceNames.push_back(info.name);
-
-        if (sceneName == "default")
-        {
-            if (s_defaultResourcesDict.Contains(info.name))
+            if (s_resourceIDs.Contains(info.name))
             {
-                NTT_ENGINE_WARN("The default resource {} is already loaded.", info.name);
-                return;
+                continue;
             }
 
-            if (s_start)
-            {
-                s_defaultResourcesDict[info.name] = resource->Load();
-            }
+            Scope<Resource> resource;
 
-            s_defaultResourcesObjects.push_back(std::move(resource));
-        }
-        else
-        {
-            if (!s_resources.Contains(sceneName))
+            // =============== Begin of handling the incoming resource ===============
+            switch (info.type)
             {
-                s_resources[sceneName] = std::vector<Ref<Resource>>();
+            case ResourceType::AUDIO:
+                resource = CreateScope<AudioResource>(info);
+                break;
+            case ResourceType::IMAGE:
+                resource = CreateScope<ImageResource>(info);
+                break;
+            case ResourceType::SCRIPT:
+                resource = CreateScope<ScriptResource>(info);
+                break;
+            default:
+                resource = CreateScope<ResourceTest>(info);
             }
+            // =============== End of handling the incoming resource ===============
 
-            s_resources[sceneName].push_back(std::move(resource));
+            s_resources[info.name] = std::move(resource);
+            s_resourceIDs[info.name] = s_resources[info.name]->Load();
         }
     }
 
-    void ResourceLoadConfig(const JSON &config)
+    void ResourceUnload(List<ResourceInfo> infos)
     {
         PROFILE_FUNCTION();
+
+        for (auto info : infos)
+        {
+            if (!s_resourceIDs.Contains(info.name))
+            {
+                continue;
+            }
+
+            s_resources[info.name]->Unload();
+            s_resources.erase(info.name);
+            s_resourceIDs.erase(info.name);
+        }
+    }
+
+    List<ResourceInfo> ExtractInfoFromJSON(const JSON &config)
+    {
+        PROFILE_FUNCTION();
+
+        List<ResourceInfo> infos;
 
         auto keys = config.GetKeys();
 
-        for (auto sceneName : keys)
+        List<JSON> resources = config.ToList();
+
+        for (auto resource : resources)
         {
-            List<JSON> resources = config.GetList<JSON>(sceneName);
+            ResourceInfo resourceInfo;
 
-            for (auto resource : resources)
-            {
-                ResourceInfo resourceInfo;
+            // if (!resource.Contains<String>("name"))
+            // {
+            //     break;
+            // }
 
-                if (!resource.Contains<String>("name"))
-                {
-                    break;
-                }
+            // if (!(resource.Contains<String>("path") || resource.Contains<String>("relPath")))
+            // {
+            //     break;
+            // }
 
-                if (!(resource.Contains<String>("path") || resource.Contains<String>("relPath")))
-                {
-                    break;
-                }
+            // if (!resource.Contains<u32>("type"))
+            // {
+            //     break;
+            // }
 
-                if (!resource.Contains<u32>("type"))
-                {
-                    break;
-                }
+            // resourceInfo.name = resource.Get<String>("name");
 
-                resourceInfo.name = resource.Get<String>("name");
+            // if (resource.Contains<String>("relPath"))
+            // {
+            //     resourceInfo.path = RelativePath(resource.Get<String>("relPath"));
+            // }
+            // else
+            // {
+            //     resourceInfo.path = resource.Get<String>("path");
+            // }
 
-                if (resource.Contains<String>("relPath"))
-                {
-                    resourceInfo.path = RelativePath(resource.Get<String>("relPath"));
-                }
-                else
-                {
-                    resourceInfo.path = resource.Get<String>("path");
-                }
+            // resourceInfo.type = static_cast<ResourceType>(resource.Get<u32>("type"));
+            // resourceInfo.addintionalInfo = resource.Get<JSON>("extra");
+            resourceInfo.From(resource);
 
-                resourceInfo.type = static_cast<ResourceType>(resource.Get<u32>("type"));
-                resourceInfo.addintionalInfo = resource;
-
-                RegisterResource(sceneName, resourceInfo);
-            }
-        }
-    }
-
-    void ResourceStart()
-    {
-        PROFILE_FUNCTION();
-
-        // if (s_start)
-        // {
-        //     NTT_ENGINE_WARN("Resource manager is already started.");
-        //     return;
-        // }
-
-        s_start = TRUE;
-
-        for (auto &resource : s_defaultResourcesObjects)
-        {
-            if (resource->IsLoaded())
-            {
-                resource->Unload();
-            }
-
-            s_defaultResourcesDict[resource->GetInfo()->name] = resource->Load();
+            infos.push_back(resourceInfo);
         }
 
-        NTT_ENGINE_DEBUG("Current scene", s_currentScene);
-
-        s_resourcesDictionary.clear();
-        for (auto &resource : s_resources[s_currentScene])
-        {
-            if (resource->IsLoaded())
-            {
-                resource->Unload();
-            }
-
-            s_resourcesDictionary[resource->GetInfo()->name] = resource->Load();
-            NTT_ENGINE_DEBUG("Resource with name {} is loaded with id {}",
-                             resource->GetInfo()->name,
-                             s_resourcesDictionary[resource->GetInfo()->name]);
-        }
-    }
-
-    List<String> GetAllResourcesNames()
-    {
-        PROFILE_FUNCTION();
-        return s_allResourceNames;
-    }
-
-    ResourceInfo *GetResourceInfo(const String &name)
-    {
-        PROFILE_FUNCTION();
-
-        for (auto &resource : s_defaultResourcesObjects)
-        {
-            if (resource->GetInfo()->name == name)
-            {
-                return resource->GetInfo();
-            }
-        }
-
-        for (auto &resources : s_resources)
-        {
-            for (auto &resource : resources.second)
-            {
-                if (resource->GetInfo()->name == name)
-                {
-                    return resource->GetInfo();
-                }
-            }
-        }
-
-        return nullptr;
-    }
-
-    void ResourceChangeScene(const String &sceneName)
-    {
-        PROFILE_FUNCTION();
-
-        if (!s_start)
-        {
-            NTT_ENGINE_WARN("Resource manager is not started.");
-            return;
-        }
-
-        if (s_currentScene == sceneName)
-        {
-            NTT_ENGINE_WARN("The scene is already loaded.");
-            return;
-        }
-
-        if (!s_resources.Contains(sceneName) || sceneName == EMPTY_SCENE)
-        {
-            NTT_ENGINE_WARN("The scene {} is not found.", sceneName);
-            return;
-        }
-
-        UnloadCurrentScene();
-        s_currentScene = sceneName;
-        LoadSceneResources(sceneName);
-        return;
-    }
-
-    void ResourceUpdate(f32 delta)
-    {
-        PROFILE_FUNCTION();
-
-        if (s_deletedScene == EMPTY_SCENE)
-        {
-            return;
-        }
-
-        for (auto &resource : s_resources[s_deletedScene])
-        {
-            if (!resource->IsLoaded())
-            {
-                continue;
-            };
-            resource->Unload();
-        }
-        s_deletedScene = EMPTY_SCENE;
+        return infos;
     }
 
     resource_id_t GetResourceID(const String &name)
     {
         PROFILE_FUNCTION();
 
-        if (s_defaultResourcesDict.Contains(name))
+        if (s_resourceIDs.Contains(name))
         {
-            return s_defaultResourcesDict[name];
-        }
-
-        if (s_resourcesDictionary.Contains(name))
-        {
-            return s_resourcesDictionary[name];
+            return s_resourceIDs[name];
         }
 
         return INVALID_RESOURCE_ID;
@@ -323,30 +152,12 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        if (s_currentScene != EMPTY_SCENE && s_resources.Contains(s_currentScene))
+        for (auto &resource : s_resources)
         {
-            for (auto &resource : s_resources[s_currentScene])
-            {
-                if (!resource->IsLoaded())
-                {
-                    continue;
-                };
-                resource->Unload();
-            }
-        }
-
-        for (auto &resource : s_defaultResourcesObjects)
-        {
-            if (!resource->IsLoaded())
-            {
-                continue;
-            };
-            resource->Unload();
+            resource.second->Unload();
         }
 
         s_resources.clear();
-        s_resourcesDictionary.clear();
-        s_defaultResourcesObjects.clear();
-        s_defaultResourcesDict.clear();
+        s_resourceIDs.clear();
     }
 } // namespace ntt

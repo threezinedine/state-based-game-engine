@@ -265,6 +265,12 @@ namespace ntt
         return sysPath.extension().string() == extension.RawString();
     }
 
+    String GetFileWithoutExtension(const String &file)
+    {
+        auto sysPath = fs::path(file.RawString()).make_preferred();
+        return sysPath.stem().make_preferred().string();
+    }
+
     List<String> ListFiles(const String &folder, b8 containBase)
     {
         List<String> files;

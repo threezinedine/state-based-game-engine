@@ -41,15 +41,14 @@ namespace ntt
         String s_assetPath;
         String s_configFilePath;
 
-        // JSON s_project;
-        // JSON s_config;
-
         Ref<ProjectInfo> s_project;
         Ref<EditorConfig> s_config;
 
         Scope<EditorFileDialog> s_newProjectDialog;
         Scope<EditorFileDialog> s_openProjectDialog;
         Scope<EditorFileDialog> s_saveAsProjectDialog;
+
+        Scope<SettingWindow> s_settingWindow;
 
         List<Scope<OpenClosableWindow>> s_openClosableWindows;
         Scope<NewProjectWindow> s_newProjectWindow;
@@ -66,47 +65,55 @@ namespace ntt
                 s_project->height);
 
             s_viewportWindow->Init();
+
+            s_config->lastProjectFile = JoinPath({s_project->path, s_project->name});
+            TriggerEvent(NTT_EDITOR_SAVE_CONFIG);
+        }
+
+        void OnHistoryEmpty(event_code_t code, void *sender, const EventContext &context)
+        {
+            SetWindowTitle(format("{}", s_project->title).RawString().c_str());
+        }
+
+        void OnHistoryNotEmpty(event_code_t code, void *sender, const EventContext &context)
+        {
+            SetWindowTitle(format("{}*", s_project->title).RawString().c_str());
         }
 
         void OnEditorSaveConfig(event_code_t code, void *sender, const EventContext &context)
         {
-            JSON config = JSON("{}");
-            config.Set("lastProjectPath", s_config->lastProjectPath);
-            OpenFile(s_configFilePath);
-            Write(config.ToString());
+            OpenFile(s_config->GetConfigFilePath());
+            Write(s_config->ToJSON().ToString());
             CloseFile();
         }
 
         void OnOpenProject(b8 override)
         {
-            String projectFile = JoinPath(
-                {s_project->path,
-                 s_project->name});
-
-            JSON project = JSON(ReadFile(projectFile));
-
-            s_project->title = project.Get<String>("title");
-            s_project->width = project.Get<i32>("width", 800);
-            s_project->height = project.Get<i32>("height", 600);
+            JSON project = JSON(ReadFile(s_project->GetProjectFilePath()));
+            s_project->From(project);
 
             TriggerEvent(NTT_EDITOR_PROJECT_LOADED);
         }
 
         void OnEditorCreateProject(event_code_t code, void *sender, const EventContext &context)
         {
-            String projectFile = JoinPath(
-                {s_project->path,
-                 s_project->name});
+            s_project->defaultResourceFile = "default_resource.json";
 
-            JSON project = JSON("{}");
-            project.Set("name", s_project->name);
-            project.Set("path", s_project->path);
-            project.Set("width", s_project->width < 0 ? 800 : s_project->width);
-            project.Set("height", s_project->height < 0 ? 600 : s_project->height);
-            project.Set("title", s_project->title);
+            OpenFile(JoinPath({s_project->path, s_project->defaultResourceFile}));
+            Write(JSON("[]").ToString());
+            CloseFile();
 
-            OpenFile(projectFile);
-            Write(project.ToString());
+            CreateFolder(JoinPath({s_project->path,
+                                   "assets"}));
+            CreateFolder(JoinPath({s_project->path,
+                                   "assets", "images"}));
+            CreateFolder(JoinPath({s_project->path,
+                                   "assets", "audios"}));
+            CreateFolder(JoinPath({s_project->path,
+                                   "scripts"}));
+
+            OpenFile(s_project->GetProjectFilePath());
+            Write(s_project->ToJSON().ToString());
             CloseFile();
 
             String currentGameFile = JoinPath({CurrentDirectory(),
@@ -161,11 +168,6 @@ namespace ntt
         s_assetPath = assetPath;
         s_hasProject = FALSE;
 
-        // Imgui configuration below
-        ImGuiIO &io = ImGui::GetIO();
-        io.FontGlobalScale = 2.0f;
-        // Imgui configuration above
-
         s_configFilePath = JoinPath({CurrentDirectory(), "config.json"});
 
         s_project = CreateRef<ProjectInfo>();
@@ -174,16 +176,48 @@ namespace ntt
         if (IsExist(s_configFilePath))
         {
             auto config = JSON(ReadFile(s_configFilePath));
-            s_config->lastProjectPath = config.Get<String>("lastProjectPath", ".");
+            s_config->From(config);
         }
 
-        s_openClosableWindows.push_back(CreateScope<LogWindow>());
+        // ========================================
+        // Imgui configuration below
+        // ========================================
 
-        s_newProjectWindow = CreateScope<NewProjectWindow>(s_project, s_config);
+        ImGuiIO &io = ImGui::GetIO();
+        io.FontGlobalScale = s_config->editorFontSize;
 
+        // ========================================
+        // Imgui configuration above
+        // ========================================
+
+        // ========================================
+        // Event registration below
+        // ========================================
         RegisterEvent(NTT_EDITOR_SAVE_CONFIG, OnEditorSaveConfig);
         RegisterEvent(NTT_EDITOR_SAVE_PROJECT, OnEditorCreateProject);
         RegisterEvent(NTT_EDITOR_PROJECT_LOADED, OnProjectLoadded);
+        RegisterEvent(NTT_HISTORY_EMPTY, OnHistoryEmpty);
+        RegisterEvent(NTT_HISTORY_NOT_EMPTY, OnHistoryNotEmpty);
+        // ========================================
+        // Event registration above
+        // ========================================
+
+        if (s_config->lastProjectFile != "")
+        {
+            s_project->path = GetFileFolder(s_config->lastProjectFile);
+            s_project->name = GetFileName(s_config->lastProjectFile);
+
+            OnOpenProject(FALSE);
+        }
+
+        // ========================================
+        // Window creation below
+        // ========================================
+        s_openClosableWindows.push_back(CreateScope<LogWindow>());
+        s_openClosableWindows.push_back(CreateScope<ResourceWindow>(s_project, s_config));
+
+        s_newProjectWindow = CreateScope<NewProjectWindow>(s_project, s_config);
+        s_settingWindow = CreateScope<SettingWindow>(s_project, s_config);
 
         s_newProjectDialog = CreateScope<EditorFileDialog>(
             s_project,
@@ -212,14 +246,24 @@ namespace ntt
                 nullptr,
                 [&](b8 override) {
                 }});
+        // ========================================
+        // Window creation above
+        // ========================================
 
+        // ========================================
+        // Window initialization below
+        // ========================================
         s_newProjectWindow->Init();
+        s_settingWindow->Init();
 
         for (auto &window : s_openClosableWindows)
         {
             window->Init();
             window->Open();
         }
+        // ========================================
+        // Window initialization below
+        // ========================================
     }
 
     void EditorUpdate(f32 delta)
@@ -240,14 +284,26 @@ namespace ntt
                     s_openProjectDialog->Open();
                 }
 
-                if (ImGui::MenuItem("Save", "Ctrl+S"))
+                if (ImGui::MenuItem("Save", "Ctrl+S", false, s_hasProject))
                 {
                     NTT_ENGINE_DEBUG("Save");
                 }
 
-                if (ImGui::MenuItem("Save As", "Ctrl+Shift+S", !s_hasProject))
+                if (ImGui::MenuItem("Save As", "Ctrl+Shift+S", false, s_hasProject))
                 {
                     s_saveAsProjectDialog->Open();
+                }
+
+                ImGui::Separator();
+
+                if (ImGui::MenuItem("Preference", "Ctrl+`"))
+                {
+                    s_settingWindow->Open();
+                }
+
+                ImGui::Separator();
+                if (ImGui::MenuItem("Exit", "Alt+F4"))
+                {
                 }
 
                 ImGui::EndMenu();
@@ -287,6 +343,7 @@ namespace ntt
         s_saveAsProjectDialog->Update();
 
         s_newProjectWindow->Update();
+        s_settingWindow->Update();
 
         if (s_viewportWindow != nullptr)
         {
@@ -336,6 +393,9 @@ namespace ntt
             s_viewportWindow->Shutdown();
             s_viewportWindow.reset();
         }
+
+        s_settingWindow->Shutdown();
+        s_settingWindow.reset();
 
         s_newProjectWindow->Shutdown();
         s_newProjectWindow.reset();

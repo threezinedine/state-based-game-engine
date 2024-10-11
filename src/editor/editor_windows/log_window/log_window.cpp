@@ -24,7 +24,7 @@ namespace ntt
     };
 
     LogWindow::LogWindow()
-        : m_impl(CreateScope<Impl>())
+        : OpenClosableWindow("Log"), m_impl(CreateScope<Impl>())
     {
     }
 

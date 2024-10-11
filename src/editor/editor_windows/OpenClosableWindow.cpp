@@ -7,11 +7,19 @@ namespace ntt
     {
     public:
         b8 isRunning = FALSE;
+        String name;
     };
 
     OpenClosableWindow::OpenClosableWindow()
         : m_impl(CreateScope<Impl>())
     {
+        m_impl->name = "";
+    }
+
+    OpenClosableWindow::OpenClosableWindow(const String &name)
+        : m_impl(CreateScope<Impl>())
+    {
+        m_impl->name = name;
     }
 
     OpenClosableWindow::~OpenClosableWindow()
@@ -40,7 +48,7 @@ namespace ntt
 
     void OpenClosableWindow::DrawMenuItem()
     {
-        ImGui::MenuItem("Log", NULL, &(m_impl->isRunning));
+        ImGui::MenuItem(m_impl->name.RawString().c_str(), NULL, &(m_impl->isRunning));
     }
 
     void OpenClosableWindow::Open()

@@ -109,6 +109,9 @@ namespace ntt::event
 #define NTT_EDITOR_SAVE_PROJECT 0x25   ///< When the editor project is saved
 #define NTT_EDITOR_PROJECT_LOADED 0x26 ///< When the editor project is loaded
 
+#define NTT_HISTORY_EMPTY 0x27     ///< When the history stack is empty
+#define NTT_HISTORY_NOT_EMPTY 0x28 ///< When the history stack is not empty
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

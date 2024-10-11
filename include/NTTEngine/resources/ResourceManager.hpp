@@ -19,75 +19,55 @@ namespace ntt
     void ResourceInit();
 
     /**
-     * Configure the resource manager from the configuration
-     *      file content (in JSON format).
-     */
-    void ResourceLoadConfig(const JSON &config);
-
-    /**
-     * Adding a new resource to the resource manager.
+     * Parsing the JSON content of the resource file to the list of
+     *      resource information with some basic information like
+     *      type, name, path, and some additional information.
      *
-     * @param sceneName The name of the scene which the resource
-     *      belongs to. If the scene does not exist, then the
-     *      resource will not be added.
-     * @param info The information of the resource.
-     */
-    void RegisterResource(const String &sceneName, const ResourceInfo &info);
-
-    /**
-     * Starting the resource manager, now all DEFAULT resources (and scene resources if has)
-     *      will be loadded, and the ResourceChangeScene function can be called. If the
-     *      ResourceStart is already called, then the whole loadded resources will be unloaded
-     *      and reload again.
-     */
-    void ResourceStart();
-
-    /**
-     * Retrieve the resource id from the name of that resource.
-     * If the resource is not found, the INVALID_RESOURCE_ID will
-     *      be returned.
+     * @param json The JSON content of the resource file. The JSON
+     *      must be a list of resources with template:
+     *      [
+     *          {
+     *              "name": "resource_name",
+     *              "type": 0, // 0 is IMAGE
+     *              "path": "path/to/resource",
+     *              "additionalInfo": {
+     *                  "grid":
+     *                  {
+     *                      "rol": 3,
+     *                      "col": 2
+     *                  }
+     *              },
+     *          },
+     *          {
+     *              "name": "resource_name",
+     *              "type": 1, // 1 is AUDIO
+     *              "path": "path/to/resource",
+     *              "additionalInfo": {
+     *              },
+     *          }
+     *      ]
      *
-     * @param name The name of the resource.
+     * @return The list of resource information.
      */
+    List<ResourceInfo> ExtractInfoFromJSON(const JSON &config);
+
+    /**
+     * Load all the resources from the list of resource information.
+     * If a resource is already loadded (name of it exists) the that
+     *      resource will be ignored.
+     *
+     * @param infos The list of resource information.
+     */
+    void ResourceLoad(List<ResourceInfo> infos);
+
+    /**
+     * Unload all the resources from the list of resource information.
+     * If a resource is not loadded (name of it does not exist) the that
+     *      resource will be ignored.
+     */
+    void ResourceUnload(List<ResourceInfo> infos);
+
     resource_id_t GetResourceID(const String &name);
-
-    /**
-     * Retrieve all resources' names of the game engine (both unloadded
-     *      and loadded resources).
-     *
-     * @return The list of all resources' names.
-     */
-    List<String> GetAllResourcesNames();
-
-    /**
-     * Retrieve the resource info by the resource name.
-     *
-     * @param name The name of the resource.
-     *      if the resource is not found, the nullptr will be returned.
-     *
-     * @return The pointer to the resource info.
-     */
-    ResourceInfo *GetResourceInfo(const String &name);
-
-    /**
-     * When new scene is loaded, all resources which are not
-     *      default resources will be unloaded, and the needed
-     *      resource of the new scene will be loaded.
-     *
-     * Must be called after the ResourceStart function.
-     * This function will be delayed until the end of the frame.
-     *
-     * @param sceneName The name of the new scene. If the scene
-     *      does not found, the the warning will be logged and
-     *      nothing will be changed.
-     */
-    void ResourceChangeScene(const String &sceneName);
-
-    /**
-     * Actually change the scene, the `ResourceChangeScene` function
-     *      will be delayed until the end of the frame.
-     */
-    void ResourceUpdate(f32 delta);
 
     /**
      * Shutdown the resource manager.

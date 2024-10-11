@@ -240,6 +240,34 @@ namespace ntt
         return result;
     }
 
+    List<JSON> JSON::ToList() const
+    {
+        List<JSON> result;
+        if (m_Impl->data.is_array())
+        {
+            for (auto &item : m_Impl->data)
+            {
+                result.push_back(JSON(item.dump()));
+            }
+        }
+        return result;
+    }
+
+    JSON JSON::FromList(List<JSON> list)
+    {
+        JSON result;
+        // nlohmann::json arr = nlohmann::json::array();
+        for (auto item : list)
+        {
+            result.m_Impl->data.push_back(
+                item.m_Impl->data);
+            // arr.push_back(nlohmann::json::parse(item.ToString().RawString()));
+        }
+
+        // result.m_Impl->data = arr;
+        return result;
+    }
+
     String JSON::ToString() const
     {
         return String(m_Impl->data.dump(4));

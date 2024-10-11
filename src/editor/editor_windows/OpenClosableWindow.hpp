@@ -1,4 +1,5 @@
 #pragma once
+#include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/defines.hpp>
 #include "EditorWindow.hpp"
 #include <NTTEngine/core/memory.hpp>
@@ -16,6 +17,7 @@ namespace ntt
     {
     public:
         OpenClosableWindow();
+        OpenClosableWindow(const String &name);
         virtual ~OpenClosableWindow() override;
 
         /**

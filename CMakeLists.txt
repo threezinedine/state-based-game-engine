@@ -107,6 +107,12 @@ target_link_libraries(
     ImGui_Raylib
 )
 
+target_compile_definitions(
+    Editor 
+    PRIVATE 
+    _PROFILING
+)
+
 add_executable(
     Game
     game_main.cpp
@@ -146,4 +152,4 @@ target_link_libraries(
 )
 
 add_compile_definitions(BUILD_GAME)
-add_subdirectory(examples)
+# add_subdirectory(examples)

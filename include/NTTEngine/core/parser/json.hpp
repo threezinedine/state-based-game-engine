@@ -86,6 +86,17 @@ namespace ntt
         List<T> GetList(const String &key) const;
 
         /**
+         * Convert this JSON to a list of JSON object, if this JSON is not an
+         *      array then the empty list will be returned.
+         */
+        List<JSON> ToList() const;
+
+        /**
+         * Create a JSON object from the list of JSON.
+         */
+        static JSON FromList(List<JSON> list);
+
+        /**
          * Assign the list of values to the JSON object with the key.
          */
         template <typename T>

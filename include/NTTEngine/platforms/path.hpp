@@ -183,6 +183,16 @@ namespace ntt
     b8 CheckFileExtension(const String &file, const String &extension);
 
     /**
+     * Get the file name which the extension is removed this method should be use
+     *      for file name only, not for the file path
+     * Ex: "test.txt" will return "test", "C://test/test.txt" should not be used for
+     *
+     * @param file: The path of the file, if the file does not have the extension
+     *      then that file will be returned.
+     */
+    String GetFileWithoutExtension(const String &file);
+
+    /**
      * Return the whole files inside the folder.
      *
      * @param folder: The path of the folder if the folder does not exist

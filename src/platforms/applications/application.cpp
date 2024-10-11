@@ -51,7 +51,7 @@ namespace ntt
         void ApplicationReload()
         {
             ECSRemoveAllEntities();
-            ResourceStart();
+            // ResourceStart();
             ECSBeginLayer(GAME_LAYER);
             s_phrases.Begin();
             ECSBeginLayer(GAME_LAYER);
@@ -101,7 +101,7 @@ namespace ntt
             resourceConfig = "{}";
         }
 
-        ResourceLoadConfig(JSON(resourceConfig));
+        // ResourceLoadConfig(JSON(resourceConfig));
 
         // // TODO: Refactor this
         // if (s_editor)
@@ -204,7 +204,7 @@ namespace ntt
 
         EditorInit("");
 
-        ResourceStart();
+        // ResourceStart();
         ECSBeginLayer(GAME_LAYER);
         s_phrases.Begin();
         ECSBeginLayer(GAME_LAYER);
@@ -265,7 +265,7 @@ namespace ntt
 
         // acutally unload all resources of the scene if needed
         // it must be called after drawing
-        ResourceUpdate(delta);
+        // ResourceUpdate(delta);
         EditorEndDraw();
 
         EditorUpdate(delta);

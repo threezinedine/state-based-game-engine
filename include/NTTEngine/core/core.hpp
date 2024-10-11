@@ -31,3 +31,4 @@
 #include "profiling.hpp"
 #include "object.hpp"
 #include "utils.hpp"
+#include "history/history.hpp"
