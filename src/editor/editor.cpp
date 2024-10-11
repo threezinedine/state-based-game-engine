@@ -44,15 +44,19 @@ namespace ntt
         Ref<ProjectInfo> s_project;
         Ref<EditorConfig> s_config;
 
-        Scope<EditorFileDialog> s_newProjectDialog;
-        Scope<EditorFileDialog> s_openProjectDialog;
-        Scope<EditorFileDialog> s_saveAsProjectDialog;
+        Ref<EditorFileDialog> s_newProjectDialog;
+        Ref<EditorFileDialog> s_openProjectDialog;
+        Ref<EditorFileDialog> s_saveAsProjectDialog;
 
-        Scope<SettingWindow> s_settingWindow;
+        Ref<SettingWindow> s_settingWindow;
+        Ref<NewProjectWindow> s_newProjectWindow;
+        Ref<ViewportWindow> s_viewportWindow;
+        Ref<LogWindow> s_logWindow;
+        Ref<ResourceWindow> s_resourceWindow;
 
-        List<Scope<OpenClosableWindow>> s_openClosableWindows;
-        Scope<NewProjectWindow> s_newProjectWindow;
-        Scope<ViewportWindow> s_viewportWindow;
+        List<Ref<EditorWindow>> s_normalWindows;
+        List<Ref<ProjectReloadWindow>> s_reloadWindows;
+        List<Ref<OpenClosableWindow>> s_openClosableWindows;
 
         void OnProjectLoadded(event_code_t code, void *sender, const EventContext &context)
         {
@@ -68,6 +72,11 @@ namespace ntt
 
             s_config->lastProjectFile = JoinPath({s_project->path, s_project->name});
             TriggerEvent(NTT_EDITOR_SAVE_CONFIG);
+
+            for (auto &window : s_reloadWindows)
+            {
+                window->OnReloadProject();
+            }
         }
 
         void OnHistoryEmpty(event_code_t code, void *sender, const EventContext &context)
@@ -213,11 +222,22 @@ namespace ntt
         // ========================================
         // Window creation below
         // ========================================
-        s_openClosableWindows.push_back(CreateScope<LogWindow>());
-        s_openClosableWindows.push_back(CreateScope<ResourceWindow>(s_project, s_config));
 
-        s_newProjectWindow = CreateScope<NewProjectWindow>(s_project, s_config);
-        s_settingWindow = CreateScope<SettingWindow>(s_project, s_config);
+        s_logWindow = CreateRef<LogWindow>();
+        s_openClosableWindows.push_back(s_logWindow);
+        s_normalWindows.push_back(s_logWindow);
+        s_reloadWindows.push_back(s_logWindow);
+
+        s_resourceWindow = CreateRef<ResourceWindow>(s_project, s_config);
+        s_openClosableWindows.push_back(s_resourceWindow);
+        s_normalWindows.push_back(s_resourceWindow);
+        s_reloadWindows.push_back(s_resourceWindow);
+
+        s_newProjectWindow = CreateRef<NewProjectWindow>(s_project, s_config);
+        s_normalWindows.push_back(s_newProjectWindow);
+
+        s_settingWindow = CreateRef<SettingWindow>(s_project, s_config);
+        s_normalWindows.push_back(s_settingWindow);
 
         s_newProjectDialog = CreateScope<EditorFileDialog>(
             s_project,
@@ -253,13 +273,9 @@ namespace ntt
         // ========================================
         // Window initialization below
         // ========================================
-        s_newProjectWindow->Init();
-        s_settingWindow->Init();
-
-        for (auto &window : s_openClosableWindows)
+        for (auto &window : s_normalWindows)
         {
             window->Init();
-            window->Open();
         }
         // ========================================
         // Window initialization below
@@ -342,9 +358,6 @@ namespace ntt
         s_openProjectDialog->Update();
         s_saveAsProjectDialog->Update();
 
-        s_newProjectWindow->Update();
-        s_settingWindow->Update();
-
         if (s_viewportWindow != nullptr)
         {
             s_viewportWindow->Update();
@@ -356,7 +369,7 @@ namespace ntt
             ImGui::ShowDemoWindow(&show);
         }
 
-        for (auto &window : s_openClosableWindows)
+        for (auto &window : s_normalWindows)
         {
             window->Update();
         }
@@ -382,7 +395,7 @@ namespace ntt
 
     void EditorShutdown()
     {
-        for (auto &window : s_openClosableWindows)
+        for (auto &window : s_normalWindows)
         {
             window->Shutdown();
         }
@@ -394,11 +407,9 @@ namespace ntt
             s_viewportWindow.reset();
         }
 
-        s_settingWindow->Shutdown();
-        s_settingWindow.reset();
-
-        s_newProjectWindow->Shutdown();
-        s_newProjectWindow.reset();
+        s_normalWindows.clear();
+        s_reloadWindows.clear();
+        s_openClosableWindows.clear();
 
         NTT_ENGINE_INFO("The editor mode is shutdown");
     }

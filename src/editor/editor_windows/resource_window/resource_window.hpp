@@ -1,14 +1,17 @@
 #pragma once
 #include "../../types.hpp"
 #include "../OpenClosableWindow.hpp"
+#include "../ProjectReloadWindow.hpp"
 
 namespace ntt
 {
-    class ResourceWindow : public OpenClosableWindow
+    class ResourceWindow : public OpenClosableWindow, public ProjectReloadWindow
     {
     public:
         ResourceWindow(Ref<ProjectInfo> project, Ref<EditorConfig> config);
         ~ResourceWindow() override;
+
+        void OnReloadProject() override;
 
     protected:
         void InitImpl() override;

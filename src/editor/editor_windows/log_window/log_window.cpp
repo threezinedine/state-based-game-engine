@@ -39,6 +39,13 @@ namespace ntt
         s_lineOffsets.push_back(0);
     }
 
+    void LogWindow::OnReloadProject()
+    {
+        s_buf.clear();
+        s_lineOffsets.clear();
+        s_lineOffsets.push_back(0);
+    }
+
     void LogWindow::UpdateImpl(b8 *p_open)
     {
         if (ImGui::Begin("Log", p_open))

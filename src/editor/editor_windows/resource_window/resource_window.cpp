@@ -39,8 +39,8 @@ namespace ntt
             numCol = info.addintionalInfo.Get("numCol", 1);
             numRow = info.addintionalInfo.Get("numRow", 1);
 
-            ImGui::InputInt(format("Num Rows {}", info.name).RawString().c_str(), &numRow, 1, 10);
-            ImGui::InputInt(format("Num Cols {}", info.name).RawString().c_str(), &numCol, 1, 10);
+            ImGui::InputInt(format("Num Rows", info.name).RawString().c_str(), &numRow, 1, 10);
+            ImGui::InputInt(format("Num Cols", info.name).RawString().c_str(), &numCol, 1, 10);
 
             if (numCol != info.addintionalInfo.Get("numCol", 1) ||
                 numRow != info.addintionalInfo.Get("numRow", 1))
@@ -54,7 +54,7 @@ namespace ntt
                 }
             }
 
-            if (ImGui::Button(format("Show {}", info.name).RawString().c_str()))
+            if (ImGui::Button(format("Show", info.name).RawString().c_str()))
             {
                 if (imageWindow == nullptr)
                 {
@@ -69,7 +69,7 @@ namespace ntt
                 imageWindow->Open();
             }
             ImGui::SameLine();
-            if (ImGui::Button(format("Delete {}", info.name).RawString().c_str()))
+            if (ImGui::Button(format("Delete", info.name).RawString().c_str()))
             {
                 resources.RemoveItem(info, [](const ResourceInfo &a, const ResourceInfo &b) -> b8
                                      { return a.name == b.name; });
@@ -87,21 +87,26 @@ namespace ntt
         {
             auto path = SubtractPath(info.path, project->path);
 
-            ImGui::Separator();
-            ImGui::Text("Name: %s", info.name.RawString().c_str());
-            ImGui::Text("Type: %s", resourceTypes[static_cast<u32>(info.type)]);
-            ImGui::Text("Path: %s", path.RawString().c_str());
-
-            switch (info.type)
+            ImGui::PushID(info.name.RawString().c_str());
+            if (ImGui::TreeNode(info.name.RawString().c_str()))
             {
-            case ResourceType::IMAGE:
-            {
-                ComponentImageDraw(info);
-                break;
-            }
+                ImGui::Text("Name: %s", info.name.RawString().c_str());
+                ImGui::Text("Type: %s", resourceTypes[static_cast<u32>(info.type)]);
+                ImGui::Text("Path: %s", path.RawString().c_str());
+
+                switch (info.type)
+                {
+                case ResourceType::IMAGE:
+                {
+                    ComponentImageDraw(info);
+                    break;
+                }
+                }
+
+                ImGui::TreePop();
             }
 
-            ImGui::SameLine();
+            ImGui::PopID();
         }
     };
 
@@ -143,6 +148,25 @@ namespace ntt
 
     void ResourceWindow::InitImpl()
     {
+    }
+
+    void ResourceWindow::OnReloadProject()
+    {
+        auto defaultConfigFile =
+            JoinPath({m_impl->project->path, m_impl->project->defaultResourceFile});
+
+        m_impl->resources.clear();
+        if (IsExist(defaultConfigFile))
+        {
+            JSON config(ReadFile(defaultConfigFile));
+
+            auto resources = ExtractInfoFromJSON(config);
+
+            for (auto &resource : resources)
+            {
+                m_impl->resources.push_back(resource);
+            }
+        }
     }
 
     void ResourceWindow::UpdateImpl(b8 *p_open)
@@ -191,9 +215,14 @@ namespace ntt
             }
             ImGui::Separator();
 
-            for (auto &info : m_impl->resources)
+            if (ImGui::TreeNode("Resources"))
             {
-                m_impl->EditorWindowDraw(info);
+                ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
+                for (auto &info : m_impl->resources)
+                {
+                    m_impl->EditorWindowDraw(info);
+                }
+                ImGui::TreePop();
             }
         }
 
