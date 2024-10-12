@@ -16,10 +16,9 @@ namespace ntt::ecs
         String name;
         b8 active = TRUE;
 
-        EntityInfo(Dictionary<std::type_index, Ref<ComponentBase>> components)
+        EntityInfo(Dictionary<std::type_index, Ref<ComponentBase>> components = {})
             : components(components), active(TRUE)
         {
         }
     };
-
 }

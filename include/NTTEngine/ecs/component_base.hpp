@@ -2,6 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/structures/list.hpp>
+#include <NTTEngine/core/parser/json.hpp>
 #include <NTTEngine/structures/dictionary.hpp>
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/core/object.hpp>
@@ -28,6 +29,12 @@ namespace ntt::ecs
         entity_id_t entity_id; ///< Each time a component is created, then
                                ///< it must be attached to an entity.
         b8 active = TRUE;
+
+        virtual std::pair<String, JSON> ToJSON()
+        {
+            JSON json("{}");
+            return {"ComponentBase", json};
+        }
     };
 
 } // namespace ntt::ecs

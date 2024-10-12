@@ -1,14 +1,17 @@
 #pragma once
-
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/core/parser/json.hpp>
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/resources/resources.hpp>
 #include <NTTEngine/resources/resource_common.h>
+#include <NTTEngine/core/auto_naming.hpp>
+#include <NTTEngine/ecs/ecs.hpp>
 
 namespace ntt
 {
+    using namespace ecs;
+
     struct SceneInfo
     {
         String sceneName;
@@ -43,6 +46,14 @@ namespace ntt
             }
 
             return resourcesInfo;
+        }
+
+        List<entity_id_t> LoadSceneEntities()
+        {
+            JSON config = ReadFile(filePath);
+
+            List<JSON> entitiesCfg = config.GetList<JSON>("entities");
+            return {};
         }
 
         void SaveResourceInfo(List<ResourceInfo> resourcesInfo)

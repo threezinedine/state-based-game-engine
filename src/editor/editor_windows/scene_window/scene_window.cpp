@@ -4,10 +4,12 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/ecs/ecs.hpp>
 
 namespace ntt
 {
     using namespace event;
+    using namespace ecs;
 
     class SceneWindow::Impl
     {
@@ -15,6 +17,8 @@ namespace ntt
         Ref<ProjectInfo> project;
         Ref<SceneInfo> scene;
         Ref<EditorConfig> config;
+
+        List<entity_id_t> entities;
     };
 
     SceneWindow::SceneWindow(Ref<ProjectInfo> project,
@@ -26,6 +30,8 @@ namespace ntt
         m_impl->project = project;
         m_impl->scene = scene;
         m_impl->config = config;
+
+        m_impl->entities.clear();
     }
 
     SceneWindow::~SceneWindow() {}
@@ -44,6 +50,10 @@ namespace ntt
         else
         {
             ImGui::Text(format("Scene: {}", m_impl->scene->sceneName).RawString().c_str());
+            ImGui::Separator();
+            if (ImGui::Button("New"))
+            {
+            }
             ImGui::Separator();
         }
         ImGui::End();

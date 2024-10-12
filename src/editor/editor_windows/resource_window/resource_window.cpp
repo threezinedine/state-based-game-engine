@@ -51,6 +51,8 @@ namespace ntt
                 {
                     imageWindow->ChangeGrid(numRow, numCol);
                 }
+
+                Save();
             }
 
             if (ImGui::Button(format("Show", info.name).RawString().c_str()))
@@ -104,8 +106,27 @@ namespace ntt
             auto path = SubtractPath(info.path, project->path);
 
             ImGui::Text("Name: %s", info.name.RawString().c_str());
+            ImGui::SameLine();
+            if (ImGui::Button("Rename"))
+            {
+                ImGui::OpenPopup("rename");
+            }
+
             ImGui::Text("Type: %s", resourceTypes[static_cast<u32>(info.type)]);
+
             ImGui::Text("Path: %s", path.RawString().c_str());
+            ImGui::SameLine();
+            if (ImGui::Button("Browse"))
+            {
+                IGFD::FileDialogConfig config;
+                config.path = project->path.RawString();
+
+                ImGuiFileDialog::Instance()->OpenDialog(
+                    "changeFile",
+                    "Choose file",
+                    extensions[static_cast<u32>(info.type)],
+                    config);
+            }
 
             switch (info.type)
             {
@@ -139,6 +160,33 @@ namespace ntt
                 }
 
                 Save();
+            }
+
+            if (ImGui::BeginPopup("rename"))
+            {
+                ImGui::InputText("New Name", resourceName, sizeof(resourceName));
+                if (ImGui::Button("Rename"))
+                {
+                    info.name = resourceName;
+                    Save();
+                    memset(resourceName, 0, sizeof(resourceName));
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+
+            if (ImGuiFileDialog::Instance()->Display("changeFile"))
+            {
+                if (ImGuiFileDialog::Instance()->IsOk())
+                {
+                    String fileName = ImGuiFileDialog::Instance()->GetFilePathName();
+                    String filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                    info.path = fileName;
+                    Save();
+                }
+
+                ImGuiFileDialog::Instance()->Close();
             }
         }
 
