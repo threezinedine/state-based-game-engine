@@ -34,10 +34,6 @@ namespace ntt
 
         Position GameToViewportPosTransform(const Position &pos)
         {
-            if (pos.x == 475 && pos.y == 30)
-            {
-                NTT_ENGINE_DEBUG("The pos: ({}, {})", pos.x, pos.y);
-            }
 
             f32 transformedPosX = pos.x / screenWidth * viewPortSizeX;
             f32 transformedPosY = pos.y / screenHeight * viewPortSizeY;

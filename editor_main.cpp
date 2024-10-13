@@ -13,6 +13,14 @@
 #include <NTTEngine/editor/editor_system.hpp>
 
 #include <NTTEngine/application/script_system/native_script_system.hpp>
+#include <NTTEngine/application/input_system/input_system.hpp>
+
+using namespace ntt;
+using namespace ntt::memory;
+using namespace ntt::log;
+using namespace ntt::renderer;
+using namespace ntt::audio;
+using namespace ntt::input;
 
 void Update();
 
@@ -107,6 +115,11 @@ int main(void)
     s_timer.Reset();
     EditorInit(CurrentDirectory());
 
+    ECSBeginLayer(GAME_LAYER);
+    ECSBeginLayer(EDITOR_LAYER);
+    ECSLayerMakeVisible(EDITOR_LAYER);
+    ECSBeginLayer(GAME_LAYER);
+
     ProfilingBegin("Update");
     while (!WindowShouldClose())
     {
@@ -148,6 +161,9 @@ void Update()
     // ===================================================
 
     ClearBackground(::BLACK);
+    InputUpdate(delta);
+    MouseHoveringSystemUpdate(delta);
+
     ECSUpdate(delta);
     GraphicUpdate();
 

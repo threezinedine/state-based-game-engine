@@ -115,6 +115,7 @@ namespace ntt::event
 #define NTT_EDITOR_CREATE_NEW_SCENE 0x29 ///< When the new scene is created
 #define NTT_EDITOR_SAVE_PROJECT 0x2A     ///< When the editor project is saved
 #define NTT_EDITOR_OPEN_SCENE 0x2B       ///< When the scene is opened
+#define NTT_EDITOR_SAVE_SCENE 0x2C       ///< When the scene is saved
 
     // TODO: Change the default event < 255 and the user's event >= 255
 

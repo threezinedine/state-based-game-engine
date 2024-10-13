@@ -21,6 +21,7 @@ namespace ntt
         entity_id_t entity;
         OnTransformFunc onResizeMain;
         OnAddEntResetFunc onAddEntReset;
+        std::function<void(const Position &, const Position &)> onEntityChanged;
     };
 
     class TransformScript : public Script

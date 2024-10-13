@@ -88,6 +88,15 @@ namespace ntt
 
             ECSBeginLayer(EDITOR_LAYER);
 
+#define ADD_ALL(entity)                        \
+    drawnEntities[entityId].push_back(entity); \
+    allDrawnEntities.push_back(entity);        \
+    // NTT_ENGINE_DEBUG("Entity {} is added with the id {}", #entity, entity);     \
+    // NTT_ENGINE_DEBUG("Drawn entities: {}", drawnEntities[entityId].ToString()); \
+    // NTT_ENGINE_DEBUG("All drawn entities: {}", allDrawnEntities.ToString());    \
+    // NTT_ENGINE_DEBUG("Move entities: {}", moveEntities.ToString());             \
+    // NTT_ENGINE_DEBUG("Resize entities: {}", resizeEntities.ToString());         \
+    // NTT_ENGINE_DEBUG("Rotate entities: {}", rotateEntities.ToString());
             TransformScriptData centerData;
             centerData.entity = entityId;
             centerData.onResizeMain =
@@ -99,715 +108,710 @@ namespace ntt
                 geo->pos.x += delta.x;
                 geo->pos.y += delta.y;
             };
-
-#define ADD_ALL(entity)                        \
-    drawnEntities[entityId].push_back(entity); \
-    allDrawnEntities.push_back(entity);        \
-    // NTT_ENGINE_DEBUG("Entity {} is added with the id {}", #entity, entity);     \
-    // NTT_ENGINE_DEBUG("Drawn entities: {}", drawnEntities[entityId].ToString()); \
-    // NTT_ENGINE_DEBUG("All drawn entities: {}", allDrawnEntities.ToString());    \
-    // NTT_ENGINE_DEBUG("Move entities: {}", moveEntities.ToString());             \
-    // NTT_ENGINE_DEBUG("Resize entities: {}", resizeEntities.ToString());         \
-    // NTT_ENGINE_DEBUG("Rotate entities: {}", rotateEntities.ToString());
-
-            // auto center = ECSCreateEntity(
-            //     "Center Rect",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x,
-            //             geo->pos.y,
-            //             CENTER_SIZE,
-            //             CENTER_SIZE,
-            //             geo->rotation,
-            //             PRIORITY_0,
-            //             NTT_RED),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &centerData),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, 0, 0),
-            //     });
-
-            // moveEntities.push_back(center);
-            // ADD_ALL(center);
-
-            // position_t axisWidth = 100;
-
-            // auto xAxis = ECSCreateEntity(
-            //     "X Axis",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x + axisWidth / 2 + CENTER_SIZE / 2, geo->pos.y,
-            //             axisWidth, 3, 0.0f,
-            //             PRIORITY_0, NTT_GREEN),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, axisWidth / 2 + CENTER_SIZE / 2, 0),
-            //     });
-
-            // moveEntities.push_back(xAxis);
-            // ADD_ALL(xAxis);
-
-            // auto xAxisNeg = ECSCreateEntity(
-            //     "X Axis Neg",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x - axisWidth / 2 - CENTER_SIZE / 2, geo->pos.y,
-            //             axisWidth, 3, 0.0f,
-            //             PRIORITY_0, NTT_GREEN),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, -axisWidth / 2 - CENTER_SIZE / 2, 0),
-            //     });
-
-            // moveEntities.push_back(xAxisNeg);
-            // ADD_ALL(xAxisNeg);
-
-            // TransformScriptData xPointData;
-            // xPointData.entity = entityId;
-            // xPointData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->pos.x += delta.x;
-            // };
-
-            // auto xPoint = ECSCreateEntity(
-            //     "X point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x + axisWidth + CENTER_SIZE / 2, geo->pos.y,
-            //             CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_0, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, axisWidth + CENTER_SIZE, 0),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &xPointData),
-            //     });
-
-            // moveEntities.push_back(xPoint);
-            // ADD_ALL(xPoint);
-
-            // TransformScriptData xPointNegData;
-            // xPointNegData.entity = entityId;
-            // xPointNegData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->pos.x += delta.x;
-            // };
-
-            // auto xPointNeg = ECSCreateEntity(
-            //     "X point Neg",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x - axisWidth - CENTER_SIZE / 2, geo->pos.y,
-            //             CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_0, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, -axisWidth - CENTER_SIZE, 0),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &xPointNegData),
-            //     });
-
-            // moveEntities.push_back(xPointNeg);
-            // ADD_ALL(xPointNeg);
-
-            // auto yAxis = ECSCreateEntity(
-            //     "Y Axis",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x, geo->pos.y - axisWidth / 2 - CENTER_SIZE / 2,
-            //             3, axisWidth, 0.0f,
-            //             PRIORITY_0, NTT_GREEN),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, 0, -axisWidth / 2 - CENTER_SIZE / 2),
-            //     });
-
-            // moveEntities.push_back(yAxis);
-            // ADD_ALL(yAxis);
-
-            // auto yAxisNeg = ECSCreateEntity(
-            //     "Y Axis Neg",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x, geo->pos.y + axisWidth / 2 + CENTER_SIZE / 2,
-            //             3, axisWidth, 0.0f,
-            //             PRIORITY_0, NTT_GREEN),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, 0, axisWidth / 2 + CENTER_SIZE / 2),
-            //     });
-
-            // moveEntities.push_back(yAxisNeg);
-            // ADD_ALL(yAxisNeg);
-
-            // TransformScriptData yPointData;
-            // yPointData.entity = entityId;
-            // yPointData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->pos.y += delta.y;
-            // };
-
-            // auto yPoint = ECSCreateEntity(
-            //     "Y point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x, geo->pos.y - axisWidth - CENTER_SIZE / 2,
-            //             CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_0, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, 0, -axisWidth - CENTER_SIZE),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &yPointData),
-            //     });
-
-            // moveEntities.push_back(yPoint);
-            // ADD_ALL(yPoint);
-
-            // TransformScriptData yPointNegData;
-            // yPointNegData.entity = entityId;
-            // yPointNegData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->pos.y += delta.y;
-            // };
-
-            // auto yPointNeg = ECSCreateEntity(
-            //     "Y point Neg",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x, geo->pos.y + axisWidth + CENTER_SIZE / 2,
-            //             CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_0, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, 0, axisWidth + CENTER_SIZE),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &yPointNegData),
-            //     });
-
-            // moveEntities.push_back(yPointNeg);
-            // ADD_ALL(yPointNeg);
-
-            // TransformScriptData leftTopData;
-            // leftTopData.entity = entityId;
-            // leftTopData.onAddEntReset =
-            //     [](entity_id_t entityId)
-            // {
-            //     auto parent = ECS_GET_COMPONENT(entityId, Parent);
-            //     auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
-
-            //     parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
-            //     parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
-            // };
-
-            // leftTopData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->size.width -= delta.x * 2;
-            //     geo->size.height -= delta.y * 2;
-            // };
-
-            // auto leftTopPoint = ECSCreateEntity(
-            //     "left-top-point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
-            //             geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
-            //             CENTER_SIZE, CENTER_SIZE,
-            //             0.0f, PRIORITY_1, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent, entityId,
-            //             -geo->size.width / 2 - CENTER_SIZE / 2,
-            //             -geo->size.height / 2 - CENTER_SIZE / 2),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &leftTopData),
-            //     });
-
-            // resizeEntities.push_back(leftTopPoint);
-            // ADD_ALL(leftTopPoint);
-
-            // TransformScriptData rightTopData;
-            // rightTopData.entity = entityId;
-            // rightTopData.onAddEntReset =
-            //     [](
-            //         entity_id_t entityId)
-            // {
-            //     auto parent = ECS_GET_COMPONENT(entityId, Parent);
-            //     auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
-
-            //     parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
-            //     parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
-            // };
-
-            // rightTopData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->size.width += delta.x * 2;
-            //     geo->size.height -= delta.y * 2;
-            // };
-
-            // auto rightTopPoint = ECSCreateEntity(
-            //     "right-top-point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
-            //             geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
-            //             CENTER_SIZE,
-            //             CENTER_SIZE, 0.0f,
-            //             PRIORITY_1,
-            //             NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId,
-            //             geo->size.width / 2 + CENTER_SIZE / 2,
-            //             -geo->size.height / 2 - CENTER_SIZE / 2),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &rightTopData),
-            //     });
-
-            // resizeEntities.push_back(rightTopPoint);
-            // ADD_ALL(rightTopPoint);
-
-            // TransformScriptData rightBottomData;
-            // rightBottomData.entity = entityId;
-            // rightBottomData.onAddEntReset =
-            //     [](entity_id_t entityId)
-            // {
-            //     auto parent = ECS_GET_COMPONENT(entityId, Parent);
-            //     auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
-
-            //     parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
-            //     parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
-            // };
-
-            // rightBottomData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->size.width += delta.x * 2;
-            //     geo->size.height += delta.y * 2;
-            // };
-
-            // auto rightBottomPoint = ECSCreateEntity(
-            //     "right-bottom-point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
-            //             geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
-            //             CENTER_SIZE,
-            //             CENTER_SIZE, 0.0f,
-            //             PRIORITY_1,
-            //             NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId,
-            //             geo->size.width / 2 + CENTER_SIZE / 2,
-            //             geo->size.height / 2 + CENTER_SIZE / 2),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &rightBottomData),
-            //     });
-
-            // resizeEntities.push_back(rightBottomPoint);
-            // ADD_ALL(rightBottomPoint);
-
-            // TransformScriptData leftBottomData;
-            // leftBottomData.entity = entityId;
-            // leftBottomData.onAddEntReset =
-            //     [](entity_id_t entityId)
-            // {
-            //     auto parent = ECS_GET_COMPONENT(entityId, Parent);
-            //     auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
-
-            //     parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
-            //     parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
-            // };
-
-            // leftBottomData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->size.width -= delta.x * 2;
-            //     geo->size.height += delta.y * 2;
-            // };
-
-            // auto leftBottomPoint = ECSCreateEntity(
-            //     "left-bottom-point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
-            //             geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
-            //             CENTER_SIZE,
-            //             CENTER_SIZE, 0.0f,
-            //             PRIORITY_1,
-            //             NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId,
-            //             -geo->size.width / 2 - CENTER_SIZE / 2,
-            //             geo->size.height / 2 + CENTER_SIZE / 2),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &leftBottomData),
-            //     });
-
-            // resizeEntities.push_back(leftBottomPoint);
-            // ADD_ALL(leftBottomPoint);
-
-            // TransformScriptData leftPointData;
-            // leftPointData.entity = entityId;
-            // leftPointData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->size.width -= delta.x * 2;
-            // };
-
-            // leftPointData.onAddEntReset =
-            //     [](entity_id_t entityId)
-            // {
-            //     auto parent = ECS_GET_COMPONENT(entityId, Parent);
-            //     auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
-
-            //     parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
-            // };
-
-            // auto leftPoint = ECSCreateEntity(
-            //     "left-point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
-            //             geo->pos.y, CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_1, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId,
-            //             -geo->size.width / 2 - CENTER_SIZE / 2,
-            //             0),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &leftPointData),
-            //     });
-
-            // resizeEntities.push_back(leftPoint);
-            // ADD_ALL(leftPoint);
-
-            // TransformScriptData rightPointData;
-            // rightPointData.entity = entityId;
-            // rightPointData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->size.width += delta.x * 2;
-            // };
-
-            // rightPointData.onAddEntReset =
-            //     [](entity_id_t entityId)
-            // {
-            //     auto parent = ECS_GET_COMPONENT(entityId, Parent);
-            //     auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
-
-            //     parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
-            // };
-
-            // auto rightPoint = ECSCreateEntity(
-            //     "right-point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
-            //             geo->pos.y, CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_1, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId,
-            //             geo->size.width / 2 + CENTER_SIZE / 2,
-            //             0),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &rightPointData),
-            //     });
-
-            // resizeEntities.push_back(rightPoint);
-            // ADD_ALL(rightPoint);
-
-            // TransformScriptData topPointData;
-            // topPointData.entity = entityId;
-            // topPointData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->size.height -= delta.y * 2;
-            // };
-
-            // topPointData.onAddEntReset =
-            //     [](entity_id_t entityId)
-            // {
-            //     auto parent = ECS_GET_COMPONENT(entityId, Parent);
-            //     auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
-
-            //     parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
-            // };
-
-            // auto topPoint = ECSCreateEntity(
-            //     "top-point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x, geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
-            //             CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_1, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId,
-            //             0,
-            //             -geo->size.height / 2 - CENTER_SIZE / 2),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &topPointData),
-            //     });
-
-            // resizeEntities.push_back(topPoint);
-            // ADD_ALL(topPoint);
-
-            // TransformScriptData bottomPointData;
-            // bottomPointData.entity = entityId;
-            // bottomPointData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         const f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->size.height += delta.y * 2;
-            // };
-
-            // bottomPointData.onAddEntReset =
-            //     [](entity_id_t entityId)
-            // {
-            //     auto parent = ECS_GET_COMPONENT(entityId, Parent);
-            //     auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
-
-            //     parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
-            // };
-
-            // auto bottomPoint = ECSCreateEntity(
-            //     "bottom-point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x, geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
-            //             CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_1, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId,
-            //             0,
-            //             geo->size.height / 2 + CENTER_SIZE / 2),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &bottomPointData),
-            //     });
-
-            // resizeEntities.push_back(bottomPoint);
-            // ADD_ALL(bottomPoint);
-
-            // TransformScriptData rotatePointData;
-            // rotatePointData.entity = entityId;
-            // rotatePointData.onResizeMain =
-            //     [](
-            //         const Position delta,
-            //         f32 angularDelta,
-            //         Ref<Geometry> geo)
-            // {
-            //     geo->rotation += angularDelta;
-
-            //     if (geo->rotation > 360.0f)
-            //     {
-            //         geo->rotation -= 360.0f;
-            //     }
-            //     else if (geo->rotation < 0.0f)
-            //     {
-            //         geo->rotation += 360.0f;
-            //     }
-            // };
-
-            // auto rotatePoint = ECSCreateEntity(
-            //     "rotate point",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x + axisWidth + CENTER_SIZE / 2,
-            //             geo->pos.y,
-            //             CENTER_SIZE, CENTER_SIZE, 0.0f,
-            //             PRIORITY_1, NTT_RED),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId,
-            //             axisWidth + CENTER_SIZE / 2,
-            //             0),
-            //         ECS_CREATE_COMPONENT(Hovering),
-            //         ECS_CREATE_COMPONENT(
-            //             NativeScriptComponent,
-            //             transformScriptId,
-            //             INVALID_OBJECT_ID,
-            //             &rotatePointData),
-            //     });
-
-            // rotateEntities.push_back(rotatePoint);
-            // ADD_ALL(rotatePoint);
-
-            // auto xRotateAxis = ECSCreateEntity(
-            //     "X Axis Rotate",
-            //     {
-            //         ECS_CREATE_COMPONENT(
-            //             Geometry,
-            //             geo->pos.x + axisWidth / 2 + CENTER_SIZE / 2,
-            //             geo->pos.y, axisWidth, 3, 0.0f,
-            //             PRIORITY_0, NTT_GREEN),
-            //         ECS_CREATE_COMPONENT(
-            //             Parent,
-            //             entityId, axisWidth / 2 + CENTER_SIZE / 2, 0),
-            //     });
-
-            // rotateEntities.push_back(xRotateAxis);
-            // ADD_ALL(xRotateAxis);
-
-            // drawnEntities[entityId].push_back(center);
-            // drawnEntities[entityId].push_back(xAxis);
-            // drawnEntities[entityId].push_back(xPoint);
-            // drawnEntities[entityId].push_back(yAxis);
-            // drawnEntities[entityId].push_back(yPoint);
-            // drawnEntities[entityId].push_back(xAxisNeg);
-            // drawnEntities[entityId].push_back(xPointNeg);
-            // drawnEntities[entityId].push_back(yAxisNeg);
-            // drawnEntities[entityId].push_back(yPointNeg);
-
-            // drawnEntities[entityId].push_back(leftTopPoint);
-            // drawnEntities[entityId].push_back(rightTopPoint);
-            // drawnEntities[entityId].push_back(leftBottomPoint);
-            // drawnEntities[entityId].push_back(rightBottomPoint);
-            // drawnEntities[entityId].push_back(leftPoint);
-            // drawnEntities[entityId].push_back(rightPoint);
-            // drawnEntities[entityId].push_back(topPoint);
-            // drawnEntities[entityId].push_back(bottomPoint);
-
-            // drawnEntities[entityId].push_back(rotatePoint);
-            // drawnEntities[entityId].push_back(xRotateAxis);
-
-            // moveEntities.push_back(center);
-            // moveEntities.push_back(xPoint);
-            // moveEntities.push_back(yPoint);
-            // moveEntities.push_back(xAxis);
-            // moveEntities.push_back(yAxis);
-            // moveEntities.push_back(xAxisNeg);
-            // moveEntities.push_back(xPointNeg);
-            // moveEntities.push_back(yAxisNeg);
-            // moveEntities.push_back(yPointNeg);
-
-            // resizeEntities.push_back(leftTopPoint);
-            // resizeEntities.push_back(rightTopPoint);
-            // resizeEntities.push_back(leftBottomPoint);
-            // resizeEntities.push_back(rightBottomPoint);
-            // resizeEntities.push_back(leftPoint);
-            // resizeEntities.push_back(rightPoint);
-            // resizeEntities.push_back(topPoint);
-            // resizeEntities.push_back(bottomPoint);
-
-            // rotateEntities.push_back(rotatePoint);
-            // rotateEntities.push_back(xRotateAxis);
+            centerData.onEntityChanged =
+                [](const Position &start, const Position &end)
+            {
+                TriggerEvent(NTT_EDITOR_SAVE_SCENE);
+            };
+
+            auto center = ECSCreateEntity(
+                "Center Rect",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x,
+                        geo->pos.y,
+                        CENTER_SIZE,
+                        CENTER_SIZE,
+                        geo->rotation,
+                        PRIORITY_0,
+                        NTT_RED),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &centerData),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, 0),
+                });
+
+            moveEntities.push_back(center);
+            ADD_ALL(center);
+
+            position_t axisWidth = 100;
+
+            auto xAxis = ECSCreateEntity(
+                "X Axis",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x + axisWidth / 2 + CENTER_SIZE / 2, geo->pos.y,
+                        axisWidth, 3, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, axisWidth / 2 + CENTER_SIZE / 2, 0),
+                });
+
+            moveEntities.push_back(xAxis);
+            ADD_ALL(xAxis);
+
+            auto xAxisNeg = ECSCreateEntity(
+                "X Axis Neg",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x - axisWidth / 2 - CENTER_SIZE / 2, geo->pos.y,
+                        axisWidth, 3, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, -axisWidth / 2 - CENTER_SIZE / 2, 0),
+                });
+
+            moveEntities.push_back(xAxisNeg);
+            ADD_ALL(xAxisNeg);
+
+            TransformScriptData xPointData;
+            xPointData.entity = entityId;
+            xPointData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->pos.x += delta.x;
+            };
+
+            auto xPoint = ECSCreateEntity(
+                "X point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x + axisWidth + CENTER_SIZE / 2, geo->pos.y,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_0, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, axisWidth + CENTER_SIZE, 0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &xPointData),
+                });
+
+            moveEntities.push_back(xPoint);
+            ADD_ALL(xPoint);
+
+            TransformScriptData xPointNegData;
+            xPointNegData.entity = entityId;
+            xPointNegData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->pos.x += delta.x;
+            };
+
+            auto xPointNeg = ECSCreateEntity(
+                "X point Neg",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x - axisWidth - CENTER_SIZE / 2, geo->pos.y,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_0, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, -axisWidth - CENTER_SIZE, 0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &xPointNegData),
+                });
+
+            moveEntities.push_back(xPointNeg);
+            ADD_ALL(xPointNeg);
+
+            auto yAxis = ECSCreateEntity(
+                "Y Axis",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x, geo->pos.y - axisWidth / 2 - CENTER_SIZE / 2,
+                        3, axisWidth, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, -axisWidth / 2 - CENTER_SIZE / 2),
+                });
+
+            moveEntities.push_back(yAxis);
+            ADD_ALL(yAxis);
+
+            auto yAxisNeg = ECSCreateEntity(
+                "Y Axis Neg",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x, geo->pos.y + axisWidth / 2 + CENTER_SIZE / 2,
+                        3, axisWidth, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, axisWidth / 2 + CENTER_SIZE / 2),
+                });
+
+            moveEntities.push_back(yAxisNeg);
+            ADD_ALL(yAxisNeg);
+
+            TransformScriptData yPointData;
+            yPointData.entity = entityId;
+            yPointData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->pos.y += delta.y;
+            };
+
+            auto yPoint = ECSCreateEntity(
+                "Y point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x, geo->pos.y - axisWidth - CENTER_SIZE / 2,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_0, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, -axisWidth - CENTER_SIZE),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &yPointData),
+                });
+
+            moveEntities.push_back(yPoint);
+            ADD_ALL(yPoint);
+
+            TransformScriptData yPointNegData;
+            yPointNegData.entity = entityId;
+            yPointNegData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->pos.y += delta.y;
+            };
+
+            auto yPointNeg = ECSCreateEntity(
+                "Y point Neg",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x, geo->pos.y + axisWidth + CENTER_SIZE / 2,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_0, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, 0, axisWidth + CENTER_SIZE),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &yPointNegData),
+                });
+
+            moveEntities.push_back(yPointNeg);
+            ADD_ALL(yPointNeg);
+
+            TransformScriptData leftTopData;
+            leftTopData.entity = entityId;
+            leftTopData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
+                parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
+            };
+
+            leftTopData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->size.width -= delta.x * 2;
+                geo->size.height -= delta.y * 2;
+            };
+
+            auto leftTopPoint = ECSCreateEntity(
+                "left-top-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
+                        geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
+                        CENTER_SIZE, CENTER_SIZE,
+                        0.0f, PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent, entityId,
+                        -geo->size.width / 2 - CENTER_SIZE / 2,
+                        -geo->size.height / 2 - CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &leftTopData),
+                });
+
+            resizeEntities.push_back(leftTopPoint);
+            ADD_ALL(leftTopPoint);
+
+            TransformScriptData rightTopData;
+            rightTopData.entity = entityId;
+            rightTopData.onAddEntReset =
+                [](
+                    entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
+                parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
+            };
+
+            rightTopData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->size.width += delta.x * 2;
+                geo->size.height -= delta.y * 2;
+            };
+
+            auto rightTopPoint = ECSCreateEntity(
+                "right-top-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
+                        geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
+                        CENTER_SIZE,
+                        CENTER_SIZE, 0.0f,
+                        PRIORITY_1,
+                        NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        geo->size.width / 2 + CENTER_SIZE / 2,
+                        -geo->size.height / 2 - CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &rightTopData),
+                });
+
+            resizeEntities.push_back(rightTopPoint);
+            ADD_ALL(rightTopPoint);
+
+            TransformScriptData rightBottomData;
+            rightBottomData.entity = entityId;
+            rightBottomData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
+                parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
+            };
+
+            rightBottomData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->size.width += delta.x * 2;
+                geo->size.height += delta.y * 2;
+            };
+
+            auto rightBottomPoint = ECSCreateEntity(
+                "right-bottom-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
+                        geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
+                        CENTER_SIZE,
+                        CENTER_SIZE, 0.0f,
+                        PRIORITY_1,
+                        NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        geo->size.width / 2 + CENTER_SIZE / 2,
+                        geo->size.height / 2 + CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &rightBottomData),
+                });
+
+            resizeEntities.push_back(rightBottomPoint);
+            ADD_ALL(rightBottomPoint);
+
+            TransformScriptData leftBottomData;
+            leftBottomData.entity = entityId;
+            leftBottomData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
+                parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
+            };
+
+            leftBottomData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->size.width -= delta.x * 2;
+                geo->size.height += delta.y * 2;
+            };
+
+            auto leftBottomPoint = ECSCreateEntity(
+                "left-bottom-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
+                        geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
+                        CENTER_SIZE,
+                        CENTER_SIZE, 0.0f,
+                        PRIORITY_1,
+                        NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        -geo->size.width / 2 - CENTER_SIZE / 2,
+                        geo->size.height / 2 + CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &leftBottomData),
+                });
+
+            resizeEntities.push_back(leftBottomPoint);
+            ADD_ALL(leftBottomPoint);
+
+            TransformScriptData leftPointData;
+            leftPointData.entity = entityId;
+            leftPointData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->size.width -= delta.x * 2;
+            };
+
+            leftPointData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
+            };
+
+            auto leftPoint = ECSCreateEntity(
+                "left-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x - geo->size.width / 2 - CENTER_SIZE / 2,
+                        geo->pos.y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        -geo->size.width / 2 - CENTER_SIZE / 2,
+                        0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &leftPointData),
+                });
+
+            resizeEntities.push_back(leftPoint);
+            ADD_ALL(leftPoint);
+
+            TransformScriptData rightPointData;
+            rightPointData.entity = entityId;
+            rightPointData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->size.width += delta.x * 2;
+            };
+
+            rightPointData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
+            };
+
+            auto rightPoint = ECSCreateEntity(
+                "right-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x + geo->size.width / 2 + CENTER_SIZE / 2,
+                        geo->pos.y, CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        geo->size.width / 2 + CENTER_SIZE / 2,
+                        0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &rightPointData),
+                });
+
+            resizeEntities.push_back(rightPoint);
+            ADD_ALL(rightPoint);
+
+            TransformScriptData topPointData;
+            topPointData.entity = entityId;
+            topPointData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->size.height -= delta.y * 2;
+            };
+
+            topPointData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
+            };
+
+            auto topPoint = ECSCreateEntity(
+                "top-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x, geo->pos.y - geo->size.height / 2 - CENTER_SIZE / 2,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        0,
+                        -geo->size.height / 2 - CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &topPointData),
+                });
+
+            resizeEntities.push_back(topPoint);
+            ADD_ALL(topPoint);
+
+            TransformScriptData bottomPointData;
+            bottomPointData.entity = entityId;
+            bottomPointData.onResizeMain =
+                [](
+                    const Position delta,
+                    const f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->size.height += delta.y * 2;
+            };
+
+            bottomPointData.onAddEntReset =
+                [](entity_id_t entityId)
+            {
+                auto parent = ECS_GET_COMPONENT(entityId, Parent);
+                auto geo = ECS_GET_COMPONENT(parent->parentId, Geometry);
+
+                parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
+            };
+
+            auto bottomPoint = ECSCreateEntity(
+                "bottom-point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x, geo->pos.y + geo->size.height / 2 + CENTER_SIZE / 2,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        0,
+                        geo->size.height / 2 + CENTER_SIZE / 2),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &bottomPointData),
+                });
+
+            resizeEntities.push_back(bottomPoint);
+            ADD_ALL(bottomPoint);
+
+            TransformScriptData rotatePointData;
+            rotatePointData.entity = entityId;
+            rotatePointData.onResizeMain =
+                [](
+                    const Position delta,
+                    f32 angularDelta,
+                    Ref<Geometry> geo)
+            {
+                geo->rotation += angularDelta;
+
+                if (geo->rotation > 360.0f)
+                {
+                    geo->rotation -= 360.0f;
+                }
+                else if (geo->rotation < 0.0f)
+                {
+                    geo->rotation += 360.0f;
+                }
+            };
+
+            auto rotatePoint = ECSCreateEntity(
+                "rotate point",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x + axisWidth + CENTER_SIZE / 2,
+                        geo->pos.y,
+                        CENTER_SIZE, CENTER_SIZE, 0.0f,
+                        PRIORITY_1, NTT_RED),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId,
+                        axisWidth + CENTER_SIZE / 2,
+                        0),
+                    ECS_CREATE_COMPONENT(Hovering),
+                    ECS_CREATE_COMPONENT(
+                        NativeScriptComponent,
+                        transformScriptId,
+                        INVALID_OBJECT_ID,
+                        &rotatePointData),
+                });
+
+            rotateEntities.push_back(rotatePoint);
+            ADD_ALL(rotatePoint);
+
+            auto xRotateAxis = ECSCreateEntity(
+                "X Axis Rotate",
+                {
+                    ECS_CREATE_COMPONENT(
+                        Geometry,
+                        geo->pos.x + axisWidth / 2 + CENTER_SIZE / 2,
+                        geo->pos.y, axisWidth, 3, 0.0f,
+                        PRIORITY_0, NTT_GREEN),
+                    ECS_CREATE_COMPONENT(
+                        Parent,
+                        entityId, axisWidth / 2 + CENTER_SIZE / 2, 0),
+                });
+
+            rotateEntities.push_back(xRotateAxis);
+            ADD_ALL(xRotateAxis);
+
+            drawnEntities[entityId].push_back(center);
+            drawnEntities[entityId].push_back(xAxis);
+            drawnEntities[entityId].push_back(xPoint);
+            drawnEntities[entityId].push_back(yAxis);
+            drawnEntities[entityId].push_back(yPoint);
+            drawnEntities[entityId].push_back(xAxisNeg);
+            drawnEntities[entityId].push_back(xPointNeg);
+            drawnEntities[entityId].push_back(yAxisNeg);
+            drawnEntities[entityId].push_back(yPointNeg);
+
+            drawnEntities[entityId].push_back(leftTopPoint);
+            drawnEntities[entityId].push_back(rightTopPoint);
+            drawnEntities[entityId].push_back(leftBottomPoint);
+            drawnEntities[entityId].push_back(rightBottomPoint);
+            drawnEntities[entityId].push_back(leftPoint);
+            drawnEntities[entityId].push_back(rightPoint);
+            drawnEntities[entityId].push_back(topPoint);
+            drawnEntities[entityId].push_back(bottomPoint);
+
+            drawnEntities[entityId].push_back(rotatePoint);
+            drawnEntities[entityId].push_back(xRotateAxis);
+
+            moveEntities.push_back(center);
+            moveEntities.push_back(xPoint);
+            moveEntities.push_back(yPoint);
+            moveEntities.push_back(xAxis);
+            moveEntities.push_back(yAxis);
+            moveEntities.push_back(xAxisNeg);
+            moveEntities.push_back(xPointNeg);
+            moveEntities.push_back(yAxisNeg);
+            moveEntities.push_back(yPointNeg);
+
+            resizeEntities.push_back(leftTopPoint);
+            resizeEntities.push_back(rightTopPoint);
+            resizeEntities.push_back(leftBottomPoint);
+            resizeEntities.push_back(rightBottomPoint);
+            resizeEntities.push_back(leftPoint);
+            resizeEntities.push_back(rightPoint);
+            resizeEntities.push_back(topPoint);
+            resizeEntities.push_back(bottomPoint);
+
+            rotateEntities.push_back(rotatePoint);
+            rotateEntities.push_back(xRotateAxis);
 
             // allDrawnEntities.push_back(center);
             // allDrawnEntities.push_back(xAxis);

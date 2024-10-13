@@ -105,6 +105,16 @@ namespace ntt
             TriggerEvent(NTT_EDITOR_SAVE_PROJECT);
         }
 
+        void OnSaveScene(event_code_t code, void *sender, const EventContext &context)
+        {
+            if (s_scene->sceneName == "")
+            {
+                return;
+            }
+
+            s_scene->SaveEntitiesInfo();
+        }
+
         void OnHistoryEmpty(event_code_t code, void *sender, const EventContext &context)
         {
             SetWindowTitle(format("{}", s_project->title).RawString().c_str());
@@ -239,6 +249,7 @@ namespace ntt
         RegisterEvent(NTT_EDITOR_CREATE_NEW_SCENE, OnNewSceneCreated);
         RegisterEvent(NTT_EDITOR_SAVE_PROJECT, OnSaveProject);
         RegisterEvent(NTT_EDITOR_OPEN_SCENE, OnSceneChanged);
+        RegisterEvent(NTT_EDITOR_SAVE_SCENE, OnSaveScene);
         // ========================================
         // Event registration above
         // ========================================

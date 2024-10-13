@@ -17,6 +17,7 @@ namespace ntt
         b8 run = FALSE;
 
         Position preMousePos = {-1, -1};
+        Position startPos = {-1, -1};
 
         void OnSelectedResize(event_code_t code, void *sender, const EventContext &context)
         {
@@ -79,9 +80,19 @@ namespace ntt
             m_impl->preMousePos = {mouse.x, mouse.y};
         }
 
-        if (CheckState(NTT_BUTTON_LEFT, NTT_UP))
+        if (CheckState(NTT_BUTTON_LEFT, NTT_UP) && m_impl->run)
         {
             m_impl->run = FALSE;
+            m_impl->preMousePos = {-1, -1};
+
+            if (m_impl->data.onEntityChanged != nullptr)
+            {
+                m_impl->data.onEntityChanged(
+                    m_impl->startPos,
+                    GetMousePosition());
+            }
+
+            m_impl->startPos = {-1, -1};
         }
     }
 
@@ -100,6 +111,7 @@ namespace ntt
         {
             m_impl->run = TRUE;
             m_impl->preMousePos = GetMousePosition();
+            m_impl->startPos = GetMousePosition();
         }
     }
 
