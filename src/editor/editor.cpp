@@ -12,8 +12,6 @@
 
 #include "editor_windows/editor_windows.hpp"
 
-#include "entity_window/editor_entity_window.hpp"
-#include "editor_tool/editor_tool.hpp"
 #include <NTTEngine/platforms/path.hpp>
 #include "ImGuiFileDialog.h"
 #include "editor_project_dialog/editor_project_dialog.hpp"

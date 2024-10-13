@@ -4,6 +4,7 @@
 #include "rlImGui.h"
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/core/logging/logging.hpp>
+#include "../editor_tool/editor_tool.hpp"
 
 namespace ntt
 {
@@ -25,6 +26,8 @@ namespace ntt
 
         f32 screenWidth = 800;
         f32 screenHeight = 600;
+
+        Scope<EditorTool> editorTool;
 
         Position EditorToViewportPosTransform(const Position &pos)
         {
@@ -56,6 +59,8 @@ namespace ntt
 
         m_impl->screenHeight = height;
         m_impl->screenWidth = width;
+
+        m_impl->editorTool = CreateScope<EditorTool>();
     }
 
     ViewportWindow::~ViewportWindow()
@@ -74,10 +79,14 @@ namespace ntt
 
     void ViewportWindow::Init()
     {
+        m_impl->editorTool->Init();
+        m_impl->editorTool->Open();
     }
 
     void ViewportWindow::Update()
     {
+        m_impl->editorTool->Update();
+
         ImGui::Begin("Viewport");
         ImVec2 size = ImGui::GetContentRegionAvail();
         ImVec2 viewportSize = {0, 0};
@@ -122,5 +131,6 @@ namespace ntt
 
     void ViewportWindow::Shutdown()
     {
+        m_impl->editorTool->Shutdown();
     }
 } // namespace ntt

@@ -13,76 +13,88 @@ namespace ntt
     using namespace event;
     using namespace input;
 
-    namespace
+    class EditorTool::Impl
     {
-        ToolType s_currentTool = MOVE;
-        std::array<const char *, 3> s_toolNames = {"Move", "Scale", "Rotate"};
+    public:
+        ToolType currentTool = MOVE;
+        std::array<const char *, 3> toolNames = {"Move", "Scale", "Rotate"};
 
-        b8 s_editorRun = FALSE;
+        b8 editorRun = FALSE;
 
         void OnEditorRun(event_code_t code, void *sender, const EventContext &context)
         {
-            s_editorRun = TRUE;
+            editorRun = TRUE;
         }
 
         void OnEditorStop(event_code_t code, void *sender, const EventContext &context)
         {
-            s_editorRun = FALSE;
+            editorRun = FALSE;
         }
+    };
+
+    EditorTool::EditorTool()
+        : m_impl(CreateScope<Impl>())
+    {
+        PROFILE_FUNCTION();
     }
 
-    void EditorToolInit()
+    EditorTool::~EditorTool()
+    {
+        PROFILE_FUNCTION();
+    }
+
+    void EditorTool::InitImpl()
     {
         PROFILE_FUNCTION();
 
-        RegisterEvent(NTT_EDITOR_START, OnEditorRun);
-        RegisterEvent(NTT_EDITOR_STOP, OnEditorStop);
+        // RegisterEvent(NTT_EDITOR_START, OnEditorRun);
+        // RegisterEvent(NTT_EDITOR_STOP, OnEditorStop);
     }
 
-    void EditorToolUpdate()
+    void EditorTool::UpdateImpl(b8 *p_open)
     {
         PROFILE_FUNCTION();
 
         if (CHECK_PRESS(NTT_KEY_Q))
         {
-            s_currentTool = MOVE;
+            m_impl->currentTool = MOVE;
             EventContext context;
-            context.u8_data[0] = s_currentTool;
+            context.u8_data[0] = m_impl->currentTool;
             TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);
         }
 
         if (CHECK_PRESS(NTT_KEY_W))
         {
-            s_currentTool = SCALE;
+            m_impl->currentTool = SCALE;
             EventContext context;
-            context.u8_data[0] = s_currentTool;
+            context.u8_data[0] = m_impl->currentTool;
             TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);
         }
 
         if (CHECK_PRESS(NTT_KEY_E))
         {
-            s_currentTool = ROTATE;
+            m_impl->currentTool = ROTATE;
             EventContext context;
-            context.u8_data[0] = s_currentTool;
+            context.u8_data[0] = m_impl->currentTool;
             TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);
         }
 
-        ImGui::Begin("Tools", nullptr, ImGuiWindowFlags_NoTitleBar);
+        ImGui::Begin("Tools", p_open, ImGuiWindowFlags_NoTitleBar);
 
-        for (i32 i = 0; i < s_toolNames.size(); i++)
+        for (i32 i = 0; i < m_impl->toolNames.size(); i++)
         {
-            if (ImGui::Selectable(s_toolNames[i], s_currentTool == i))
+            if (ImGui::Selectable(m_impl->toolNames[i], m_impl->currentTool == i))
             {
-                s_currentTool = static_cast<ToolType>(i);
+                m_impl->currentTool = static_cast<ToolType>(i);
                 EventContext context;
-                context.u8_data[0] = s_currentTool;
+                context.u8_data[0] = m_impl->currentTool;
                 TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);
             }
         }
         ImGui::End();
     }
 
-    void EditorToolShutdown()
+    void EditorTool::ShutdownImpl()
     {
         PROFILE_FUNCTION();
     }
