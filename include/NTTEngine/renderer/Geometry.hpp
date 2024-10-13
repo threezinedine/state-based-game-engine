@@ -4,6 +4,7 @@
 #include <NTTEngine/structures/size.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include "GraphicInterface.hpp"
+#include <NTTEngine/core/parser/json.hpp>
 
 namespace ntt::renderer
 {
@@ -25,9 +26,13 @@ namespace ntt::renderer
         Geometry(position_t x = POSITION_DEFAULT, position_t y = POSITION_DEFAULT,
                  ntt_size_t width = SIZE_DEFAULT, ntt_size_t height = SIZE_DEFAULT,
                  f32 rotation = 0.0f, u8 priority = PRIORITY_0, RGBAColor color = NTT_WHITE)
-            : pos(x, y), size(width, height), rotation(rotation),
-              priority(priority), color(color)
+            : pos(x, y), size(width, height), rotation(rotation), priority(priority), color(color)
         {
         }
+
+        String GetName() const override;
+        JSON ToJSON() const override;
+        void FromJSON(const JSON &json) override;
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr) override;
     };
 } // namespace ntt::renderer

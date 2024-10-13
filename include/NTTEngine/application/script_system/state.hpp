@@ -79,6 +79,11 @@ namespace ntt
         {
             stateObjIds = {};
         }
+
+        String GetName() const override
+        {
+            return "StateComponent";
+        }
     };
 
     class StateSystem : public System

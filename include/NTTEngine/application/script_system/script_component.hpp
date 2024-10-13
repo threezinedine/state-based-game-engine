@@ -36,5 +36,10 @@ namespace ntt::script
 
             return GET_SCRIPT(Script, objId);
         }
+
+        String GetName() const override
+        {
+            return "NativeScriptComponent";
+        }
     };
 }

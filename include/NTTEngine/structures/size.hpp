@@ -1,6 +1,7 @@
 #pragma once
 
 #include <NTTEngine/defines.hpp>
+#include <NTTEngine/core/parser/json.hpp>
 
 namespace ntt
 {
@@ -30,6 +31,10 @@ namespace ntt
         {
             return width == other.width && height == other.height;
         }
+
+        void FromJSON(const JSON &json);
+        JSON ToJSON() const;
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr);
     };
 
     typedef Size (*SizeTransform)(const Size &size);

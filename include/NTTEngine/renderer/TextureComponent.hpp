@@ -27,5 +27,10 @@ namespace ntt::renderer
               tooltip(tooltip)
         {
         }
+
+        String GetName() const override
+        {
+            return "TextureComponent";
+        }
     };
 } // namespace ntt::renderer

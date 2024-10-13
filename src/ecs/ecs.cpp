@@ -339,8 +339,10 @@ namespace ntt::ecs
 
         components[typeid(DataComponent)] = CreateRef<DataComponent>();
 
-        auto entityId = s_entityStore->Add(CreateRef<EntityInfo>(components));
-        s_entityStore->Get(entityId)->name = GetName(name);
+        auto entityInfo = CreateRef<EntityInfo>();
+        entityInfo->components = components;
+        auto entityId = s_entityStore->Add(entityInfo);
+        s_entityStore->Get(entityId)->name = name;
 
         components.ForEach(
             [&entityId](const std::type_index &,

@@ -26,5 +26,10 @@ namespace ntt::renderer
               color(color)
         {
         }
+
+        String GetName() const override
+        {
+            return "Text";
+        }
     };
 } // namespace ntt::renderer

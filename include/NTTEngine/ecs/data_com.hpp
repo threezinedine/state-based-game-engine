@@ -16,5 +16,10 @@ namespace ntt::ecs
         JSON data; ///< The data of the entity
 
         DataComponent() = default;
+
+        String GetName() const override
+        {
+            return "DataComponent";
+        }
     };
 } // namespace ntt::ecs

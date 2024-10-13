@@ -132,17 +132,17 @@ namespace ntt::log
     ConfigureLogger(ENGINE_LOGGER_NAME, ##__VA_ARGS__)
 
 #define NTT_ENGINE_FATAL(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::FATAL, __FILE__, __LINE__, format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_ERROR(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::ERROR, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::ERROR, __FILE__, __LINE__, format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_WARN(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::WARN, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::WARN, __FILE__, __LINE__, format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_INFO(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::INFO, __FILE__, __LINE__, format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_DEBUG(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::DEBUG, __FILE__, __LINE__, format(message, ##__VA_ARGS__))
 #define NTT_ENGINE_TRACE(message, ...) \
-    Log(ENGINE_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, ntt::format(message, ##__VA_ARGS__))
+    Log(ENGINE_LOGGER_NAME, LogLevel::TRACE, __FILE__, __LINE__, format(message, ##__VA_ARGS__))
 
 #define NTT_APP_CONFIG(...) \
     ConfigureLogger(APP_LOGGER_NAME, ##__VA_ARGS__)

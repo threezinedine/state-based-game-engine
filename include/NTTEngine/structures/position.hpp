@@ -1,6 +1,7 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include <functional>
+#include <NTTEngine/core/parser/json.hpp>
 
 namespace ntt
 {
@@ -21,6 +22,10 @@ namespace ntt
         position_t y; ///< The y position in pixel
 
         Position(position_t x = POSITION_DEFAULT, position_t y = POSITION_DEFAULT) : x(x), y(y) {}
+
+        void FromJSON(const JSON &json);
+        JSON ToJSON() const;
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr);
     };
 
     using PositionTransform = std::function<Position(const Position &pos)>;

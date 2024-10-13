@@ -30,11 +30,10 @@ namespace ntt::ecs
                                ///< it must be attached to an entity.
         b8 active = TRUE;
 
-        virtual std::pair<String, JSON> ToJSON()
-        {
-            JSON json("{}");
-            return {"ComponentBase", json};
-        }
+        virtual String GetName() const = 0;
+        virtual JSON ToJSON() const { return JSON("{}"); }
+        virtual void FromJSON(const JSON &json) {}
+        virtual void OnEditorUpdate(std::function<void()> onChanged = nullptr) {}
     };
 
 } // namespace ntt::ecs

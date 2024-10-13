@@ -17,6 +17,11 @@ namespace ntt::physics
         CollisionCallback callback = nullptr;
 
         Collision() = default;
+
+        String GetName() const override
+        {
+            return "Collision";
+        }
     };
 
     class CollisionSystem : public System

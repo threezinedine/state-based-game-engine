@@ -5,10 +5,12 @@
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
+#include <NTTEngine/renderer/renderer.hpp>
 
 namespace ntt
 {
     using namespace event;
+    using namespace renderer;
     using namespace ecs;
 
     class SceneWindow::Impl
@@ -17,8 +19,6 @@ namespace ntt
         Ref<ProjectInfo> project;
         Ref<SceneInfo> scene;
         Ref<EditorConfig> config;
-
-        List<entity_id_t> entities;
     };
 
     SceneWindow::SceneWindow(Ref<ProjectInfo> project,
@@ -30,8 +30,6 @@ namespace ntt
         m_impl->project = project;
         m_impl->scene = scene;
         m_impl->config = config;
-
-        m_impl->entities.clear();
     }
 
     SceneWindow::~SceneWindow() {}
@@ -46,16 +44,39 @@ namespace ntt
         if (m_impl->scene->sceneName == "")
         {
             ImGui::Text("Non scene is selected");
+            ImGui::End();
+            return;
         }
-        else
+
+        ImGui::Text(format("Scene: {}", m_impl->scene->sceneName).RawString().c_str());
+        ImGui::Separator();
+        if (ImGui::Button("New"))
         {
-            ImGui::Text(format("Scene: {}", m_impl->scene->sceneName).RawString().c_str());
-            ImGui::Separator();
-            if (ImGui::Button("New"))
-            {
-            }
-            ImGui::Separator();
+            m_impl->scene->AddEntity();
+            m_impl->scene->SaveEntitiesInfo();
         }
+        ImGui::Separator();
+
+        ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
+        if (ImGui::TreeNode("Entities"))
+        {
+            ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
+            for (auto &entity : m_impl->scene->entities)
+            {
+                ImGui::PushID(format("Entity: {}",
+                                     entity->name.RawString())
+                                  .RawString()
+                                  .c_str());
+
+                entity->OnEditorUpdate([&]()
+                                       { m_impl->scene->SaveEntitiesInfo(); });
+
+                ImGui::PopID();
+            }
+
+            ImGui::TreePop();
+        }
+
         ImGui::End();
     }
 
@@ -69,5 +90,6 @@ namespace ntt
 
     void SceneWindow::OnReloadScene()
     {
+        m_impl->scene->ReloadEntities();
     }
 } // namespace ntt

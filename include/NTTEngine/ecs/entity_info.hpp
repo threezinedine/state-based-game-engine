@@ -7,6 +7,7 @@
 #include <NTTEngine/structures/string.hpp>
 #include "component_base.hpp"
 #include <NTTEngine/core/object.hpp>
+#include <functional>
 
 namespace ntt::ecs
 {
@@ -14,11 +15,10 @@ namespace ntt::ecs
     {
         Dictionary<std::type_index, Ref<ComponentBase>> components;
         String name;
-        b8 active = TRUE;
 
-        EntityInfo(Dictionary<std::type_index, Ref<ComponentBase>> components = {})
-            : components(components), active(TRUE)
-        {
-        }
+        void FromJSON(const JSON &entity);
+        JSON ToJSON() const;
+
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr);
     };
 }

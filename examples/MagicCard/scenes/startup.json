@@ -1,20 +1,28 @@
 {
-    "entities": [],
-    "resources": [
-        {
-            "extra": null,
-            "name": "q",
-            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\audios\\wing.wav",
-            "type": 1
-        },
-        {
-            "extra": {
-                "numCol": 1,
-                "numRow": 3
-            },
-            "name": "bird",
-            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\bird.png",
-            "type": 0
-        }
-    ]
+	"entities": [
+		{
+			"components": {
+				"Geometry": {
+					"color": {
+						"a": 255,
+						"b": 255,
+						"g": 255,
+						"r": 255
+					},
+					"position": {
+						"x": 0.0,
+						"y": 0.0
+					},
+					"priority": 0,
+					"rotation": 0.0,
+					"size": {
+						"height": -1.0,
+						"width": -1.0
+					}
+				}
+			},
+			"name": "bird"
+		}
+	],
+	"resources": []
 }

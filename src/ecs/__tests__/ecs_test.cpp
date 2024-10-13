@@ -32,6 +32,11 @@ public:
     u8 initCalled = 0;
     u8 updateCalled = 0;
     u8 shutdownCalled = 0;
+
+    String GetName() const override
+    {
+        return "TestData";
+    }
 };
 
 struct NonTestData : public ComponentBase
@@ -39,10 +44,19 @@ struct NonTestData : public ComponentBase
     u8 initCalled = 0;
     u8 updateCalled = 0;
     u8 shutdownCalled = 0;
+
+    String GetName() const override
+    {
+        return "NonTestData";
+    }
 };
 
 struct TestLayerData : public ComponentBase
 {
+    String GetName() const override
+    {
+        return "TestLayerData";
+    }
 };
 
 class TestUpdatedSystem : public System

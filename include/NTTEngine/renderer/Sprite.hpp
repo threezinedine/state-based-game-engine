@@ -26,5 +26,10 @@ namespace ntt::renderer
         {
             timer.Reset();
         }
+
+        String GetName() const override
+        {
+            return "Sprite";
+        }
     };
 } // namespace ntt::renderer

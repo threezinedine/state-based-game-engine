@@ -24,5 +24,10 @@ namespace ntt::renderer
             : parentId(parentId), relPos(posX, posY), angle(angle)
         {
         }
+
+        String GetName() const override
+        {
+            return "Parent";
+        }
     };
 } // namespace ntt::renderer

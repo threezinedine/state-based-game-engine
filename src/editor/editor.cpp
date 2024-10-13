@@ -276,6 +276,7 @@ namespace ntt
         s_normalWindows.push_back(s_sceneWindow);
         s_openClosableWindows.push_back(s_sceneWindow);
         s_reloadWindows.push_back(s_sceneWindow);
+        s_sceneChangeWindows.push_back(s_sceneWindow);
 
         s_openSceneWindow = CreateRef<OpenSceneWindow>(s_project, s_config, s_scene);
         s_normalWindows.push_back(s_openSceneWindow);
@@ -485,6 +486,12 @@ namespace ntt
         s_normalWindows.clear();
         s_reloadWindows.clear();
         s_openClosableWindows.clear();
+
+        s_project.reset();
+        s_config.reset();
+
+        s_scene->entities.clear();
+        s_scene.reset();
 
         NTT_ENGINE_INFO("The editor mode is shutdown");
     }

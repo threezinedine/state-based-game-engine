@@ -1,4 +1,32 @@
 {
-                        "resources": [],
-                        "entities": [] 
+    "entities": [
+        {
+            "components": {
+                "Geometry": {
+                    "color": {
+                        "a": 255,
+                        "b": 255,
+                        "g": 255,
+                        "r": 255
+                    },
+                    "position": {
+                        "x": 25.0,
+                        "y": 36.0
+                    },
+                    "priority": 0,
+                    "rotation": 0.0,
+                    "size": {
+                        "height": 69.0,
+                        "width": 37.0
                     }
+                }
+            },
+            "name": "test"
+        },
+        {
+            "components": {},
+            "name": "Work"
+        }
+    ],
+    "resources": []
+}

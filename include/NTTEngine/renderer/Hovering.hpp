@@ -30,5 +30,10 @@ namespace ntt::renderer
         HoveringCallback onExitCallback;
 
         Hovering() = default;
+
+        String GetName() const override
+        {
+            return "Hovering";
+        }
     };
 } // namespace ntt::renderer
