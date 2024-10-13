@@ -19,19 +19,16 @@ namespace ntt
 
     void Size::OnEditorUpdate(std::function<void()> onChanged)
     {
-        static ntt_size_t tempWidth = width;
-        static ntt_size_t tempHeight = height;
-
-        tempHeight = height;
-        tempWidth = width;
-
-        ImGui::InputFloat("width", &tempWidth, 1.0f, 10.f, "%.3f", 0);
-        ImGui::InputFloat("heigth", &tempHeight, 1.0f, 10.f, "%.3f", 0);
-
-        if (tempWidth != width || tempHeight != height)
+        if (ImGui::InputFloat("width", &width, 1.0f, 10.f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            width = tempWidth;
-            height = tempHeight;
+            if (onChanged)
+            {
+                onChanged();
+            }
+        }
+
+        if (ImGui::InputFloat("heigth", &height, 1.0f, 10.f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+        {
             if (onChanged)
             {
                 onChanged();

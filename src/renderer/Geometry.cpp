@@ -32,5 +32,15 @@ namespace ntt::renderer
     {
         pos.OnEditorUpdate(onChanged);
         size.OnEditorUpdate(onChanged);
+        if (ImGui::InputFloat("rotation",
+                              &rotation, 1.0f, 10.f,
+                              "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            if (onChanged)
+            {
+                onChanged();
+            }
+        }
+        color.OnEditorUpdate(onChanged);
     }
 } // namespace ntt::renderer

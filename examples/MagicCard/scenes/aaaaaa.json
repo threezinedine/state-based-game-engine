@@ -5,16 +5,16 @@
                 "Geometry": {
                     "color": {
                         "a": 255,
-                        "b": 255,
-                        "g": 255,
-                        "r": 255
+                        "b": 66,
+                        "g": 66,
+                        "r": 153
                     },
                     "position": {
-                        "x": 25.0,
+                        "x": 33.0,
                         "y": 36.0
                     },
                     "priority": 0,
-                    "rotation": 0.0,
+                    "rotation": 4.0,
                     "size": {
                         "height": 69.0,
                         "width": 37.0

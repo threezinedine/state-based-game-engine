@@ -19,18 +19,15 @@ namespace ntt
 
     void Position::OnEditorUpdate(std::function<void()> onChanged)
     {
-        static position_t tempX = x;
-        static position_t tempY = y;
-
-        tempX = x;
-        tempY = y;
-        ImGui::InputFloat("x", &tempX, 1.0f, 10.f, "%.3f", 0);
-        ImGui::InputFloat("y", &tempY, 1.0f, 10.f, "%.3f", 0);
-
-        if (tempX != x || tempY != y)
+        if (ImGui::InputFloat("x", &x, 1.0f, 10.f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            x = tempX;
-            y = tempY;
+            if (onChanged)
+            {
+                onChanged();
+            }
+        }
+        if (ImGui::InputFloat("y", &y, 1.0f, 10.f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+        {
             if (onChanged)
             {
                 onChanged();

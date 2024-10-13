@@ -13,23 +13,9 @@ namespace ntt
         {
         }
 
-        JSON ToJSON() const
-        {
-            JSON json("{}");
-            json.Set("r", r);
-            json.Set("g", g);
-            json.Set("b", b);
-            json.Set("a", a);
-            return json;
-        }
-
-        void FromJSON(const JSON &json)
-        {
-            r = json.Get<u8>("r", 0);
-            g = json.Get<u8>("g", 0);
-            b = json.Get<u8>("b", 0);
-            a = json.Get<u8>("a", 255);
-        }
+        JSON ToJSON() const;
+        void FromJSON(const JSON &json);
+        void OnEditorUpdate(std::function<void()> onChanged);
     };
 
 #define NTT_BLACK RGBAColor(0, 0, 0, 255)
