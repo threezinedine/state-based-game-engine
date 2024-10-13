@@ -65,6 +65,13 @@ namespace ntt
     Size &GetWindowSize();
 
     /**
+     * Modify the size of the window with the new size
+     *
+     * @param size: the new size of the window
+     */
+    void SetWindowSize(const Size &size);
+
+    /**
      * Destroying all things inside the game engine, the window will be closed
      *      and all the resources will be freed
      */

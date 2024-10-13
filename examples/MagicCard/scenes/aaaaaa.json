@@ -5,28 +5,69 @@
                 "Geometry": {
                     "color": {
                         "a": 255,
-                        "b": 66,
-                        "g": 66,
-                        "r": 153
+                        "b": 54,
+                        "g": 54,
+                        "r": 77
                     },
                     "position": {
-                        "x": 33.0,
-                        "y": 36.0
+                        "x": 150.0,
+                        "y": 256.0
                     },
                     "priority": 0,
-                    "rotation": 4.0,
+                    "rotation": 0.0,
                     "size": {
-                        "height": 69.0,
-                        "width": 37.0
+                        "height": 512.0,
+                        "width": 300.0
                     }
+                },
+                "TextureComponent": {
+                    "current_cell": {
+                        "col": 0,
+                        "row": 0
+                    },
+                    "resource_name": "test",
+                    "texture_grid": {
+                        "col": 1,
+                        "row": 1
+                    },
+                    "tooltip": ""
                 }
             },
             "name": "test"
         },
         {
-            "components": {},
+            "components": {
+                "Geometry": {
+                    "color": {
+                        "a": 255,
+                        "b": 49,
+                        "g": 49,
+                        "r": 228
+                    },
+                    "position": {
+                        "x": 31.0,
+                        "y": 38.0
+                    },
+                    "priority": 0,
+                    "rotation": 0.0,
+                    "size": {
+                        "height": 34.0,
+                        "width": 20.0
+                    }
+                }
+            },
             "name": "Work"
         }
     ],
-    "resources": []
+    "resources": [
+        {
+            "extra": {
+                "numCol": 1,
+                "numRow": 3
+            },
+            "name": "bird",
+            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\bird.png",
+            "type": 0
+        }
+    ]
 }

@@ -33,7 +33,10 @@ namespace ntt::ecs
         virtual String GetName() const = 0;
         virtual JSON ToJSON() const { return JSON("{}"); }
         virtual void FromJSON(const JSON &json) {}
-        virtual void OnEditorUpdate(std::function<void()> onChanged = nullptr) {}
+        virtual void TurnOff() { active = FALSE; }
+        virtual void TurnOn() { active = TRUE; }
+
+        virtual void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr) {}
     };
 
 } // namespace ntt::ecs

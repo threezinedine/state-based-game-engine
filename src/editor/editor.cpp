@@ -7,6 +7,7 @@
 #include "imgui.h"
 #include "raylib.h"
 #include <NTTEngine/application/scene_system/scene_system.hpp>
+#include <NTTEngine/platforms/application.hpp>
 #include <array>
 
 #include "editor_windows/editor_windows.hpp"
@@ -17,7 +18,7 @@
 #include "ImGuiFileDialog.h"
 #include "editor_project_dialog/editor_project_dialog.hpp"
 
-#include "types.hpp"
+#include <NTTEngine/editor/types.hpp>
 
 namespace ntt
 {
@@ -67,6 +68,8 @@ namespace ntt
             s_hasProject = TRUE;
             SetWindowTitle(
                 s_project->title.RawString().c_str());
+            SetWindowSize({static_cast<ntt_size_t>(s_project->width),
+                           static_cast<ntt_size_t>(s_project->height)});
 
             s_viewportWindow = CreateScope<ViewportWindow>(
                 s_project->width,

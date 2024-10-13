@@ -1,5 +1,6 @@
 #include <NTTEngine/ecs/ecs_helper.hpp>
 #include <NTTEngine/renderer/Geometry.hpp>
+#include <NTTEngine/renderer/TextureComponent.hpp>
 
 namespace ntt
 {
@@ -16,6 +17,13 @@ namespace ntt
             Ref<Geometry> geometry = CreateRef<Geometry>();
             geometry->FromJSON(json.Get<JSON>("Geometry"));
             components[typeid(Geometry)] = geometry;
+        }
+
+        if (json.Contains<JSON>("TextureComponent"))
+        {
+            Ref<TextureComponent> textureComponent = CreateRef<TextureComponent>();
+            textureComponent->FromJSON(json.Get<JSON>("TextureComponent"));
+            components[typeid(TextureComponent)] = textureComponent;
         }
 
         return components;

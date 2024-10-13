@@ -1,4 +1,4 @@
-#include "types.hpp"
+#include <NTTEngine/editor/types.hpp>
 
 namespace ntt
 {

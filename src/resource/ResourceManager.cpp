@@ -99,35 +99,6 @@ namespace ntt
         for (auto resource : resources)
         {
             ResourceInfo resourceInfo;
-
-            // if (!resource.Contains<String>("name"))
-            // {
-            //     break;
-            // }
-
-            // if (!(resource.Contains<String>("path") || resource.Contains<String>("relPath")))
-            // {
-            //     break;
-            // }
-
-            // if (!resource.Contains<u32>("type"))
-            // {
-            //     break;
-            // }
-
-            // resourceInfo.name = resource.Get<String>("name");
-
-            // if (resource.Contains<String>("relPath"))
-            // {
-            //     resourceInfo.path = RelativePath(resource.Get<String>("relPath"));
-            // }
-            // else
-            // {
-            //     resourceInfo.path = resource.Get<String>("path");
-            // }
-
-            // resourceInfo.type = static_cast<ResourceType>(resource.Get<u32>("type"));
-            // resourceInfo.addintionalInfo = resource.Get<JSON>("extra");
             resourceInfo.From(resource);
 
             infos.push_back(resourceInfo);
@@ -146,6 +117,21 @@ namespace ntt
         }
 
         return INVALID_RESOURCE_ID;
+    }
+
+    String GetResourceName(resource_id_t id)
+    {
+        PROFILE_FUNCTION();
+
+        for (auto &resource : s_resourceIDs)
+        {
+            if (resource.second == id)
+            {
+                return resource.first;
+            }
+        }
+
+        return "Not found";
     }
 
     void ResourceShutdown()

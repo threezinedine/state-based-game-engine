@@ -283,6 +283,11 @@ namespace ntt
         return s_windowSize;
     }
 
+    void SetWindowSize(const Size &size)
+    {
+        s_windowSize = size;
+    }
+
     void ApplicationShutdown()
     {
         PROFILE_FUNCTION();

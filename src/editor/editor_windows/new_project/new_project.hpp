@@ -1,7 +1,7 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/core/parser/json.hpp>
-#include "../../types.hpp"
+#include <NTTEngine/editor/types.hpp>
 #include "../OpenClosableWindow.hpp"
 
 namespace ntt

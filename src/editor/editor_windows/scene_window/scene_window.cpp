@@ -19,6 +19,7 @@ namespace ntt
         Ref<ProjectInfo> project;
         Ref<SceneInfo> scene;
         Ref<EditorConfig> config;
+        EditorData editorData;
     };
 
     SceneWindow::SceneWindow(Ref<ProjectInfo> project,
@@ -30,6 +31,10 @@ namespace ntt
         m_impl->project = project;
         m_impl->scene = scene;
         m_impl->config = config;
+
+        m_impl->editorData.project = project;
+        m_impl->editorData.config = config;
+        m_impl->editorData.scene = scene;
     }
 
     SceneWindow::~SceneWindow() {}
@@ -69,7 +74,8 @@ namespace ntt
                                   .c_str());
 
                 entity->OnEditorUpdate([&]()
-                                       { m_impl->scene->SaveEntitiesInfo(); });
+                                       { m_impl->scene->SaveEntitiesInfo(); },
+                                       &m_impl->editorData);
 
                 ImGui::PopID();
             }

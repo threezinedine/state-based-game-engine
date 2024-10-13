@@ -68,6 +68,7 @@ namespace ntt
     void ResourceUnload(List<ResourceInfo> infos);
 
     resource_id_t GetResourceID(const String &name);
+    String GetResourceName(resource_id_t id);
 
     /**
      * Shutdown the resource manager.

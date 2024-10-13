@@ -1,4 +1,4 @@
-#include "types.hpp"
+#include <NTTEngine/editor/types.hpp>
 #include <NTTEngine/ecs/ecs_helper.hpp>
 
 namespace ntt

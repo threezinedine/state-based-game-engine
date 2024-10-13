@@ -1,5 +1,5 @@
 #pragma once
-#include "../../types.hpp"
+#include <NTTEngine/editor/types.hpp>
 #include "../OpenClosableWindow.hpp"
 #include "../ProjectReloadWindow.hpp"
 #include "../SceneReloadWindow.hpp"

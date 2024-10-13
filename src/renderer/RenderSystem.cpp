@@ -48,15 +48,15 @@ namespace ntt::renderer
             return;
         }
 
-        if (texture->id == INVALID_RESOURCE_ID)
+        if (texture->GetTextureID() == INVALID_RESOURCE_ID)
         {
             geo->size.width = 100;
             geo->size.height = 100;
         }
 
-        texture->textureGrid = GetTextureGrid(texture->id);
+        texture->textureGrid = GetTextureGrid(texture->GetTextureID());
 
-        auto size = ValidateSize(texture->id,
+        auto size = ValidateSize(texture->GetTextureID(),
                                  {geo->pos,
                                   geo->size,
                                   geo->rotation});
@@ -107,7 +107,7 @@ namespace ntt::renderer
 
             drawContext.tooltip = texture->tooltip;
 
-            DrawTexture(texture->id, context, cell, drawContext);
+            DrawTexture(texture->GetTextureID(), context, cell, drawContext);
         }
         else if (text != nullptr)
         {

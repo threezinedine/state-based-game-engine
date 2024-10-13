@@ -4,6 +4,7 @@
 #include <array>
 #include <NTTEngine/renderer/Geometry.hpp>
 #include <NTTEngine/core/logging/logging.hpp>
+#include <NTTEngine/renderer/TextureComponent.hpp>
 
 namespace ntt::ecs
 {
@@ -12,7 +13,8 @@ namespace ntt::ecs
 
     namespace
     {
-        std::array<const char *, 1> componentTypes = {"Geometry"};
+        std::array<const char *, 2> componentTypes = {"Geometry", "TextureCompontent"};
+        std::array<std::type_index, 2> componentIndexes = {typeid(Geometry), typeid(TextureComponent)};
         u8 selectedComponentType = 0;
     }
 
@@ -33,7 +35,7 @@ namespace ntt::ecs
         return entity;
     }
 
-    void EntityInfo::OnEditorUpdate(std::function<void()> onChanged)
+    void EntityInfo::OnEditorUpdate(std::function<void()> onChanged, void *data)
     {
         static char tempName[256] = {0};
 
@@ -61,7 +63,14 @@ namespace ntt::ecs
             ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
             for (auto &component : components)
             {
-                component.second->OnEditorUpdate(onChanged);
+                ImGui::PushID(format("{}_{}", name, component.second->GetName()).RawString().c_str());
+                component.second->OnEditorUpdate(onChanged, data);
+
+                if (ImGui::Checkbox("Activate", &component.second->active))
+                {
+                    component.second->active ? component.second->TurnOn() : component.second->TurnOff();
+                }
+                ImGui::PopID();
             }
 
             ImGui::TreePop();
@@ -86,54 +95,63 @@ namespace ntt::ecs
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
+        }
 
-            if (ImGui::BeginPopupModal("add_component"))
+        if (ImGui::BeginPopupModal("add_component"))
+        {
+            if (ImGui::BeginCombo(
+                    "Component",
+                    componentTypes[selectedComponentType]))
             {
-                if (ImGui::BeginCombo(
-                        "Component",
-                        componentTypes[selectedComponentType]))
+                for (u8 i = 0; i < componentTypes.size(); i++)
                 {
-                    for (u8 i = 0; i < componentTypes.size(); i++)
+                    b8 isSelected = selectedComponentType == i;
+                    if (ImGui::Selectable(componentTypes[i], isSelected))
                     {
-                        b8 isSelected = selectedComponentType == i;
-                        if (ImGui::Selectable(componentTypes[i], isSelected))
-                        {
-                            selectedComponentType = i;
-                        }
-
-                        if (isSelected)
-                        {
-                            ImGui::SetItemDefaultFocus();
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-
-                b8 componentExisted = components.Contains(typeid(Geometry));
-
-                ImGui::Separator();
-                if (ImGui::Button("Cancel"))
-                {
-                    ImGui::CloseCurrentPopup();
-                }
-                ImGui::SameLine();
-
-                ImGui::BeginDisabled(componentExisted);
-                if (ImGui::Button("Save"))
-                {
-                    components[typeid(Geometry)] = CreateRef<Geometry>();
-                    selectedComponentType = 0;
-
-                    if (onChanged)
-                    {
-                        onChanged();
+                        selectedComponentType = i;
                     }
 
-                    ImGui::CloseCurrentPopup();
+                    if (isSelected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
                 }
-                ImGui::EndDisabled();
-                ImGui::EndPopup();
+                ImGui::EndCombo();
             }
+
+            std::type_index type = componentIndexes[selectedComponentType];
+            b8 componentExisted = components.Contains(type);
+
+            ImGui::Separator();
+            if (ImGui::Button("Cancel"))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+
+            ImGui::BeginDisabled(componentExisted);
+            if (ImGui::Button("Save"))
+            {
+                if (type == typeid(Geometry))
+                {
+                    components[type] = CreateRef<Geometry>();
+                }
+                else if (type == typeid(TextureComponent))
+                {
+                    components[type] = CreateRef<TextureComponent>();
+                }
+
+                selectedComponentType = 0;
+
+                if (onChanged)
+                {
+                    onChanged();
+                }
+
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndDisabled();
+            ImGui::EndPopup();
         }
     }
 } // namespace ntt

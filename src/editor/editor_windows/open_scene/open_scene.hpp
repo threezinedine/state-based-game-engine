@@ -1,7 +1,7 @@
 #include "../OpenClosableWindow.hpp"
 #include "../SceneReloadWindow.hpp"
 #include "../ProjectReloadWindow.hpp"
-#include "../../types.hpp"
+#include <NTTEngine/editor/types.hpp>
 #include <NTTEngine/core/memory.hpp>
 
 namespace ntt

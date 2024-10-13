@@ -19,6 +19,6 @@ namespace ntt::ecs
         void FromJSON(const JSON &entity);
         JSON ToJSON() const;
 
-        void OnEditorUpdate(std::function<void()> onChanged = nullptr);
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr);
     };
 }

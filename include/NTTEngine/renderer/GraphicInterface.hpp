@@ -37,6 +37,11 @@ namespace ntt::renderer
 
         Grid() : row(1), col(1) {}
         Grid(u8 row, u8 col) : row(row), col(col) {}
+
+        JSON ToJSON() const;
+        void FromJSON(const JSON &json);
+
+        void EditorUpdate(std::function<void()> onChanged = nullptr);
     };
 
     /**

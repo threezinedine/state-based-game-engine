@@ -491,6 +491,7 @@ namespace ntt::ecs
                 if (IsEntityInSystem(systemId, id))
                 {
                     system->entities.push_back(id);
+                    system->entities.Sorted();
                 }
             }
             else

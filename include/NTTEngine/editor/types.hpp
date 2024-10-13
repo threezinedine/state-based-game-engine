@@ -75,4 +75,11 @@ namespace ntt
         void From(const JSON &config);
         String GetConfigFilePath();
     };
+
+    struct EditorData
+    {
+        Ref<ProjectInfo> project;
+        Ref<SceneInfo> scene;
+        Ref<EditorConfig> config;
+    };
 } // namespace ntt

@@ -148,6 +148,8 @@ void Update()
     // ===================================================
 
     ClearBackground(::BLACK);
+    ECSUpdate(delta);
+    GraphicUpdate();
 
     // ===================================================
     // code of the game loop above

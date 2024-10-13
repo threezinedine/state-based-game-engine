@@ -30,9 +30,12 @@ namespace ntt::renderer
         {
         }
 
+        virtual void TurnOff() override;
+        virtual void TurnOn() override;
+
         String GetName() const override;
         JSON ToJSON() const override;
         void FromJSON(const JSON &json) override;
-        void OnEditorUpdate(std::function<void()> onChanged = nullptr) override;
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr) override;
     };
 } // namespace ntt::renderer

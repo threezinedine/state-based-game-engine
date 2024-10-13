@@ -27,7 +27,7 @@ namespace ntt
         ImGui::Separator();
         auto windowSize = GetWindowSize();
 
-        ImGui::Text(format("Texture ID: {}", texture->id).RawString().c_str());
+        ImGui::Text(format("Texture ID: {}", texture->GetTextureID()).RawString().c_str());
 
         ImGui::InputScalar(format("Row Index - Max {}", maxRow - 1).RawString().c_str(),
                            ImGuiDataType_U8,

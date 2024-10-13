@@ -149,6 +149,16 @@ namespace ntt
             return TRUE;
         }
 
+        /**
+         * Sorting the list with the provided callback for comparison
+         */
+        void Sorted(std::function<b8(const T &, const T &)> callback =
+                        [](const T &a, const T &b)
+                    { return a < b; })
+        {
+            std::sort(this->begin(), this->end(), callback);
+        }
+
         b8 operator==(const List<T> &list) const { return Equals(list); }
 
         /**

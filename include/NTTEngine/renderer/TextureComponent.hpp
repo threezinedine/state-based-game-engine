@@ -13,24 +13,30 @@ namespace ntt::renderer
      */
     struct TextureComponent : public ComponentBase
     {
-        resource_id_t id;
+        // resource_id_t id;
+        String resourceName;
         Grid currentCell;
         Grid textureGrid;
         String tooltip;
 
-        TextureComponent(resource_id_t id = RESOURCE_ID_DEFAULT,
+        TextureComponent(const String &resourceName = "",
                          u8 rowIndex = 0,
                          u8 colIndex = 0,
                          const String &tooltip = "")
-            : id(id),
+            : resourceName(resourceName),
               currentCell(rowIndex, colIndex),
               tooltip(tooltip)
         {
         }
 
-        String GetName() const override
-        {
-            return "TextureComponent";
-        }
+        resource_id_t GetTextureID() const;
+        String ResourceName() const;
+
+        String GetName() const override;
+
+        JSON ToJSON() const override;
+        void FromJSON(const JSON &json) override;
+
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr) override;
     };
 } // namespace ntt::renderer
