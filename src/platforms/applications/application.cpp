@@ -212,7 +212,7 @@ namespace ntt
 
         if (editor)
         {
-            TriggerEvent(NTT_EDITOR_STOP, {});
+            // TriggerEvent(NTT_EDITOR_STOP, {});
         }
 
         RegisterEvent(

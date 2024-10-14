@@ -5,10 +5,12 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <NTTEngine/core/logging/logging.hpp>
 #include "../editor_tool/editor_tool.hpp"
+#include <NTTEngine/application/event_system/event_system.hpp>
 
 namespace ntt
 {
     using namespace log;
+    using namespace event;
 
     class ViewportWindow::Impl
     {
@@ -86,6 +88,18 @@ namespace ntt
     void ViewportWindow::Update()
     {
         m_impl->editorTool->Update();
+
+        ImGui::Begin("Scene Run", NULL, ImGuiWindowFlags_NoTitleBar);
+        if (ImGui::Button("Run"))
+        {
+            TriggerEvent(NTT_EDITOR_START_GAME);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop"))
+        {
+            TriggerEvent(NTT_EDITOR_STOP_GAME);
+        }
+        ImGui::End();
 
         ImGui::Begin("Viewport");
         ImVec2 size = ImGui::GetContentRegionAvail();

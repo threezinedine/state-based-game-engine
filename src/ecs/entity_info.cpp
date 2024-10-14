@@ -5,16 +5,27 @@
 #include <NTTEngine/renderer/Geometry.hpp>
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/renderer/TextureComponent.hpp>
+#include <NTTEngine/physics/Mass.hpp>
 
 namespace ntt::ecs
 {
     using namespace renderer;
     using namespace log;
+    using namespace physics;
 
     namespace
     {
-        std::array<const char *, 2> componentTypes = {"Geometry", "TextureCompontent"};
-        std::array<std::type_index, 2> componentIndexes = {typeid(Geometry), typeid(TextureComponent)};
+        std::array<const char *, 3> componentTypes =
+            {
+                "Geometry",
+                "TextureCompontent",
+                "Mass"};
+
+        std::array<std::type_index, 3> componentIndexes =
+            {
+                typeid(Geometry),
+                typeid(TextureComponent),
+                typeid(Mass)};
         u8 selectedComponentType = 0;
     }
 
@@ -64,12 +75,17 @@ namespace ntt::ecs
             for (auto &component : components)
             {
                 ImGui::PushID(format("{}_{}", name, component.second->GetName()).RawString().c_str());
-                component.second->OnEditorUpdate(onChanged, data);
-
-                if (ImGui::Checkbox("Activate", &component.second->active))
+                if (ImGui::TreeNode(component.second->GetName().RawString().c_str()))
                 {
-                    component.second->active ? component.second->TurnOn() : component.second->TurnOff();
+                    component.second->OnEditorUpdate(onChanged, data);
+
+                    if (ImGui::Checkbox("Activate", &component.second->active))
+                    {
+                        component.second->active ? component.second->TurnOn() : component.second->TurnOff();
+                    }
+                    ImGui::TreePop();
                 }
+
                 ImGui::PopID();
             }
 
@@ -139,6 +155,10 @@ namespace ntt::ecs
                 else if (type == typeid(TextureComponent))
                 {
                     components[type] = CreateRef<TextureComponent>();
+                }
+                else if (type == typeid(Mass))
+                {
+                    components[type] = CreateRef<Mass>();
                 }
 
                 selectedComponentType = 0;

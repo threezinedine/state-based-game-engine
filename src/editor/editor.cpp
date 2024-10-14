@@ -130,6 +130,17 @@ namespace ntt
             CloseFile();
         }
 
+        void OnEditorStartGame(event_code_t code, void *sender, const EventContext &context)
+        {
+            ECSLayerMakeVisible(GAME_LAYER);
+        }
+
+        void OnEditorStopGame(event_code_t code, void *sender, const EventContext &context)
+        {
+            ECSLayerMakeVisible(EDITOR_LAYER);
+            s_scene->ReloadEntities();
+        }
+
         void OnSaveProject(event_code_t code, void *sender, const EventContext &context)
         {
             OpenFile(s_project->GetProjectFilePath());
@@ -239,6 +250,8 @@ namespace ntt
         // ========================================
         // Event registration below
         // ========================================
+        RegisterEvent(NTT_EDITOR_START_GAME, OnEditorStartGame);
+        RegisterEvent(NTT_EDITOR_STOP_GAME, OnEditorStopGame);
         RegisterEvent(NTT_EDITOR_SAVE_CONFIG, OnEditorSaveConfig);
         RegisterEvent(NTT_EDITOR_CREATE_PROJECT, OnEditorCreateProject);
         RegisterEvent(NTT_EDITOR_PROJECT_LOADED, OnProjectLoadded);

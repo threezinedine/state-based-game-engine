@@ -1,12 +1,14 @@
 #include <NTTEngine/ecs/ecs_helper.hpp>
 #include <NTTEngine/renderer/Geometry.hpp>
 #include <NTTEngine/renderer/TextureComponent.hpp>
+#include <NTTEngine/physics/Mass.hpp>
 
 namespace ntt
 {
     using namespace memory;
     using namespace ecs;
     using namespace renderer;
+    using namespace physics;
 
     Dictionary<std::type_index, Ref<ComponentBase>> ECS_From(const JSON &json)
     {
@@ -24,6 +26,13 @@ namespace ntt
             Ref<TextureComponent> textureComponent = CreateRef<TextureComponent>();
             textureComponent->FromJSON(json.Get<JSON>("TextureComponent"));
             components[typeid(TextureComponent)] = textureComponent;
+        }
+
+        if (json.Contains<JSON>("Mass"))
+        {
+            Ref<Mass> mass = CreateRef<Mass>();
+            mass->FromJSON(json.Get<JSON>("Mass"));
+            components[typeid(Mass)] = mass;
         }
 
         return components;

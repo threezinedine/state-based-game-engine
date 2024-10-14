@@ -79,9 +79,8 @@ namespace ntt::event
 
 #define NTT_SCRIPT_FILE_CHANGED 0x13 ///< When the script file is changed
 
-#define NTT_EDITOR_START 0x14 ///< When the editor is started
-#define NTT_EDITOR_PAUSE 0x15 ///< When the editor is paused
-#define NTT_EDITOR_STOP 0x16  ///< When the editor is stopped
+#define NTT_EDITOR_START_GAME 0x14 ///< When the editor is started
+#define NTT_EDITOR_STOP_GAME 0x16  ///< When the editor is stopped
 
 #define NTT_LAYER_CHANGED 0x0D         ///< When the layer is changed
 #define NTT_DEFINED_LAYER_CHANGED 0x17 ///< When the defined layer is changed (not visible layer)

@@ -61,20 +61,20 @@ namespace ntt::ecs
 
         List<entity_id_t> s_selectedEntities;
 
-        void InitEditor(event_code_t code, void *sender, const EventContext &context)
-        {
-            PROFILE_FUNCTION();
+        // void InitEditor(event_code_t code, void *sender, const EventContext &context)
+        // {
+        //     PROFILE_FUNCTION();
 
-            preLayer = currentRunningLayer;
-            ECSLayerMakeVisible(EDITOR_LAYER);
-        }
+        //     preLayer = currentRunningLayer;
+        //     ECSLayerMakeVisible(EDITOR_LAYER);
+        // }
 
-        void EditorRun(event_code_t code, void *sender, const EventContext &context)
-        {
-            PROFILE_FUNCTION();
+        // void EditorRun(event_code_t code, void *sender, const EventContext &context)
+        // {
+        //     PROFILE_FUNCTION();
 
-            ECSLayerMakeVisible(preLayer);
-        }
+        //     ECSLayerMakeVisible(preLayer);
+        // }
 
         void ResetEntitiesState()
         {
@@ -227,8 +227,8 @@ namespace ntt::ecs
         currentRunningLayer = GAME_LAYER;
         uiLayerVisible = INVALID_UI_LAYER;
 
-        RegisterEvent(NTT_EDITOR_STOP, InitEditor);
-        RegisterEvent(NTT_EDITOR_START, EditorRun);
+        // RegisterEvent(NTT_EDITOR_STOP, InitEditor);
+        // RegisterEvent(NTT_EDITOR_START, EditorRun);
     }
 
     void ECSRegister(String name, Ref<System> system,

@@ -31,12 +31,12 @@ namespace ntt::physics
         {
         }
 
-        void AddForceConst(position_t x, position_t y)
-        {
-            force_x = x;
-            force_y = y;
-            acc_x = force_x / mass;
-            acc_y = force_y / mass;
-        }
+        void AddForceConst(position_t x, position_t y);
+
+        String GetName() const override;
+        void FromJSON(const JSON &json) override;
+        JSON ToJSON() const override;
+
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr) override;
     };
 } // namespace ntt
