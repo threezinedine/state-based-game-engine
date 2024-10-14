@@ -46,7 +46,7 @@ namespace ntt
         s_lineOffsets.push_back(0);
     }
 
-    void LogWindow::UpdateImpl(b8 *p_open)
+    void LogWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
         if (ImGui::Begin("Log", p_open))
         {

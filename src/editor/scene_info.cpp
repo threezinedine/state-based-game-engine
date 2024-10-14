@@ -14,6 +14,7 @@ namespace ntt
         JSON config = ReadFile(filePath);
         List<JSON> entitiesCfg = config.GetList<JSON>("entities");
         entities.clear();
+        m_entityIDs.clear();
 
         for (auto &entity : entitiesCfg)
         {
@@ -47,11 +48,25 @@ namespace ntt
         entities.push_back(entity);
     }
 
-    JSON SceneInfo::ToJSON() const
+    JSON SceneInfo::ToJSON()
     {
         JSON scene = JSON("{}");
         scene.Set("sceneName", sceneName);
         scene.Set("filePath", filePath);
+
+        List<JSON> resourceJSONs =
+            resources.Map<JSON>([](const ResourceInfo &info, ...) -> JSON
+                                { return info.ToJSON(); });
+
+        scene.Set("resources", JSON::FromList(resourceJSONs));
+
+        List<JSON> entitiesJSON =
+            entities
+                .Map<JSON>([](const Ref<EntityInfo> &info, ...) -> JSON
+                           { return info->ToJSON(); });
+
+        scene.Set("entities", JSON::FromList(entitiesJSON));
+
         return scene;
     }
 
@@ -83,7 +98,7 @@ namespace ntt
             resources.Map<JSON>([](const ResourceInfo &info, ...) -> JSON
                                 { return info.ToJSON(); });
 
-        config.Set("resources", resourceJSONs);
+        config.Set("resources", JSON::FromList(resourceJSONs));
 
         OpenFile(filePath);
         Write(config.ToString());

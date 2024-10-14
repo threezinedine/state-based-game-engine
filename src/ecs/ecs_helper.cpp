@@ -2,6 +2,7 @@
 #include <NTTEngine/renderer/Geometry.hpp>
 #include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/physics/Mass.hpp>
+#include <NTTEngine/renderer/Sprite.hpp>
 
 namespace ntt
 {
@@ -33,6 +34,13 @@ namespace ntt
             Ref<Mass> mass = CreateRef<Mass>();
             mass->FromJSON(json.Get<JSON>("Mass"));
             components[typeid(Mass)] = mass;
+        }
+
+        if (json.Contains<JSON>("Sprite"))
+        {
+            Ref<Sprite> sprite = CreateRef<Sprite>();
+            sprite->FromJSON(json.Get<JSON>("Sprite"));
+            components[typeid(Sprite)] = sprite;
         }
 
         return components;

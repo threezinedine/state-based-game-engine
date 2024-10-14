@@ -7,6 +7,8 @@ using namespace ntt;
 using namespace ntt::ecs;
 using namespace ntt::renderer;
 
+#define TIME_FACTOR (1.0f / 10)
+
 namespace ntt::physics
 {
 #define THIS(exp) m_impl->exp
@@ -44,11 +46,11 @@ namespace ntt::physics
         auto mass = ECS_GET_COMPONENT(id, Mass);
         auto geo = ECS_GET_COMPONENT(id, Geometry);
 
-        mass->velocity_x += mass->acc_x * delta;
-        mass->velocity_y += mass->acc_y * delta;
+        mass->velocity_x += mass->acc_x * delta * TIME_FACTOR;
+        mass->velocity_y += mass->acc_y * delta * TIME_FACTOR;
 
-        geo->pos.x += mass->velocity_x * delta;
-        geo->pos.y += mass->velocity_y * delta;
+        geo->pos.x += mass->velocity_x * delta * TIME_FACTOR;
+        geo->pos.y += mass->velocity_y * delta * TIME_FACTOR;
     }
 
     void MassSystem::ShutdownEntity(entity_id_t id)

@@ -179,6 +179,8 @@ namespace ntt
      *
      * @param extension: The extension to be checked, the extension must
      *      be started with the dot (.)
+     *
+     *      Example: ".txt", ".png", ".jpg"
      */
     b8 CheckFileExtension(const String &file, const String &extension);
 

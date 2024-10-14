@@ -33,7 +33,7 @@ namespace ntt
         m_impl->isRunning = FALSE;
     }
 
-    void NewProjectWindow::UpdateImpl(b8 *p_open)
+    void NewProjectWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
         if (ImGui::Begin("New Project Info", p_open, 0))
         {

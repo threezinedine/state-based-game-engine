@@ -21,7 +21,7 @@ namespace ntt
         List<Ref<EntityInfo>> entities;
         List<ResourceInfo> resources;
 
-        JSON ToJSON() const;
+        JSON ToJSON();
         void FromJSON(const JSON &scene);
 
         void ReloadResourceInfo();
@@ -35,14 +35,6 @@ namespace ntt
         List<entity_id_t> m_entityIDs;
     };
 
-    template <>
-    inline String format(const String &str, const SceneInfo &info)
-    {
-        String newStr = str;
-        newStr.Replace("{}", info.ToJSON().ToString(), FALSE);
-        return newStr;
-    }
-
     struct ProjectInfo
     {
         String name;
@@ -51,6 +43,7 @@ namespace ntt
         i32 height = 600;
         String title;
         String defaultResourceFile;
+        String defaultSceneName;
         Dictionary<String, Ref<SceneInfo>> scenes;
         List<ResourceInfo> defaultResources;
 

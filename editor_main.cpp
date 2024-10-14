@@ -152,6 +152,7 @@ int main(void)
 void Update()
 {
     auto delta = static_cast<f32>(s_timer.GetMilliseconds());
+    s_timer.Reset();
 
     BeginDrawing();
 

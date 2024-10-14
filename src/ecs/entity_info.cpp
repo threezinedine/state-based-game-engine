@@ -6,6 +6,7 @@
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/physics/Mass.hpp>
+#include <NTTEngine/renderer/Sprite.hpp>
 
 namespace ntt::ecs
 {
@@ -15,17 +16,19 @@ namespace ntt::ecs
 
     namespace
     {
-        std::array<const char *, 3> componentTypes =
+        List<String> componentTypes =
             {
                 "Geometry",
                 "TextureCompontent",
-                "Mass"};
+                "Mass",
+                "Sprite"};
 
-        std::array<std::type_index, 3> componentIndexes =
+        List<std::type_index> componentIndexes =
             {
                 typeid(Geometry),
                 typeid(TextureComponent),
-                typeid(Mass)};
+                typeid(Mass),
+                typeid(Sprite)};
         u8 selectedComponentType = 0;
     }
 
@@ -117,12 +120,12 @@ namespace ntt::ecs
         {
             if (ImGui::BeginCombo(
                     "Component",
-                    componentTypes[selectedComponentType]))
+                    componentTypes[selectedComponentType].RawString().c_str()))
             {
                 for (u8 i = 0; i < componentTypes.size(); i++)
                 {
                     b8 isSelected = selectedComponentType == i;
-                    if (ImGui::Selectable(componentTypes[i], isSelected))
+                    if (ImGui::Selectable(componentTypes[i].RawString().c_str(), isSelected))
                     {
                         selectedComponentType = i;
                     }
@@ -159,6 +162,10 @@ namespace ntt::ecs
                 else if (type == typeid(Mass))
                 {
                     components[type] = CreateRef<Mass>();
+                }
+                else if (type == typeid(Sprite))
+                {
+                    components[type] = CreateRef<Sprite>();
                 }
 
                 selectedComponentType = 0;

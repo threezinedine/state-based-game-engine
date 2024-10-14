@@ -31,14 +31,14 @@ namespace ntt
         InitImpl();
     }
 
-    void OpenClosableWindow::Update()
+    void OpenClosableWindow::Update(ImGuiWindowFlags flags)
     {
         if (!m_impl->isRunning)
         {
             return;
         }
 
-        UpdateImpl(&(m_impl->isRunning));
+        UpdateImpl(&(m_impl->isRunning), flags);
     }
 
     void OpenClosableWindow::Shutdown()

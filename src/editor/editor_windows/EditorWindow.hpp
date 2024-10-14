@@ -1,5 +1,6 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
+#include "imgui.h"
 
 namespace ntt
 {
@@ -22,7 +23,7 @@ namespace ntt
          * Function which will both drawing and updating the logic of the window.
          * This function will be called each frame of the editor
          */
-        virtual void Update() = 0;
+        virtual void Update(ImGuiWindowFlags flags = 0) = 0;
 
         /**
          * Release all the resources of the editor. Called once at the end of the

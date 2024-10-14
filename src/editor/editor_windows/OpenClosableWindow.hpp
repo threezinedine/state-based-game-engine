@@ -43,7 +43,7 @@ namespace ntt
         // ========================================================================
 
         void Init() override;
-        void Update() override;
+        void Update(ImGuiWindowFlags flags) override;
         void Shutdown() override;
 
         // ========================================================================
@@ -62,7 +62,7 @@ namespace ntt
          * @param p_open: The pointer to the boolean value which represent the
          *      visibility of the window (TRUE: visible, FALSE: invisible)
          */
-        virtual void UpdateImpl(b8 *p_open) = 0;
+        virtual void UpdateImpl(b8 *p_open, ImGuiWindowFlags flags) = 0;
 
         /**
          * Implemnt this interface for releasing all the resources of the window

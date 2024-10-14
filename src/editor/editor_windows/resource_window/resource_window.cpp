@@ -221,11 +221,11 @@ namespace ntt
         m_impl->ResourceInit();
     }
 
-    void ResourceWindow::UpdateImpl(b8 *p_open)
+    void ResourceWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
         if (m_impl->imageWindow != nullptr)
         {
-            m_impl->imageWindow->Update();
+            m_impl->imageWindow->Update(flags);
         }
 
         if (ImGui::Begin("Resource", p_open))

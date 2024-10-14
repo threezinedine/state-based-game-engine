@@ -36,7 +36,7 @@ namespace ntt
     {
     }
 
-    void NewSceneWindow::UpdateImpl(b8 *p_open)
+    void NewSceneWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
         // centering the window
         ImVec2 displaySize = ImGui::GetIO().DisplaySize;

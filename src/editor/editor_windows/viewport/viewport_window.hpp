@@ -19,7 +19,7 @@ namespace ntt
         void OnStopDraw();
 
         void Init() override;
-        void Update() override;
+        void Update(ImGuiWindowFlags flags) override;
         void Shutdown() override;
 
     private:

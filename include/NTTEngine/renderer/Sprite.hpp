@@ -27,9 +27,11 @@ namespace ntt::renderer
             timer.Reset();
         }
 
-        String GetName() const override
-        {
-            return "Sprite";
-        }
+        String GetName() const override;
+
+        void FromJSON(const JSON &json) override;
+        JSON ToJSON() const override;
+
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr) override;
     };
 } // namespace ntt::renderer

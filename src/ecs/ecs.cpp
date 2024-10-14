@@ -226,9 +226,6 @@ namespace ntt::ecs
         currentLayer = GAME_LAYER;
         currentRunningLayer = GAME_LAYER;
         uiLayerVisible = INVALID_UI_LAYER;
-
-        // RegisterEvent(NTT_EDITOR_STOP, InitEditor);
-        // RegisterEvent(NTT_EDITOR_START, EditorRun);
     }
 
     void ECSRegister(String name, Ref<System> system,

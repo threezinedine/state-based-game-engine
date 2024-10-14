@@ -43,9 +43,9 @@ namespace ntt
     {
     }
 
-    void SceneWindow::UpdateImpl(b8 *p_open)
+    void SceneWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
-        ImGui::Begin("Scene", p_open);
+        ImGui::Begin("Scene", p_open, flags);
         if (m_impl->scene->sceneName == "")
         {
             ImGui::Text("Non scene is selected");

@@ -51,7 +51,7 @@ namespace ntt
         // RegisterEvent(NTT_EDITOR_STOP, OnEditorStop);
     }
 
-    void EditorTool::UpdateImpl(b8 *p_open)
+    void EditorTool::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
         PROFILE_FUNCTION();
 

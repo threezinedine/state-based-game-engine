@@ -132,11 +132,33 @@ namespace ntt
 
         void OnEditorStartGame(event_code_t code, void *sender, const EventContext &context)
         {
+            if (s_scene->sceneName == "")
+            {
+                return;
+            }
+
+            if (s_isRunning)
+            {
+                return;
+            }
+
+            s_isRunning = TRUE;
             ECSLayerMakeVisible(GAME_LAYER);
         }
 
         void OnEditorStopGame(event_code_t code, void *sender, const EventContext &context)
         {
+            if (s_scene->sceneName == "")
+            {
+                return;
+            }
+
+            if (!s_isRunning)
+            {
+                return;
+            }
+
+            s_isRunning = FALSE;
             ECSLayerMakeVisible(EDITOR_LAYER);
             s_scene->ReloadEntities();
         }
@@ -434,6 +456,23 @@ namespace ntt
             ImGui::EndMainMenuBar();
         }
 
+        ImGui::Begin("Scene Run", NULL, ImGuiWindowFlags_NoTitleBar);
+        if (s_isRunning)
+        {
+            if (ImGui::Button("Stop"))
+            {
+                TriggerEvent(NTT_EDITOR_STOP_GAME);
+            }
+        }
+        else
+        {
+            if (ImGui::Button("Run"))
+            {
+                TriggerEvent(NTT_EDITOR_START_GAME);
+            }
+        }
+        ImGui::End();
+
         ImGuiIO &io = ImGui::GetIO();
         if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_N)))
         {
@@ -474,7 +513,7 @@ namespace ntt
         {
             if (window != nullptr)
             {
-                window->Update();
+                window->Update(s_isRunning ? ImGuiWindowFlags_NoInputs : 0);
             }
         }
 

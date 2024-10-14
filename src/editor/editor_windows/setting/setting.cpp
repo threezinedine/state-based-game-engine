@@ -29,7 +29,7 @@ namespace ntt
     {
     }
 
-    void SettingWindow::UpdateImpl(b8 *p_open)
+    void SettingWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
         if (ImGui::Begin("Setting", p_open))
         {

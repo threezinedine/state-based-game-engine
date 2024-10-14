@@ -38,7 +38,7 @@ namespace ntt
     {
     }
 
-    void OpenSceneWindow::UpdateImpl(b8 *p_open)
+    void OpenSceneWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
         if (ImGui::Begin("Open Scene", p_open))
         {

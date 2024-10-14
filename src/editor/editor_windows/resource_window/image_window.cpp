@@ -117,7 +117,7 @@ namespace ntt
     {
     }
 
-    void ImageWindow::UpdateImpl(b8 *p_open)
+    void ImageWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
         if (m_impl->renderTexture.id == 0)
         {

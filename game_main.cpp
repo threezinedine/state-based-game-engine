@@ -13,6 +13,13 @@
 #include <NTTEngine/editor/editor_system.hpp>
 
 #include <NTTEngine/application/script_system/native_script_system.hpp>
+#include <NTTEngine/platforms/path.hpp>
+#include <NTTEngine/editor/types.hpp>
+#include <NTTEngine/core/memory.hpp>
+
+using namespace ntt;
+using namespace ntt::memory;
+using namespace ntt::log;
 
 void Update();
 
@@ -39,8 +46,24 @@ int main(void)
             CreateRef<EditorLogHandler>(),
         });
 
+    List<String> fileNames = ListFiles(CurrentDirectory());
+
+    Scope<ProjectInfo> project = CreateScope<ProjectInfo>();
+
+    for (auto fileName : fileNames)
+    {
+        if (CheckFileExtension(fileName, ".nttproj"))
+        {
+            project->From(ReadFile(fileName));
+            SetWindowSize(
+                {static_cast<position_t>(project->width),
+                 static_cast<position_t>(project->height)});
+            break;
+        }
+    }
+
     SetTraceLogLevel(LOG_NONE);
-    InitWindow(800, 600, "NTT Engine");
+    InitWindow(project->width, project->height, "NTT Engine");
     SetTargetFPS(60);
 
     AudioInit();
@@ -104,6 +127,22 @@ int main(void)
     s_timer.Reset();
     // EditorInit(CurrentDirectory());
 
+    if (project->scenes.Contains(project->defaultSceneName))
+    {
+        String sceneCfgFilePath = JoinPath({project->path,
+                                            "scenes",
+                                            format("{}.json", project->defaultSceneName)});
+        JSON sceneCfg = JSON(ReadFile(sceneCfgFilePath));
+        Scope<SceneInfo> scene = CreateScope<SceneInfo>();
+        project->ReloadDefaultResourcesInfo();
+        ResourceLoad(project->defaultResources);
+
+        scene->FromJSON(sceneCfg);
+        scene->ReloadResourceInfo();
+        ResourceLoad(scene->resources);
+        scene->ReloadEntities();
+    }
+
     ProfilingBegin("Update");
     while (!WindowShouldClose())
     {
@@ -135,13 +174,19 @@ int main(void)
 void Update()
 {
     auto delta = static_cast<f32>(s_timer.GetMilliseconds());
+    s_timer.Reset();
 
-    EditorBeginDraw();
+    BeginDrawing();
     // ===================================================
     // code of the game loop below
     // ===================================================
 
     ClearBackground(::BLACK);
+    InputUpdate(delta);
+    MouseHoveringSystemUpdate(delta);
+
+    ECSUpdate(delta);
+    GraphicUpdate();
 
     // ===================================================
     // code of the game loop above

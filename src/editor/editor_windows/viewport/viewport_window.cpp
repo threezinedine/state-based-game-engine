@@ -85,21 +85,9 @@ namespace ntt
         m_impl->editorTool->Open();
     }
 
-    void ViewportWindow::Update()
+    void ViewportWindow::Update(ImGuiWindowFlags flags)
     {
-        m_impl->editorTool->Update();
-
-        ImGui::Begin("Scene Run", NULL, ImGuiWindowFlags_NoTitleBar);
-        if (ImGui::Button("Run"))
-        {
-            TriggerEvent(NTT_EDITOR_START_GAME);
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Stop"))
-        {
-            TriggerEvent(NTT_EDITOR_STOP_GAME);
-        }
-        ImGui::End();
+        m_impl->editorTool->Update(flags);
 
         ImGui::Begin("Viewport");
         ImVec2 size = ImGui::GetContentRegionAvail();

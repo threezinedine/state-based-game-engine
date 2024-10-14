@@ -10,6 +10,7 @@ namespace ntt
         width = project.Get<i32>("width", 800);
         height = project.Get<i32>("height", 600);
         title = project.Get<String>("title");
+        defaultSceneName = project.Get<String>("defaultSceneName");
         defaultResourceFile = project.Get<String>("defaultResourceFile");
 
         List<String> sceneNames = project.GetList<String>("sceneNames");
@@ -33,6 +34,7 @@ namespace ntt
         project.Set("height", height);
         project.Set("title", title);
         project.Set("defaultResourceFile", defaultResourceFile);
+        project.Set("defaultSceneName", defaultSceneName);
         project.Set("sceneNames", scenes.Keys());
         return project;
     }
@@ -45,6 +47,17 @@ namespace ntt
     void ProjectInfo::AddNewScene(const String &sceneName)
     {
         Ref<SceneInfo> scene = CreateRef<SceneInfo>();
+        if (scenes.Contains(sceneName))
+        {
+            NTT_ENGINE_DEBUG("The scene with name {} is already existed", sceneName);
+            return;
+        }
+
+        if (scenes.size() == 0)
+        {
+            defaultSceneName = sceneName;
+        }
+
         scene->sceneName = sceneName;
         scene->filePath = JoinPath({path, "scenes", format("{}.json", sceneName)});
         scenes[sceneName] = scene;
@@ -57,10 +70,7 @@ namespace ntt
         if (!IsExist(scene->filePath))
         {
             OpenFile(scene->filePath);
-            Write(R"({
-                        "resources": [],
-                        "entities": [] 
-                    })");
+            Write(scene->ToJSON().ToString());
             CloseFile();
         }
     }
