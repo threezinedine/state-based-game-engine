@@ -33,24 +33,10 @@ namespace ntt
         String path;          ///< The absolute path to the resource file.
         JSON addintionalInfo; ///< Other needed information for the resource.
 
-        JSON ToJSON() const
-        {
-            JSON result;
-            result.Set("name", name);
-            result.Set("type", static_cast<u32>(type));
-            result.Set("path", path);
-            result.Set("extra", addintionalInfo);
+        void From(const JSON &data);
+        JSON ToJSON() const;
 
-            return result;
-        }
-
-        void From(const JSON &data)
-        {
-            name = data.Get<String>("name");
-            type = static_cast<ResourceType>(data.Get<u32>("type"));
-            path = data.Get<String>("path");
-            addintionalInfo = data.Get<JSON>("extra");
-        }
+        void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr);
     };
 
 } // namespace ntt

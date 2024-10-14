@@ -19,12 +19,13 @@ namespace ntt
         String sceneName;
         String filePath;
         List<Ref<EntityInfo>> entities;
+        List<ResourceInfo> resources;
 
         JSON ToJSON() const;
         void FromJSON(const JSON &scene);
 
-        List<ResourceInfo> GetResourceInfo();
-        void SaveResourceInfo(List<ResourceInfo> resourcesInfo);
+        void ReloadResourceInfo();
+        void SaveResourceInfo();
 
         void ReloadEntities();
         void SaveEntitiesInfo();
@@ -51,15 +52,19 @@ namespace ntt
         String title;
         String defaultResourceFile;
         Dictionary<String, Ref<SceneInfo>> scenes;
+        List<ResourceInfo> defaultResources;
 
         ProjectInfo() = default;
 
         JSON ToJSON();
         void From(const JSON &project);
         String GetProjectFilePath();
+
         void AddNewScene(const String &sceneName);
-        List<ResourceInfo> GetDefaultResourcesInfo();
-        void SaveDefaultResources(List<ResourceInfo> resources);
+
+        void ReloadDefaultResourcesInfo();
+        void SaveDefaultResources();
+
         b8 ContainScene(Ref<SceneInfo> scene);
     };
 

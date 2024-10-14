@@ -65,9 +65,9 @@ namespace ntt
         }
     }
 
-    List<ResourceInfo> ProjectInfo::GetDefaultResourcesInfo()
+    void ProjectInfo::ReloadDefaultResourcesInfo()
     {
-        List<ResourceInfo> resources;
+        defaultResources.clear();
 
         auto defaultConfigFile =
             JoinPath({path, defaultResourceFile});
@@ -80,17 +80,15 @@ namespace ntt
 
             for (auto &resource : resourcesInfo)
             {
-                resources.push_back(resource);
+                defaultResources.push_back(resource);
             }
         }
-
-        return resources;
     }
 
-    void ProjectInfo::SaveDefaultResources(List<ResourceInfo> resources)
+    void ProjectInfo::SaveDefaultResources()
     {
         List<JSON> jsons =
-            resources
+            defaultResources
                 .Map<JSON>([](const ResourceInfo &info, ...) -> JSON
                            { return info.ToJSON(); });
 

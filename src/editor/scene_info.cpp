@@ -61,9 +61,9 @@ namespace ntt
         filePath = scene.Get<String>("filePath");
     }
 
-    List<ResourceInfo> SceneInfo::GetResourceInfo()
+    void SceneInfo::ReloadResourceInfo()
     {
-        List<ResourceInfo> resourcesInfo;
+        resources.clear();
         JSON config = ReadFile(filePath);
 
         List<JSON> resourcesCfg = config.GetList<JSON>("resources");
@@ -72,18 +72,16 @@ namespace ntt
         {
             ResourceInfo info;
             info.From(resource);
-            resourcesInfo.push_back(info);
+            resources.push_back(info);
         }
-
-        return resourcesInfo;
     }
 
-    void SceneInfo::SaveResourceInfo(List<ResourceInfo> resourcesInfo)
+    void SceneInfo::SaveResourceInfo()
     {
         JSON config = ReadFile(filePath);
         List<JSON> resourceJSONs =
-            resourcesInfo.Map<JSON>([](const ResourceInfo &info, ...) -> JSON
-                                    { return info.ToJSON(); });
+            resources.Map<JSON>([](const ResourceInfo &info, ...) -> JSON
+                                { return info.ToJSON(); });
 
         config.Set("resources", resourceJSONs);
 

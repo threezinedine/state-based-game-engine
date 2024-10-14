@@ -1,8 +1,10 @@
 [
     {
         "extra": {
-            "numCol": 1,
-            "numRow": 1
+            "grid": {
+                "col": 1,
+                "row": 1
+            }
         },
         "name": "test",
         "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\background-day.png",

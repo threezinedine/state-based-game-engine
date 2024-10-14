@@ -17,10 +17,9 @@ namespace ntt
     {
     public:
         Ref<ProjectInfo> project;
-        List<ResourceInfo> default_resources;
-        List<ResourceInfo> scene_resources;
         Ref<EditorConfig> config;
         Ref<SceneInfo> scene;
+        EditorData data;
 
         char resourceName[128];
         String resourcePath;
@@ -35,36 +34,32 @@ namespace ntt
         void ComponentImageDraw(ResourceInfo &info)
         {
             static i32 numCol = 1, numRow = 1;
-            numCol = info.addintionalInfo.Get("numCol", 1);
-            numRow = info.addintionalInfo.Get("numRow", 1);
+            Grid grid{1, 1};
+            grid.FromJSON(info.addintionalInfo.Get<JSON>("grid"));
 
-            ImGui::InputInt(format("Num Rows", info.name).RawString().c_str(), &numRow, 1, 10);
-            ImGui::InputInt(format("Num Cols", info.name).RawString().c_str(), &numCol, 1, 10);
+            grid.row = grid.row != 0 ? grid.row : 1;
+            grid.col = grid.col != 0 ? grid.col : 1;
 
-            if (numCol != info.addintionalInfo.Get("numCol", 1) ||
-                numRow != info.addintionalInfo.Get("numRow", 1))
-            {
-                info.addintionalInfo.Set("numCol", numCol);
-                info.addintionalInfo.Set("numRow", numRow);
-
+            grid.EditorUpdate(
+                [&]()
+                {
                 if (imageWindow != nullptr)
                 {
-                    imageWindow->ChangeGrid(numRow, numCol);
+                    imageWindow->ChangeGrid(grid.row, grid.col);
                 }
-
-                Save();
-            }
+                info.addintionalInfo.Set("grid", grid.ToJSON());
+                Save(); });
 
             if (ImGui::Button(format("Show", info.name).RawString().c_str()))
             {
                 if (imageWindow == nullptr)
                 {
-                    imageWindow = CreateScope<ImageWindow>(info.path, numRow, numCol);
+                    imageWindow = CreateScope<ImageWindow>(info.path, grid.row, grid.col);
                     imageWindow->Init();
                 }
                 else
                 {
-                    imageWindow->ChangeImage(info.path, numRow, numCol);
+                    imageWindow->ChangeImage(info.path, grid.row, grid.col);
                 }
 
                 imageWindow->Open();
@@ -91,42 +86,25 @@ namespace ntt
 
         void Save()
         {
-            project->SaveDefaultResources(default_resources);
-            default_resources = project->GetDefaultResourcesInfo();
+            ResourceUnload(scene->resources);
+            ResourceUnload(project->defaultResources);
+            project->SaveDefaultResources();
 
             if (HasScene())
             {
-                scene->SaveResourceInfo(scene_resources);
-                scene_resources = scene->GetResourceInfo();
+                scene->SaveResourceInfo();
             }
+
+            ResourceLoad(project->defaultResources);
+            ResourceLoad(scene->resources);
         }
 
-        void EditorWindowDraw(ResourceInfo &info, b8 scene = FALSE)
+        void EditorWindowDraw(ResourceInfo &info, b8 useScene = FALSE)
         {
-            auto path = SubtractPath(info.path, project->path);
-
-            ImGui::Text("Name: %s", info.name.RawString().c_str());
-            ImGui::SameLine();
-            if (ImGui::Button("Rename"))
-            {
-                ImGui::OpenPopup("rename");
-            }
-
-            ImGui::Text("Type: %s", resourceTypes[static_cast<u32>(info.type)]);
-
-            ImGui::Text("Path: %s", path.RawString().c_str());
-            ImGui::SameLine();
-            if (ImGui::Button("Browse"))
-            {
-                IGFD::FileDialogConfig config;
-                config.path = project->path.RawString();
-
-                ImGuiFileDialog::Instance()->OpenDialog(
-                    "changeFile",
-                    "Choose file",
-                    extensions[static_cast<u32>(info.type)],
-                    config);
-            }
+            info.OnEditorUpdate(
+                [&]()
+                { Save(); },
+                &data);
 
             switch (info.type)
             {
@@ -142,16 +120,16 @@ namespace ntt
             {
                 ResourceUnload({info});
 
-                if (scene)
+                if (useScene)
                 {
-                    scene_resources.RemoveItem(
+                    scene->resources.RemoveItem(
                         info,
                         [](const ResourceInfo &a, const ResourceInfo &b) -> b8
                         { return a.name == b.name; });
                 }
                 else
                 {
-                    default_resources.RemoveItem(
+                    project->defaultResources.RemoveItem(
                         info,
                         [](const ResourceInfo &a, const ResourceInfo &b) -> b8
                         {
@@ -192,19 +170,15 @@ namespace ntt
 
         void ResourceInit()
         {
-            ResourceUnload(default_resources);
-
-            default_resources.clear();
-            scene_resources.clear();
-
-            default_resources = project->GetDefaultResourcesInfo();
-            ResourceLoad(default_resources);
+            ResourceUnload(project->defaultResources);
+            project->ReloadDefaultResourcesInfo();
+            ResourceLoad(project->defaultResources);
 
             if (HasScene())
             {
-                ResourceUnload(scene_resources);
-                scene_resources = scene->GetResourceInfo();
-                ResourceLoad(scene_resources);
+                ResourceUnload(scene->resources);
+                scene->ReloadResourceInfo();
+                ResourceLoad(scene->resources);
             }
         }
     };
@@ -223,6 +197,10 @@ namespace ntt
         memset(m_impl->resourceName, 0, sizeof(m_impl->resourceName));
         m_impl->currentTypeIndex = 0;
         m_impl->resourcePath = "";
+
+        m_impl->data.project = project;
+        m_impl->data.config = config;
+        m_impl->data.scene = scene;
 
         m_impl->ResourceInit();
     }
@@ -263,18 +241,17 @@ namespace ntt
             ImGui::SameLine();
             if (ImGui::Button("Save"))
             {
-                ResourceUnload(m_impl->scene_resources);
-                ResourceUnload(m_impl->default_resources);
-
-                m_impl->project->SaveDefaultResources(m_impl->default_resources);
+                ResourceUnload(m_impl->scene->resources);
+                ResourceUnload(m_impl->project->defaultResources);
+                m_impl->project->SaveDefaultResources();
 
                 if (m_impl->HasScene())
                 {
-                    m_impl->scene->SaveResourceInfo(m_impl->scene_resources);
+                    m_impl->scene->SaveResourceInfo();
                 }
 
-                ResourceLoad(m_impl->default_resources);
-                ResourceLoad(m_impl->scene_resources);
+                ResourceLoad(m_impl->project->defaultResources);
+                ResourceLoad(m_impl->scene->resources);
             }
             ImGui::Separator();
 
@@ -282,7 +259,7 @@ namespace ntt
             if (ImGui::TreeNode("Default"))
             {
                 ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
-                for (auto &info : m_impl->default_resources)
+                for (auto &info : m_impl->project->defaultResources)
                 {
                     ImGui::PushID(info.name.RawString().c_str());
                     if (ImGui::TreeNode(info.name.RawString().c_str()))
@@ -302,7 +279,7 @@ namespace ntt
 
                 if (ImGui::TreeNode(m_impl->scene->sceneName.RawString().c_str()))
                 {
-                    for (auto &info : m_impl->scene_resources)
+                    for (auto &info : m_impl->scene->resources)
                     {
                         ImGui::PushID(info.name.RawString().c_str());
                         if (ImGui::TreeNode(info.name.RawString().c_str()))
@@ -408,11 +385,11 @@ namespace ntt
 
                 if (m_impl->createInDefaultResource || !m_impl->HasScene())
                 {
-                    m_impl->default_resources.push_back(info);
+                    m_impl->project->defaultResources.push_back(info);
                 }
                 else
                 {
-                    m_impl->scene_resources.push_back(info);
+                    m_impl->scene->resources.push_back(info);
                 }
 
                 // load the new resource into the system

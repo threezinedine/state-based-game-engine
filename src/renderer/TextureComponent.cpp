@@ -63,7 +63,7 @@ namespace ntt::renderer
             EditorData *editorData = (EditorData *)data;
             List<String> resourceNames = {};
 
-            for (auto &info : editorData->scene->GetResourceInfo())
+            for (auto &info : editorData->scene->resources)
             {
                 if (info.type != IMAGE)
                 {
@@ -72,7 +72,7 @@ namespace ntt::renderer
                 resourceNames.push_back(info.name);
             }
 
-            for (auto &info : editorData->project->GetDefaultResourcesInfo())
+            for (auto &info : editorData->project->defaultResources)
             {
                 if (info.type != IMAGE)
                 {

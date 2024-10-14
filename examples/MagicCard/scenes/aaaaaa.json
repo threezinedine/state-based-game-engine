@@ -33,7 +33,7 @@
                     "tooltip": ""
                 }
             },
-            "name": "test"
+            "name": "background"
         },
         {
             "components": {
@@ -45,15 +45,27 @@
                         "r": 198
                     },
                     "position": {
-                        "x": 152.84239196777344,
-                        "y": 249.4616241455078
+                        "x": 113.58074951171875,
+                        "y": 254.28323364257813
                     },
                     "priority": 50,
                     "rotation": 0.0,
                     "size": {
-                        "height": 71.19522094726563,
-                        "width": 72.34878540039063
+                        "height": 47.7760009765625,
+                        "width": 66.59359741210938
                     }
+                },
+                "TextureComponent": {
+                    "current_cell": {
+                        "col": 0,
+                        "row": 0
+                    },
+                    "resource_name": "bird",
+                    "texture_grid": {
+                        "col": 1,
+                        "row": 3
+                    },
+                    "tooltip": ""
                 }
             },
             "name": "Work"
@@ -62,8 +74,10 @@
     "resources": [
         {
             "extra": {
-                "numCol": 1,
-                "numRow": 3
+                "grid": {
+                    "col": 1,
+                    "row": 3
+                }
             },
             "name": "bird",
             "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\bird.png",
