@@ -7,6 +7,7 @@
 #include <NTTEngine/structures/stack.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/structures/color.hpp>
+#include "Grid.hpp"
 
 namespace ntt::renderer
 {
@@ -26,23 +27,6 @@ namespace ntt::renderer
      *      every other functionalities will be disabled.
      */
     void RendererInit(b8 test = FALSE);
-
-    /**
-     * The needed information about the texture
-     */
-    struct Grid
-    {
-        u8 row; ///< The number of rows in the grid of the texture
-        u8 col; ///< The number of columns in the grid of the texture
-
-        Grid() : row(1), col(1) {}
-        Grid(u8 row, u8 col) : row(row), col(col) {}
-
-        JSON ToJSON() const;
-        void FromJSON(const JSON &json);
-
-        void EditorUpdate(std::function<void()> onChanged = nullptr);
-    };
 
     /**
      * Load the image with the given path and return the
@@ -151,6 +135,15 @@ namespace ntt::renderer
      *      if the textureId is not found, then the default grid {1, 1} will be returned.
      */
     const Grid GetTextureGrid(resource_id_t textureId);
+
+    /**
+     * Retrieve the path of the texture with the given texture ID
+     *
+     * @param textureId: The ID of the texture which is loaded
+     * @return The path of the texture which is loaded
+     *      if the texture ID is not found, then the empty string will be returned.
+     */
+    String GetTexturePath(resource_id_t textureId);
 
     /**
      * Draw the texture, if the Size in the context is default

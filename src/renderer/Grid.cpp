@@ -1,8 +1,14 @@
+#include <NTTEngine/renderer/Grid.hpp>
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include "imgui.h"
+#include <NTTEngine/resources/ResourceManager.hpp>
+#include <NTTEngine/core/memory.hpp>
+#include <NTTEngine/editor/editor_clipboard.hpp>
 
 namespace ntt::renderer
 {
+    using namespace memory;
+
     JSON Grid::ToJSON() const
     {
         JSON json;
@@ -17,6 +23,11 @@ namespace ntt::renderer
     {
         row = json.Get<u8>("row");
         col = json.Get<u8>("col");
+    }
+
+    void Grid::SetResourceName(const String &resourceName)
+    {
+        m_resourceName = resourceName;
     }
 
     void Grid::EditorUpdate(std::function<void()> onChanged)
@@ -42,6 +53,27 @@ namespace ntt::renderer
             {
                 onChanged();
             }
+        }
+
+        if (ImGui::Button("More"))
+        {
+            ImGui::OpenPopup("More");
+        }
+
+        if (ImGui::BeginPopup("More"))
+        {
+            if (ImGui::MenuItem("Clipboard"))
+            {
+                Grid grid = EditorClipboard_GetGrid();
+                row = grid.row;
+                col = grid.col;
+                if (onChanged)
+                {
+                    onChanged();
+                }
+            }
+
+            ImGui::EndPopup();
         }
     }
 } // namespace ntt::renderer

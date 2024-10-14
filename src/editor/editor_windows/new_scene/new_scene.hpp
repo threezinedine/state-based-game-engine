@@ -1,6 +1,6 @@
-#include "../OpenClosableWindow.hpp"
 #include <NTTEngine/editor/types.hpp>
 #include <NTTEngine/core/memory.hpp>
+#include <NTTEngine/editor/OpenClosableWindow.hpp>
 
 namespace ntt
 {

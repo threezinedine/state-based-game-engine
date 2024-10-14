@@ -10,7 +10,12 @@
 #include <NTTEngine/platforms/application.hpp>
 #include <array>
 
+#include <NTTEngine/editor/EditorWindow.hpp>
+#include <NTTEngine/editor/OpenClosableWindow.hpp>
+#include <NTTEngine/editor/ProjectReloadWindow.hpp>
+#include <NTTEngine/editor/SceneReloadWindow.hpp>
 #include "editor_windows/editor_windows.hpp"
+#include <NTTEngine/editor/editor_clipboard.hpp>
 
 #include <NTTEngine/platforms/path.hpp>
 #include "ImGuiFileDialog.h"
@@ -257,6 +262,14 @@ namespace ntt
             auto config = JSON(ReadFile(s_configFilePath));
             s_config->From(config);
         }
+
+        // ========================================
+        // Needed system initialization below
+        // ========================================
+        EditorClipboard_Init();
+        // ========================================
+        // Needed system initialization above
+        // ========================================
 
         // ========================================
         // Imgui configuration below
@@ -556,6 +569,12 @@ namespace ntt
 
         s_scene->entities.clear();
         s_scene.reset();
+
+        s_newProjectDialog.reset();
+        s_openProjectDialog.reset();
+        s_saveAsProjectDialog.reset();
+
+        EditorClipboard_Shutdown();
 
         NTT_ENGINE_INFO("The editor mode is shutdown");
     }

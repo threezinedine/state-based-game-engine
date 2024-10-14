@@ -1,4 +1,4 @@
-#include "OpenClosableWindow.hpp"
+#include <NTTEngine/editor/OpenClosableWindow.hpp>
 #include "imgui.h"
 
 namespace ntt

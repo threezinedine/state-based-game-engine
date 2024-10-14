@@ -3,7 +3,7 @@
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/core/memory.hpp>
-#include "../EditorWindow.hpp"
+#include <NTTEngine/editor/EditorWindow.hpp>
 
 namespace ntt
 {

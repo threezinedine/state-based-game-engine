@@ -4,10 +4,13 @@
 #include "rlImGui.h"
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/platforms/path.hpp>
+#include <NTTEngine/editor/editor_clipboard.hpp>
+#include <NTTEngine/application/event_system/event_system.hpp>
 
 namespace ntt
 {
     using namespace log;
+    using namespace event;
 
     class ImageWindow::Impl
     {
@@ -156,13 +159,76 @@ namespace ntt
             m_impl->viewPortSizeX = viewportSize.x;
             m_impl->viewPortSizeY = viewportSize.y;
 
+            f32 width = static_cast<f32>(m_impl->renderTexture.texture.width);
+            f32 height = static_cast<f32>(m_impl->renderTexture.texture.height);
+
+            // Get the mouse position
+            ImVec2 mousePos = ImGui::GetMousePos();
+
+            BeginTextureMode(m_impl->renderTexture);
+            ClearBackground(BLACK);
+            DrawTexturePro(
+                m_impl->texture,
+                {0, 0, width, height},
+                {width / 2, height / 2, width, height},
+                {width / 2, height / 2},
+                0,
+                WHITE);
+
+            Color gridColor = RED; // Set the color for the grid lines
+            for (u8 col = 1; col < m_impl->numCol; ++col)
+            {
+                float x = col * (width / m_impl->numCol);
+                DrawLine(x, 0, x, height, gridColor);
+            }
+            for (u8 row = 1; row < m_impl->numRow; ++row)
+            {
+                float y = row * (height / m_impl->numRow);
+                DrawLine(0, y, width, y, gridColor);
+            }
+
+            // Calculate the grid cell dimensions
+            f32 cellWidth = width / m_impl->numCol;
+            f32 cellHeight = height / m_impl->numRow;
+
+            f32 cellWidthViewport = cellWidth * m_impl->viewPortRatio;
+            f32 cellHeightViewport = cellHeight * m_impl->viewPortRatio;
+
+            // Determine the mouse position relative to the grid
+            f32 mouseX = mousePos.x - m_impl->viewPortOffsetX;
+            f32 mouseY = mousePos.y - m_impl->viewPortOffsetY;
+
+            // Identify the specific grid cell based on the mouse position
+            u8 hoveredCol = static_cast<u8>(mouseX / cellWidthViewport);
+            u8 hoveredRow = static_cast<u8>(mouseY / cellHeightViewport);
+
+            // Check if the mouse is within the grid bounds
+            b8 isMouseWithinGrid = mouseX >= 0 && mouseX < viewportSize.x &&
+                                   mouseY >= 0 && mouseY < viewportSize.y;
+
+            if (isMouseWithinGrid)
+            {
+                // Highlight the hovered grid cell
+                DrawRectangle(hoveredCol * cellWidth,
+                              hoveredRow * cellHeight,
+                              cellWidth, cellHeight,
+                              Fade(RED, 0.5f));
+
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                {
+                    EditorClipboard_ChooseGrid(hoveredRow, hoveredCol);
+                    NTT_ENGINE_INFO("Grid cell selected: ({}, {})", hoveredRow, hoveredCol);
+                }
+            }
+            EndTextureMode();
+
             rlImGuiImageRect(
                 &m_impl->renderTexture.texture,
                 viewportSize.x,
                 viewportSize.y,
                 {0, 0,
-                 static_cast<float>(m_impl->renderTexture.texture.width),
-                 -static_cast<float>(m_impl->renderTexture.texture.height)});
+                 width,
+                 -height});
         }
 
         ImGui::End();

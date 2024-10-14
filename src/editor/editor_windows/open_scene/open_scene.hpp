@@ -1,6 +1,6 @@
-#include "../OpenClosableWindow.hpp"
-#include "../SceneReloadWindow.hpp"
-#include "../ProjectReloadWindow.hpp"
+#include <NTTEngine/editor/OpenClosableWindow.hpp>
+#include <NTTEngine/editor/ProjectReloadWindow.hpp>
+#include <NTTEngine/editor/SceneReloadWindow.hpp>
 #include <NTTEngine/editor/types.hpp>
 #include <NTTEngine/core/memory.hpp>
 

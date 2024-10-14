@@ -45,8 +45,8 @@
                         "r": 218
                     },
                     "position": {
-                        "x": 144.60037231445313,
-                        "y": 178.8316650390625
+                        "x": 163.9583282470703,
+                        "y": 208.67518615722656
                     },
                     "priority": 0,
                     "rotation": 0.0,
@@ -83,7 +83,7 @@
                 "TextureComponent": {
                     "current_cell": {
                         "col": 0,
-                        "row": 0
+                        "row": 2
                     },
                     "resource_name": "bird-img",
                     "texture_grid": {

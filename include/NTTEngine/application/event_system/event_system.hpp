@@ -116,6 +116,8 @@ namespace ntt::event
 #define NTT_EDITOR_OPEN_SCENE 0x2B       ///< When the scene is opened
 #define NTT_EDITOR_SAVE_SCENE 0x2C       ///< When the scene is saved
 
+#define NTT_EDITOR_COPY_TEXTURE_GRID 0x2D ///< When the texture grid is copied
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

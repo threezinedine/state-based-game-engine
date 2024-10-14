@@ -1,5 +1,5 @@
 #pragma once
-#include "../OpenClosableWindow.hpp"
+#include <NTTEngine/editor/OpenClosableWindow.hpp>
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/structures/string.hpp>

@@ -1,8 +1,8 @@
 #pragma once
 #include <NTTEngine/editor/types.hpp>
-#include "../OpenClosableWindow.hpp"
-#include "../ProjectReloadWindow.hpp"
-#include "../SceneReloadWindow.hpp"
+#include <NTTEngine/editor/OpenClosableWindow.hpp>
+#include <NTTEngine/editor/ProjectReloadWindow.hpp>
+#include <NTTEngine/editor/SceneReloadWindow.hpp>
 
 namespace ntt
 {

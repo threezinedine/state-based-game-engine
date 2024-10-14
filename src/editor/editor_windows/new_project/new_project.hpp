@@ -2,7 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/core/parser/json.hpp>
 #include <NTTEngine/editor/types.hpp>
-#include "../OpenClosableWindow.hpp"
+#include <NTTEngine/editor/OpenClosableWindow.hpp>
 
 namespace ntt
 {

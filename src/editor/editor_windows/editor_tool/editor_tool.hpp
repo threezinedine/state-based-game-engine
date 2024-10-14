@@ -1,6 +1,6 @@
 #pragma once
 #include <NTTEngine/defines.hpp>
-#include "../OpenClosableWindow.hpp"
+#include <NTTEngine/editor/OpenClosableWindow.hpp>
 #include <NTTEngine/core/memory.hpp>
 
 namespace ntt

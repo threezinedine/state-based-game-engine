@@ -39,11 +39,12 @@ namespace ntt::renderer
         currentCell.FromJSON(json.Get<JSON>("current_cell"));
         textureGrid.FromJSON(json.Get<JSON>("texture_grid"));
         tooltip = json.Get<String>("tooltip");
+
+        currentCell.SetResourceName(resourceName);
     }
 
     void TextureComponent::OnEditorUpdate(std::function<void()> onChanged, void *data)
     {
-
         ImGui::Text(format("Texture: {} - Id: {}",
                            ResourceName(), GetTextureID())
                         .RawString()

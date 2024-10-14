@@ -217,6 +217,25 @@ namespace ntt::renderer
         return textureInfo->grid;
     }
 
+    String GetTexturePath(resource_id_t texture_id)
+    {
+        PROFILE_FUNCTION();
+
+        if (!s_textureStore->Contains(texture_id))
+        {
+            NTT_ENGINE_WARN("The texture with the ID {} is not found", texture_id);
+            return "";
+        }
+
+        auto textureInfo = s_textureStore->Get(texture_id);
+        if (textureInfo == nullptr)
+        {
+            return "";
+        }
+
+        return textureInfo->path;
+    }
+
     void DrawTexture(resource_id_t texture_id,
                      const RectContext &context,
                      const Grid &cell,
