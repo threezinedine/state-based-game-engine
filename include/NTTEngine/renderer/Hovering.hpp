@@ -31,9 +31,11 @@ namespace ntt::renderer
 
         Hovering() = default;
 
-        String GetName() const override
-        {
-            return "Hovering";
-        }
+        String GetName() const override;
+
+        JSON ToJSON() const override;
+        void FromJSON(const JSON &json) override;
+
+        void OnEditorUpdate(std::function<void()> onChanged, void *data) override;
     };
 } // namespace ntt::renderer

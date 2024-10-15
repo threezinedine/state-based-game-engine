@@ -163,6 +163,7 @@ namespace ntt
 
             s_isRunning = TRUE;
             ECSLayerMakeVisible(GAME_LAYER);
+            ImGui::SetWindowFocus("Viewport");
         }
 
         void OnEditorStopGame(event_code_t code, void *sender, const EventContext &context)

@@ -44,6 +44,7 @@ protected:
 
     void OnHoverEnter() override
     {
+        NTT_ENGINE_INFO("Bird is hovered");
     }
 };
 

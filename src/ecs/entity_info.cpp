@@ -8,6 +8,7 @@
 #include <NTTEngine/physics/Mass.hpp>
 #include <NTTEngine/renderer/Sprite.hpp>
 #include <NTTEngine/application/script_system/script_component.hpp>
+#include <NTTEngine/renderer/Hovering.hpp>
 
 namespace ntt::ecs
 {
@@ -24,7 +25,8 @@ namespace ntt::ecs
                 "TextureCompontent",
                 "Mass",
                 "Sprite",
-                "NativeScriptComponent"};
+                "NativeScriptComponent",
+                "Hovering"};
 
         List<std::type_index> componentIndexes =
             {
@@ -32,7 +34,8 @@ namespace ntt::ecs
                 typeid(TextureComponent),
                 typeid(Mass),
                 typeid(Sprite),
-                typeid(NativeScriptComponent)};
+                typeid(NativeScriptComponent),
+                typeid(Hovering)};
         u8 selectedComponentType = 0;
     }
 
@@ -182,6 +185,10 @@ namespace ntt::ecs
                 else if (type == typeid(NativeScriptComponent))
                 {
                     components[type] = CreateRef<NativeScriptComponent>();
+                }
+                else if (type == typeid(Hovering))
+                {
+                    components[type] = CreateRef<Hovering>();
                 }
 
                 selectedComponentType = 0;

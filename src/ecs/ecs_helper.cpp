@@ -4,6 +4,7 @@
 #include <NTTEngine/physics/Mass.hpp>
 #include <NTTEngine/renderer/Sprite.hpp>
 #include <NTTEngine/application/script_system/script_component.hpp>
+#include <NTTEngine/renderer/Hovering.hpp>
 
 namespace ntt
 {
@@ -50,6 +51,13 @@ namespace ntt
             Ref<NativeScriptComponent> nativeScriptComponent = CreateRef<NativeScriptComponent>();
             nativeScriptComponent->FromJSON(json.Get<JSON>("NativeScriptComponent"));
             components[typeid(NativeScriptComponent)] = nativeScriptComponent;
+        }
+
+        if (json.Contains<JSON>("Hovering"))
+        {
+            Ref<Hovering> hovering = CreateRef<Hovering>();
+            hovering->FromJSON(json.Get<JSON>("Hovering"));
+            components[typeid(Hovering)] = hovering;
         }
 
         return components;
