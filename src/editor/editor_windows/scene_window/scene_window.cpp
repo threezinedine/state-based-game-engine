@@ -63,26 +63,21 @@ namespace ntt
         }
         ImGui::Separator();
 
-        ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
-        if (ImGui::TreeNode("Entities"))
+        List<EntityInfo> entities = m_impl->scene->entities;
+
+        for (auto &entity : entities)
         {
-            ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
-            for (auto &entity : m_impl->scene->entities)
-            {
-                ImGui::PushID(format("Entity: {}",
-                                     entity->name.RawString())
-                                  .RawString()
-                                  .c_str());
+            ImGui::PushID(format("Entity: {}",
+                                 entity.name.RawString())
+                              .RawString()
+                              .c_str());
 
-                entity->OnEditorUpdate([&]()
-                                       { m_impl->scene->SaveEntitiesInfo();
+            entity.OnEditorUpdate([&]()
+                                  { m_impl->scene->SaveEntitiesInfo();
                                        m_impl->scene->ReloadEntities(); },
-                                       &m_impl->editorData);
+                                  &m_impl->editorData);
 
-                ImGui::PopID();
-            }
-
-            ImGui::TreePop();
+            ImGui::PopID();
         }
 
         ImGui::End();

@@ -8,3 +8,4 @@
 #include "new_scene/new_scene.hpp"
 #include "scene_window/scene_window.hpp"
 #include "open_scene/open_scene.hpp"
+#include "entity_window/entity_window.hpp"

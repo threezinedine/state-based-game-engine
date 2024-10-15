@@ -60,6 +60,7 @@ namespace ntt
         Ref<NewSceneWindow> s_newSceneWindow;
         Ref<SceneWindow> s_sceneWindow;
         Ref<OpenSceneWindow> s_openSceneWindow;
+        Ref<EntityWindow> s_entityWindow;
 
         List<Ref<EditorWindow>> s_normalWindows;
         List<Ref<ProjectReloadWindow>> s_reloadWindows;
@@ -344,6 +345,12 @@ namespace ntt
         s_sceneChangeWindows.push_back(s_openSceneWindow);
 
         s_normalWindows.push_back(s_viewportWindow);
+
+        s_entityWindow = CreateRef<EntityWindow>(s_project, s_scene, s_config);
+        s_normalWindows.push_back(s_entityWindow);
+        s_openClosableWindows.push_back(s_entityWindow);
+        s_reloadWindows.push_back(s_entityWindow);
+        s_sceneChangeWindows.push_back(s_entityWindow);
 
         s_newProjectDialog = CreateScope<EditorFileDialog>(
             s_project,

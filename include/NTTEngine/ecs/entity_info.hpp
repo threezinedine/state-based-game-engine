@@ -16,6 +16,10 @@ namespace ntt::ecs
         Dictionary<std::type_index, Ref<ComponentBase>> components;
         String name;
 
+        EntityInfo() = default;
+        EntityInfo(const EntityInfo &entity)
+            : name(entity.name), components(entity.components) {}
+
         void FromJSON(const JSON &entity);
         JSON ToJSON() const;
 

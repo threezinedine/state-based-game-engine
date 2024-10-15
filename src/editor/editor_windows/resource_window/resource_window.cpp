@@ -255,7 +255,6 @@ namespace ntt
             }
             ImGui::Separator();
 
-            ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
             if (ImGui::TreeNode("Default"))
             {
                 ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
@@ -275,8 +274,6 @@ namespace ntt
 
             if (m_impl->HasScene())
             {
-                ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
-
                 if (ImGui::TreeNode(m_impl->scene->sceneName.RawString().c_str()))
                 {
                     for (auto &info : m_impl->scene->resources)
@@ -284,7 +281,7 @@ namespace ntt
                         ImGui::PushID(info.name.RawString().c_str());
                         if (ImGui::TreeNode(info.name.RawString().c_str()))
                         {
-                            m_impl->EditorWindowDraw(info);
+                            m_impl->EditorWindowDraw(info, TRUE);
                             ImGui::TreePop();
                         }
                         ImGui::PopID();

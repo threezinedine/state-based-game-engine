@@ -2,23 +2,6 @@
     {
         "extra": {
             "grid": {
-                "col": 1,
-                "row": 1
-            }
-        },
-        "name": "test",
-        "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\background-day.png",
-        "type": 0
-    },
-    {
-        "extra": null,
-        "name": "background-sound",
-        "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\audios\\sunflower-street.wav",
-        "type": 1
-    },
-    {
-        "extra": {
-            "grid": {
                 "col": 12,
                 "row": 12
             }

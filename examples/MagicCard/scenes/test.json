@@ -25,7 +25,7 @@
                         "col": 0,
                         "row": 0
                     },
-                    "resource_name": "test",
+                    "resource_name": "background-img",
                     "texture_grid": {
                         "col": 1,
                         "row": 1
@@ -83,7 +83,7 @@
                 "TextureComponent": {
                     "current_cell": {
                         "col": 0,
-                        "row": 2
+                        "row": 0
                     },
                     "resource_name": "bird-img",
                     "texture_grid": {
@@ -204,6 +204,12 @@
     "filePath": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\scenes\\test.json",
     "resources": [
         {
+            "extra": null,
+            "name": "base-img",
+            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\base.png",
+            "type": 0
+        },
+        {
             "extra": {
                 "grid": {
                     "col": 1,
@@ -216,8 +222,8 @@
         },
         {
             "extra": null,
-            "name": "base-img",
-            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\base.png",
+            "name": "background-img",
+            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\background-day.png",
             "type": 0
         }
     ],

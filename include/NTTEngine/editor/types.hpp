@@ -18,7 +18,7 @@ namespace ntt
     {
         String sceneName;
         String filePath;
-        List<Ref<EntityInfo>> entities;
+        List<EntityInfo> entities;
         List<ResourceInfo> resources;
 
         JSON ToJSON();

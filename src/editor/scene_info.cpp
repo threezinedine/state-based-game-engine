@@ -18,11 +18,11 @@ namespace ntt
 
         for (auto &entity : entitiesCfg)
         {
-            auto entityInfo = CreateRef<EntityInfo>();
-            entityInfo->FromJSON(entity);
+            EntityInfo entityInfo;
+            entityInfo.FromJSON(entity);
             entities.push_back(entityInfo);
 
-            m_entityIDs.push_back(ECSCreateEntity(entityInfo->name, entityInfo->components));
+            m_entityIDs.push_back(ECSCreateEntity(entityInfo.name, entityInfo.components));
         }
     }
 
@@ -31,8 +31,8 @@ namespace ntt
         JSON config = ReadFile(filePath);
         List<JSON> entitiesJSON =
             entities
-                .Map<JSON>([](const Ref<EntityInfo> &info, ...) -> JSON
-                           { return info->ToJSON(); });
+                .Map<JSON>([](const EntityInfo &info, ...) -> JSON
+                           { return info.ToJSON(); });
 
         config.Set("entities", JSON::FromList(entitiesJSON));
 
@@ -43,8 +43,8 @@ namespace ntt
 
     void SceneInfo::AddEntity()
     {
-        auto entity = CreateRef<EntityInfo>();
-        entity->name = "Entity";
+        EntityInfo entity;
+        entity.name = "Entity";
         entities.push_back(entity);
     }
 
@@ -62,8 +62,8 @@ namespace ntt
 
         List<JSON> entitiesJSON =
             entities
-                .Map<JSON>([](const Ref<EntityInfo> &info, ...) -> JSON
-                           { return info->ToJSON(); });
+                .Map<JSON>([](const EntityInfo &info, ...) -> JSON
+                           { return info.ToJSON(); });
 
         scene.Set("entities", JSON::FromList(entitiesJSON));
 
