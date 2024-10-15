@@ -74,18 +74,19 @@ namespace ntt::ecs
 
         if (ImGui::TreeNode("Components"))
         {
-            ImGui::SetNextItemOpen(TRUE, ImGuiCond_Once);
-            for (auto &component : components)
+            auto tempComponents = components;
+
+            for (auto &component : tempComponents)
             {
                 ImGui::PushID(format("{}_{}", name, component.second->GetName()).RawString().c_str());
                 if (ImGui::TreeNode(component.second->GetName().RawString().c_str()))
                 {
                     component.second->OnEditorUpdate(onChanged, data);
-
                     if (ImGui::Checkbox("Activate", &component.second->active))
                     {
                         component.second->active ? component.second->TurnOn() : component.second->TurnOff();
                     }
+
                     ImGui::TreePop();
                 }
 

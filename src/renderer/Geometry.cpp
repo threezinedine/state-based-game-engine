@@ -6,6 +6,17 @@ namespace ntt::renderer
 {
     using namespace ecs;
 
+    namespace
+    {
+        List<String> priorities = {
+            "PRIORIY_0",
+            "PRIORIY_1",
+            "PRIORIY_2",
+            "PRIORIY_3",
+            "PRIORIY_4",
+        };
+    } // namespace
+
     String Geometry::GetName() const
     {
         return "Geometry";
@@ -55,5 +66,28 @@ namespace ntt::renderer
             }
         }
         color.OnEditorUpdate(onChanged);
+
+        if (ImGui::BeginCombo("priority", priorities[priority].RawString().c_str()))
+        {
+            for (auto i = 0; i < priorities.size(); i++)
+            {
+                b8 isSelected = priority == i;
+                if (ImGui::Selectable(priorities[i].RawString().c_str(), isSelected))
+                {
+                    priority = i;
+                    if (onChanged)
+                    {
+                        onChanged();
+                    }
+                }
+
+                if (isSelected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+
+            ImGui::EndCombo();
+        }
     }
 } // namespace ntt::renderer

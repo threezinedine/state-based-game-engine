@@ -60,20 +60,23 @@ namespace ntt::renderer
             ImGui::OpenPopup("More");
         }
 
-        if (ImGui::BeginPopup("More"))
+        if (m_resourceName != "")
         {
-            if (ImGui::MenuItem("Clipboard"))
+            if (ImGui::BeginPopup("More"))
             {
-                Grid grid = EditorClipboard_GetGrid();
-                row = grid.row;
-                col = grid.col;
-                if (onChanged)
+                if (ImGui::MenuItem("Clipboard"))
                 {
-                    onChanged();
+                    Grid grid = EditorClipboard_GetGrid();
+                    row = grid.row;
+                    col = grid.col;
+                    if (onChanged)
+                    {
+                        onChanged();
+                    }
                 }
-            }
 
-            ImGui::EndPopup();
+                ImGui::EndPopup();
+            }
         }
     }
 } // namespace ntt::renderer

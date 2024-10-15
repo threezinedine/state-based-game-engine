@@ -45,8 +45,8 @@
                         "r": 218
                     },
                     "position": {
-                        "x": 163.9583282470703,
-                        "y": 208.67518615722656
+                        "x": 83.05217742919922,
+                        "y": 239.49656677246094
                     },
                     "priority": 0,
                     "rotation": 0.0,
@@ -94,6 +94,111 @@
                 }
             },
             "name": "bird"
+        },
+        {
+            "components": {
+                "Geometry": {
+                    "color": {
+                        "a": 255,
+                        "b": 255,
+                        "g": 255,
+                        "r": 255
+                    },
+                    "position": {
+                        "x": 274.55804443359375,
+                        "y": 23.425025939941406
+                    },
+                    "priority": 1,
+                    "rotation": 0.0,
+                    "size": {
+                        "height": 20.0,
+                        "width": 20.0
+                    }
+                },
+                "TextureComponent": {
+                    "current_cell": {
+                        "col": 11,
+                        "row": 9
+                    },
+                    "resource_name": "buttons",
+                    "texture_grid": {
+                        "col": 12,
+                        "row": 12
+                    },
+                    "tooltip": ""
+                }
+            },
+            "name": "button"
+        },
+        {
+            "components": {
+                "Geometry": {
+                    "color": {
+                        "a": 255,
+                        "b": 255,
+                        "g": 255,
+                        "r": 255
+                    },
+                    "position": {
+                        "x": 160.0,
+                        "y": 30.0
+                    },
+                    "priority": 0,
+                    "rotation": 180.0,
+                    "size": {
+                        "height": 58.0,
+                        "width": 336.0
+                    }
+                },
+                "TextureComponent": {
+                    "current_cell": {
+                        "col": 0,
+                        "row": 0
+                    },
+                    "resource_name": "base-img",
+                    "texture_grid": {
+                        "col": 1,
+                        "row": 1
+                    },
+                    "tooltip": ""
+                }
+            },
+            "name": "base-up"
+        },
+        {
+            "components": {
+                "Geometry": {
+                    "color": {
+                        "a": 255,
+                        "b": 255,
+                        "g": 255,
+                        "r": 255
+                    },
+                    "position": {
+                        "x": 150.7535858154297,
+                        "y": 475.5163879394531
+                    },
+                    "priority": 0,
+                    "rotation": 0.0,
+                    "size": {
+                        "height": 58.0,
+                        "width": 336.0
+                    }
+                },
+                "TextureComponent": {
+                    "current_cell": {
+                        "col": 0,
+                        "row": 0
+                    },
+                    "resource_name": "base-img",
+                    "texture_grid": {
+                        "col": 1,
+                        "row": 1
+                    },
+                    "tooltip": ""
+                }
+            },
+            "name": "base-down"
         }
     ],
     "filePath": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\scenes\\test.json",
@@ -107,6 +212,12 @@
             },
             "name": "bird-img",
             "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\bird.png",
+            "type": 0
+        },
+        {
+            "extra": null,
+            "name": "base-img",
+            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\base.png",
             "type": 0
         }
     ],

@@ -15,5 +15,16 @@
         "name": "background-sound",
         "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\audios\\sunflower-street.wav",
         "type": 1
+    },
+    {
+        "extra": {
+            "grid": {
+                "col": 12,
+                "row": 12
+            }
+        },
+        "name": "buttons",
+        "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\buttons.png",
+        "type": 0
     }
 ]

@@ -59,6 +59,7 @@ namespace ntt
         {
             m_impl->scene->AddEntity();
             m_impl->scene->SaveEntitiesInfo();
+            m_impl->scene->ReloadEntities();
         }
         ImGui::Separator();
 
@@ -74,7 +75,8 @@ namespace ntt
                                   .c_str());
 
                 entity->OnEditorUpdate([&]()
-                                       { m_impl->scene->SaveEntitiesInfo(); },
+                                       { m_impl->scene->SaveEntitiesInfo();
+                                       m_impl->scene->ReloadEntities(); },
                                        &m_impl->editorData);
 
                 ImGui::PopID();
