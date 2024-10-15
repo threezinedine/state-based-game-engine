@@ -37,6 +37,8 @@ docs/latex/*
 
 *-design.txt
 *.bat
+!WindowBuild/MinGW/*.bat
+# !WindowBuild/MSVC/*.bat
 *.prof.txt
 
 examples

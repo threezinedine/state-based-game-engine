@@ -65,6 +65,36 @@
 			]
 		},
 		{
+			"name": "Other Game",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "C:\\Users\\Acer\\Games\\NewTesting\\Game.exe",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "C:\\Users\\Acer\\Games\\NewTesting",
+			"miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+			"environment": [],
+			"externalConsole": false,
+			"logging": {
+				"engineLogging": true,
+				"trace": true,
+				"traceResponse": true
+			},
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				},
+				{
+					"description": "Set Disassembly Flavor to Intel",
+					"text": "-gdb-set disassembly-flavor intel",
+					"ignoreFailures": true
+				}
+			]
+		},
+		{
 			"name": "Testing",
 			"type": "cppdbg",
 			"request": "launch",

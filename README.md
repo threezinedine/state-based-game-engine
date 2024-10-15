@@ -35,3 +35,9 @@ At the same time, a .exe file of built game is created beside the editor version
 
 The entity can be drag (support multiple selection) and drop to the scene.
 ![alt text](images/drag-drop-entity.png)
+
+# Build from source with CMake
+
+```cmd
+
+```

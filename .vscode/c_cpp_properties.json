@@ -2,14 +2,12 @@
 	"configurations": [
 		{
 			"name": "Win32",
-			"includePath": ["${workspaceFolder}/**"],
-			"defines": [
-				"_DEBUG",
-				"UNICODE",
-				"_UNICODE",
-				"BUILD_LIBRARY"
-				// "_EDITOR"
+			"includePath": [
+				"${workspaceFolder}/include/**",
+				"${workspaceFolder}/vendors/**",
+				"C:/msys64/mingw64/include/**"
 			],
+			"defines": ["_DEBUG", "UNICODE", "_UNICODE", "BUILD_LIBRARY"],
 			"windowsSdkVersion": "10.0.22621.0",
 			"compilerPath": "cl.exe",
 			"cStandard": "c17",
