@@ -8,10 +8,6 @@
 #include <NTTEngine/ecs/ecs.hpp>
 
 using namespace ntt;
-using namespace ntt::physics;
-using namespace ntt::event;
-using namespace ntt::ecs;
-using namespace ntt::renderer;
 
 class CollisionTest : public testing::Test
 {

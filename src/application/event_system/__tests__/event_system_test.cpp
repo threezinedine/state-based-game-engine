@@ -3,7 +3,7 @@
 
 #include <NTTEngine/application/event_system/event_system.hpp>
 
-using namespace ntt::event;
+using namespace ntt;
 
 class EventSystemTest : public ::testing::Test
 {
@@ -18,7 +18,7 @@ TEST_F(EventSystemTest, NormalWorkflow)
     u8 callTimes = 0;
     EventCallback callback = [&callTimes](event_code_t code,
                                           void *data,
-                                          const ntt::event::EventContext &context)
+                                          const EventContext &context)
     {
         callTimes++;
     };

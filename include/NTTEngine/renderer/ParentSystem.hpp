@@ -3,10 +3,8 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/memory.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace ecs;
-
     class ParentSystem : public System
     {
     public:

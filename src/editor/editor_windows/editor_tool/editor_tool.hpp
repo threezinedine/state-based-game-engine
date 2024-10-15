@@ -5,8 +5,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     enum ToolType
     {
         MOVE,

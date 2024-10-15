@@ -7,7 +7,7 @@
 #include <NTTEngine/core/assertion.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
 #define THIS(exp) (m_impl->exp)
     class SpriteRenderSystem::Impl
@@ -70,4 +70,4 @@ namespace ntt::renderer
     {
         PROFILE_FUNCTION();
     }
-} // namespace ntt::renderer
+} // namespace ntt

@@ -6,8 +6,6 @@
 #include <NTTEngine/core/logging/logging.hpp>
 
 using namespace ntt;
-using namespace ntt::log;
-using namespace ntt::dev::store;
 
 struct TestObj
 {

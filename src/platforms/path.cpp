@@ -8,9 +8,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-    using namespace log;
-
     namespace fs = ::std::filesystem;
 
     namespace

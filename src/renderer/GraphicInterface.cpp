@@ -18,15 +18,8 @@
 #include "Raylib_GraphicAPI.hpp"
 #include "Fake_GraphicAPI.hpp"
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace log;
-    using namespace memory;
-    using namespace dev::store;
-    using namespace ecs;
-    using namespace input;
-    using namespace event;
-
 #define TEXTURE_MAX 1000
 #define TOOL_TIP_FONT_SIZE 10
 #define TOOL_TIP_PADDING 5
@@ -365,7 +358,7 @@ namespace ntt::renderer
         PROFILE_FUNCTION();
         s_hoveredTextures.clear();
 
-        auto mouse = input::GetMousePosition();
+        auto mouse = GetMousePosition();
 
         auto highestPriority = MAX_PRIORITIES - 1;
         auto hoveredEntityId = INVALID_ENTITY_ID;
@@ -570,4 +563,4 @@ namespace ntt::renderer
 
         s_textureStore.reset();
     }
-} // namespace ntt::renderer
+} // namespace ntt

@@ -1,7 +1,7 @@
 #include "Raylib_GraphicAPI.hpp"
 #include <raylib.h>
 
-namespace ntt::renderer
+namespace ntt
 {
     class RaylibGraphicAPI::Impl
     {
@@ -94,4 +94,4 @@ namespace ntt::renderer
                          rotate,
                          ::WHITE);
     }
-} // namespace ntt::renderer
+} // namespace ntt

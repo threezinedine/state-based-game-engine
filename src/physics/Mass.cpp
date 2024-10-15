@@ -1,7 +1,7 @@
 #include <NTTEngine/physics/Mass.hpp>
 #include "imgui.h"
 
-namespace ntt::physics
+namespace ntt
 {
     void Mass::AddForceConst(position_t forceX, position_t forceY)
     {
@@ -84,4 +84,4 @@ namespace ntt::physics
             }
         }
     }
-} // namespace ntt::physics
+} // namespace ntt

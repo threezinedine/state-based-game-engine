@@ -2,7 +2,7 @@
 #include "LogLevel.hpp"
 #include <NTTEngine/structures/string.hpp>
 
-namespace ntt::log
+namespace ntt
 {
     /**
      * All needed information of a log message
@@ -20,4 +20,4 @@ namespace ntt::log
         String fullMessage;   ///< The full message with all arguments replaced
                               ///< by the format of printf
     };
-} // namespace ntt::log
+} // namespace ntt

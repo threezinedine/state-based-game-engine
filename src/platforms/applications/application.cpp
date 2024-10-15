@@ -30,15 +30,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-    using namespace log;
-    using namespace renderer;
-    using namespace audio;
-    using namespace input;
-    using namespace ecs;
-    using namespace physics;
-    using namespace script;
-
     namespace
     {
         Phrases s_phrases;

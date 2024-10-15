@@ -3,7 +3,7 @@
 #include "entity_info.hpp"
 #include "NTTEngine/core/object.hpp"
 
-namespace ntt::ecs
+namespace ntt
 {
     /**
      * Store all lifetime functionalitiy of a system.
@@ -44,4 +44,4 @@ namespace ntt::ecs
         virtual void ShutdownSystem() = 0;
     };
 
-} // namespace ntt::ecs
+} // namespace ntt

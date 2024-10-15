@@ -3,7 +3,7 @@
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/structures/list.hpp>
 
-namespace ntt::log
+namespace ntt
 {
     /**
      * The Instance of Logger will receive the
@@ -59,4 +59,4 @@ namespace ntt::log
         const char *m_format = "[@l] - @t - @f:@L - @m";
     };
 
-} // namespace ntt::log
+} // namespace ntt

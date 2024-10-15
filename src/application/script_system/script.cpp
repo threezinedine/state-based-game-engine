@@ -2,13 +2,8 @@
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/physics/Collision.hpp>
 
-namespace ntt::script
+namespace ntt
 {
-    using namespace ecs;
-    using namespace log;
-    using namespace memory;
-    using namespace physics;
-
     void Script::OnEnter()
     {
         PROFILE_FUNCTION();

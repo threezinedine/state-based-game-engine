@@ -9,11 +9,8 @@
  * The mechanism for loading dynamically the script for file to
  *      the game
  */
-namespace ntt::script
+namespace ntt
 {
-    using namespace memory;
-    using namespace ecs;
-
     using resource_id_t = u32;
     constexpr resource_id_t INVALID_SCRIPT_ID = -1;
 
@@ -155,7 +152,7 @@ namespace ntt::script
      * Delete, free all needed resources for the hot reload system.
      */
     void ScriptStoreShutdown();
-} // namespace ntt::script
+} // namespace ntt
 
 #define GET_SCRIPT(type, id) std::reinterpret_pointer_cast<type>(ScriptStoreGetObject(id))
 

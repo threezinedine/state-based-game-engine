@@ -5,8 +5,6 @@
 
 namespace ntt
 {
-    using namespace input;
-
     class TransformScript::Impl
     {
     public:

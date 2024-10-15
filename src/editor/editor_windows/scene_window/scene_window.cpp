@@ -9,10 +9,6 @@
 
 namespace ntt
 {
-    using namespace event;
-    using namespace renderer;
-    using namespace ecs;
-
     class SceneWindow::Impl
     {
     public:

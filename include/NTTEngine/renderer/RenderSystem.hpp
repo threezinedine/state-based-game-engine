@@ -3,10 +3,8 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/memory.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace ecs;
-
     class RenderSystem : public System
     {
     public:
@@ -40,4 +38,4 @@ namespace ntt::renderer
         class Impl;
         Scope<Impl> m_impl;
     };
-} // namespace ntt::renderer
+} // namespace ntt

@@ -7,9 +7,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace renderer;
-
     namespace
     {
         const char *resourceTypes[3] = {"Image", "Audio", "Script"};

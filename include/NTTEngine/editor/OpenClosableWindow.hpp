@@ -6,8 +6,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     /**
      * The base class for the window which can be visible or invisible during
      *      the runtime of the editor. User can interact with these windows via

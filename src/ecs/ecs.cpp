@@ -11,13 +11,8 @@
 #include <cstring>
 #include <NTTEngine/core/auto_naming.hpp>
 
-namespace ntt::ecs
+namespace ntt
 {
-    using namespace log;
-    using namespace dev::store;
-    using namespace event;
-    using namespace renderer;
-
     using component_id_t = entity_id_t;
 #define INVALID_UI_LAYER 255
 
@@ -612,4 +607,4 @@ namespace ntt::ecs
         s_entityStore.reset();
         s_systemsStore.reset();
     }
-} // namespace ntt::ecs
+} // namespace ntt

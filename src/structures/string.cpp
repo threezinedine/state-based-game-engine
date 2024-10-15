@@ -5,8 +5,6 @@
 
 namespace ntt
 {
-    using namespace log;
-
     String::String() : m_Str("") {}
 
     String::String(const char *str, ...)

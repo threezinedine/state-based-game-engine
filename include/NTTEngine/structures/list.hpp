@@ -12,8 +12,6 @@
 
 namespace ntt
 {
-    using namespace exception;
-
     template <typename T>
     using ComparisionCallback = std::function<b8(const T &, const T &)>;
 

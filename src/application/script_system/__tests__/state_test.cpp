@@ -4,7 +4,6 @@
 #include <NTTEngine/application/script_system/state.hpp>
 #include <NTTEngine/core/memory.hpp>
 using namespace ntt;
-using namespace ntt::memory;
 
 namespace
 {

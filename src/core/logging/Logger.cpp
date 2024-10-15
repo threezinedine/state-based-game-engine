@@ -2,7 +2,7 @@
 #include <chrono>
 #include <filesystem>
 
-namespace ntt::log
+namespace ntt
 {
     Logger::Logger(const char *name, LogLevel level,
                    List<Ref<Handler>> handlers, const char *format)
@@ -72,4 +72,4 @@ namespace ntt::log
             handler->Handle(logMessage);
         }
     }
-} // namespace ntt::log
+} // namespace ntt

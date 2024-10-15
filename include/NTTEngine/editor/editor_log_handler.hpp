@@ -3,8 +3,6 @@
 
 namespace ntt
 {
-    using namespace log;
-
     class EditorLogHandler : public Handler
     {
     public:

@@ -9,7 +9,7 @@
 #include <NTTEngine/core/object.hpp>
 #include <functional>
 
-namespace ntt::ecs
+namespace ntt
 {
     struct EntityInfo : public Object
     {

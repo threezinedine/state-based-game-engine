@@ -7,8 +7,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     constexpr resource_id_t INVALID_RESOURCE_ID = -1;
 
     /**

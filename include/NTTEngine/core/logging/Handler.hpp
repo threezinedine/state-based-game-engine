@@ -6,7 +6,7 @@
 #include <vector>
 // End temporary includes
 
-namespace ntt::log
+namespace ntt
 {
     /**
      * The instance of this interface which will receive the message from the logger
@@ -28,4 +28,4 @@ namespace ntt::log
          */
         virtual void Handle(const LogMessage &message) = 0;
     };
-} // namespace ntt::log
+} // namespace ntt

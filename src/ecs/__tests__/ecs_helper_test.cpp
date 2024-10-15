@@ -4,9 +4,6 @@
 #include <NTTEngine/application/script_system/script_component.hpp>
 
 using namespace ntt;
-using namespace ntt::ecs;
-using namespace ntt::renderer;
-using namespace ntt::script;
 
 class ECSHelperTest : public ::testing::Test
 {

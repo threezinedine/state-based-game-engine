@@ -5,10 +5,8 @@
 #include <NTTEngine/core/memory.hpp>
 #include <NTTEngine/editor/editor_clipboard.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace memory;
-
     JSON Grid::ToJSON() const
     {
         JSON json;
@@ -79,4 +77,4 @@ namespace ntt::renderer
             }
         }
     }
-} // namespace ntt::renderer
+} // namespace ntt

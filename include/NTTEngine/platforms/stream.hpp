@@ -2,7 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/core/terminal_color.hpp>
 
-namespace ntt::platforms
+namespace ntt
 {
     void Print(TerminalColor color, const char *message, ...);
 
@@ -11,4 +11,4 @@ namespace ntt::platforms
     {
         Print(TerminalColor::NTT_TERMINAL_COLOR_WHITE, message, args...);
     }
-} // namespace ntt::platforms
+} // namespace ntt

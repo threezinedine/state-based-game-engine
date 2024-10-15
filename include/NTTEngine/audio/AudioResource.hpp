@@ -4,7 +4,7 @@
 #include <NTTEngine/core/parser/json.hpp>
 #include <NTTEngine/core/memory.hpp>
 
-namespace ntt::audio
+namespace ntt
 {
     class AudioResource : public Resource
     {
@@ -20,4 +20,4 @@ namespace ntt::audio
         class Impl;
         Scope<Impl> m_Impl;
     };
-} // namespace ntt::audio
+} // namespace ntt

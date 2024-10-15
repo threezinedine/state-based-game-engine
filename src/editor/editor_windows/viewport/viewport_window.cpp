@@ -9,9 +9,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace event;
-
     class ViewportWindow::Impl
     {
     public:
@@ -56,7 +53,7 @@ namespace ntt
         : m_impl(CreateScope<Impl>())
     {
         m_impl->renderTexture = LoadRenderTexture(width, height);
-        input::SetMousePositionTransformCallback(
+        SetMousePositionTransformCallback(
             std::bind(&Impl::EditorToViewportPosTransform, m_impl.get(), std::placeholders::_1));
 
         m_impl->screenHeight = height;
@@ -94,7 +91,7 @@ namespace ntt
         ImVec2 viewportSize = {0, 0};
 
         b8 isFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
-        input::SetInputModuleState(isFocus);
+        SetInputModuleState(isFocus);
 
         f32 aspectRatio = static_cast<f32>(m_impl->screenWidth) /
                           static_cast<f32>(m_impl->screenHeight);

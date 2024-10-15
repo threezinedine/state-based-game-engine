@@ -3,10 +3,8 @@
 #include <NTTEngine/core/logging/logging.hpp>
 #include "component_base.hpp"
 
-namespace ntt::ecs
+namespace ntt
 {
-    using namespace log;
-
     /**
      * Automatically created when an entity is created, this component
      *      should not be used by the user only the internal system.
@@ -22,4 +20,4 @@ namespace ntt::ecs
             return "DataComponent";
         }
     };
-} // namespace ntt::ecs
+} // namespace ntt

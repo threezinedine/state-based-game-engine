@@ -4,10 +4,8 @@
 #include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace log;
-
     namespace
     {
         Dictionary<entity_id_t, HoveringCallback> s_callbacks;
@@ -55,7 +53,7 @@ namespace ntt::renderer
         auto onEnterCallback = hovering->onEnterCallback;
         auto onExitCallback = hovering->onExitCallback;
 
-        auto hovers = renderer::GetHoveredTexture();
+        auto hovers = GetHoveredTexture();
 
         if (!hovers.Contains(id))
         {
@@ -143,4 +141,4 @@ namespace ntt::renderer
         s_callbacks.clear();
     }
 
-} // namespace ntt::renderer
+} // namespace ntt

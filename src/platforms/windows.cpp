@@ -6,7 +6,7 @@
 
 #include <Windows.h>
 
-namespace ntt::platforms
+namespace ntt
 {
     void Print(TerminalColor color, const char *message, ...)
     {
@@ -46,6 +46,6 @@ namespace ntt::platforms
         va_end(args);
         SetConsoleTextAttribute(hConsole, 7);
     }
-} // namespace ntt::platforms
+} // namespace ntt
 
 #endif

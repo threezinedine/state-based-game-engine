@@ -1,7 +1,7 @@
 #pragma once
 #include "renderer.hpp"
 
-namespace ntt::renderer
+namespace ntt
 {
     class MouseHoveringSystem : public System
     {
@@ -25,4 +25,4 @@ namespace ntt::renderer
      * Be called in the game loop.
      */
     void MouseHoveringSystemUpdate(f32 delta);
-} // namespace ntt::renderer
+} // namespace ntt

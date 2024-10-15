@@ -4,8 +4,6 @@
 
 namespace ntt
 {
-    using namespace event;
-
     class EntityWindow::Impl
     {
     public:

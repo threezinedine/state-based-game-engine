@@ -1,6 +1,6 @@
 #include "Fake_GraphicAPI.hpp"
 
-namespace ntt::renderer
+namespace ntt
 {
     class FakeGraphicAPI::Impl
     {
@@ -87,4 +87,4 @@ namespace ntt::renderer
     {
         m_drawTextureCalled++;
     }
-} // namespace ntt::renderer
+} // namespace ntt

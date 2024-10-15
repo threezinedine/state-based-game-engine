@@ -6,9 +6,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace event;
-
     namespace
     {
         std::stack<Ref<Action>> s_actions;

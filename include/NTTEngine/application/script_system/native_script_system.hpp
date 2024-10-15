@@ -2,10 +2,8 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 
-namespace ntt::script
+namespace ntt
 {
-    using namespace ecs;
-
     class ScriptSystem : public System
     {
     public:
@@ -22,4 +20,4 @@ namespace ntt::script
         class Impl;
         Scope<Impl> m_impl;
     };
-} // namespace ntt::script
+} // namespace ntt

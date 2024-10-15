@@ -2,7 +2,7 @@
 #include <NTTEngine/audio/audio.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
-namespace ntt::audio
+namespace ntt
 {
     class AudioResource::Impl
     {
@@ -65,4 +65,4 @@ namespace ntt::audio
         UnloadAudio(m_Impl->audioId);
         NTT_ENGINE_DEBUG("The Audio {} is unloaded", GetInfo()->name);
     }
-} // namespace ntt::audio
+} // namespace

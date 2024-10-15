@@ -6,10 +6,8 @@
 #include "GraphicInterface.hpp"
 #include <NTTEngine/core/parser/json.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace ecs;
-
     /**
      * Component which store the rendering information
      *      of position, size of the entity, etc.
@@ -38,4 +36,4 @@ namespace ntt::renderer
         void FromJSON(const JSON &json) override;
         void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr) override;
     };
-} // namespace ntt::renderer
+} // namespace ntt

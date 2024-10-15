@@ -6,9 +6,6 @@
 
 namespace ntt
 {
-    using namespace script;
-    using namespace memory;
-
     using OnTransformFunc = std::function<void(
         const Position,
         const f32,

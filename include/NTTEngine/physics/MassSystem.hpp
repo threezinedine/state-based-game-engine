@@ -2,10 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 
-using namespace ntt;
-using namespace ntt::ecs;
-
-namespace ntt::physics
+namespace ntt
 {
     class MassSystem : public System
     {

@@ -6,7 +6,7 @@
 #include "script_store.hpp"
 #include <NTTEngine/renderer/Hovering.hpp>
 
-namespace ntt::script
+namespace ntt
 {
     struct NativeScriptComponent : public ComponentBase
     {

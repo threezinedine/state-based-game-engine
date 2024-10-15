@@ -7,8 +7,6 @@
 
 namespace ntt
 {
-    using namespace ecs;
-
     class EntityWindow : public OpenClosableWindow,
                          public ProjectReloadWindow,
                          public SceneReloadWindow

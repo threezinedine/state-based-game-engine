@@ -3,7 +3,7 @@
 #include <exception>
 #include <stdexcept>
 
-namespace ntt::exception
+namespace ntt
 {
     class Exception : public std::exception
     {
@@ -27,4 +27,4 @@ namespace ntt::exception
     public:
         KeyNotFound() : Exception("Key not found in the dictionary") {}
     };
-} // namespace ntt::exception
+} // namespace ntt

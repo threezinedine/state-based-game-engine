@@ -7,7 +7,7 @@
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/core/assertion.hpp>
 
-namespace ntt::dev::store
+namespace ntt
 {
     template <typename id_t, typename data_t>
     using ForEachFunc = std::function<void(Ref<data_t>, const id_t)>;
@@ -251,4 +251,4 @@ namespace ntt::dev::store
         CompareFunc<data_t> m_compareFunc;
         SortedList<id_t> m_freedIds;
     };
-} // namespace ntt::dev::store
+} // namespace ntt

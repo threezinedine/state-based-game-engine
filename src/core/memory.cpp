@@ -6,7 +6,7 @@
 #include <NTTEngine/platforms/stream.hpp>
 #include <NTTEngine/structures/string.hpp>
 
-namespace ntt::memory
+namespace ntt
 {
     namespace
     {
@@ -77,4 +77,4 @@ namespace ntt::memory
     {
         s_createdObjects--;
     }
-} // namespace ntt::memory
+} // namespace ntt

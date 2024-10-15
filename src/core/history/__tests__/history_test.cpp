@@ -5,7 +5,6 @@
 #include <NTTEngine/core/history/history.hpp>
 
 using namespace ntt;
-using namespace ntt::event;
 
 static b8 canExecute = TRUE;
 static u8 executeCount = 0;

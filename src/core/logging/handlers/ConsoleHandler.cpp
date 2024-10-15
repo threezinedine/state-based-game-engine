@@ -1,10 +1,8 @@
 #include <NTTEngine/core/logging/ConsoleHandler.hpp>
 #include <NTTEngine/platforms/stream.hpp>
 
-namespace ntt::log
+namespace ntt
 {
-    using namespace platforms;
-
     ConsoleHandler::ConsoleHandler()
     {
     }
@@ -34,4 +32,4 @@ namespace ntt::log
 
         Print(color, message.fullMessage.RawString().c_str());
     }
-} // namespace ntt::log
+} // namespace ntt

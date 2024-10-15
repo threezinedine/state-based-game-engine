@@ -6,9 +6,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace ecs;
-
 #define THIS(var) this->m_impl->var
 
     class State::Impl

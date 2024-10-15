@@ -5,9 +5,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace event;
-
     class Resource::Impl
     {
     public:

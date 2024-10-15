@@ -1,7 +1,7 @@
 #include <NTTEngine/application/script_system/scriptable.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
-namespace ntt::script
+namespace ntt
 {
     JSON &Scriptable::GetData()
     {

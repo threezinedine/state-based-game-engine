@@ -2,7 +2,7 @@
 #include <NTTEngine/core/logging/Handler.hpp>
 #include <NTTEngine/structures/string.hpp>
 
-namespace ntt::log
+namespace ntt
 {
     struct TestingData
     {
@@ -34,4 +34,4 @@ namespace ntt::log
      *    latest call of the TestingHandler
      */
     TestingData &GetData();
-} // namespace ntt::log
+} // namespace ntt

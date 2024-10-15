@@ -5,8 +5,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     class SettingWindow : public OpenClosableWindow
     {
     public:

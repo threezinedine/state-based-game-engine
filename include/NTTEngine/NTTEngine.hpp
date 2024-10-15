@@ -13,12 +13,3 @@
 #include "editor/editor.hpp"
 
 using namespace ntt;
-using namespace ntt::memory;
-using namespace ntt::log;
-using namespace ntt::renderer;
-using namespace ntt::audio;
-using namespace ntt::input;
-using namespace ntt::ecs;
-using namespace ntt::physics;
-using namespace ntt::script;
-using namespace ntt::event;

@@ -3,10 +3,10 @@
 /**
  * Contains physical mechanism like velocity, acceleration, etc.
  */
-namespace ntt::physics
+namespace ntt
 {
 
-} // namespace ntt::physics
+} // namespace ntt
 
 #include "Mass.hpp"
 #include "Collision.hpp"

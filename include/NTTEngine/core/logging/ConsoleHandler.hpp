@@ -2,7 +2,7 @@
 
 #include <NTTEngine/core/logging/Handler.hpp>
 
-namespace ntt::log
+namespace ntt
 {
     /**
      * Print out all the log messages to the terminal
@@ -17,4 +17,4 @@ namespace ntt::log
 
         void Handle(const LogMessage &message) override;
     };
-} // namespace ntt::log
+} // namespace ntt

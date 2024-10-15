@@ -1,7 +1,7 @@
 #include <NTTEngine/renderer/Sprite.hpp>
 #include "imgui.h"
 
-namespace ntt::renderer
+namespace ntt
 {
     String Sprite::GetName() const
     {
@@ -118,4 +118,4 @@ namespace ntt::renderer
             }
         }
     }
-} // namespace ntt::renderer
+} // namespace ntt

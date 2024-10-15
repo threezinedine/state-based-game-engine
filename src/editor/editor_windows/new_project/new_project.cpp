@@ -5,8 +5,6 @@
 
 namespace ntt
 {
-    using namespace event;
-
     class NewProjectWindow::Impl
     {
     public:

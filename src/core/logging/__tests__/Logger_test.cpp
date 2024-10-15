@@ -5,7 +5,6 @@
 #include "../handlers/TestingHandler.hpp"
 
 using namespace ntt;
-using namespace ntt::log;
 
 class LoggerTest : public ::testing::Test
 {

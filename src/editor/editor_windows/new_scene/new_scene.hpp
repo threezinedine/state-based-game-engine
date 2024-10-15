@@ -4,8 +4,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     class NewSceneWindow : public OpenClosableWindow
     {
     public:

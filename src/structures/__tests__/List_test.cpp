@@ -5,7 +5,6 @@
 #include <NTTEngine/core/exception.hpp>
 
 using namespace ntt;
-using namespace ntt::exception;
 
 #define EXPECT_LIST_EQ(lst1, lst2)                      \
     EXPECT_TRUE(lst1.Equals(lst2))                      \

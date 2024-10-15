@@ -11,10 +11,6 @@
 
 namespace ntt
 {
-    using namespace renderer;
-    using namespace audio;
-    using namespace script;
-
     class ResourceWindow::Impl
     {
     public:

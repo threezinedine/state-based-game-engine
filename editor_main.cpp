@@ -16,11 +16,6 @@
 #include <NTTEngine/application/input_system/input_system.hpp>
 
 using namespace ntt;
-using namespace ntt::memory;
-using namespace ntt::log;
-using namespace ntt::renderer;
-using namespace ntt::audio;
-using namespace ntt::input;
 
 void Update();
 

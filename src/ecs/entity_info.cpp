@@ -10,13 +10,8 @@
 #include <NTTEngine/application/script_system/script_component.hpp>
 #include <NTTEngine/renderer/Hovering.hpp>
 
-namespace ntt::ecs
+namespace ntt
 {
-    using namespace renderer;
-    using namespace log;
-    using namespace physics;
-    using namespace script;
-
     namespace
     {
         List<String> componentTypes =

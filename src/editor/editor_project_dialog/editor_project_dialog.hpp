@@ -6,8 +6,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     struct EditorFileDialogData
     {
         // the string which is used for identifying the differenet file dialog

@@ -8,12 +8,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-    using namespace ecs;
-    using namespace renderer;
-    using namespace physics;
-    using namespace script;
-
     Dictionary<std::type_index, Ref<ComponentBase>> ECS_From(const JSON &json)
     {
         Dictionary<std::type_index, Ref<ComponentBase>> components;

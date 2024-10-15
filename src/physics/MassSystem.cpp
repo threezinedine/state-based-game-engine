@@ -3,13 +3,9 @@
 #include <NTTEngine/renderer/Geometry.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
-using namespace ntt;
-using namespace ntt::ecs;
-using namespace ntt::renderer;
-
 #define TIME_FACTOR (1.0f / 10)
 
-namespace ntt::physics
+namespace ntt
 {
 #define THIS(exp) m_impl->exp
 
@@ -62,4 +58,4 @@ namespace ntt::physics
     {
         PROFILE_FUNCTION();
     }
-} // namespace ntt::physics
+} // namespace ntt

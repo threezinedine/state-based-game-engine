@@ -7,8 +7,6 @@
 
 namespace ntt
 {
-    using namespace event;
-
     class NewSceneWindow::Impl
     {
     public:

@@ -8,9 +8,6 @@
 
 namespace ntt
 {
-    using namespace script;
-    using namespace log;
-
     namespace
     {
     } // namespace

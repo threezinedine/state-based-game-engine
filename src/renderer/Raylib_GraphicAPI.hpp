@@ -2,10 +2,8 @@
 #include "GraphicAPI.hpp"
 #include <NTTEngine/core/memory.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace memory;
-
     class RaylibGraphicAPI : public GraphicAPI
     {
     public:
@@ -49,4 +47,4 @@ namespace ntt::renderer
         class Impl;
         Scope<Impl> m_impl;
     };
-} // namespace ntt::renderer
+} // namespace ntt

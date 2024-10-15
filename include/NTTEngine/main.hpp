@@ -7,11 +7,6 @@ void MainLoop(f32 delta);
 void Close();
 
 using namespace ntt;
-using namespace ntt::log;
-using namespace ntt::input;
-using namespace ntt::event;
-using namespace ntt::renderer;
-using namespace ntt::memory;
 
 void ConfigureStoredPath();
 String GetSourceDir();

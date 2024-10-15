@@ -14,7 +14,7 @@
  *      - Stop audio (has the event effect)
  *      - Unload audio file
  */
-namespace ntt::audio
+namespace ntt
 {
     /**
      * Start the audio system. If not be called, other functions
@@ -107,4 +107,4 @@ namespace ntt::audio
      *      is closed.
      */
     void AudioShutdown();
-} // namespace ntt::audio
+} // namespace ntt

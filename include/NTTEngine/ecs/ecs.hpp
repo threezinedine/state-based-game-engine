@@ -17,7 +17,7 @@
  *          component from the entity and the system can update that component.
  *          The system has the logic only, no data.
  */
-namespace ntt::ecs
+namespace ntt
 {
     /**
      * Start the ECS system. This function must be called before any other
@@ -177,7 +177,7 @@ namespace ntt::ecs
      *      is no longer needed.
      */
     void ECSShutdown();
-} // namespace ntt::ecs
+} // namespace ntt
 
 #define ECS_GET_COMPONENT(id, type) std::static_pointer_cast<type>( \
     ECSGetEntityComponent(id, typeid(type)))

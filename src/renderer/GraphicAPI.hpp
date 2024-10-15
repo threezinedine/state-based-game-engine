@@ -4,10 +4,8 @@
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/core/memory.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace memory;
-
     struct Texture2D
     {
         Ref<void> texture;
@@ -62,4 +60,4 @@ namespace ntt::renderer
                                  f32 th,
                                  f32 rotate) = 0;
     };
-} // namespace ntt::renderer
+} // namespace ntt

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ntt::log
+namespace ntt
 {
     /**
      * The LogLevel represents the importance of the message
@@ -20,4 +20,4 @@ namespace ntt::log
                    ///<     such as the function is called, etc. (should use in profiling)
     };
 
-} // namespace ntt::log
+} // namespace ntt

@@ -10,9 +10,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace event;
-
     class ImageWindow::Impl
     {
     public:

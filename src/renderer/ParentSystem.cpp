@@ -3,7 +3,7 @@
 #include <NTTEngine/renderer/Parent.hpp>
 #include <cmath>
 
-namespace ntt::renderer
+namespace ntt
 {
     class ParentSystem::Impl
     {
@@ -72,4 +72,4 @@ namespace ntt::renderer
     void ParentSystem::ShutdownSystem()
     {
     }
-} // namespace ntt::renderer
+} // namespace ntt

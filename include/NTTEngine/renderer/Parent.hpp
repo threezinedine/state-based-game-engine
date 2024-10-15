@@ -3,10 +3,8 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include "GraphicInterface.hpp"
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace ecs;
-
     /**
      * Store the information about the segment of the texture
      *      which is needed to draw on the screen.
@@ -30,4 +28,4 @@ namespace ntt::renderer
             return "Parent";
         }
     };
-} // namespace ntt::renderer
+} // namespace ntt

@@ -4,8 +4,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     /**
      * Base object for all objects in the engine, every object (which is not a primitive type)
      *      must inherit from this class, this class will provide some basic functionalities

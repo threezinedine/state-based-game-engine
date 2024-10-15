@@ -10,10 +10,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace event;
-    using namespace input;
-
     class EditorTool::Impl
     {
     public:

@@ -4,11 +4,8 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/core/object.hpp>
 
-namespace ntt::script
+namespace ntt
 {
-    using namespace ecs;
-    using namespace event;
-
     class Scriptable : public Object
     {
     public:

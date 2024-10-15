@@ -11,9 +11,6 @@
 
 namespace ntt
 {
-    using namespace ecs;
-    using namespace memory;
-
     struct SceneInfo
     {
         String sceneName;

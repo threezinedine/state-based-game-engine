@@ -9,10 +9,8 @@
 #include <NTTEngine/structures/color.hpp>
 #include "Grid.hpp"
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace ecs;
-
 #define LAYER_PRIORITY_RANGE 5
 
     /**
@@ -226,4 +224,4 @@ namespace ntt::renderer
      *      and make the warning for each unloaded texture.
      */
     void RendererShutdown();
-} // namespace ntt::renderer
+} // namespace ntt

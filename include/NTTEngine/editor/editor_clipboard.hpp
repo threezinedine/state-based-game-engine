@@ -4,8 +4,6 @@
 
 namespace ntt
 {
-    using namespace renderer;
-
     /**
      * Starting the clipboard system which resets all the internal
      *      data of the clipboard system and allocate the needed memory

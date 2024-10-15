@@ -1,6 +1,6 @@
 #include "TestingHandler.hpp"
 
-namespace ntt::log
+namespace ntt
 {
     namespace
     {
@@ -49,4 +49,4 @@ namespace ntt::log
 
         s_data.LogMessageString = message.fullMessage;
     }
-} // namespace ntt::log
+} // namespace ntt

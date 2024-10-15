@@ -4,10 +4,8 @@
 #include "GraphicInterface.hpp"
 #include <NTTEngine/structures/color.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace ecs;
-
     /**
      * Store the information about the segment of the texture
      *      which is needed to draw on the screen.
@@ -32,4 +30,4 @@ namespace ntt::renderer
             return "Text";
         }
     };
-} // namespace ntt::renderer
+} // namespace ntt

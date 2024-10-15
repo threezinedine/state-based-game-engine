@@ -14,13 +14,8 @@
 
 #include "audio_platforms.hpp"
 
-namespace ntt::audio
+namespace ntt
 {
-    using namespace memory;
-    using namespace log;
-    using namespace event;
-    using namespace dev::store;
-
 #define MAX_AUDIO 100
 
     struct AudioInfo : public Object
@@ -230,4 +225,4 @@ namespace ntt::audio
             UnloadAudio(audioId);
         }
     }
-} // namespace ntt::audio
+} // namespace ntt

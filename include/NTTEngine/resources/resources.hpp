@@ -12,9 +12,9 @@
  * Other modules who need to use any external resources must
  *      access through this module.
  */
-namespace ntt::resource
+namespace ntt
 {
 
-} // namespace ntt::resource
+} // namespace ntt
 
 #include "ResourceManager.hpp"

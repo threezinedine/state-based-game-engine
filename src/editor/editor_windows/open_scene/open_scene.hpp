@@ -6,8 +6,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     class OpenSceneWindow : public OpenClosableWindow,
                             public ProjectReloadWindow,
                             public SceneReloadWindow

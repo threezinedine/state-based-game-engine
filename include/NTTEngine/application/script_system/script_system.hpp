@@ -12,7 +12,7 @@
  * The mechanism for loading dynamically the script for file to
  *      the game
  */
-namespace ntt::script
+namespace ntt
 {
 
-} // namespace ntt::script
+} // namespace ntt

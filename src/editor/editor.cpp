@@ -27,10 +27,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace event;
-    using namespace ecs;
-
     namespace
     {
         b8 s_isRunning = FALSE;

@@ -2,7 +2,7 @@
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/structures/list.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
     class FakeGraphicAPI : public GraphicAPI
     {
@@ -56,4 +56,4 @@ namespace ntt::renderer
         class Impl;
         Scope<Impl> m_impl;
     };
-} // namespace ntt::renderer
+} // namespace ntt

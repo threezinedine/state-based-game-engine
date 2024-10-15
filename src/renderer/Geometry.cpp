@@ -2,10 +2,8 @@
 #include "imgui.h"
 #include <NTTEngine/ecs/ecs.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace ecs;
-
     namespace
     {
         List<String> priorities = {
@@ -90,4 +88,4 @@ namespace ntt::renderer
             ImGui::EndCombo();
         }
     }
-} // namespace ntt::renderer
+} // namespace ntt

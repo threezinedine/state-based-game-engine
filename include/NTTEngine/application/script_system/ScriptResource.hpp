@@ -4,8 +4,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     class ScriptResource : public Resource
     {
     public:
@@ -20,4 +18,4 @@ namespace ntt
         class Impl;
         Scope<Impl> m_impl;
     };
-} // namespace ntt::script
+} // namespace ntt

@@ -7,7 +7,7 @@
 #include <NTTEngine/structures/string.hpp>
 #include <NTTEngine/core/object.hpp>
 
-namespace ntt::ecs
+namespace ntt
 {
     /**
      * Each entity is represented by a unique ID only, there's no actual
@@ -39,4 +39,4 @@ namespace ntt::ecs
         virtual void OnEditorUpdate(std::function<void()> onChanged = nullptr, void *data = nullptr) {}
     };
 
-} // namespace ntt::ecs
+} // namespace ntt

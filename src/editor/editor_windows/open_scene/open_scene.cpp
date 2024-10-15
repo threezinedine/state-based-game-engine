@@ -7,8 +7,6 @@
 
 namespace ntt
 {
-    using namespace event;
-
     class OpenSceneWindow::Impl
     {
     public:

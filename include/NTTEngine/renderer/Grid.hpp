@@ -5,10 +5,8 @@
 #include <functional>
 #include <NTTEngine/structures/string.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace memory;
-
     /**
      * The needed information about the texture
      */
@@ -31,4 +29,4 @@ namespace ntt::renderer
         String m_resourceName;
     };
 
-} // namespace ntt::renderer
+} // namespace ntt

@@ -8,8 +8,6 @@
 
 namespace ntt
 {
-    using namespace log;
-
     namespace
     {
         ImGuiTextBuffer s_buf;

@@ -8,9 +8,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-    using namespace ecs;
-
     /**
      * JSON format which is used during the transformation between JSON and ECS
      *

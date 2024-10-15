@@ -18,8 +18,6 @@
 #include <NTTEngine/core/memory.hpp>
 
 using namespace ntt;
-using namespace ntt::memory;
-using namespace ntt::log;
 
 void Update();
 

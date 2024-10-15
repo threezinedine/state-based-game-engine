@@ -4,10 +4,8 @@
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
-namespace ntt::event
+namespace ntt
 {
-    using namespace log;
-
     /**
      * Need this for deleting the callback
      *      by storing the callback with
@@ -76,4 +74,4 @@ namespace ntt::event
         PROFILE_FUNCTION();
         s_eventCallbacks.clear();
     }
-} // namespace ntt::event
+} // namespace ntt

@@ -6,12 +6,8 @@
 #include <NTTEngine/core/profiling.hpp>
 #include <cmath>
 
-namespace ntt::physics
+namespace ntt
 {
-    using namespace log;
-    using namespace ecs;
-    using namespace renderer;
-
 #define THIS(exp) m_impl->exp
 
     class CollisionSystem::Impl
@@ -108,4 +104,4 @@ namespace ntt::physics
     {
         PROFILE_FUNCTION();
     }
-} // namespace ntt::physics
+} // namespace ntt

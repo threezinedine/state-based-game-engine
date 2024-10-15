@@ -63,11 +63,8 @@
     case Key::NTT_KEY_##key: \
         return #key;
 
-namespace ntt::input
+namespace ntt
 {
-    using namespace log;
-    using namespace event;
-
     namespace
     {
         // InputState s_keyPreStates[KEY_SIZE];
@@ -295,4 +292,4 @@ namespace ntt::input
     {
         PROFILE_FUNCTION();
     }
-} // namespace ntt::input
+} // namespace ntt

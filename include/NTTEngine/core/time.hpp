@@ -41,6 +41,6 @@ namespace ntt
 
     private:
         class Impl;
-        memory::Scope<Impl> m_impl;
+        Scope<Impl> m_impl;
     };
 } // namespace ntt

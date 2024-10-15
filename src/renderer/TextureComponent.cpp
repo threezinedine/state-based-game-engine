@@ -3,7 +3,7 @@
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/editor/types.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
 
     resource_id_t TextureComponent::GetTextureID() const
@@ -121,4 +121,4 @@ namespace ntt::renderer
             ImGui::EndPopup();
         }
     }
-} // namespace ntt::renderer
+} // namespace ntt

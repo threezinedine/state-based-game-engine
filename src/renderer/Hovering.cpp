@@ -1,7 +1,7 @@
 #include <NTTEngine/renderer/Hovering.hpp>
 #include "imgui.h"
 
-namespace ntt::renderer
+namespace ntt
 {
     String Hovering::GetName() const
     {

@@ -8,9 +8,6 @@
 #include <NTTEngine/core/profiling.hpp>
 
 using namespace ntt;
-using namespace ntt::script;
-using namespace ntt::event;
-using namespace ntt::memory;
 
 namespace
 {

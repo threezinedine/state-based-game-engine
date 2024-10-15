@@ -6,9 +6,6 @@
 
 namespace ntt
 {
-    using namespace ecs;
-    using namespace log;
-
     class StateSystem::Impl
     {
     };
@@ -162,4 +159,4 @@ namespace ntt
     {
         PROFILE_FUNCTION();
     }
-} // namespace ntt::script
+} // namespace ntt

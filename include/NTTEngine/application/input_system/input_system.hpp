@@ -12,7 +12,7 @@
  *      an ai system
  *
  */
-namespace ntt::input
+namespace ntt
 {
     /**
      * All the keys that this engine supports
@@ -193,7 +193,7 @@ namespace ntt::input
      * Ending the input system
      */
     void InputShutdown();
-} // namespace ntt::input
+} // namespace ntt
 
 #define CHECK_PRESS(key) CheckState(key, InputState::NTT_PRESS)
 #define CHECK_RELEASE(key) CheckState(key, InputState::NTT_RELEASE)

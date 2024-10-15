@@ -4,8 +4,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     class StateResource : public Resource
     {
     public:

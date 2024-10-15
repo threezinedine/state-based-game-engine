@@ -2,7 +2,7 @@
 #include "renderer.hpp"
 #include <NTTEngine/core/object.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
     struct HoveringContext
     {
@@ -38,4 +38,4 @@ namespace ntt::renderer
 
         void OnEditorUpdate(std::function<void()> onChanged, void *data) override;
     };
-} // namespace ntt::renderer
+} // namespace ntt

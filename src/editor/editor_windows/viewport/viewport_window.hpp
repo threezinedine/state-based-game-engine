@@ -7,8 +7,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     class ViewportWindow : public EditorWindow
     {
     public:

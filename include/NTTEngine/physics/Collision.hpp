@@ -4,9 +4,8 @@
 
 #define COLLISION_NAME "Collision"
 
-namespace ntt::physics
+namespace ntt
 {
-    using namespace ecs;
     using CollisionCallback = std::function<void(List<entity_id_t>)>;
 
     /**
@@ -40,4 +39,4 @@ namespace ntt::physics
         class Impl;
         Scope<Impl> m_impl;
     };
-} // namespace ntt::physics
+} // namespace ntt

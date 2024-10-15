@@ -13,10 +13,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-    using namespace ecs;
-    using namespace script;
-
     /**
      * The base of the state class.
      */

@@ -4,7 +4,7 @@
 #include <NTTEngine/core/parser/json.hpp>
 #include <NTTEngine/core/memory.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
     class ImageResource : public Resource
     {
@@ -20,4 +20,4 @@ namespace ntt::renderer
         class Impl;
         Scope<Impl> m_Impl;
     };
-} // namespace ntt::renderer
+} // namespace ntt

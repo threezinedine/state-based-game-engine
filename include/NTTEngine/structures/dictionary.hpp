@@ -10,9 +10,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace exception;
-
     template <typename K, typename V>
     class Dictionary : public std::map<K, V>
     {

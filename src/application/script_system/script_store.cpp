@@ -11,9 +11,8 @@
 
 ntt::resource_id_t fsm_script_id = ntt::INVALID_SCRIPT_ID;
 
-namespace ntt::script
+namespace ntt
 {
-    using namespace dev::store;
 #define EMPTY_FUNC_NAME ""
 
     namespace

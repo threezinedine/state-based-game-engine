@@ -16,11 +16,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace renderer;
-    using namespace audio;
-    using namespace event;
-
     namespace
     {
         Dictionary<String, Scope<Resource>> s_resources;

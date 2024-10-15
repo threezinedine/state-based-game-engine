@@ -7,8 +7,6 @@
 #include "../Fake_GraphicAPI.hpp"
 
 using namespace ntt;
-using namespace ntt::input;
-using namespace ntt::renderer;
 
 class GraphicInterfaceTest : public ::testing::Test
 {

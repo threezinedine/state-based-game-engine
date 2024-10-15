@@ -13,7 +13,7 @@
  *      will be notified when the event is triggered (by any one)
  *      and the data context will be passed to the subscriber
  */
-namespace ntt::event
+namespace ntt
 {
     // For futher increase the number of event
     //      registeration, the event_id_t can be
@@ -178,4 +178,4 @@ namespace ntt::event
      * Destroy the event bus and free the memory
      */
     void EventShutdown();
-} // namespace ntt::event
+} // namespace ntt

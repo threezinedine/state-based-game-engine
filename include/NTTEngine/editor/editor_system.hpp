@@ -5,9 +5,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-    using namespace ecs;
-
     class EditorSystem : public System
     {
     public:

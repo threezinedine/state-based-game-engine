@@ -8,12 +8,8 @@
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/application/script_system/script_component.hpp>
 
-namespace ntt::script
+namespace ntt
 {
-    using namespace ecs;
-    using namespace log;
-    using namespace memory;
-
 #define THIS(exp) (m_impl->exp)
 
     class ScriptSystem::Impl
@@ -134,4 +130,4 @@ namespace ntt::script
     {
         PROFILE_FUNCTION();
     }
-} // namespace ntt::script
+} // namespace ntt

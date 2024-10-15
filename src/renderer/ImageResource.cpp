@@ -3,10 +3,8 @@
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
-namespace ntt::renderer
+namespace ntt
 {
-    using namespace log;
-
     class ImageResource::Impl
     {
     public:
@@ -49,4 +47,4 @@ namespace ntt::renderer
         UnloadTexture(m_Impl->textureId);
         NTT_ENGINE_DEBUG("Unloaded image resource: {}", GetInfo()->name);
     }
-} // namespace ntt::renderer
+} // namespace ntt

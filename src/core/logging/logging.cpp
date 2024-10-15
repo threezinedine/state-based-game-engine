@@ -7,7 +7,7 @@
 #include <any>
 #include <vector>
 
-namespace ntt::log
+namespace ntt
 {
     namespace
     {
@@ -101,4 +101,4 @@ namespace ntt::log
         s_appLogger.reset();
         s_engineLogger.reset();
     }
-} // namespace ntt::log
+} // namespace ntt

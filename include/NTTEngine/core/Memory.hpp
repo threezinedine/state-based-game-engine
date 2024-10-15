@@ -13,7 +13,7 @@
  *
  * Provides the mechanism for checking memory leaks in the engine.
  */
-namespace ntt::memory
+namespace ntt
 {
     /**
      * Initialize all functionalities of the Memory module

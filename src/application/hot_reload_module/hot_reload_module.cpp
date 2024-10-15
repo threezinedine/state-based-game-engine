@@ -10,7 +10,6 @@ namespace ntt
 {
 #define FUNC_NAME_BUFFER_SIZE 256
 #define PATH_BUFFER_SIZE 256
-    using namespace log;
 
     namespace
     {

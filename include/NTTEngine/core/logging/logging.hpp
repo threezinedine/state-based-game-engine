@@ -25,10 +25,8 @@
  *      - //TODO: File logging
  */
 
-namespace ntt::log
+namespace ntt
 {
-    using namespace memory;
-
     /**
      * The logger type which is supported by the logging module
      *     (can be extended in the future) such as:
@@ -121,7 +119,7 @@ namespace ntt::log
      * Clear all the loggers which are created by the engine
      */
     void LogShutdown();
-} // namespace ntt::log
+} // namespace ntt
 
 #define ENGINE_LOGGER_NAME "Engine"
 #define APP_LOGGER_NAME "Application"

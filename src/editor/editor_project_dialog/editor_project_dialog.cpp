@@ -6,8 +6,6 @@
 
 namespace ntt
 {
-    using namespace event;
-
     class EditorFileDialog::Impl
     {
     public:

@@ -8,9 +8,6 @@
 #include "../ResourceTest.hpp"
 
 using namespace ntt;
-using namespace ntt::event;
-using namespace ntt::ecs;
-using namespace ntt::resource;
 
 class ResourceManagerTest : public ::testing::Test
 {

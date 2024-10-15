@@ -16,10 +16,10 @@
  *          + In-Game GUI: Where the user can interact with game characters, objects, etc.
  *
  */
-namespace ntt::renderer
+namespace ntt
 {
 
-} // namespace ntt::renderer
+} // namespace ntt
 
 #include "Geometry.hpp"
 #include "TextureComponent.hpp"

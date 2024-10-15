@@ -3,7 +3,7 @@
 #include <NTTEngine/editor/types.hpp>
 #include <NTTEngine/core/profiling.hpp>
 
-namespace ntt::script
+namespace ntt
 {
     resource_id_t NativeScriptComponent::GetScriptId() const
     {

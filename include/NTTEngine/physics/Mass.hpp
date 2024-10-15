@@ -3,12 +3,12 @@
 #include <NTTEngine/structures/position.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 
-namespace ntt::physics
+namespace ntt
 {
     /**
      * The velocity of an entity.
      */
-    struct Mass : public ecs::ComponentBase
+    struct Mass : public ComponentBase
     {
         position_t velocity_x;
         position_t velocity_y;

@@ -26,7 +26,7 @@ namespace ntt
 
         virtual void UnloadImpl() override;
     };
-} // namespace ntt::resource
+} // namespace ntt
 
 #define GET_LOAD_CALL(name) ResourceTest::s_resources[name]->loadCalls
 #define GET_UNLOAD_CALL(name) ResourceTest::s_resources[name]->unloadCalls

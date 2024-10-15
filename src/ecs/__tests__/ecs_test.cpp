@@ -6,9 +6,6 @@
 #include <NTTEngine/renderer/Geometry.hpp>
 
 using namespace ntt;
-using namespace ntt::ecs;
-using namespace ntt::event;
-using namespace ntt::renderer;
 
 #define TEST_SYSTEM_NAME "TestSystem"
 

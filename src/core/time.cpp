@@ -27,7 +27,7 @@ namespace ntt
 
     Timer::Timer()
     {
-        m_impl = memory::CreateScope<Impl>();
+        m_impl = CreateScope<Impl>();
         Reset();
     }
 

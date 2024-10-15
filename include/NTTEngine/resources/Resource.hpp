@@ -5,8 +5,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     /**
      * Interfaces of all resources, all other resources must
      *      inherit from this interface.

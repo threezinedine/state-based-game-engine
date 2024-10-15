@@ -5,8 +5,6 @@
 
 namespace ntt
 {
-    using namespace memory;
-
     /**
      * Used for measuring, comparing, monitoring the performance, the efficiency of the code.
      * Each function, method, block of code can be profiled to see how much time it takes

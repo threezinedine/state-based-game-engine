@@ -19,11 +19,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace renderer;
-    using namespace input;
-    using namespace script;
-
     class EditorSystem::Impl
     {
     public:

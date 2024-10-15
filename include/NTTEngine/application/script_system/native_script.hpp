@@ -6,11 +6,8 @@
 #include "script_store.hpp"
 #include <NTTEngine/renderer/Hovering.hpp>
 
-namespace ntt::script
+namespace ntt
 {
-    using namespace ecs;
-    using namespace renderer;
-
     class Script : public Scriptable
     {
     public:
@@ -24,4 +21,4 @@ namespace ntt::script
         virtual void OnHoverExit() {}
         virtual void OnCollide(List<entity_id_t> others) {}
     };
-} // namespace ntt::script
+} // namespace ntt

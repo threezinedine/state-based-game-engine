@@ -8,8 +8,6 @@
 
 namespace ntt
 {
-    using namespace log;
-
 #define THIS(exp) this->m_impl->exp
 #define DEFAULT_SECTION "Default"
 #define SEPARATOR "---------------------"

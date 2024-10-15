@@ -6,10 +6,6 @@
 
 namespace ntt
 {
-    using namespace log;
-    using namespace event;
-    using namespace ecs;
-
     namespace
     {
         Dictionary<String, SceneContext> s_scenes;

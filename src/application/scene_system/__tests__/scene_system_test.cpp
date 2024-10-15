@@ -6,8 +6,6 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 
 using namespace ntt;
-using namespace ecs;
-using namespace event;
 
 namespace
 {
