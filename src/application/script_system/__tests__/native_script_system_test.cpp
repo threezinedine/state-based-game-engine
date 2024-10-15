@@ -82,7 +82,7 @@ TEST_F(NativeScriptSystemTest, NormalWorkflow)
 {
     auto entity = ECSCreateEntity(
         "test",
-        {ECS_CREATE_COMPONENT(NativeScriptComponent, testControllerId)});
+        {ECS_CREATE_COMPONENT(NativeScriptComponent, "TestController")});
 
     ECSUpdate(0.1f);
     EXPECT_EQ(ECS_GET_COMPONENT(entity, NativeScriptComponent)->GetObj()->GetEntity(), entity);
@@ -121,7 +121,7 @@ TEST_F(NativeScriptSystemTest, EmptyScript)
 {
     auto entity = ECSCreateEntity(
         "test",
-        {ECS_CREATE_COMPONENT(NativeScriptComponent, INVALID_ENTITY_ID)});
+        {ECS_CREATE_COMPONENT(NativeScriptComponent, "")});
 
     ECSUpdate(0.1f);
     EXPECT_EQ(s_enterCalled, 0);

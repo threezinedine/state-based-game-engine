@@ -10,36 +10,25 @@ namespace ntt::script
 {
     struct NativeScriptComponent : public ComponentBase
     {
-        resource_id_t scriptId = INVALID_SCRIPT_ID;
+        String scriptName;
         script_object_id_t objId = INVALID_OBJECT_ID;
         void *data;
 
-        NativeScriptComponent(resource_id_t scriptId,
+        NativeScriptComponent(String scriptName = "",
                               script_object_id_t objId = INVALID_OBJECT_ID,
                               void *data = nullptr)
-            : scriptId(scriptId), objId(objId),
+            : scriptName(scriptName), objId(objId),
               data(data)
         {
         }
 
-        Ref<Script> GetObj()
-        {
-            if (scriptId == INVALID_SCRIPT_ID)
-            {
-                return nullptr;
-            }
+        resource_id_t GetScriptId() const;
+        Ref<Script> GetObj();
+        String GetName() const override;
 
-            if (objId == INVALID_OBJECT_ID)
-            {
-                return nullptr;
-            }
+        JSON ToJSON() const override;
+        void FromJSON(const JSON &j) override;
 
-            return GET_SCRIPT(Script, objId);
-        }
-
-        String GetName() const override
-        {
-            return "NativeScriptComponent";
-        }
+        void OnEditorUpdate(std::function<void()> callback, void *data) override;
     };
 }

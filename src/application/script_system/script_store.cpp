@@ -20,6 +20,7 @@ namespace ntt::script
     {
         struct ScriptData : public Object
         {
+            String key;
             String path;
             HMODULE module;
             CreateFuncType createFunc;
@@ -41,6 +42,9 @@ namespace ntt::script
 
         GetFieldFunc<ScriptData, String> s_GetPath = [](Ref<ScriptData> obj) -> String
         { return obj->path; };
+
+        GetFieldFunc<ScriptData, String> s_GetKey = [](Ref<ScriptData> obj) -> String
+        { return obj->key; };
     } // namespace
 
     void ScriptStoreInit(const char *createFunc, const char *deleteFunc, const char *getBaseTypeFunc)
@@ -59,7 +63,10 @@ namespace ntt::script
         s_getBaseTypeFunc = getBaseTypeFunc;
     }
 
-    resource_id_t ScriptStoreLoad(const char *file, std::function<void()> onLoad)
+    resource_id_t ScriptStoreLoad(
+        const String &key,
+        const String &file,
+        std::function<void()> onLoad)
     {
         PROFILE_FUNCTION();
 
@@ -78,7 +85,7 @@ namespace ntt::script
         Ref<ScriptData> data = CreateRef<ScriptData>();
         try
         {
-            data->module = LoadLibraryA(file);
+            data->module = LoadLibraryA(file.RawString().c_str());
 
             data->createFunc = reinterpret_cast<CreateFuncType>(
                 GetProcAddress(data->module, s_createFunc.RawString().c_str()));
@@ -99,6 +106,7 @@ namespace ntt::script
         }
 
         data->path = file;
+        data->key = key;
 
         auto script_id = s_scripts->Add(data);
 
@@ -106,7 +114,7 @@ namespace ntt::script
     }
 
     resource_id_t ScriptStoreLoad(
-        const char *key,
+        const String &key,
         CreateFuncType createFunc,
         DeleteFuncType deleteFunc,
         GetBaseTypeFunc getBaseTypeFunc)
@@ -121,12 +129,28 @@ namespace ntt::script
         }
 
         Ref<ScriptData> data = CreateRef<ScriptData>();
-        data->path = key;
+        data->key = key;
+        data->path = "";
         data->module = nullptr;
         data->createFunc = createFunc;
         data->deleteFunc = deleteFunc;
 
         return s_scripts->Add(data);
+    }
+
+    resource_id_t GetScriptIdByName(const String &key)
+    {
+        PROFILE_FUNCTION();
+
+        auto ids = s_scripts->GetIdsByField(
+            key, s_GetKey);
+
+        if (ids.size() == 1)
+        {
+            return ids[0];
+        }
+
+        return INVALID_SCRIPT_ID;
     }
 
     std::type_index ScriptStoreGetBaseType(resource_id_t id)

@@ -34,8 +34,6 @@ namespace ntt
         List<entity_id_t> rotateEntities;
         List<entity_id_t> resizeEntities;
 
-        resource_id_t transformScriptId;
-
         u16 currentLayer = EDITOR_LAYER;
         ToolType currentTool = MOVE;
 
@@ -129,7 +127,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &centerData),
                     ECS_CREATE_COMPONENT(
@@ -199,7 +197,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &xPointData),
                 });
@@ -232,7 +230,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &xPointNegData),
                 });
@@ -297,7 +295,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &yPointData),
                 });
@@ -330,7 +328,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &yPointNegData),
                 });
@@ -376,7 +374,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &leftTopData),
                 });
@@ -426,7 +424,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &rightTopData),
                 });
@@ -475,7 +473,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &rightBottomData),
                 });
@@ -524,7 +522,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &leftBottomData),
                 });
@@ -568,7 +566,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &leftPointData),
                 });
@@ -612,7 +610,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &rightPointData),
                 });
@@ -656,7 +654,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &topPointData),
                 });
@@ -700,7 +698,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &bottomPointData),
                 });
@@ -745,7 +743,7 @@ namespace ntt
                     ECS_CREATE_COMPONENT(Hovering),
                     ECS_CREATE_COMPONENT(
                         NativeScriptComponent,
-                        transformScriptId,
+                        "transform-script",
                         INVALID_OBJECT_ID,
                         &rotatePointData),
                 });
@@ -961,7 +959,7 @@ namespace ntt
         m_impl->selectedEntities.clear();
         m_impl->drawnEntities.clear();
 
-        m_impl->transformScriptId = ScriptStoreLoad(
+        ScriptStoreLoad(
             "transform-script",
             [](void *data) -> Ref<void>
             { return std::reinterpret_pointer_cast<void>(CreateRef<TransformScript>(data)); },

@@ -92,7 +92,10 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        m_impl->scriptId = ScriptStoreLoad(m_impl->outputPath.RawString().c_str(), []() {});
+        m_impl->scriptId = ScriptStoreLoad(
+            GetInfo()->name,
+            m_impl->outputPath.RawString().c_str(),
+            []() {});
 
         return m_impl->scriptId;
     }

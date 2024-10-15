@@ -49,13 +49,13 @@ namespace ntt::script
             return;
         }
 
-        if (script->scriptId == INVALID_RESOURCE_ID)
+        if (script->GetScriptId() == INVALID_RESOURCE_ID)
         {
             NTT_ENGINE_TRACE("The Script resource id is not found");
             return;
         }
 
-        script->objId = ScriptStoreCreate(script->scriptId, script->data);
+        script->objId = ScriptStoreCreate(script->GetScriptId(), script->data);
         auto obj = GET_SCRIPT(Script, script->objId);
 
         if (obj == nullptr)

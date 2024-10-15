@@ -60,11 +60,15 @@ namespace ntt::script
      *      Other scripts which use the script_id should be reloadded too.
      * Until the script is loadded successfully, the `NTT_FILE_UPDATED` event will be triggered.
      *
+     * @param key the key for the script, it is used for identifying the script
      * @param file the file path of the script, the file can have recursive folder like
      *      `game-script/start.cpp`
      * @param onLoad the function will be called when the file is reloaded.
      */
-    resource_id_t ScriptStoreLoad(const char *file, std::function<void()> onLoad);
+    resource_id_t ScriptStoreLoad(
+        const String &key,
+        const String &file,
+        std::function<void()> onLoad);
 
     /**
      * Load script by static code rather than compiling the file
@@ -74,10 +78,18 @@ namespace ntt::script
      * @param deleteFunc the delete function of the script
      */
     resource_id_t ScriptStoreLoad(
-        const char *key,
+        const String &key,
         CreateFuncType createFunc,
         DeleteFuncType deleteFunc,
         GetBaseTypeFunc getBaseTypeFunc);
+
+    /**
+     * Retrieve the script id by the key, if the key is not found, then return `INVALID_SCRIPT_ID`
+     *
+     * @param key the key of the script
+     * @return the id of the script
+     */
+    resource_id_t GetScriptIdByName(const String &key);
 
     /**
      * Retrieve the base type of the script (now how 2 options: Script and State)
