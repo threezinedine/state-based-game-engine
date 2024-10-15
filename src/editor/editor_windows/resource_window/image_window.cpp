@@ -6,6 +6,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/editor/editor_clipboard.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -35,16 +36,19 @@ namespace ntt
 
     ImageWindow::ImageWindow(const String &file, u8 numRow, u8 numCol)
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
         ChangeImage(file, numRow, numCol);
     }
 
     ImageWindow::~ImageWindow()
     {
+        PROFILE_FUNCTION();
     }
 
     void ImageWindow::ChangeImage(const String &file, u8 numRow, u8 numCol)
     {
+        PROFILE_FUNCTION();
         m_impl->file = file;
 
         if (m_impl->texture.id != 0)
@@ -74,6 +78,7 @@ namespace ntt
 
     void ImageWindow::ChangeGrid(u8 numRow, u8 numCol)
     {
+        PROFILE_FUNCTION();
         m_impl->numCol = numCol;
         m_impl->numRow = numRow;
 
@@ -118,10 +123,12 @@ namespace ntt
 
     void ImageWindow::InitImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void ImageWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
+        PROFILE_FUNCTION();
         if (m_impl->renderTexture.id == 0)
         {
             return;
@@ -236,6 +243,7 @@ namespace ntt
 
     void ImageWindow::ShutdownImpl()
     {
+        PROFILE_FUNCTION();
         if (m_impl->texture.id != 0)
         {
             UnloadTexture(m_impl->texture);

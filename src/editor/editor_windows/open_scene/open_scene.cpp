@@ -3,6 +3,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include "imgui.h"
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -23,6 +24,7 @@ namespace ntt
                                      Ref<SceneInfo> scene)
         : OpenClosableWindow("New Scene")
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
 
         m_impl->project = project;
@@ -32,14 +34,19 @@ namespace ntt
         m_impl->index = 0;
     }
 
-    OpenSceneWindow::~OpenSceneWindow() {}
+    OpenSceneWindow::~OpenSceneWindow()
+    {
+        PROFILE_FUNCTION();
+    }
 
     void OpenSceneWindow::InitImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void OpenSceneWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
+        PROFILE_FUNCTION();
         if (ImGui::Begin("Open Scene", p_open))
         {
             if (m_impl->sceneNames.size() == 0)
@@ -90,15 +97,18 @@ namespace ntt
 
     void OpenSceneWindow::OnReloadProject()
     {
+        PROFILE_FUNCTION();
         m_impl->sceneNames = m_impl->project->scenes.Keys();
     }
 
     void OpenSceneWindow::OnReloadScene()
     {
+        PROFILE_FUNCTION();
         m_impl->sceneNames = m_impl->project->scenes.Keys();
     }
 
     void OpenSceneWindow::ShutdownImpl()
     {
+        PROFILE_FUNCTION();
     }
 } // namespace ntt

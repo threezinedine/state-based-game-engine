@@ -25,6 +25,7 @@ namespace ntt
 
         List<String> s_watchedFiles;
         List<filewatch::FileWatch<std::string> *> s_watchers;
+        String s_projectPath;
 
         void Comparing(const String &filePath)
         {
@@ -99,14 +100,35 @@ namespace ntt
             delete watcher;
         }
 
+        s_projectPath = CurrentDirectory();
+
         s_watchers.clear();
         s_registered.clear();
         s_watchedFiles.clear();
     }
 
+    void HotReload_SetProjectPath(const String &projectPath)
+    {
+        PROFILE_FUNCTION();
+
+        if (!IsExist(projectPath))
+        {
+            NTT_ENGINE_WARN("The project path {} is not exist.", projectPath);
+            return;
+        }
+
+        s_projectPath = projectPath;
+    }
+
     void HotReloadRegister(const String &filePath, std::function<void(const String &)> callback)
     {
         PROFILE_FUNCTION();
+
+        if (SubtractPath(filePath, s_projectPath) == filePath)
+        {
+            NTT_ENGINE_WARN("The file {} is not in the project path.", filePath);
+            return;
+        }
 
         if (s_registered.Contains(filePath))
         {
@@ -115,8 +137,8 @@ namespace ntt
         }
 
         HotReloadData data;
-        data.tempPath = SubtractPath(filePath, GetStoredPath(PathType::NTT_SOURCE));
-        data.tempPath = JoinPath({CurrentDirectory(),
+        data.tempPath = SubtractPath(filePath, s_projectPath);
+        data.tempPath = JoinPath({s_projectPath,
                                   "temp",
                                   data.tempPath});
         data.onLoad = callback;
@@ -137,6 +159,13 @@ namespace ntt
                         Listener(filePath, change_type);
                     }));
         }
+    }
+
+    b8 HotReload_RegisterContains(const String &filePath)
+    {
+        PROFILE_FUNCTION();
+
+        return s_registered.Contains(filePath);
     }
 
     void HotReloadShutdown()

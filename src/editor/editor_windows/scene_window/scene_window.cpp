@@ -63,9 +63,10 @@ namespace ntt
         }
         ImGui::Separator();
 
-        List<EntityInfo> entities = m_impl->scene->entities;
+        // List<EntityInfo> entities = m_impl->scene->entities;
 
-        for (auto &entity : entities)
+        b8 modified = FALSE;
+        for (auto &entity : m_impl->scene->entities)
         {
             ImGui::PushID(format("Entity: {}",
                                  entity.name.RawString())
@@ -73,11 +74,16 @@ namespace ntt
                               .c_str());
 
             entity.OnEditorUpdate([&]()
-                                  { m_impl->scene->SaveEntitiesInfo();
-                                       m_impl->scene->ReloadEntities(); },
+                                  { modified = TRUE; },
                                   &m_impl->editorData);
 
             ImGui::PopID();
+        }
+
+        if (modified)
+        {
+            m_impl->scene->SaveEntitiesInfo();
+            m_impl->scene->ReloadEntities();
         }
 
         ImGui::End();

@@ -39,6 +39,7 @@ namespace ntt
 
         void OnLayerChanged(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             u16 newLayer = context.u16_data[0];
             if (newLayer == EDITOR_LAYER)
             {
@@ -51,6 +52,7 @@ namespace ntt
 
         void Clear()
         {
+            PROFILE_FUNCTION();
             for (auto selected : selectedEntities)
             {
                 for (auto btnId : drawnEntities[selected])
@@ -70,6 +72,7 @@ namespace ntt
 
         void ChooseNewEntity(entity_id_t entityId)
         {
+            PROFILE_FUNCTION();
             selectedEntities.push_back(entityId);
 
             if (!drawnEntities.Contains(entityId))
@@ -840,6 +843,7 @@ namespace ntt
 
         void OnEditorChooseEntity(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             auto entityId = context.u32_data[0];
             Clear();
             ChooseNewEntity(entityId);
@@ -847,12 +851,14 @@ namespace ntt
 
         void OnEditorAppendEntity(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             auto entityId = context.u32_data[0];
             ChooseNewEntity(entityId);
         }
 
         void OnEditorSelectedRequest(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             f32 deltaX = context.f32_data[0];
             f32 deltaY = context.f32_data[1];
             f32 x = context.f32_data[2];
@@ -902,6 +908,7 @@ namespace ntt
 
         void ChangeMoveState(b8 active)
         {
+            PROFILE_FUNCTION();
             for (auto entityId : moveEntities)
             {
                 ECSSetComponentActive(entityId, typeid(NativeScriptComponent), active);
@@ -911,6 +918,7 @@ namespace ntt
 
         void ChangeRotateState(b8 active)
         {
+            PROFILE_FUNCTION();
             for (auto entityId : rotateEntities)
             {
                 ECSSetComponentActive(entityId, typeid(NativeScriptComponent), active);
@@ -920,6 +928,7 @@ namespace ntt
 
         void ChangeResizeState(b8 active)
         {
+            PROFILE_FUNCTION();
             for (auto entityId : resizeEntities)
             {
                 ECSSetComponentActive(entityId, typeid(NativeScriptComponent), active);
@@ -929,6 +938,7 @@ namespace ntt
 
         void OnToolTypeChanged(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             auto tool = static_cast<ToolType>(context.u8_data[0]);
             currentTool = tool;
 

@@ -80,13 +80,28 @@ namespace ntt::script
             return;
         }
 
+        if (script->GetScriptId() == INVALID_RESOURCE_ID)
+        {
+            NTT_ENGINE_TRACE("The Script resource id is not found");
+            return;
+        }
+
         auto obj = script->GetObj();
 
         if (obj == nullptr)
         {
-            ScriptStoreDeleteObject(script->objId);
-            script->objId = INVALID_OBJECT_ID;
-            return;
+            script->objId = ScriptStoreCreate(script->GetScriptId(), script->data);
+            obj = script->GetObj();
+
+            if (obj == nullptr)
+            {
+                ScriptStoreDeleteObject(script->objId);
+                script->objId = INVALID_OBJECT_ID;
+                return;
+            }
+
+            obj->SetEntity(entity_id);
+            obj->OnEnter();
         }
 
         obj->OnUpdate(deltaTime);

@@ -19,7 +19,7 @@ protected:
     {
         EventInit();
         ECSInit();
-        ResourceInit();
+        ResourceInit(FALSE);
 
         ResourceTest::s_resources.clear();
     }

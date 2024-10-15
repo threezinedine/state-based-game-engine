@@ -58,7 +58,7 @@ namespace ntt
             data = format("\t{}", data.RawString());
         }
 
-        String logFile = JoinPath({s_outputFolder, (s_currentSection + ".prof.txt")});
+        String logFile = JoinPath({CurrentDirectory(), (s_currentSection + ".prof.txt")});
 
         try
         {

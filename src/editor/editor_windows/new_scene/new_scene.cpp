@@ -3,6 +3,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include "imgui.h"
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -23,6 +24,7 @@ namespace ntt
                                    Ref<SceneInfo> scene)
         : OpenClosableWindow("New Scene")
     {
+        PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
 
         m_impl->project = project;
@@ -30,14 +32,19 @@ namespace ntt
         m_impl->scene = scene;
     }
 
-    NewSceneWindow::~NewSceneWindow() {}
+    NewSceneWindow::~NewSceneWindow()
+    {
+        PROFILE_FUNCTION();
+    }
 
     void NewSceneWindow::InitImpl()
     {
+        PROFILE_FUNCTION();
     }
 
     void NewSceneWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
+        PROFILE_FUNCTION();
         // centering the window
         ImVec2 displaySize = ImGui::GetIO().DisplaySize;
         ImVec2 windowSize = ImVec2(200, 200); // Assuming the window size is 200x200
@@ -79,5 +86,6 @@ namespace ntt
 
     void NewSceneWindow::ShutdownImpl()
     {
+        PROFILE_FUNCTION();
     }
 } // namespace ntt

@@ -22,6 +22,11 @@ namespace ntt::script
         {
         }
 
+        NativeScriptComponent(const NativeScriptComponent &other)
+            : scriptName(other.scriptName), objId(other.objId), data(other.data)
+        {
+        }
+
         resource_id_t GetScriptId() const;
         Ref<Script> GetObj();
         String GetName() const override;

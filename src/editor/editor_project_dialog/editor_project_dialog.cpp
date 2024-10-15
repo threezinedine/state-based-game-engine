@@ -2,6 +2,7 @@
 #include "ImGuiFileDialog.h"
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -22,6 +23,7 @@ namespace ntt
         const EditorFileDialogData &data)
         : m_impl(CreateScope<Impl>())
     {
+        PROFILE_FUNCTION();
         m_impl->project = project;
         m_impl->config = config;
         m_impl->data = data;
@@ -29,10 +31,12 @@ namespace ntt
 
     EditorFileDialog::~EditorFileDialog()
     {
+        PROFILE_FUNCTION();
     }
 
     void EditorFileDialog::Open()
     {
+        PROFILE_FUNCTION();
         IGFD::FileDialogConfig config;
         config.path = m_impl->config->lastProjectPath.RawString();
 
@@ -45,6 +49,7 @@ namespace ntt
 
     void EditorFileDialog::Update()
     {
+        PROFILE_FUNCTION();
         if (ImGuiFileDialog::Instance()->Display(m_impl->data.id.RawString().c_str()))
         {
             if (ImGuiFileDialog::Instance()->IsOk())

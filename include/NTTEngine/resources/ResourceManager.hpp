@@ -15,8 +15,12 @@ namespace ntt
      * Initialize the resource manager. No scene is active
      *      when the resource manager is initialized. Need to
      *      Change the scene manually.
+     *
+     * @param editorMode The mode of the resource manager.
+     *      TRUE then the script file will be watched and reloaded
+     *      FALSE then the script file will not be watched and reloaded
      */
-    void ResourceInit();
+    void ResourceInit(b8 editorMode);
 
     /**
      * Parsing the JSON content of the resource file to the list of
@@ -59,6 +63,15 @@ namespace ntt
      * @param infos The list of resource information.
      */
     void ResourceLoad(List<ResourceInfo> infos);
+
+    /**
+     * Assign the project path
+     *
+     * @param projectPath The path of the project.
+     *      if the path is not exist, the warning will happen.
+     *      and the project path will not be changed.
+     */
+    void Resource_SetProjectPath(const String &projectPath);
 
     /**
      * Unload all the resources from the list of resource information.

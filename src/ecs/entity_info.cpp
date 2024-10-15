@@ -7,12 +7,14 @@
 #include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/physics/Mass.hpp>
 #include <NTTEngine/renderer/Sprite.hpp>
+#include <NTTEngine/application/script_system/script_component.hpp>
 
 namespace ntt::ecs
 {
     using namespace renderer;
     using namespace log;
     using namespace physics;
+    using namespace script;
 
     namespace
     {
@@ -21,14 +23,16 @@ namespace ntt::ecs
                 "Geometry",
                 "TextureCompontent",
                 "Mass",
-                "Sprite"};
+                "Sprite",
+                "NativeScriptComponent"};
 
         List<std::type_index> componentIndexes =
             {
                 typeid(Geometry),
                 typeid(TextureComponent),
                 typeid(Mass),
-                typeid(Sprite)};
+                typeid(Sprite),
+                typeid(NativeScriptComponent)};
         u8 selectedComponentType = 0;
     }
 
@@ -74,23 +78,30 @@ namespace ntt::ecs
 
         if (ImGui::TreeNode("Components"))
         {
-            auto tempComponents = components;
-
-            for (auto &component : tempComponents)
+            b8 modified = FALSE;
+            for (auto &component : components)
             {
                 ImGui::PushID(format("{}_{}", name, component.second->GetName()).RawString().c_str());
                 if (ImGui::TreeNode(component.second->GetName().RawString().c_str()))
                 {
-                    component.second->OnEditorUpdate(onChanged, data);
+                    component.second->OnEditorUpdate([&]()
+                                                     { modified = TRUE; }, data);
                     if (ImGui::Checkbox("Activate", &component.second->active))
                     {
-                        component.second->active ? component.second->TurnOn() : component.second->TurnOff();
+                        component.second->active
+                            ? component.second->TurnOn()
+                            : component.second->TurnOff();
                     }
 
                     ImGui::TreePop();
                 }
 
                 ImGui::PopID();
+            }
+
+            if (modified && onChanged)
+            {
+                onChanged();
             }
 
             ImGui::TreePop();
@@ -167,6 +178,10 @@ namespace ntt::ecs
                 else if (type == typeid(Sprite))
                 {
                     components[type] = CreateRef<Sprite>();
+                }
+                else if (type == typeid(NativeScriptComponent))
+                {
+                    components[type] = CreateRef<NativeScriptComponent>();
                 }
 
                 selectedComponentType = 0;

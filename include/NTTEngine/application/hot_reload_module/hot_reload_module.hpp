@@ -17,6 +17,12 @@ namespace ntt
     void HotReloadInit();
 
     /**
+     * Reassign the project path for the hot reload system.
+     * @param projectPath The path of the project.
+     */
+    void HotReload_SetProjectPath(const String &projectPath);
+
+    /**
      * Registering the file which will be watched by the hot reload system.
      * In the debug mode, each time the file has changed, the callback will be called.
      * In the release mode, the callback will be called only once at the beginning if
@@ -27,6 +33,14 @@ namespace ntt
      * @param callback The callback function which will be called when the file is changed.
      */
     void HotReloadRegister(const String &filePath, std::function<void(const String &)> callback);
+
+    /**
+     * Checking whether the file is watched by the hot reload system or not.
+     *
+     * @param filePath The path of the file to be checked.
+     * @return TRUE if the file is watched, FALSE otherwise.
+     */
+    b8 HotReload_RegisterContains(const String &filePath);
 
     /**
      * Delete, free all needed resources for the hot reload system.

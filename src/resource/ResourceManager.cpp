@@ -25,13 +25,20 @@ namespace ntt
     {
         Dictionary<String, Scope<Resource>> s_resources;
         Dictionary<String, resource_id_t> s_resourceIDs;
+
+        String s_sourcePath = CurrentDirectory();
+        String s_projectPath = "";
+        b8 s_editorMode = FALSE;
     } // namespace
 
-    void ResourceInit()
+    void ResourceInit(b8 editorMode)
     {
         PROFILE_FUNCTION();
 
+        s_projectPath = CurrentDirectory();
+        s_sourcePath = CurrentDirectory();
         s_resources.clear();
+        s_editorMode = editorMode;
     }
 
     void ResourceLoad(List<ResourceInfo> infos)
@@ -46,6 +53,9 @@ namespace ntt
             }
 
             Scope<Resource> resource;
+            info.addintionalInfo.Set("sourcePath", s_sourcePath);
+            info.addintionalInfo.Set("projectPath", s_projectPath);
+            info.addintionalInfo.Set("editorMode", s_editorMode);
 
             // =============== Begin of handling the incoming resource ===============
             switch (info.type)
@@ -105,6 +115,19 @@ namespace ntt
         }
 
         return infos;
+    }
+
+    void Resource_SetProjectPath(const String &projectPath)
+    {
+        PROFILE_FUNCTION();
+
+        if (!IsExist(projectPath))
+        {
+            NTT_ENGINE_WARN("The project path {} is not exist.", projectPath);
+            return;
+        }
+
+        s_projectPath = projectPath;
     }
 
     resource_id_t GetResourceID(const String &name)

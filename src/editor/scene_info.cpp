@@ -1,10 +1,12 @@
 #include <NTTEngine/editor/types.hpp>
 #include <NTTEngine/ecs/ecs_helper.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
     void SceneInfo::ReloadEntities()
     {
+        PROFILE_FUNCTION();
         for (auto &entity : m_entityIDs)
         {
             ECSDeleteEntity(entity);
@@ -28,6 +30,7 @@ namespace ntt
 
     void SceneInfo::SaveEntitiesInfo()
     {
+        PROFILE_FUNCTION();
         JSON config = ReadFile(filePath);
         List<JSON> entitiesJSON =
             entities
@@ -43,6 +46,7 @@ namespace ntt
 
     void SceneInfo::AddEntity()
     {
+        PROFILE_FUNCTION();
         EntityInfo entity;
         entity.name = "Entity";
         entities.push_back(entity);
@@ -50,6 +54,7 @@ namespace ntt
 
     JSON SceneInfo::ToJSON()
     {
+        PROFILE_FUNCTION();
         JSON scene = JSON("{}");
         scene.Set("sceneName", sceneName);
         scene.Set("filePath", filePath);
@@ -72,12 +77,14 @@ namespace ntt
 
     void SceneInfo::FromJSON(const JSON &scene)
     {
+        PROFILE_FUNCTION();
         sceneName = scene.Get<String>("sceneName");
         filePath = scene.Get<String>("filePath");
     }
 
     void SceneInfo::ReloadResourceInfo()
     {
+        PROFILE_FUNCTION();
         resources.clear();
         JSON config = ReadFile(filePath);
 
@@ -93,6 +100,7 @@ namespace ntt
 
     void SceneInfo::SaveResourceInfo()
     {
+        PROFILE_FUNCTION();
         JSON config = ReadFile(filePath);
         List<JSON> resourceJSONs =
             resources.Map<JSON>([](const ResourceInfo &info, ...) -> JSON

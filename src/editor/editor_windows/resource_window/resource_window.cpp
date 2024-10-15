@@ -7,11 +7,13 @@
 #include "image_window.hpp"
 #include <NTTEngine/renderer/GraphicInterface.hpp>
 #include <NTTEngine/audio/audio.hpp>
+#include <NTTEngine/application/script_system/script_store.hpp>
 
 namespace ntt
 {
     using namespace renderer;
     using namespace audio;
+    using namespace script;
 
     class ResourceWindow::Impl
     {
@@ -79,6 +81,10 @@ namespace ntt
             }
         }
 
+        void ComponentScriptDraw(ResourceInfo &info)
+        {
+        }
+
         b8 HasScene()
         {
             return project->ContainScene(scene);
@@ -113,6 +119,9 @@ namespace ntt
                 break;
             case ResourceType::AUDIO:
                 ComponentAudioDraw(info);
+                break;
+            case ResourceType::SCRIPT:
+                ComponentScriptDraw(info);
                 break;
             }
             ImGui::SameLine();

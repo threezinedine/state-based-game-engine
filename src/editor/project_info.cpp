@@ -1,10 +1,12 @@
 #include <NTTEngine/editor/types.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
 
     void ProjectInfo::From(const JSON &project)
     {
+        PROFILE_FUNCTION();
         name = project.Get<String>("name");
         path = project.Get<String>("path");
         width = project.Get<i32>("width", 800);
@@ -27,6 +29,7 @@ namespace ntt
 
     JSON ProjectInfo::ToJSON()
     {
+        PROFILE_FUNCTION();
         JSON project = JSON("{}");
         project.Set("name", name);
         project.Set("path", path);
@@ -41,11 +44,13 @@ namespace ntt
 
     String ProjectInfo::GetProjectFilePath()
     {
+        PROFILE_FUNCTION();
         return JoinPath({path, name});
     }
 
     void ProjectInfo::AddNewScene(const String &sceneName)
     {
+        PROFILE_FUNCTION();
         Ref<SceneInfo> scene = CreateRef<SceneInfo>();
         if (scenes.Contains(sceneName))
         {
@@ -77,6 +82,7 @@ namespace ntt
 
     void ProjectInfo::ReloadDefaultResourcesInfo()
     {
+        PROFILE_FUNCTION();
         defaultResources.clear();
 
         auto defaultConfigFile =
@@ -97,6 +103,7 @@ namespace ntt
 
     void ProjectInfo::SaveDefaultResources()
     {
+        PROFILE_FUNCTION();
         List<JSON> jsons =
             defaultResources
                 .Map<JSON>([](const ResourceInfo &info, ...) -> JSON
@@ -112,6 +119,7 @@ namespace ntt
 
     b8 ProjectInfo::ContainScene(Ref<SceneInfo> scene)
     {
+        PROFILE_FUNCTION();
         return scenes.Contains(scene->sceneName);
     }
 

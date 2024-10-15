@@ -1,10 +1,12 @@
 #include <gtest/gtest.h>
 #include <NTTEngine/renderer/Geometry.hpp>
 #include <NTTEngine/ecs/ecs_helper.hpp>
+#include <NTTEngine/application/script_system/script_component.hpp>
 
 using namespace ntt;
 using namespace ntt::ecs;
 using namespace ntt::renderer;
+using namespace ntt::script;
 
 class ECSHelperTest : public ::testing::Test
 {
@@ -20,10 +22,12 @@ TEST_F(ECSHelperTest, TestGeometry)
     geometryOrigin->priority = 0;
     geometryOrigin->color = RGBAColor(255, 255, 255, 255);
 
-    JSON json = geometryOrigin->ToJSON();
+    Ref<NativeScriptComponent> scriptComponent = CreateRef<NativeScriptComponent>();
+    scriptComponent->scriptName = "test-script";
 
     JSON componentsJSON = JSON("{}");
-    componentsJSON.Set("Geometry", json);
+    componentsJSON.Set("Geometry", geometryOrigin->ToJSON());
+    componentsJSON.Set("NativeScriptComponent", scriptComponent->ToJSON());
 
     auto components = ECS_From(componentsJSON);
 
@@ -49,4 +53,9 @@ TEST_F(ECSHelperTest, TestGeometry)
     ASSERT_EQ(geometry->color.g, 255);
     ASSERT_EQ(geometry->color.b, 255);
     ASSERT_EQ(geometry->color.a, 255);
+
+    Ref<NativeScriptComponent> script =
+        std::static_pointer_cast<NativeScriptComponent>(components[typeid(NativeScriptComponent)]);
+
+    ASSERT_EQ(script->scriptName, "test-script");
 }

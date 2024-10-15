@@ -1,3 +1,4 @@
+#include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/editor/editor.hpp>
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/structures/list.hpp>
@@ -16,6 +17,7 @@
 #include <NTTEngine/editor/SceneReloadWindow.hpp>
 #include "editor_windows/editor_windows.hpp"
 #include <NTTEngine/editor/editor_clipboard.hpp>
+#include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 
 #include <NTTEngine/platforms/path.hpp>
 #include "ImGuiFileDialog.h"
@@ -69,11 +71,15 @@ namespace ntt
 
         void OnProjectLoadded(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             s_hasProject = TRUE;
             SetWindowTitle(
                 s_project->title.RawString().c_str());
             SetWindowSize({static_cast<ntt_size_t>(s_project->width),
                            static_cast<ntt_size_t>(s_project->height)});
+
+            HotReload_SetProjectPath(s_project->path);
+            Resource_SetProjectPath(s_project->path);
 
             s_viewportWindow = CreateScope<ViewportWindow>(
                 s_project->width,
@@ -92,6 +98,7 @@ namespace ntt
 
         void OnSceneChanged(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             if (s_project->scenes.Contains(s_scene->sceneName))
             {
                 s_scene->filePath = s_project->scenes[s_scene->sceneName]->filePath;
@@ -105,12 +112,14 @@ namespace ntt
 
         void OnNewSceneCreated(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             TriggerEvent(NTT_EDITOR_OPEN_SCENE);
             TriggerEvent(NTT_EDITOR_SAVE_PROJECT);
         }
 
         void OnSaveScene(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             if (s_scene->sceneName == "")
             {
                 return;
@@ -121,16 +130,19 @@ namespace ntt
 
         void OnHistoryEmpty(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             SetWindowTitle(format("{}", s_project->title).RawString().c_str());
         }
 
         void OnHistoryNotEmpty(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             SetWindowTitle(format("{}*", s_project->title).RawString().c_str());
         }
 
         void OnEditorSaveConfig(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             OpenFile(s_config->GetConfigFilePath());
             Write(s_config->ToJSON().ToString());
             CloseFile();
@@ -138,6 +150,7 @@ namespace ntt
 
         void OnEditorStartGame(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             if (s_scene->sceneName == "")
             {
                 return;
@@ -154,6 +167,7 @@ namespace ntt
 
         void OnEditorStopGame(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             if (s_scene->sceneName == "")
             {
                 return;
@@ -171,6 +185,7 @@ namespace ntt
 
         void OnSaveProject(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             OpenFile(s_project->GetProjectFilePath());
             Write(s_project->ToJSON().ToString());
             CloseFile();
@@ -178,6 +193,7 @@ namespace ntt
 
         void OnOpenProject(b8 override)
         {
+            PROFILE_FUNCTION();
             JSON project = JSON(ReadFile(s_project->GetProjectFilePath()));
             s_project->From(project);
 
@@ -186,6 +202,7 @@ namespace ntt
 
         void OnEditorCreateProject(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             s_project->defaultResourceFile = "default_resource.json";
 
             OpenFile(JoinPath({s_project->path, s_project->defaultResourceFile}));
@@ -221,6 +238,7 @@ namespace ntt
 
         void OnNewProjectPathIsSelected(b8 override)
         {
+            PROFILE_FUNCTION();
             if (override)
             {
                 ClearFolder(s_project->path);
@@ -230,6 +248,7 @@ namespace ntt
 
         b8 CheckProjectExistance(const String &fileName)
         {
+            PROFILE_FUNCTION();
             auto files = ListFiles(GetFileFolder(fileName), FALSE);
             for (auto &file : files)
             {
@@ -244,6 +263,7 @@ namespace ntt
 
     void EditorInit(const String &assetPath)
     {
+        PROFILE_FUNCTION();
         rlImGuiSetup(true);
         s_openLog = TRUE;
         s_openScene = TRUE;
@@ -405,6 +425,7 @@ namespace ntt
 
     void EditorUpdate(f32 delta)
     {
+        PROFILE_FUNCTION();
         rlImGuiBegin();
 
         if (ImGui::BeginMainMenuBar())
@@ -542,6 +563,7 @@ namespace ntt
 
     void EditorBeginDraw()
     {
+        PROFILE_FUNCTION();
         if (s_viewportWindow != nullptr)
         {
             s_viewportWindow->OnStartDraw();
@@ -550,6 +572,7 @@ namespace ntt
 
     void EditorEndDraw()
     {
+        PROFILE_FUNCTION();
         if (s_viewportWindow != nullptr)
         {
             s_viewportWindow->OnStopDraw();
@@ -558,6 +581,7 @@ namespace ntt
 
     void EditorShutdown()
     {
+        PROFILE_FUNCTION();
         for (auto &window : s_normalWindows)
         {
             if (window != nullptr)

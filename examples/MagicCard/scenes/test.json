@@ -45,8 +45,8 @@
                         "r": 218
                     },
                     "position": {
-                        "x": 178.5985107421875,
-                        "y": 212.52786254882813
+                        "x": 70.72368621826172,
+                        "y": 241.80824279785156
                     },
                     "priority": 0,
                     "rotation": 0.0,
@@ -61,6 +61,9 @@
                     "mass": 1.0,
                     "velocity_x": 0.0,
                     "velocity_y": 0.0
+                },
+                "NativeScriptComponent": {
+                    "scriptName": "bird-script"
                 },
                 "Sprite": {
                     "cells": [
@@ -176,13 +179,13 @@
                     },
                     "position": {
                         "x": 150.7535858154297,
-                        "y": 475.5163879394531
+                        "y": 483.9922790527344
                     },
                     "priority": 0,
                     "rotation": 0.0,
                     "size": {
-                        "height": 58.0,
-                        "width": 336.0
+                        "height": 46.0,
+                        "width": 350.0
                     }
                 },
                 "TextureComponent": {
@@ -225,6 +228,12 @@
             "name": "background-img",
             "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\assets\\images\\background-day.png",
             "type": 0
+        },
+        {
+            "extra": null,
+            "name": "bird-script",
+            "path": "C:\\Users\\Acer\\Games Dev\\state-based-game-engine\\examples\\MagicCard\\scripts\\Bird.cpp",
+            "type": 2
         }
     ],
     "sceneName": "test"

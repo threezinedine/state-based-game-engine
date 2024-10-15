@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include "rlImGui.h"
 #include "log_window.hpp"
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -26,14 +27,17 @@ namespace ntt
     LogWindow::LogWindow()
         : OpenClosableWindow("Log"), m_impl(CreateScope<Impl>())
     {
+        PROFILE_FUNCTION();
     }
 
     LogWindow::~LogWindow()
     {
+        PROFILE_FUNCTION();
     }
 
     void LogWindow::InitImpl()
     {
+        PROFILE_FUNCTION();
         s_buf.clear();
         s_lineOffsets.clear();
         s_lineOffsets.push_back(0);
@@ -41,6 +45,7 @@ namespace ntt
 
     void LogWindow::OnReloadProject()
     {
+        PROFILE_FUNCTION();
         s_buf.clear();
         s_lineOffsets.clear();
         s_lineOffsets.push_back(0);
@@ -48,6 +53,7 @@ namespace ntt
 
     void LogWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
+        PROFILE_FUNCTION();
         if (ImGui::Begin("Log", p_open))
         {
             if (ImGui::BeginPopup("Options"))
@@ -123,12 +129,14 @@ namespace ntt
 
     void LogWindow::ShutdownImpl()
     {
+        PROFILE_FUNCTION();
         s_buf.clear();
         s_lineOffsets.clear();
     }
 
     void AppendLog(const char *log)
     {
+        PROFILE_FUNCTION();
         auto oldSize = s_buf.size();
         s_buf.append(log);
         s_lineOffsets.push_back(oldSize);

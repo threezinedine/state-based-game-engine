@@ -21,6 +21,7 @@ namespace ntt
 
         void OnSelectedResize(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             if (data.onResizeMain == nullptr)
             {
                 return;

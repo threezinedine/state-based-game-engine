@@ -4,6 +4,7 @@
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/application/input_system/input_system.hpp>
 #include <array>
+#include <NTTEngine/core/profiling.hpp>
 
 #include "imgui.h"
 
@@ -23,11 +24,13 @@ namespace ntt
 
         void OnEditorRun(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             editorRun = TRUE;
         }
 
         void OnEditorStop(event_code_t code, void *sender, const EventContext &context)
         {
+            PROFILE_FUNCTION();
             editorRun = FALSE;
         }
     };

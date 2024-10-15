@@ -3,6 +3,7 @@
 #include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/physics/Mass.hpp>
 #include <NTTEngine/renderer/Sprite.hpp>
+#include <NTTEngine/application/script_system/script_component.hpp>
 
 namespace ntt
 {
@@ -10,6 +11,7 @@ namespace ntt
     using namespace ecs;
     using namespace renderer;
     using namespace physics;
+    using namespace script;
 
     Dictionary<std::type_index, Ref<ComponentBase>> ECS_From(const JSON &json)
     {
@@ -41,6 +43,13 @@ namespace ntt
             Ref<Sprite> sprite = CreateRef<Sprite>();
             sprite->FromJSON(json.Get<JSON>("Sprite"));
             components[typeid(Sprite)] = sprite;
+        }
+
+        if (json.Contains<JSON>("NativeScriptComponent"))
+        {
+            Ref<NativeScriptComponent> nativeScriptComponent = CreateRef<NativeScriptComponent>();
+            nativeScriptComponent->FromJSON(json.Get<JSON>("NativeScriptComponent"));
+            components[typeid(NativeScriptComponent)] = nativeScriptComponent;
         }
 
         return components;

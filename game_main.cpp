@@ -66,11 +66,11 @@ int main(void)
     InitWindow(project->width, project->height, "NTT Engine");
     SetTargetFPS(60);
 
+    ScriptStoreInit("CreateInstance", "DeleteInstance", "GetBaseType");
     AudioInit();
     RendererInit();
-    ResourceInit();
+    ResourceInit(FALSE);
     InputInit(FALSE, FALSE);
-    ScriptStoreInit("CreateScript", "DeleteScript", "GetBaseType");
 
     ECSInit();
 
@@ -153,12 +153,14 @@ int main(void)
     // EditorShutdown();
 
     ECSShutdown();
-    ScriptStoreShutdown();
 
     AudioShutdown();
     InputShutdown();
     ResourceShutdown();
     RendererShutdown();
+    HotReloadInit();
+    ScriptStoreShutdown();
+    HotReloadShutdown();
 
     CloseWindow();
     NTT_ENGINE_DEBUG("Editor shutdown.");

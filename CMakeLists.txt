@@ -89,6 +89,12 @@ target_link_libraries(
     ImGui_Raylib
 )
 
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PRIVATE
+    _PROFILING
+)
+
 if (NTT_BUILD_SHARED)
     add_compile_definitions(NTTENGINE_SHARED)
     target_compile_definitions(${PROJECT_NAME} PRIVATE memplumber)
@@ -127,6 +133,9 @@ target_link_libraries(
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets
+     DESTINATION ${CMAKE_BINARY_DIR})
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include
      DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(

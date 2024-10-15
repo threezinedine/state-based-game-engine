@@ -20,7 +20,10 @@ namespace ntt
     public:
         String path = "";
         String outputPath = "";
+        String sourcePath = "";
+        String projectPath = "";
         resource_id_t scriptId = INVALID_SCRIPT_ID;
+        b8 editorMode = FALSE;
 
         void SetOutputPath()
         {
@@ -30,7 +33,7 @@ namespace ntt
             outputFile.Replace(".cpp", ".dll");
 
             outputPath = JoinPath(
-                {CurrentDirectory(),
+                {projectPath,
                  outputFile});
         }
 
@@ -39,15 +42,11 @@ namespace ntt
             PROFILE_FUNCTION();
 
             auto command = format(
-                "g++ -g -o \"{}\" -I \"{}\" -I \"{}\" \"{}\" -L \"{}\" -lNTTEngine -shared",
+                "g++ -g -o \"{}\" -I \"{}\" -L\"{}\" \"{}\" -lNTTEngine -shared",
                 outputPath,
-                // "C:/Users/Acer/Games Dev/state-based-game-engine/include",
-                JoinPath({GetStoredPath(PathType::NTT_ENGINE), "include"}),
-                // "C:/Users/Acer/Games Dev/state-based-game-engine/examples/Flappy Bird",
-                GetStoredPath(PathType::NTT_SOURCE),
-                file,
-                // "C:/Users/Acer/Games Dev/state-based-game-engine/build");
-                GetStoredPath(PathType::NTT_BINARY));
+                JoinPath({sourcePath, "include"}),
+                CurrentDirectory(),
+                file);
 
             NTT_ENGINE_DEBUG("The command is {}", command);
             try
@@ -70,17 +69,11 @@ namespace ntt
         PROFILE_FUNCTION();
 
         m_impl->path = info.path;
-        m_impl->SetOutputPath();
+        m_impl->sourcePath = info.addintionalInfo.Get("sourcePath", CurrentDirectory());
+        m_impl->projectPath = info.addintionalInfo.Get("projectPath", CurrentDirectory());
+        m_impl->editorMode = info.addintionalInfo.Get<b8>("editorMode", FALSE);
 
-        HotReloadRegister(
-            m_impl->path,
-            [this](const String &file)
-            {
-                m_impl->CompileFile(file);
-                EventContext context;
-                context.u32_data[0] = m_impl->scriptId;
-                TriggerEvent(NTT_SCRIPT_FILE_CHANGED, nullptr, context);
-            });
+        m_impl->SetOutputPath();
     }
 
     ScriptResource::~ScriptResource()
@@ -91,6 +84,19 @@ namespace ntt
     resource_id_t ScriptResource::LoadImpl()
     {
         PROFILE_FUNCTION();
+        NTT_ENGINE_DEBUG("The script {} is loaded", GetInfo()->name);
+        if (!HotReload_RegisterContains(m_impl->path) && m_impl->editorMode)
+        {
+            HotReloadRegister(
+                m_impl->path,
+                [this](const String &file)
+                {
+                    m_impl->CompileFile(file);
+                    EventContext context;
+                    context.u32_data[0] = m_impl->scriptId;
+                    TriggerEvent(NTT_SCRIPT_FILE_CHANGED, nullptr, context);
+                });
+        }
 
         m_impl->scriptId = ScriptStoreLoad(
             GetInfo()->name,

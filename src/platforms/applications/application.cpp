@@ -88,7 +88,7 @@ namespace ntt
         s_windowSize.height = static_cast<ntt_size_t>(screenHeight);
 
         RendererInit();
-        ResourceInit();
+        ResourceInit(editor);
         InputInit(FALSE, editor);
 
         // TODO: Refactor this

@@ -1,6 +1,7 @@
 #include "new_project.hpp"
 #include "imgui.h"
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/core/profiling.hpp>
 
 namespace ntt
 {
@@ -20,21 +21,25 @@ namespace ntt
     NewProjectWindow::NewProjectWindow(Ref<ProjectInfo> project, Ref<EditorConfig> config)
         : m_impl(CreateScope<Impl>())
     {
+        PROFILE_FUNCTION();
         m_impl->project = project;
         m_impl->config = config;
     }
 
     NewProjectWindow::~NewProjectWindow()
     {
+        PROFILE_FUNCTION();
     }
 
     void NewProjectWindow::InitImpl()
     {
+        PROFILE_FUNCTION();
         m_impl->isRunning = FALSE;
     }
 
     void NewProjectWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)
     {
+        PROFILE_FUNCTION();
         if (ImGui::Begin("New Project Info", p_open, 0))
         {
             ImGui::Text("Create a new project");
@@ -66,6 +71,7 @@ namespace ntt
 
     void NewProjectWindow::ShutdownImpl()
     {
+        PROFILE_FUNCTION();
     }
 
 } // namespace ntt
