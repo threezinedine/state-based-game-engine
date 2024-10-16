@@ -22,6 +22,8 @@
 #include <NTTEngine/resources/ResourceManager.hpp>
 #include <NTTEngine/application/hot_reload_module/hot_reload_module.hpp>
 #include <NTTEngine/application/script_system/script_system.hpp>
+#include <NTTEngine/application/script_system/state_system.hpp>
+#include <NTTEngine/application/script_system/state_component.hpp>
 #include <NTTEngine/editor/editor.hpp>
 #include <NTTEngine/editor/editor_system.hpp>
 #include <NTTEngine/renderer/ParentSystem.hpp>

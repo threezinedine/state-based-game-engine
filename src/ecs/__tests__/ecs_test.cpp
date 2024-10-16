@@ -259,7 +259,7 @@ TEST_F(ECSTest, TestECSInit)
               List<entity_id_t>({entity2, entity3}));
 
     EXPECT_EQ(data->initCalled, 1);
-    EXPECT_EQ(data->updateCalled, 3);
+    EXPECT_EQ(data->updateCalled, 2);
     EXPECT_EQ(data->shutdownCalled, 1);
 
     EXPECT_EQ(data3->initCalled, 1);

@@ -5,6 +5,7 @@
 #include <NTTEngine/renderer/Sprite.hpp>
 #include <NTTEngine/application/script_system/script_component.hpp>
 #include <NTTEngine/renderer/Hovering.hpp>
+#include <NTTEngine/application/script_system/state_component.hpp>
 
 namespace ntt
 {
@@ -52,6 +53,13 @@ namespace ntt
             Ref<Hovering> hovering = CreateRef<Hovering>();
             hovering->FromJSON(json.Get<JSON>("Hovering"));
             components[typeid(Hovering)] = hovering;
+        }
+
+        if (json.Contains<JSON>("StateComponent"))
+        {
+            Ref<StateComponent> stateComponent = CreateRef<StateComponent>();
+            stateComponent->FromJSON(json.Get<JSON>("StateComponent"));
+            components[typeid(StateComponent)] = stateComponent;
         }
 
         return components;

@@ -1,4 +1,5 @@
-#include <NTTEngine/application/script_system/state.hpp>
+#include <NTTEngine/application/script_system/state_system.hpp>
+#include <NTTEngine/application/script_system/state_component.hpp>
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/core/logging/logging.hpp>
@@ -40,9 +41,11 @@ namespace ntt
 
         resource_id_t defaultScriptId = INVALID_SCRIPT_ID;
 
-        for (auto pair : machine->stateScriptIds)
+        for (auto pair : machine->stateScriptNames)
         {
-            if (ScriptStoreGetBaseType(pair.second) != typeid(State))
+            auto id = GetScriptIdByName(pair.second);
+
+            if (ScriptStoreGetBaseType(id) != typeid(State))
             {
                 NTT_ENGINE_WARN("The script is not a State script");
                 return;
@@ -50,7 +53,7 @@ namespace ntt
 
             if (pair.first == machine->defaultState)
             {
-                defaultScriptId = pair.second;
+                defaultScriptId = id;
             }
         }
 
@@ -61,14 +64,16 @@ namespace ntt
         auto defaultState = std::reinterpret_pointer_cast<State>(ScriptStoreGetObject(defaultStateId));
         machine->state->AddChild(machine->defaultState, defaultState);
 
-        for (auto pair : machine->stateScriptIds)
+        for (auto pair : machine->stateScriptNames)
         {
+            auto id = GetScriptIdByName(pair.second);
+
             if (pair.first == machine->defaultState)
             {
                 continue;
             }
 
-            auto stateId = ScriptStoreCreate(pair.second, nullptr);
+            auto stateId = ScriptStoreCreate(id, nullptr);
             machine->stateObjIds.push_back(stateId);
 
             auto stateVoid = ScriptStoreGetObject(stateId);
@@ -99,18 +104,13 @@ namespace ntt
 
         if (machine->state == nullptr)
         {
-            if (!machine->stateObjIds.empty())
+            InitEntity(id);
+
+            if (machine->state == nullptr)
             {
-                for (auto stateId : machine->stateObjIds)
-                {
-                    ScriptStoreDeleteObject(stateId);
-                }
-
-                machine->stateObjIds.clear();
+                NTT_ENGINE_WARN("The State is not initialized");
+                return;
             }
-
-            NTT_ENGINE_WARN("The State is not initialized");
-            return;
         }
         machine->state->OnUpdate(delta);
     }

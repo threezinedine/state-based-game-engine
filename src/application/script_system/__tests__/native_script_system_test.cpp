@@ -97,7 +97,7 @@ TEST_F(NativeScriptSystemTest, NormalWorkflow)
 
     ECSUpdate(0.1f);
     EXPECT_EQ(s_enterCalled, 1);
-    EXPECT_EQ(s_updateCalled, 3);
+    EXPECT_EQ(s_updateCalled, 2);
     EXPECT_EQ(s_exitCalled, 1);
 }
 

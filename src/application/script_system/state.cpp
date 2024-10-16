@@ -42,7 +42,10 @@ namespace ntt
 
         for (auto &child : THIS(m_children))
         {
-            child.second->SetEntity(id);
+            if (child.first != "")
+            {
+                child.second->SetEntity(id);
+            }
         }
     }
 
@@ -69,7 +72,11 @@ namespace ntt
         }
 
         THIS(m_currentState) = THIS(m_defaultState);
-        THIS(m_children[THIS(m_defaultState)]->OnEnter());
+
+        if (THIS(m_defaultState) != "")
+        {
+            THIS(m_children[THIS(m_defaultState)]->OnEnter());
+        }
     }
 
     void State::OnExit()
@@ -82,7 +89,10 @@ namespace ntt
             return;
         }
 
-        THIS(m_children[THIS(m_currentState)]->OnExit());
+        if (THIS(m_currentState) != "")
+        {
+            THIS(m_children[THIS(m_currentState)]->OnExit());
+        }
     }
 
     void State::OnUpdate(f32 delta)

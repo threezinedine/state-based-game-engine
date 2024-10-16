@@ -506,6 +506,10 @@ namespace ntt
         // }
 
         // s_deletedEntities.push_back(id);
+        if (id == INVALID_ENTITY_ID)
+        {
+            return;
+        }
 
         InternalEntityDelete(id);
     }

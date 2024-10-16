@@ -79,6 +79,17 @@ namespace ntt
 
         void ComponentScriptDraw(ResourceInfo &info)
         {
+            if (ImGui::Button("Open"))
+            {
+                try
+                {
+                    std::system(format("{}", info.path).RawString().c_str());
+                }
+                catch (const std::exception &e)
+                {
+                    NTT_ENGINE_ERROR("Cannot open the file: {}", e.what());
+                }
+            }
         }
 
         b8 HasScene()
@@ -345,7 +356,7 @@ namespace ntt
 
             ImGui::BeginDisabled(m_impl->resourceTypes[m_impl->currentTypeIndex] != "Script");
             ImGui::SameLine();
-            if (ImGui::Button("Create"))
+            if (ImGui::Button("Create Script"))
             {
                 IGFD::FileDialogConfig config;
                 config.path = m_impl->project->path.RawString();
@@ -353,6 +364,17 @@ namespace ntt
                 ImGuiFileDialog::Instance()->OpenDialog(
                     "createScript",
                     "Place the script file",
+                    ".cpp",
+                    config);
+            }
+            if (ImGui::Button("Create State"))
+            {
+                IGFD::FileDialogConfig config;
+                config.path = m_impl->project->path.RawString();
+
+                ImGuiFileDialog::Instance()->OpenDialog(
+                    "createState",
+                    "Place the state file",
                     ".cpp",
                     config);
             }
@@ -461,6 +483,47 @@ public:
 };
 
 SCRIPT_DEFINE({}, Script);
+                    )",
+                                 nameWithoutExt,
+                                 nameWithoutExt,
+                                 nameWithoutExt,
+                                 nameWithoutExt));
+                    CloseFile();
+                }
+
+                ImGuiFileDialog::Instance()->Close();
+            }
+
+            if (ImGuiFileDialog::Instance()->Display("createState"))
+            {
+                if (ImGuiFileDialog::Instance()->IsOk())
+                {
+                    String fileName = ImGuiFileDialog::Instance()->GetFilePathName();
+                    String filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                    m_impl->resourcePath = fileName;
+
+                    String nameWithoutExt = GetFileWithoutExtension(fileName);
+                    nameWithoutExt.Replace(" ", "_");
+                    nameWithoutExt.Replace("-", "_");
+
+                    OpenFile(fileName);
+                    Write(format(R"(
+#include <NTTEngine/NTTEngine.hpp>
+
+class {} : public State
+{
+public:
+    {}(void *data)
+    {
+    }
+
+    ~{}()
+    {
+    }
+};
+
+SCRIPT_DEFINE({}, State);
                     )",
                                  nameWithoutExt,
                                  nameWithoutExt,

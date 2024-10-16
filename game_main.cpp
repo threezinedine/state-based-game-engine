@@ -13,6 +13,8 @@
 #include <NTTEngine/editor/editor_system.hpp>
 
 #include <NTTEngine/application/script_system/native_script_system.hpp>
+#include <NTTEngine/application/script_system/state_system.hpp>
+#include <NTTEngine/application/script_system/state_component.hpp>
 #include <NTTEngine/platforms/path.hpp>
 #include <NTTEngine/editor/types.hpp>
 #include <NTTEngine/core/memory.hpp>
