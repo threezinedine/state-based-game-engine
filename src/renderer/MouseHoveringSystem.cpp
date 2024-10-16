@@ -3,6 +3,7 @@
 #include <NTTEngine/core/logging/logging.hpp>
 #include <NTTEngine/renderer/TextureComponent.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include "raylib.h"
 
 namespace ntt
 {
@@ -48,6 +49,7 @@ namespace ntt
         PROFILE_FUNCTION();
         auto hovering = ECS_GET_COMPONENT(id, Hovering);
         auto geo = ECS_GET_COMPONENT(id, Geometry);
+        auto texture = ECS_GET_COMPONENT(id, TextureComponent);
 
         auto callback = hovering->callback;
         auto onEnterCallback = hovering->onEnterCallback;
@@ -72,12 +74,24 @@ namespace ntt
 
         s_prevHovered.push_back(id);
 
-        if (onEnterCallback == nullptr)
+        if (onEnterCallback != nullptr)
         {
-            return;
+            auto context = HoveringContext();
+            onEnterCallback(context);
         }
-        auto context = HoveringContext();
-        onEnterCallback(context);
+
+        if (hovering->cursor)
+        {
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        }
+
+        if (hovering->hoveredCell.col != 255 &&
+            hovering->hoveredCell.row != 255 &&
+            texture != nullptr)
+        {
+            hovering->prevHoveredCell = texture->currentCell;
+            texture->currentCell = hovering->hoveredCell;
+        }
     }
 
     void MouseHoveringSystem::ShutdownEntity(entity_id_t id)
@@ -129,13 +143,25 @@ namespace ntt
 
             s_prevHovered.RemoveItem(entity);
 
-            if (hovering->onExitCallback == nullptr)
+            if (hovering->onExitCallback != nullptr)
             {
-                continue;
+                HoveringContext context;
+                hovering->onExitCallback(context);
             }
 
-            HoveringContext context;
-            hovering->onExitCallback(context);
+            if (hovering->cursor)
+            {
+                SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+            }
+
+            auto texture = ECS_GET_COMPONENT(entity, TextureComponent);
+
+            if (hovering->prevHoveredCell.col != 255 &&
+                hovering->prevHoveredCell.row != 255 &&
+                texture != nullptr)
+            {
+                texture->currentCell = hovering->prevHoveredCell;
+            }
         }
 
         s_callbacks.clear();

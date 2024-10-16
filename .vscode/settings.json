@@ -117,6 +117,9 @@
 		"syncstream": "cpp",
 		"resumable": "cpp",
 		"*.ipp": "cpp",
-		"*.def": "cpp"
+		"*.def": "cpp",
+		"string_view": "cpp",
+		"text_encoding": "cpp",
+		"*.tcc": "cpp"
 	}
 }

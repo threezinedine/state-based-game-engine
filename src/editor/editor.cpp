@@ -201,6 +201,8 @@ namespace ntt
         {
             PROFILE_FUNCTION();
             s_project->defaultResourceFile = "default_resource.json";
+            s_project->defaultSceneName = "";
+            s_project->scenes.clear();
 
             OpenFile(JoinPath({s_project->path, s_project->defaultResourceFile}));
             Write(JSON("[]").ToString());

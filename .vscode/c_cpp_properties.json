@@ -6,6 +6,8 @@
 				"${workspaceFolder}/include/**",
 				"${workspaceFolder}/vendors/**",
 				"C:/msys64/mingw64/include/**"
+				// "C:/MinGW/include/**"
+				// "${workspaceFolder}/**"
 			],
 			"defines": ["_DEBUG", "UNICODE", "_UNICODE", "BUILD_LIBRARY"],
 			"windowsSdkVersion": "10.0.22621.0",

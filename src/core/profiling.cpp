@@ -5,6 +5,7 @@
 #include <NTTEngine/core/time.hpp>
 #include <NTTEngine/structures/list.hpp>
 #include <NTTEngine/core/formatter.hpp>
+#include <fstream>
 
 namespace ntt
 {
@@ -19,6 +20,7 @@ namespace ntt
         b8 s_hasWritten = FALSE;
         b8 s_test = FALSE;
         u8 s_indent = -1;
+        Scope<std::ofstream> s_stream;
     } // namespace
 
     class Profiling::Impl
@@ -62,11 +64,21 @@ namespace ntt
         {
             if (!s_hasWritten)
             {
-                OpenFile(logFile, FALSE);
+                s_stream = CreateScope<std::ofstream>(
+                    logFile.RawString(),
+                    std::ios::out | std::ios::app);
                 s_hasWritten = TRUE;
             }
 
-            Write(data + "\n");
+            if (s_stream == nullptr)
+            {
+                return;
+            }
+
+            if (s_stream->is_open())
+            {
+                *s_stream << data.RawString() << std::endl;
+            }
         }
         catch (...)
         {
@@ -96,7 +108,15 @@ namespace ntt
 
         try
         {
-            Write(data + "\n");
+            if (s_stream == nullptr)
+            {
+                return;
+            }
+
+            if (s_stream->is_open())
+            {
+                *s_stream << data.RawString() << std::endl;
+            }
         }
         catch (...)
         {
@@ -132,7 +152,7 @@ namespace ntt
         {
             try
             {
-                CloseFile();
+                s_stream->close();
             }
             catch (...)
             {
@@ -154,7 +174,7 @@ namespace ntt
 
         if (s_hasWritten)
         {
-            CloseFile();
+            s_stream->close();
         }
 
         if (s_currentSection != DEFAULT_SECTION)
