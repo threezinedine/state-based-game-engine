@@ -343,6 +343,21 @@ namespace ntt
                     config);
             }
 
+            ImGui::BeginDisabled(m_impl->resourceTypes[m_impl->currentTypeIndex] != "Script");
+            ImGui::SameLine();
+            if (ImGui::Button("Create"))
+            {
+                IGFD::FileDialogConfig config;
+                config.path = m_impl->project->path.RawString();
+
+                ImGuiFileDialog::Instance()->OpenDialog(
+                    "createScript",
+                    "Place the script file",
+                    ".cpp",
+                    config);
+            }
+            ImGui::EndDisabled();
+
             if (m_impl->HasScene())
             {
                 ImGui::Checkbox("Default resource", &m_impl->createInDefaultResource);
@@ -411,6 +426,47 @@ namespace ntt
                     String filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 
                     m_impl->resourcePath = fileName;
+                }
+
+                ImGuiFileDialog::Instance()->Close();
+            }
+
+            if (ImGuiFileDialog::Instance()->Display("createScript"))
+            {
+                if (ImGuiFileDialog::Instance()->IsOk())
+                {
+                    String fileName = ImGuiFileDialog::Instance()->GetFilePathName();
+                    String filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                    m_impl->resourcePath = fileName;
+
+                    String nameWithoutExt = GetFileWithoutExtension(fileName);
+                    nameWithoutExt.Replace(" ", "_");
+                    nameWithoutExt.Replace("-", "_");
+
+                    OpenFile(fileName);
+                    Write(format(R"(
+#include <NTTEngine/NTTEngine.hpp>
+
+class {} : public Script
+{
+public:
+    {}(void *data)
+    {
+    }
+
+    ~{}()
+    {
+    }
+};
+
+SCRIPT_DEFINE({}, Script);
+                    )",
+                                 nameWithoutExt,
+                                 nameWithoutExt,
+                                 nameWithoutExt,
+                                 nameWithoutExt));
+                    CloseFile();
                 }
 
                 ImGuiFileDialog::Instance()->Close();
