@@ -4,8 +4,8 @@
 			"name": "Win32",
 			"includePath": [
 				"${workspaceFolder}/include/**",
-				"${workspaceFolder}/vendors/**",
-				"C:/msys64/mingw64/include/**"
+				"${workspaceFolder}/vendors/**"
+				// "C:/msys64/mingw64/include/**"
 				// "C:/MinGW/include/**"
 				// "${workspaceFolder}/**"
 			],

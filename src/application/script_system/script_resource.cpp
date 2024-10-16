@@ -88,10 +88,10 @@ namespace ntt
                 m_impl->path,
                 [this](const String &file)
                 {
-                    m_impl->CompileFile(file);
+                    // m_impl->CompileFile(file);
                     EventContext context;
-                    context.u32_data[0] = m_impl->scriptId;
-                    TriggerEvent(NTT_SCRIPT_FILE_CHANGED, nullptr, context);
+                    context.u32_data[0] = file.Length() + 1;
+                    TriggerEvent(NTT_WATCHED_FILE_CHANGED, file.RawString().data(), context);
                 });
         }
 

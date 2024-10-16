@@ -81,7 +81,6 @@ namespace ntt
             case filewatch::Event::removed:
                 break;
             case filewatch::Event::modified:
-                NTT_ENGINE_DEBUG("The file {} has been modified.", path);
                 OnFileChanged(path);
                 break;
             case filewatch::Event::renamed_old:

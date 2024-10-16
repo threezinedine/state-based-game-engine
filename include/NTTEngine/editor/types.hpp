@@ -24,6 +24,7 @@ namespace ntt
         void ReloadResourceInfo();
         void SaveResourceInfo();
 
+        void RemoveAllEntities();
         void ReloadEntities();
         void SaveEntitiesInfo();
         void AddEntity();

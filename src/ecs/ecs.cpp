@@ -500,12 +500,14 @@ namespace ntt
     {
         // Delay delete the entity until the end of the frame (ECSUpdate)
 
-        if (s_deletedEntities.Contains(id))
-        {
-            return;
-        }
+        // if (s_deletedEntities.Contains(id))
+        // {
+        //     return;
+        // }
 
-        s_deletedEntities.push_back(id);
+        // s_deletedEntities.push_back(id);
+
+        InternalEntityDelete(id);
     }
 
     void ECSUpdate(f32 delta)
@@ -559,12 +561,12 @@ namespace ntt
             }
         }
 
-        for (auto entityId : s_deletedEntities)
-        {
-            InternalEntityDelete(entityId);
-        }
+        // for (auto entityId : s_deletedEntities)
+        // {
+        //     InternalEntityDelete(entityId);
+        // }
 
-        s_deletedEntities.clear();
+        // s_deletedEntities.clear();
     }
 
     void ECSRemoveAllEntities()

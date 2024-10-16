@@ -119,6 +119,9 @@ namespace ntt
 #define NTT_EDITOR_SELECTED_MOVE 0x2E         ///< When the entity need to be moved
 #define NTT_EDITOR_SELECTED_MOVE_REQUEST 0x2F ///< When the entity has request to be moved
 
+#define NTT_WATCHED_FILE_CHANGED 0x30 ///< When the watched file is changed
+#define NTT_WATCHED_FILE_HANDLED 0x31 ///< When the watched file is handled
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

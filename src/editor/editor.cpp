@@ -22,6 +22,7 @@
 #include <NTTEngine/platforms/path.hpp>
 #include "ImGuiFileDialog.h"
 #include "editor_project_dialog/editor_project_dialog.hpp"
+#include <thread>
 
 #include <NTTEngine/editor/types.hpp>
 
@@ -31,6 +32,8 @@ namespace ntt
     {
         b8 s_isRunning = FALSE;
         b8 s_hasProject = FALSE;
+        b8 s_hanging = FALSE;
+        List<String> s_changedFiles = {};
 
         b8 s_openLog = TRUE;
         b8 s_openScene = TRUE;
@@ -258,6 +261,83 @@ namespace ntt
             }
             return FALSE;
         }
+
+        void CompileFile(String cppFile)
+        {
+            if (s_scene->sceneName != "")
+            {
+                s_scene->RemoveAllEntities();
+                ResourceUnload(s_scene->resources);
+            }
+
+            ResourceUnload(s_project->defaultResources);
+
+            String outputFile = GetFileName(cppFile);
+            outputFile.Replace(".cpp", ".dll");
+            outputFile = JoinPath({s_project->path, outputFile});
+
+            auto command = format(
+                "g++ -g -o \"{}\" -I \"{}\" -L\"{}\" \"{}\" -lNTTEngine -shared",
+                outputFile,
+                JoinPath({CurrentDirectory(), "include"}),
+                CurrentDirectory(),
+                cppFile);
+
+            try
+            {
+                std::system(command.RawString().c_str());
+            }
+            catch (const std::exception &e)
+            {
+                NTT_ENGINE_FATAL(
+                    "The file {} cannot be compiled with error {}",
+                    cppFile,
+                    e.what());
+            }
+
+            ResourceLoad(s_project->defaultResources);
+
+            // if (s_scene->sceneName != "")
+            // {
+            //     TriggerEvent(NTT_EDITOR_OPEN_SCENE);
+            // }
+        }
+
+        void OnWatchFileChanged(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+            char fileName[256];
+            u32 length = context.u32_data[0];
+
+            memcpy(fileName, sender, length);
+            String file = String(fileName);
+
+            s_changedFiles.push_back(file);
+
+            std::thread t1(
+                [](String fileName)
+                {
+                    EventContext context;
+                    context.u32_data[0] = fileName.Length() + 1;
+                    CompileFile(fileName);
+                    TriggerEvent(NTT_WATCHED_FILE_HANDLED, fileName.RawString().data(), context); },
+                file);
+
+            t1.detach();
+        }
+
+        void OnWatchingFileHandleComplete(event_code_t code, void *sender, const EventContext &context)
+        {
+            NTT_ENGINE_DEBUG("The file has been handled");
+
+            char fileName[256];
+            u32 length = context.u32_data[0];
+
+            memcpy(fileName, sender, length);
+            String file = String(fileName);
+
+            s_changedFiles.RemoveItem(file);
+        }
     }
 
     void EditorInit(const String &assetPath)
@@ -270,6 +350,9 @@ namespace ntt
         s_newProjectConfig = FALSE;
         s_assetPath = assetPath;
         s_hasProject = FALSE;
+        s_hanging = FALSE;
+
+        s_changedFiles.clear();
 
         s_configFilePath = JoinPath({CurrentDirectory(), "config.json"});
 
@@ -316,6 +399,8 @@ namespace ntt
         RegisterEvent(NTT_EDITOR_SAVE_PROJECT, OnSaveProject);
         RegisterEvent(NTT_EDITOR_OPEN_SCENE, OnSceneChanged);
         RegisterEvent(NTT_EDITOR_SAVE_SCENE, OnSaveScene);
+        RegisterEvent(NTT_WATCHED_FILE_CHANGED, OnWatchFileChanged);
+        RegisterEvent(NTT_WATCHED_FILE_HANDLED, OnWatchingFileHandleComplete);
         // ========================================
         // Event registration above
         // ========================================
@@ -583,6 +668,27 @@ namespace ntt
             {
                 window->Update(s_isRunning ? ImGuiWindowFlags_NoInputs : 0);
             }
+        }
+
+        if (s_changedFiles.size() != 0 && !s_hanging)
+        {
+            s_hanging = TRUE;
+            ImGui::OpenPopup("hanging");
+        }
+
+        if (ImGui::BeginPopupModal("hanging"))
+        {
+            ImGui::Text("Some thing happens, wait....");
+
+            ImGui::BeginDisabled(s_changedFiles.size() != 0);
+            if (ImGui::Button("Ok"))
+            {
+                TriggerEvent(NTT_EDITOR_OPEN_SCENE);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndDisabled();
+
+            ImGui::EndPopup();
         }
 
         rlImGuiEnd();

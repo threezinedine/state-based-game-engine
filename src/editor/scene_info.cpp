@@ -4,13 +4,19 @@
 
 namespace ntt
 {
-    void SceneInfo::ReloadEntities()
+    void SceneInfo::RemoveAllEntities()
     {
         PROFILE_FUNCTION();
         for (auto &entity : m_entityIDs)
         {
             ECSDeleteEntity(entity);
         }
+    }
+
+    void SceneInfo::ReloadEntities()
+    {
+        PROFILE_FUNCTION();
+        RemoveAllEntities();
 
         List<ResourceInfo> resourcesInfo;
         JSON config = ReadFile(filePath);
