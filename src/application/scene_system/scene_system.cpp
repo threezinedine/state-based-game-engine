@@ -73,7 +73,7 @@ namespace ntt
         RegisterEvent(NTT_ENTITY_CREATED, CreateEntity);
         RegisterEvent(NTT_ENTITY_DESTROYED, DeleteEntity);
 
-        RegisterEvent(NTT_DEFINED_LAYER_CHANGED, OnSceneChanged);
+        // RegisterEvent(NTT_DEFINED_LAYER_CHANGED, OnSceneChanged);
 
         s_scenes.clear();
         s_currentScene = "";

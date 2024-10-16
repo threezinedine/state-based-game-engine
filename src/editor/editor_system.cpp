@@ -11,6 +11,7 @@
 #include <NTTEngine/application/script_system/script_component.hpp>
 #include <NTTEngine/renderer/Parent.hpp>
 #include <math.h>
+#include <functional>
 
 #include "controllers/TransformScript.hpp"
 #include "editor_windows/editor_tool/editor_tool.hpp"
@@ -62,6 +63,7 @@ namespace ntt
                 drawnEntities[selected].clear();
             }
 
+            drawnEntities.clear();
             selectedEntities.clear();
         }
 
@@ -93,6 +95,13 @@ namespace ntt
     // NTT_ENGINE_DEBUG("Move entities: {}", moveEntities.ToString());             \
     // NTT_ENGINE_DEBUG("Resize entities: {}", resizeEntities.ToString());         \
     // NTT_ENGINE_DEBUG("Rotate entities: {}", rotateEntities.ToString());
+
+            std::function<void(const Position &, const Position &)> onEntityChanged =
+                [](const Position &start, const Position &end)
+            {
+                TriggerEvent(NTT_EDITOR_SAVE_SCENE);
+            };
+
             TransformScriptData centerData;
             centerData.entity = entityId;
             centerData.onResizeMain =
@@ -104,11 +113,7 @@ namespace ntt
                 geo->pos.x += delta.x;
                 geo->pos.y += delta.y;
             };
-            centerData.onEntityChanged =
-                [](const Position &start, const Position &end)
-            {
-                TriggerEvent(NTT_EDITOR_SAVE_SCENE);
-            };
+            centerData.onEntityChanged = onEntityChanged;
 
             auto center = ECSCreateEntity(
                 "Center Rect",
@@ -180,6 +185,7 @@ namespace ntt
             {
                 geo->pos.x += delta.x;
             };
+            xPointData.onEntityChanged = onEntityChanged;
 
             auto xPoint = ECSCreateEntity(
                 "X point",
@@ -213,6 +219,7 @@ namespace ntt
             {
                 geo->pos.x += delta.x;
             };
+            xPointNegData.onEntityChanged = onEntityChanged;
 
             auto xPointNeg = ECSCreateEntity(
                 "X point Neg",
@@ -278,6 +285,7 @@ namespace ntt
             {
                 geo->pos.y += delta.y;
             };
+            yPointData.onEntityChanged = onEntityChanged;
 
             auto yPoint = ECSCreateEntity(
                 "Y point",
@@ -311,6 +319,7 @@ namespace ntt
             {
                 geo->pos.y += delta.y;
             };
+            yPointNegData.onEntityChanged = onEntityChanged;
 
             auto yPointNeg = ECSCreateEntity(
                 "Y point Neg",
@@ -345,6 +354,7 @@ namespace ntt
                 parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
                 parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
             };
+            leftTopData.onEntityChanged = onEntityChanged;
 
             leftTopData.onResizeMain =
                 [](
@@ -403,6 +413,8 @@ namespace ntt
                 geo->size.height -= delta.y * 2;
             };
 
+            rightTopData.onEntityChanged = onEntityChanged;
+
             auto rightTopPoint = ECSCreateEntity(
                 "right-top-point",
                 {
@@ -451,6 +463,7 @@ namespace ntt
                 geo->size.width += delta.x * 2;
                 geo->size.height += delta.y * 2;
             };
+            rightBottomData.onEntityChanged = onEntityChanged;
 
             auto rightBottomPoint = ECSCreateEntity(
                 "right-bottom-point",
@@ -500,6 +513,7 @@ namespace ntt
                 geo->size.width -= delta.x * 2;
                 geo->size.height += delta.y * 2;
             };
+            leftBottomData.onEntityChanged = onEntityChanged;
 
             auto leftBottomPoint = ECSCreateEntity(
                 "left-bottom-point",
@@ -547,6 +561,7 @@ namespace ntt
 
                 parent->relPos.x = -geo->size.width / 2 - CENTER_SIZE / 2;
             };
+            leftPointData.onEntityChanged = onEntityChanged;
 
             auto leftPoint = ECSCreateEntity(
                 "left-point",
@@ -591,6 +606,7 @@ namespace ntt
 
                 parent->relPos.x = geo->size.width / 2 + CENTER_SIZE / 2;
             };
+            rightPointData.onEntityChanged = onEntityChanged;
 
             auto rightPoint = ECSCreateEntity(
                 "right-point",
@@ -635,6 +651,7 @@ namespace ntt
 
                 parent->relPos.y = -geo->size.height / 2 - CENTER_SIZE / 2;
             };
+            topPointData.onEntityChanged = onEntityChanged;
 
             auto topPoint = ECSCreateEntity(
                 "top-point",
@@ -679,6 +696,7 @@ namespace ntt
 
                 parent->relPos.y = geo->size.height / 2 + CENTER_SIZE / 2;
             };
+            bottomPointData.onEntityChanged = onEntityChanged;
 
             auto bottomPoint = ECSCreateEntity(
                 "bottom-point",
@@ -723,6 +741,7 @@ namespace ntt
                     geo->rotation += 360.0f;
                 }
             };
+            rotatePointData.onEntityChanged = onEntityChanged;
 
             auto rotatePoint = ECSCreateEntity(
                 "rotate point",
@@ -765,70 +784,6 @@ namespace ntt
             rotateEntities.push_back(xRotateAxis);
             ADD_ALL(xRotateAxis);
 
-            drawnEntities[entityId].push_back(center);
-            drawnEntities[entityId].push_back(xAxis);
-            drawnEntities[entityId].push_back(xPoint);
-            drawnEntities[entityId].push_back(yAxis);
-            drawnEntities[entityId].push_back(yPoint);
-            drawnEntities[entityId].push_back(xAxisNeg);
-            drawnEntities[entityId].push_back(xPointNeg);
-            drawnEntities[entityId].push_back(yAxisNeg);
-            drawnEntities[entityId].push_back(yPointNeg);
-
-            drawnEntities[entityId].push_back(leftTopPoint);
-            drawnEntities[entityId].push_back(rightTopPoint);
-            drawnEntities[entityId].push_back(leftBottomPoint);
-            drawnEntities[entityId].push_back(rightBottomPoint);
-            drawnEntities[entityId].push_back(leftPoint);
-            drawnEntities[entityId].push_back(rightPoint);
-            drawnEntities[entityId].push_back(topPoint);
-            drawnEntities[entityId].push_back(bottomPoint);
-
-            drawnEntities[entityId].push_back(rotatePoint);
-            drawnEntities[entityId].push_back(xRotateAxis);
-
-            moveEntities.push_back(center);
-            moveEntities.push_back(xPoint);
-            moveEntities.push_back(yPoint);
-            moveEntities.push_back(xAxis);
-            moveEntities.push_back(yAxis);
-            moveEntities.push_back(xAxisNeg);
-            moveEntities.push_back(xPointNeg);
-            moveEntities.push_back(yAxisNeg);
-            moveEntities.push_back(yPointNeg);
-
-            resizeEntities.push_back(leftTopPoint);
-            resizeEntities.push_back(rightTopPoint);
-            resizeEntities.push_back(leftBottomPoint);
-            resizeEntities.push_back(rightBottomPoint);
-            resizeEntities.push_back(leftPoint);
-            resizeEntities.push_back(rightPoint);
-            resizeEntities.push_back(topPoint);
-            resizeEntities.push_back(bottomPoint);
-
-            rotateEntities.push_back(rotatePoint);
-            rotateEntities.push_back(xRotateAxis);
-
-            // allDrawnEntities.push_back(center);
-            // allDrawnEntities.push_back(xAxis);
-            // allDrawnEntities.push_back(yAxis);
-            // allDrawnEntities.push_back(xPoint);
-            // allDrawnEntities.push_back(yPoint);
-            // allDrawnEntities.push_back(leftTopPoint);
-            // allDrawnEntities.push_back(rightTopPoint);
-            // allDrawnEntities.push_back(leftBottomPoint);
-            // allDrawnEntities.push_back(rightBottomPoint);
-            // allDrawnEntities.push_back(xAxisNeg);
-            // allDrawnEntities.push_back(xPointNeg);
-            // allDrawnEntities.push_back(yAxisNeg);
-            // allDrawnEntities.push_back(yPointNeg);
-            // allDrawnEntities.push_back(leftPoint);
-            // allDrawnEntities.push_back(rightPoint);
-            // allDrawnEntities.push_back(topPoint);
-            // allDrawnEntities.push_back(bottomPoint);
-            // allDrawnEntities.push_back(rotatePoint);
-            // allDrawnEntities.push_back(xRotateAxis);
-
             ChangeMoveState(currentTool == MOVE);
             ChangeResizeState(currentTool == SCALE);
             ChangeRotateState(currentTool == ROTATE);
@@ -849,6 +804,12 @@ namespace ntt
             PROFILE_FUNCTION();
             auto entityId = context.u32_data[0];
             ChooseNewEntity(entityId);
+        }
+
+        void OnEditorClearChosenEntity(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+            Clear();
         }
 
         void OnEditorSelectedRequest(event_code_t code, void *sender, const EventContext &context)
@@ -993,6 +954,13 @@ namespace ntt
 
         RegisterEvent(NTT_EDITOR_APPEND_ENTITY,
                       std::bind(&Impl::OnEditorAppendEntity,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_CLEAR_CHOSEN_ENTITY,
+                      std::bind(&Impl::OnEditorClearChosenEntity,
                                 m_impl.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,

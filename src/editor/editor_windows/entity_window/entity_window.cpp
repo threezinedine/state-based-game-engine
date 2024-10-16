@@ -21,6 +21,12 @@ namespace ntt
             PROFILE_FUNCTION();
             selectedEntities.push_back(context.u32_data[0]);
         }
+
+        void OnClearEntity(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+            selectedEntities.clear();
+        }
     };
 
     EntityWindow::EntityWindow(Ref<ProjectInfo> project,
@@ -39,6 +45,12 @@ namespace ntt
 
         RegisterEvent(NTT_EDITOR_CHOOSE_ENTITY,
                       std::bind(&Impl::OnSelectedEntity, m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_CLEAR_CHOSEN_ENTITY,
+                      std::bind(&Impl::OnClearEntity, m_impl.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
@@ -70,9 +82,15 @@ namespace ntt
     {
         PROFILE_FUNCTION();
         ImGui::Begin("Entity", p_open, flags);
-        if (m_impl->selectedEntities.size() != 1)
+        if (m_impl->selectedEntities.size() == 0)
         {
             ImGui::Text("No entity is selected");
+            ImGui::End();
+            return;
+        }
+        else if (m_impl->selectedEntities.size() > 1)
+        {
+            ImGui::Text("Multiple entities are selected");
             ImGui::End();
             return;
         }

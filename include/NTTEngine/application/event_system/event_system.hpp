@@ -85,11 +85,9 @@ namespace ntt
 #define NTT_LAYER_CHANGED 0x0D         ///< When the layer is changed
 #define NTT_DEFINED_LAYER_CHANGED 0x17 ///< When the defined layer is changed (not visible layer)
 
-#define NTT_EDITOR_CHOOSE_ENTITY 0x18 ///< When the entity is chosen in the editor
-#define NTT_EDITOR_APPEND_ENTITY 0x19 ///< When the entity is appended in the editor
-
-#define NTT_EDITOR_SELECTED_MOVE 0x1A         ///< When the entity need to be moved
-#define NTT_EDITOR_SELECTED_MOVE_REQUEST 0x1B ///< When the entity has request to be moved
+#define NTT_EDITOR_CLEAR_CHOSEN_ENTITY 0x18 ///< When the entity is cleared in the editor
+#define NTT_EDITOR_CHOOSE_ENTITY 0x19       ///< When the entity is chosen in the editor
+#define NTT_EDITOR_APPEND_ENTITY 0x1A       ///< When the entity is appended in the editor
 
 #define NTT_EDITOR_SELECTED_RESIZE 0x1C         ///< When the entity need to be resized
 #define NTT_EDITOR_SELECTED_RESIZE_REQUEST 0x1D ///< When the entity has request to be resized
@@ -117,6 +115,9 @@ namespace ntt
 #define NTT_EDITOR_SAVE_SCENE 0x2C       ///< When the scene is saved
 
 #define NTT_EDITOR_COPY_TEXTURE_GRID 0x2D ///< When the texture grid is copied
+
+#define NTT_EDITOR_SELECTED_MOVE 0x2E         ///< When the entity need to be moved
+#define NTT_EDITOR_SELECTED_MOVE_REQUEST 0x2F ///< When the entity has request to be moved
 
     // TODO: Change the default event < 255 and the user's event >= 255
 

@@ -90,6 +90,11 @@ namespace ntt
                 TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);
             }
         }
+
+        if (ImGui::Button("Clear"))
+        {
+            TriggerEvent(NTT_EDITOR_CLEAR_CHOSEN_ENTITY);
+        }
         ImGui::End();
     }
 

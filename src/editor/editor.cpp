@@ -511,6 +511,34 @@ namespace ntt
                 TriggerEvent(NTT_EDITOR_START_GAME);
             }
         }
+
+        List<String> sceneNames = s_project->scenes.Keys();
+
+        ImGui::SameLine();
+        ImGui::BeginDisabled(s_isRunning);
+        if (ImGui::BeginCombo("scene",
+                              s_scene->sceneName == ""
+                                  ? "No scene selected"
+                                  : s_scene->sceneName.RawString().c_str(),
+                              ImGuiComboFlags_WidthFitPreview))
+        {
+            for (auto &sceneName : sceneNames)
+            {
+                b8 isSelected = s_scene->sceneName == sceneName;
+                if (ImGui::Selectable(sceneName.RawString().c_str(), isSelected))
+                {
+                    s_scene->sceneName = sceneName;
+                    TriggerEvent(NTT_EDITOR_OPEN_SCENE);
+                }
+
+                if (isSelected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+        ImGui::EndDisabled();
         ImGui::End();
 
         ImGuiIO &io = ImGui::GetIO();
