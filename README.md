@@ -24,20 +24,35 @@ This project is a state-based game engine named NTTEngine. It is designed to sup
 
 # Editor
 
-Currently, the editor just supports the logging display, new features will be added soon.
-![alt text](images/example-editor.png)
+Editor with project creating, scene editing, ...
+![Editor](images/editor-normal.png)
 
-Another scene
-![alt text](images/editor-second-scene.png)
+Editor with resource manager
+![Editor](images/resource-manager.png)
 
-At the same time, a .exe file of built game is created beside the editor version.
-![alt text](images/game-version.png)
-
-The entity can be drag (support multiple selection) and drop to the scene.
-![alt text](images/drag-drop-entity.png)
+The game can be run without the editor
+![Game](images/game.png)
 
 # Build from source with CMake
 
-```cmd
+## Windows - MinGW
 
+Generating the build files and building the project with MinGW.
+
+### Debug
+
+```cmd
+$ mkdir build
+$ WindowBuild/MinGW/gen-build.bat
+$ WindowBuild/MinGW/build.bat
+$ WindowBuild/MinGW/editor.bat
+```
+
+### Release
+
+```cmd
+$ mkdir build
+$ WindowBuild/MinGW/gen-release.bat
+$ WindowBuild/MinGW/build.bat
+$ WindowBuild/MinGW/editor.bat
 ```
