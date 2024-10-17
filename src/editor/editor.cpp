@@ -721,7 +721,11 @@ namespace ntt
             ImGui::BeginDisabled(s_changedFiles.size() != 0);
             if (ImGui::Button("Ok"))
             {
-                TriggerEvent(NTT_EDITOR_OPEN_SCENE);
+                s_hanging = FALSE;
+                String newScene = s_scene->sceneName;
+                EventContext context;
+                context.u32_data[0] = newScene.Length() + 1;
+                TriggerEvent(NTT_EDITOR_OPEN_SCENE, newScene.RawString().data(), context);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndDisabled();
