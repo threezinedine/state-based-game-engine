@@ -99,8 +99,6 @@ namespace ntt
 
         void Save()
         {
-            ResourceUnload(scene->resources);
-            ResourceUnload(project->defaultResources);
             project->SaveDefaultResources();
 
             if (HasScene())
@@ -108,8 +106,9 @@ namespace ntt
                 scene->SaveResourceInfo();
             }
 
-            ResourceLoad(project->defaultResources);
-            ResourceLoad(scene->resources);
+            EventContext context;
+            context.u32_data[0] = scene->sceneName.Length() + 1;
+            TriggerEvent(NTT_EDITOR_OPEN_SCENE, scene->sceneName.RawString().data(), context);
         }
 
         void EditorWindowDraw(ResourceInfo &info, b8 useScene = FALSE)

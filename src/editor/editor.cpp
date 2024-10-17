@@ -40,6 +40,8 @@ namespace ntt
         b8 s_openEntity = TRUE;
         b8 s_newProjectConfig = FALSE;
 
+        String s_newSceneName = "";
+
         List<String> s_sceneNames;
         String s_currentScene;
         String s_assetPath;
@@ -101,40 +103,43 @@ namespace ntt
             PROFILE_FUNCTION();
 
             char sceneName[256];
-            String newSceneName;
             if (sender != nullptr)
             {
                 memcpy(sceneName, sender, context.u32_data[0]);
-                newSceneName = sceneName;
+                s_newSceneName = sceneName;
             }
-
-            ResourceUnload(s_project->defaultResources);
-            s_project->ReloadDefaultResourcesInfo();
-            ResourceLoad(s_project->defaultResources);
-
-            if (s_project->scenes.Contains(s_scene->sceneName))
+            else
             {
-                s_scene->RemoveAllEntities();
-                ResourceUnload(s_scene->resources);
+                s_newSceneName = s_scene->sceneName;
             }
 
-            if (s_project->scenes.Contains(newSceneName) && newSceneName != "")
-            {
-                s_scene->filePath = s_project->scenes[newSceneName]->filePath;
-                s_scene->sceneName = newSceneName;
-            }
+            // ResourceUnload(s_project->defaultResources);
+            // s_project->ReloadDefaultResourcesInfo();
+            // ResourceLoad(s_project->defaultResources);
 
-            if (s_project->scenes.Contains(s_scene->sceneName))
-            {
-                s_scene->ReloadResourceInfo();
-                ResourceLoad(s_scene->resources);
-                s_scene->ReloadEntities();
-            }
+            // if (s_project->scenes.Contains(s_scene->sceneName))
+            // {
+            //     s_scene->RemoveAllEntities();
+            //     ResourceUnload(s_scene->resources);
+            // }
 
-            for (auto &window : s_sceneChangeWindows)
-            {
-                window->OnReloadScene();
-            }
+            // if (s_project->scenes.Contains(newSceneName) && newSceneName != "")
+            // {
+            //     s_scene->filePath = s_project->scenes[newSceneName]->filePath;
+            //     s_scene->sceneName = newSceneName;
+            // }
+
+            // if (s_project->scenes.Contains(s_scene->sceneName))
+            // {
+            //     s_scene->ReloadResourceInfo();
+            //     ResourceLoad(s_scene->resources);
+            //     s_scene->ReloadEntities();
+            // }
+
+            // for (auto &window : s_sceneChangeWindows)
+            // {
+            //     window->OnReloadScene();
+            // }
         }
 
         void OnNewSceneCreated(event_code_t code, void *sender, const EventContext &context)
@@ -382,6 +387,7 @@ namespace ntt
         s_hanging = FALSE;
 
         s_changedFiles.clear();
+        s_newSceneName = "";
 
         s_configFilePath = JoinPath({CurrentDirectory(), "config.json"});
 
@@ -732,6 +738,39 @@ namespace ntt
         }
 
         rlImGuiEnd();
+
+        if (s_newSceneName != "")
+        {
+            ResourceUnload(s_project->defaultResources);
+            s_project->ReloadDefaultResourcesInfo();
+            ResourceLoad(s_project->defaultResources);
+
+            if (s_project->scenes.Contains(s_scene->sceneName))
+            {
+                s_scene->RemoveAllEntities();
+                ResourceUnload(s_scene->resources);
+            }
+
+            if (s_project->scenes.Contains(s_newSceneName) && s_newSceneName != "")
+            {
+                s_scene->filePath = s_project->scenes[s_newSceneName]->filePath;
+                s_scene->sceneName = s_newSceneName;
+            }
+
+            if (s_project->scenes.Contains(s_scene->sceneName))
+            {
+                s_scene->ReloadResourceInfo();
+                ResourceLoad(s_scene->resources);
+                s_scene->ReloadEntities();
+            }
+
+            for (auto &window : s_sceneChangeWindows)
+            {
+                window->OnReloadScene();
+            }
+
+            s_newSceneName = "";
+        }
     }
 
     void EditorBeginDraw()
