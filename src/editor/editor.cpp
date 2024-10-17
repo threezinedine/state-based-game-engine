@@ -25,6 +25,7 @@
 #include <thread>
 
 #include <NTTEngine/editor/types.hpp>
+#include <NTTEngine/editor/editor_utils.hpp>
 
 namespace ntt
 {
@@ -726,10 +727,7 @@ namespace ntt
             if (ImGui::Button("Ok"))
             {
                 s_hanging = FALSE;
-                String newScene = s_scene->sceneName;
-                EventContext context;
-                context.u32_data[0] = newScene.Length() + 1;
-                TriggerEvent(NTT_EDITOR_OPEN_SCENE, newScene.RawString().data(), context);
+                Editor_ChangeScene(s_scene->sceneName);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndDisabled();

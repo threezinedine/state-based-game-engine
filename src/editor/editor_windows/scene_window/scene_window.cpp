@@ -131,6 +131,8 @@ namespace ntt
                 EventContext context;
                 context.u32_data[0] = ECSGetEntityByName(entityName);
                 TriggerEvent(NTT_EDITOR_CHOOSE_ENTITY, nullptr, context);
+
+                ImGui::SetWindowFocus("Entity");
             }
         }
 
