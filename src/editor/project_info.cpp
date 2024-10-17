@@ -8,7 +8,7 @@ namespace ntt
     {
         PROFILE_FUNCTION();
         name = project.Get<String>("name");
-        path = project.Get<String>("path");
+        path = project.Get<String>("path", "");
         width = project.Get<i32>("width", 800);
         height = project.Get<i32>("height", 600);
         title = project.Get<String>("title");

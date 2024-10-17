@@ -97,7 +97,7 @@ namespace ntt
                 String fileName = ImGuiFileDialog::Instance()->GetFilePathName();
                 String filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 
-                path = fileName;
+                this->path = fileName;
 
                 if (onChanged != nullptr)
                 {

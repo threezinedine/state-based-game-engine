@@ -24,31 +24,32 @@ using namespace ntt;
 void Update();
 
 static Timer s_timer;
+static Scope<ProjectInfo> project;
+static Scope<SceneInfo> scene;
+String newScene = "";
 
 int main(void)
 {
     MemoryInit();
     LogInit();
-    ProfilingBegin("Initialization");
-    EventInit();
-
     NTT_ENGINE_CONFIG(
-        LogLevel::INFO,
+        LogLevel::DEBUG,
         {
             CreateRef<ConsoleHandler>(),
-            CreateRef<EditorLogHandler>(),
         });
 
     NTT_APP_CONFIG(
         LogLevel::INFO,
         {
             CreateRef<ConsoleHandler>(),
-            CreateRef<EditorLogHandler>(),
         });
+
+    ProfilingBegin("Initialization");
+    EventInit();
 
     List<String> fileNames = ListFiles(CurrentDirectory());
 
-    Scope<ProjectInfo> project = CreateScope<ProjectInfo>();
+    project = CreateScope<ProjectInfo>();
 
     for (auto fileName : fileNames)
     {
@@ -89,12 +90,6 @@ int main(void)
         TRUE);
 
     ECSRegister(
-        "Editor System",
-        CreateRef<EditorSystem>(),
-        {typeid(Geometry)},
-        TRUE);
-
-    ECSRegister(
         "Native Script System",
         CreateRef<ScriptSystem>(),
         {typeid(NativeScriptComponent)});
@@ -125,29 +120,63 @@ int main(void)
         {typeid(Sprite), typeid(TextureComponent)});
 
     s_timer.Reset();
-    // EditorInit(CurrentDirectory());
+    project->ReloadDefaultResourcesInfo();
+    ResourceLoad(project->defaultResources);
 
-    if (project->scenes.Contains(project->defaultSceneName))
-    {
-        String sceneCfgFilePath = JoinPath({project->path,
-                                            "scenes",
-                                            format("{}.json", project->defaultSceneName)});
-        JSON sceneCfg = JSON(ReadFile(sceneCfgFilePath));
-        Scope<SceneInfo> scene = CreateScope<SceneInfo>();
-        project->ReloadDefaultResourcesInfo();
-        ResourceLoad(project->defaultResources);
-
-        scene->FromJSON(sceneCfg);
-        scene->ReloadResourceInfo();
-        ResourceLoad(scene->resources);
-        scene->ReloadEntities();
-    }
+    RegisterEvent(
+        NTT_GAME_CHANGE_SCENE,
+        [&](event_code_t code, void *sender, const EventContext &context)
+        {
+            char sceneName[256];
+            memcpy(sceneName, sender, context.u32_data[0]);
+            newScene = sceneName;
+        });
 
     ProfilingBegin("Update");
+    ChangeScene(project->defaultSceneName);
     while (!WindowShouldClose())
     {
         Update();
+
+        if (newScene != "")
+        {
+            if (scene == nullptr)
+            {
+                scene = CreateScope<SceneInfo>();
+            }
+
+            if (project->scenes.Contains(newScene))
+            {
+                if (scene != nullptr)
+                {
+                    scene->RemoveAllEntities();
+                    ResourceUnload(scene->resources);
+                }
+
+                String sceneCfgFilePath = JoinPath({project->path,
+                                                    "scenes",
+                                                    format("{}.json", newScene)});
+
+                JSON sceneCfg = JSON(ReadFile(sceneCfgFilePath));
+                scene->FromJSON(sceneCfg);
+                scene->ReloadResourceInfo();
+                ResourceLoad(scene->resources);
+                scene->ReloadEntities();
+            }
+
+            newScene = "";
+        }
     }
+
+    if (scene != nullptr)
+    {
+        scene->RemoveAllEntities();
+        ResourceUnload(scene->resources);
+        scene.reset();
+    }
+
+    ResourceUnload(project->defaultResources);
+    project.reset();
 
     ProfilingBegin("Shutdown");
     // EditorShutdown();

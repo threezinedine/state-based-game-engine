@@ -281,6 +281,17 @@ namespace ntt
         s_windowSize = size;
     }
 
+    void ChangeScene(const String &sceneName)
+    {
+        PROFILE_FUNCTION();
+
+        EventContext context;
+        context.u32_data[0] = sceneName.Length() + 1;
+        String newScene = sceneName;
+
+        TriggerEvent(NTT_GAME_CHANGE_SCENE, newScene.RawString().data(), context);
+    }
+
     void ApplicationShutdown()
     {
         PROFILE_FUNCTION();

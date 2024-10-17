@@ -72,6 +72,13 @@ namespace ntt
     void SetWindowSize(const Size &size);
 
     /**
+     * Changing the scene of the game
+     *
+     * @param sceneName: the name of the scene which is going to be changed
+     */
+    void ChangeScene(const String &sceneName);
+
+    /**
      * Destroying all things inside the game engine, the window will be closed
      *      and all the resources will be freed
      */

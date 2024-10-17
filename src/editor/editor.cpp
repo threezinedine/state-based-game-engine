@@ -430,22 +430,11 @@ namespace ntt
         RegisterEvent(NTT_EDITOR_SAVE_SCENE, OnSaveScene);
         RegisterEvent(NTT_WATCHED_FILE_CHANGED, OnWatchFileChanged);
         RegisterEvent(NTT_WATCHED_FILE_HANDLED, OnWatchingFileHandleComplete);
-
         RegisterEvent(
-            NTT_ENTITY_CREATED,
-            [](auto code, auto sender, const EventContext &context)
+            NTT_GAME_CHANGE_SCENE,
+            [&](event_code_t code, void *sender, const EventContext &context)
             {
-                entity_id_t entityID = context.u32_data[0];
-                String entityName = ECSGetEntity(entityID)->name;
-                NTT_ENGINE_DEBUG("Entity {} is created with id {}", entityName, entityID);
-            });
-
-        RegisterEvent(
-            NTT_ENTITY_DESTROYED,
-            [](auto code, auto sender, const EventContext &context)
-            {
-                entity_id_t entityID = context.u32_data[0];
-                NTT_ENGINE_DEBUG("Entity with id {} is deleted", entityID);
+                TriggerEvent(NTT_EDITOR_STOP_GAME);
             });
         // ========================================
         // Event registration above

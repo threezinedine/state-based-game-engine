@@ -155,33 +155,6 @@ namespace ntt
 
                 Save();
             }
-
-            if (ImGui::BeginPopup("rename"))
-            {
-                ImGui::InputText("New Name", resourceName, sizeof(resourceName));
-                if (ImGui::Button("Rename"))
-                {
-                    info.name = resourceName;
-                    Save();
-                    memset(resourceName, 0, sizeof(resourceName));
-                    ImGui::CloseCurrentPopup();
-                }
-                ImGui::EndPopup();
-            }
-
-            if (ImGuiFileDialog::Instance()->Display("changeFile"))
-            {
-                if (ImGuiFileDialog::Instance()->IsOk())
-                {
-                    String fileName = ImGuiFileDialog::Instance()->GetFilePathName();
-                    String filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-
-                    info.path = fileName;
-                    Save();
-                }
-
-                ImGuiFileDialog::Instance()->Close();
-            }
         }
 
         void ResourceInit()
