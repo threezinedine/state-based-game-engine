@@ -17,26 +17,11 @@ namespace ntt
 
         Collision() = default;
 
-        String GetName() const override
-        {
-            return "Collision";
-        }
-    };
+        String GetName() const override;
 
-    class CollisionSystem : public System
-    {
-    public:
-        CollisionSystem();
-        ~CollisionSystem();
+        JSON ToJSON() const override;
+        void FromJSON(const JSON &data) override;
 
-        void InitSystem() override;
-        void InitEntity(entity_id_t id) override;
-        void Update(f32 delta, entity_id_t id) override;
-        void ShutdownEntity(entity_id_t id) override;
-        void ShutdownSystem() override;
-
-    private:
-        class Impl;
-        Scope<Impl> m_impl;
+        void OnEditorUpdate(std::function<void()> callback = nullptr, void *data = nullptr) override;
     };
 } // namespace ntt

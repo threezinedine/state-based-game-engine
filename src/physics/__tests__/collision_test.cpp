@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <NTTEngine/physics/Collision.hpp>
+#include <NTTEngine/physics/collision.hpp>
+#include <NTTEngine/physics/collision_system.hpp>
 #include <NTTEngine/application/event_system/event_system.hpp>
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 #include <NTTEngine/renderer/renderer.hpp>

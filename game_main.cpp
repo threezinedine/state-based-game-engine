@@ -7,7 +7,8 @@
 #include <NTTEngine/renderer/RenderSystem.hpp>
 #include <NTTEngine/renderer/MouseHoveringSystem.hpp>
 
-#include <NTTEngine/physics/Collision.hpp>
+#include <NTTEngine/physics/collision.hpp>
+#include <NTTEngine/physics/collision_system.hpp>
 #include <NTTEngine/physics/MassSystem.hpp>
 
 #include <NTTEngine/editor/editor_system.hpp>
@@ -185,6 +186,7 @@ int main(void)
                 scene->FromJSON(sceneCfg);
                 scene->ReloadResourceInfo();
                 ResourceLoad(scene->resources);
+                ClearEventsRange(0xA0, 0xAF);
                 scene->ReloadEntities();
             }
 

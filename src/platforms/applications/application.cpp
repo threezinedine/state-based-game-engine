@@ -27,6 +27,8 @@
 #include <NTTEngine/editor/editor.hpp>
 #include <NTTEngine/editor/editor_system.hpp>
 #include <NTTEngine/renderer/ParentSystem.hpp>
+#include <NTTEngine/physics/collision_system.hpp>
+#include <NTTEngine/physics/collision.hpp>
 
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 
@@ -144,7 +146,7 @@ namespace ntt
             {typeid(StateComponent)});
 
         ECSRegister(
-            COLLISION_NAME,
+            "Collision System",
             CreateRef<CollisionSystem>(),
             {typeid(Geometry), typeid(Collision)});
 

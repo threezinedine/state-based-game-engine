@@ -69,6 +69,15 @@ namespace ntt
                           { callbackCxt.callback(event_code, sender, context); });
     }
 
+    void ClearEventsRange(event_code_t start, event_code_t end)
+    {
+        PROFILE_FUNCTION();
+        for (auto i = start; i <= end; i++)
+        {
+            s_eventCallbacks.erase(i);
+        }
+    }
+
     void EventShutdown()
     {
         PROFILE_FUNCTION();

@@ -11,6 +11,7 @@
 #include <NTTEngine/application/script_system/state_component.hpp>
 #include <NTTEngine/renderer/Hovering.hpp>
 #include <NTTEngine/editor/types.hpp>
+#include <NTTEngine/physics/collision.hpp>
 
 namespace ntt
 {
@@ -24,7 +25,8 @@ namespace ntt
                 "Sprite",
                 "NativeScriptComponent",
                 "Hovering",
-                "StateComponent"};
+                "StateComponent",
+                "Collision"};
 
         List<std::type_index> componentIndexes =
             {
@@ -34,7 +36,8 @@ namespace ntt
                 typeid(Sprite),
                 typeid(NativeScriptComponent),
                 typeid(Hovering),
-                typeid(StateComponent)};
+                typeid(StateComponent),
+                typeid(Collision)};
         u8 selectedComponentType = 0;
     }
 
@@ -150,6 +153,10 @@ namespace ntt
             {
                 for (u8 i = 0; i < componentTypes.size(); i++)
                 {
+                    if (components.Contains(componentIndexes[i]))
+                    {
+                        continue;
+                    }
                     b8 isSelected = selectedComponentType == i;
                     if (ImGui::Selectable(componentTypes[i].RawString().c_str(), isSelected))
                     {
@@ -217,6 +224,10 @@ namespace ntt
                 else if (type == typeid(StateComponent))
                 {
                     entity->components[type] = CreateRef<StateComponent>();
+                }
+                else if (type == typeid(Collision))
+                {
+                    entity->components[type] = CreateRef<Collision>();
                 }
 
                 selectedComponentType = 0;

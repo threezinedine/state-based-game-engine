@@ -184,6 +184,16 @@ namespace ntt
     void UnregisterEvent(event_id_t event_id);
 
     /**
+     * Clear all the events which are registered with the given range
+     *     of event codes. The events with the code in the range
+     *    will be removed from the event bus and the callback
+     *
+     * @param start The start of the range of the event code
+     * @param end The end of the range of the event code (inclusive)
+     */
+    void ClearEventsRange(event_code_t start, event_code_t end);
+
+    /**
      * Pass the event with data context to the event bus
      */
     void TriggerEvent(event_code_t event_code,

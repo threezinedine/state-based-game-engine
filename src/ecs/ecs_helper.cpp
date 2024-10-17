@@ -6,6 +6,7 @@
 #include <NTTEngine/application/script_system/script_component.hpp>
 #include <NTTEngine/renderer/Hovering.hpp>
 #include <NTTEngine/application/script_system/state_component.hpp>
+#include <NTTEngine/physics/collision.hpp>
 
 namespace ntt
 {
@@ -60,6 +61,13 @@ namespace ntt
             Ref<StateComponent> stateComponent = CreateRef<StateComponent>();
             stateComponent->FromJSON(json.Get<JSON>("StateComponent"));
             components[typeid(StateComponent)] = stateComponent;
+        }
+
+        if (json.Contains<JSON>("Collision"))
+        {
+            Ref<Collision> collision = CreateRef<Collision>();
+            collision->FromJSON(json.Get<JSON>("Collision"));
+            components[typeid(Collision)] = collision;
         }
 
         return components;

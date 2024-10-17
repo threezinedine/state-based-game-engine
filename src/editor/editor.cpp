@@ -113,34 +113,6 @@ namespace ntt
             {
                 s_newSceneName = s_scene->sceneName;
             }
-
-            // ResourceUnload(s_project->defaultResources);
-            // s_project->ReloadDefaultResourcesInfo();
-            // ResourceLoad(s_project->defaultResources);
-
-            // if (s_project->scenes.Contains(s_scene->sceneName))
-            // {
-            //     s_scene->RemoveAllEntities();
-            //     ResourceUnload(s_scene->resources);
-            // }
-
-            // if (s_project->scenes.Contains(newSceneName) && newSceneName != "")
-            // {
-            //     s_scene->filePath = s_project->scenes[newSceneName]->filePath;
-            //     s_scene->sceneName = newSceneName;
-            // }
-
-            // if (s_project->scenes.Contains(s_scene->sceneName))
-            // {
-            //     s_scene->ReloadResourceInfo();
-            //     ResourceLoad(s_scene->resources);
-            //     s_scene->ReloadEntities();
-            // }
-
-            // for (auto &window : s_sceneChangeWindows)
-            // {
-            //     window->OnReloadScene();
-            // }
         }
 
         void OnNewSceneCreated(event_code_t code, void *sender, const EventContext &context)
@@ -766,6 +738,8 @@ namespace ntt
                 s_scene->filePath = s_project->scenes[s_newSceneName]->filePath;
                 s_scene->sceneName = s_newSceneName;
             }
+
+            ClearEventsRange(0xA0, 0xAF);
 
             if (s_project->scenes.Contains(s_scene->sceneName))
             {
