@@ -118,6 +118,18 @@ namespace ntt
 
             if (ImGui::Button("Save"))
             {
+                Ref<EntityInfo> entity;
+
+                for (auto &entityInfo : ((EditorData *)data)->scene->entities)
+                {
+                    if (entityInfo->name == name)
+                    {
+                        entity = entityInfo;
+                        break;
+                    }
+                }
+
+                entity->name = tempName;
                 name = tempName;
                 NTT_ENGINE_DEBUG("Entity name: {}", name);
                 memset(tempName, 0, sizeof(tempName));

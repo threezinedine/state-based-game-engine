@@ -88,6 +88,7 @@ namespace ntt
 
             s_config->lastProjectFile = JoinPath({s_project->path, s_project->name});
             TriggerEvent(NTT_EDITOR_SAVE_CONFIG);
+            TriggerEvent(NTT_SCENE_CHANGED);
 
             for (auto &window : s_reloadWindows)
             {
@@ -98,10 +99,14 @@ namespace ntt
         void OnSceneChanged(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
-            char sceneName[256];
-            memcpy(sceneName, sender, context.u32_data[0]);
 
-            String newSceneName = sceneName;
+            char sceneName[256];
+            String newSceneName;
+            if (sender != nullptr)
+            {
+                memcpy(sceneName, sender, context.u32_data[0]);
+                newSceneName = sceneName;
+            }
 
             ResourceUnload(s_project->defaultResources);
             s_project->ReloadDefaultResourcesInfo();
@@ -117,6 +122,10 @@ namespace ntt
             {
                 s_scene->filePath = s_project->scenes[newSceneName]->filePath;
                 s_scene->sceneName = newSceneName;
+            }
+
+            if (s_project->scenes.Contains(s_scene->sceneName))
+            {
                 s_scene->ReloadResourceInfo();
                 ResourceLoad(s_scene->resources);
                 s_scene->ReloadEntities();

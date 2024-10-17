@@ -94,13 +94,13 @@ namespace ntt
     void EntityWindow::OnReloadProject()
     {
         PROFILE_FUNCTION();
-        m_impl->selectedEntities.clear();
+        // m_impl->selectedEntities.clear();
     }
 
     void EntityWindow::OnReloadScene()
     {
         PROFILE_FUNCTION();
-        m_impl->selectedEntities.clear();
+        // m_impl->selectedEntities.clear();
     }
 
     void EntityWindow::InitImpl()
@@ -132,9 +132,11 @@ namespace ntt
                 m_impl->entity->OnEditorUpdate(
                     [&]()
                     {
+                        String entityName = m_impl->entity->name;
                         m_impl->scene->SaveEntitiesInfo();
+                        m_impl->scene->RemoveAllEntities();
                         m_impl->scene->ReloadEntities();
-                        m_impl->entity = ECSGetEntity(ECSGetEntityByName(m_impl->entity->name));
+                        m_impl->entity = ECSGetEntity(ECSGetEntityByName(entityName));
                     },
                     &m_impl->editorData);
             }
