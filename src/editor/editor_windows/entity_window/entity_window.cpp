@@ -8,12 +8,18 @@ namespace ntt
     {
     public:
         List<entity_id_t> selectedEntities;
+        Ref<ProjectInfo> project;
+        Ref<SceneInfo> scene;
+        Ref<EditorConfig> config;
+        EditorData editorData;
+        Ref<EntityInfo> entity;
 
         void OnSelectedEntity(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
             selectedEntities.clear();
             selectedEntities.push_back(context.u32_data[0]);
+            entity = ECSGetEntity(context.u32_data[0]);
         }
 
         void OnAppendEntity(event_code_t code, void *sender, const EventContext &context)
@@ -26,6 +32,17 @@ namespace ntt
         {
             PROFILE_FUNCTION();
             selectedEntities.clear();
+            entity.reset();
+        }
+
+        void OnReloadScene(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+
+            if (entity)
+            {
+                entity = ECSGetEntity(ECSGetEntityByName(entity->name));
+            }
         }
     };
 
@@ -54,6 +71,19 @@ namespace ntt
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
+
+        RegisterEvent(NTT_EDITOR_RELOAD_SCENE,
+                      std::bind(&Impl::OnReloadScene, m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        m_impl->project = project;
+        m_impl->scene = scene;
+        m_impl->config = config;
+        m_impl->editorData.project = project;
+        m_impl->editorData.config = config;
+        m_impl->editorData.scene = scene;
     }
 
     EntityWindow::~EntityWindow()
@@ -97,9 +127,16 @@ namespace ntt
         else
         {
             ImGui::Text("Selected entities:");
-            for (auto &entity : m_impl->selectedEntities)
+            if (m_impl->entity)
             {
-                ImGui::Text(format("Entity: {}", entity).RawString().c_str());
+                m_impl->entity->OnEditorUpdate(
+                    [&]()
+                    {
+                        m_impl->scene->SaveEntitiesInfo();
+                        m_impl->scene->ReloadEntities();
+                        m_impl->entity = ECSGetEntity(ECSGetEntityByName(m_impl->entity->name));
+                    },
+                    &m_impl->editorData);
             }
         }
         ImGui::End();
@@ -108,5 +145,9 @@ namespace ntt
     void EntityWindow::ShutdownImpl()
     {
         PROFILE_FUNCTION();
+        if (m_impl->entity)
+        {
+            m_impl->entity.reset();
+        }
     }
 } // namespace ntt

@@ -218,7 +218,7 @@ namespace ntt
         m_impl->data.config = config;
         m_impl->data.scene = scene;
 
-        m_impl->ResourceInit();
+        // m_impl->ResourceInit();
     }
 
     ResourceWindow::~ResourceWindow() {}
@@ -229,12 +229,12 @@ namespace ntt
 
     void ResourceWindow::OnReloadProject()
     {
-        m_impl->ResourceInit();
+        // m_impl->ResourceInit();
     }
 
     void ResourceWindow::OnReloadScene()
     {
-        m_impl->ResourceInit();
+        // m_impl->ResourceInit();
     }
 
     void ResourceWindow::UpdateImpl(b8 *p_open, ImGuiWindowFlags flags)

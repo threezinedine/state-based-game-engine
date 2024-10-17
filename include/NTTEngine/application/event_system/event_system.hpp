@@ -122,6 +122,13 @@ namespace ntt
 #define NTT_WATCHED_FILE_CHANGED 0x30 ///< When the watched file is changed
 #define NTT_WATCHED_FILE_HANDLED 0x31 ///< When the watched file is handled
 
+#define NTT_EDITOR_RELOAD_SCENE 0x32 ///< When the scene is reloaded
+
+#define NTT_UNLOAD_SCENE_RESOURCES 0x33   ///< When the scene resources are unloaded
+#define NTT_UNLOAD_PROJECT_RESOURCES 0x34 ///< When the project resources are unloaded
+#define LOAD_SCENE_RESOURCES 0x35         ///< When the scene resources are loaded
+#define LOAD_PROJECT_RESOURCES 0x36       ///< When the project resources are loaded
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

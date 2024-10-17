@@ -98,9 +98,28 @@ namespace ntt
         void OnSceneChanged(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
+            char sceneName[256];
+            memcpy(sceneName, sender, context.u32_data[0]);
+
+            String newSceneName = sceneName;
+
+            ResourceUnload(s_project->defaultResources);
+            s_project->ReloadDefaultResourcesInfo();
+            ResourceLoad(s_project->defaultResources);
+
             if (s_project->scenes.Contains(s_scene->sceneName))
             {
-                s_scene->filePath = s_project->scenes[s_scene->sceneName]->filePath;
+                s_scene->RemoveAllEntities();
+                ResourceUnload(s_scene->resources);
+            }
+
+            if (s_project->scenes.Contains(newSceneName) && newSceneName != "")
+            {
+                s_scene->filePath = s_project->scenes[newSceneName]->filePath;
+                s_scene->sceneName = newSceneName;
+                s_scene->ReloadResourceInfo();
+                ResourceLoad(s_scene->resources);
+                s_scene->ReloadEntities();
             }
 
             for (auto &window : s_sceneChangeWindows)
@@ -180,6 +199,7 @@ namespace ntt
 
             s_isRunning = FALSE;
             ECSLayerMakeVisible(EDITOR_LAYER);
+            s_scene->RemoveAllEntities();
             s_scene->ReloadEntities();
         }
 
@@ -401,6 +421,23 @@ namespace ntt
         RegisterEvent(NTT_EDITOR_SAVE_SCENE, OnSaveScene);
         RegisterEvent(NTT_WATCHED_FILE_CHANGED, OnWatchFileChanged);
         RegisterEvent(NTT_WATCHED_FILE_HANDLED, OnWatchingFileHandleComplete);
+
+        RegisterEvent(
+            NTT_ENTITY_CREATED,
+            [](auto code, auto sender, const EventContext &context)
+            {
+                entity_id_t entityID = context.u32_data[0];
+                String entityName = ECSGetEntity(entityID)->name;
+                NTT_ENGINE_DEBUG("Entity {} is created with id {}", entityName, entityID);
+            });
+
+        RegisterEvent(
+            NTT_ENTITY_DESTROYED,
+            [](auto code, auto sender, const EventContext &context)
+            {
+                entity_id_t entityID = context.u32_data[0];
+                NTT_ENGINE_DEBUG("Entity with id {} is deleted", entityID);
+            });
         // ========================================
         // Event registration above
         // ========================================
@@ -612,8 +649,9 @@ namespace ntt
                 b8 isSelected = s_scene->sceneName == sceneName;
                 if (ImGui::Selectable(sceneName.RawString().c_str(), isSelected))
                 {
-                    s_scene->sceneName = sceneName;
-                    TriggerEvent(NTT_EDITOR_OPEN_SCENE);
+                    EventContext context;
+                    context.u32_data[0] = sceneName.Length() + 1;
+                    TriggerEvent(NTT_EDITOR_OPEN_SCENE, sceneName.RawString().data(), context);
                 }
 
                 if (isSelected)

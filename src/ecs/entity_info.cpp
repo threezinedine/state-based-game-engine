@@ -10,6 +10,7 @@
 #include <NTTEngine/application/script_system/script_component.hpp>
 #include <NTTEngine/application/script_system/state_component.hpp>
 #include <NTTEngine/renderer/Hovering.hpp>
+#include <NTTEngine/editor/types.hpp>
 
 namespace ntt
 {
@@ -164,33 +165,46 @@ namespace ntt
             ImGui::BeginDisabled(componentExisted);
             if (ImGui::Button("Save"))
             {
+                EditorData *editorData = (EditorData *)data;
+
+                Ref<EntityInfo> entity;
+
+                for (auto &entityInfo : editorData->scene->entities)
+                {
+                    if (entityInfo->name == name)
+                    {
+                        entity = entityInfo;
+                        break;
+                    }
+                }
+
                 if (type == typeid(Geometry))
                 {
-                    components[type] = CreateRef<Geometry>();
+                    entity->components[type] = CreateRef<Geometry>();
                 }
                 else if (type == typeid(TextureComponent))
                 {
-                    components[type] = CreateRef<TextureComponent>();
+                    entity->components[type] = CreateRef<TextureComponent>();
                 }
                 else if (type == typeid(Mass))
                 {
-                    components[type] = CreateRef<Mass>();
+                    entity->components[type] = CreateRef<Mass>();
                 }
                 else if (type == typeid(Sprite))
                 {
-                    components[type] = CreateRef<Sprite>();
+                    entity->components[type] = CreateRef<Sprite>();
                 }
                 else if (type == typeid(NativeScriptComponent))
                 {
-                    components[type] = CreateRef<NativeScriptComponent>();
+                    entity->components[type] = CreateRef<NativeScriptComponent>();
                 }
                 else if (type == typeid(Hovering))
                 {
-                    components[type] = CreateRef<Hovering>();
+                    entity->components[type] = CreateRef<Hovering>();
                 }
                 else if (type == typeid(StateComponent))
                 {
-                    components[type] = CreateRef<StateComponent>();
+                    entity->components[type] = CreateRef<StateComponent>();
                 }
 
                 selectedComponentType = 0;

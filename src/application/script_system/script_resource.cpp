@@ -107,6 +107,7 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
+        NTT_ENGINE_DEBUG("The script {} is unloaded", GetInfo()->name);
         ScriptStoreUnload(m_impl->scriptId);
     }
 } // namespace ntt

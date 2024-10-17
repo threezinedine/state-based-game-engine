@@ -84,8 +84,10 @@ namespace ntt
                 ImGui::SameLine();
                 if (ImGui::Button("Ok"))
                 {
-                    m_impl->scene->sceneName = m_impl->sceneNames[m_impl->index];
-                    TriggerEvent(NTT_EDITOR_OPEN_SCENE);
+                    String newScene = m_impl->sceneNames[m_impl->index];
+                    EventContext context;
+                    context.u32_data[0] = newScene.Length() + 1;
+                    TriggerEvent(NTT_EDITOR_OPEN_SCENE, newScene.RawString().data(), context);
                     Close();
                 }
             }

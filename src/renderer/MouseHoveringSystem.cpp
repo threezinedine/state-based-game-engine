@@ -97,6 +97,8 @@ namespace ntt
     void MouseHoveringSystem::ShutdownEntity(entity_id_t id)
     {
         PROFILE_FUNCTION();
+        s_callbacks.erase(id);
+        s_prevHovered.RemoveItem(id);
     }
 
     void MouseHoveringSystem::ShutdownSystem()

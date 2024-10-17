@@ -89,9 +89,12 @@ namespace ntt
             return;
         }
 
-        if (THIS(m_currentState) != "")
+        if (THIS(m_currentState) != "" && THIS(m_children).Contains(THIS(m_currentState)))
         {
-            THIS(m_children[THIS(m_currentState)]->OnExit());
+            if (THIS(m_children[THIS(m_currentState)]))
+            {
+                THIS(m_children[THIS(m_currentState)]->OnExit());
+            }
         }
     }
 

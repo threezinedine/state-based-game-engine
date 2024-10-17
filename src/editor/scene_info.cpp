@@ -1,6 +1,7 @@
 #include <NTTEngine/editor/types.hpp>
 #include <NTTEngine/ecs/ecs_helper.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/application/event_system/event_system.hpp>
 
 namespace ntt
 {
@@ -16,9 +17,6 @@ namespace ntt
     void SceneInfo::ReloadEntities()
     {
         PROFILE_FUNCTION();
-        RemoveAllEntities();
-
-        List<ResourceInfo> resourcesInfo;
         JSON config = ReadFile(filePath);
         List<JSON> entitiesCfg = config.GetList<JSON>("entities");
         entities.clear();
@@ -26,12 +24,14 @@ namespace ntt
 
         for (auto &entity : entitiesCfg)
         {
-            EntityInfo entityInfo;
-            entityInfo.FromJSON(entity);
+            Ref<EntityInfo> entityInfo = CreateRef<EntityInfo>();
+            entityInfo->FromJSON(entity);
             entities.push_back(entityInfo);
 
-            m_entityIDs.push_back(ECSCreateEntity(entityInfo.name, entityInfo.components));
+            m_entityIDs.push_back(ECSCreateEntity(entityInfo->name, entityInfo->components));
         }
+
+        TriggerEvent(NTT_EDITOR_RELOAD_SCENE);
     }
 
     void SceneInfo::SaveEntitiesInfo()
@@ -40,8 +40,8 @@ namespace ntt
         JSON config = ReadFile(filePath);
         List<JSON> entitiesJSON =
             entities
-                .Map<JSON>([](const EntityInfo &info, ...) -> JSON
-                           { return info.ToJSON(); });
+                .Map<JSON>([](const Ref<EntityInfo> &info, ...) -> JSON
+                           { return info->ToJSON(); });
 
         config.Set("entities", JSON::FromList(entitiesJSON));
 
@@ -53,8 +53,8 @@ namespace ntt
     void SceneInfo::AddEntity()
     {
         PROFILE_FUNCTION();
-        EntityInfo entity;
-        entity.name = "Entity";
+        Ref<EntityInfo> entity = CreateRef<EntityInfo>();
+        entity->name = "Entity";
         entities.push_back(entity);
     }
 
@@ -73,8 +73,8 @@ namespace ntt
 
         List<JSON> entitiesJSON =
             entities
-                .Map<JSON>([](const EntityInfo &info, ...) -> JSON
-                           { return info.ToJSON(); });
+                .Map<JSON>([](const Ref<EntityInfo> &info, ...) -> JSON
+                           { return info->ToJSON(); });
 
         scene.Set("entities", JSON::FromList(entitiesJSON));
 
