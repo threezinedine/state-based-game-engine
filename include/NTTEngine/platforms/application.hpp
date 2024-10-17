@@ -79,6 +79,19 @@ namespace ntt
     void ChangeScene(const String &sceneName);
 
     /**
+     * Opening the layers of the game engine with the certain scene name
+     *
+     * @param sceneName: the name of the scene which is going to be opened
+     *      as the menu
+     */
+    void OpenMenu(const String &menuSceneName);
+
+    /**
+     * Turn of the menu of the game engine if it is opened
+     */
+    void CloseMenu();
+
+    /**
      * Destroying all things inside the game engine, the window will be closed
      *      and all the resources will be freed
      */

@@ -167,7 +167,7 @@ namespace ntt
         ///     then now the user's code will not affect the order of the layer
         ECSBeginLayer(GAME_LAYER);
 
-        ECSBeginLayer(UI_LAYER_0);
+        ECSBeginLayer(UI_LAYER);
         ECSBeginLayer(UI_LAYER_1);
         ECSBeginLayer(UI_LAYER_2);
         ECSBeginLayer(UI_LAYER_3);
@@ -290,6 +290,22 @@ namespace ntt
         String newScene = sceneName;
 
         TriggerEvent(NTT_GAME_CHANGE_SCENE, newScene.RawString().data(), context);
+    }
+
+    void OpenMenu(const String &menuSceneName)
+    {
+        PROFILE_FUNCTION();
+
+        EventContext context;
+        context.u32_data[0] = menuSceneName.Length() + 1;
+        String menuScene = menuSceneName;
+        TriggerEvent(NTT_GAME_OPEN_MENU, menuScene.RawString().data(), context);
+    }
+
+    void CloseMenu()
+    {
+        PROFILE_FUNCTION();
+        TriggerEvent(NTT_GAME_CLOSE_MENU);
     }
 
     void ApplicationShutdown()

@@ -365,7 +365,7 @@ TEST_F(ECSTest, Needed_Entitites_Should_Be_Drawn)
             ECS_CREATE_COMPONENT(TestLayerData),
         });
 
-    ECSBeginLayer(UI_LAYER_0);
+    ECSBeginLayer(UI_LAYER);
     auto entity2 = ECSCreateEntity(
         "test-entity-2",
         {
@@ -378,7 +378,7 @@ TEST_F(ECSTest, Needed_Entitites_Should_Be_Drawn)
     EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity}));
     ResetEntityStates();
 
-    ECSLayerMakeVisible(UI_LAYER_0);
+    ECSLayerMakeVisible(UI_LAYER);
     ECSUpdate(0.0f);
     EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2}));
     EXPECT_EQ(s_UpdatedEntities, List<entity_id_t>({entity2}));
@@ -426,7 +426,7 @@ TEST_F(ECSTest, Needed_Entitites_Should_Be_Drawn)
     ResetEntityStates();
 
     ECSLayerMakeVisible(GAME_LAYER);
-    ECSLayerMakeVisible(UI_LAYER_0);
+    ECSLayerMakeVisible(UI_LAYER);
     ECSLayerMakeVisible(EDITOR_LAYER);
     ECSUpdate(0.0f);
     EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2, entity4}));
@@ -474,12 +474,12 @@ TEST_F(ECSTest, When_Change_The_Layer_Then_That_Layer_Trigger_Event)
 
     RegisterEvent(NTT_LAYER_CHANGED, callback);
 
-    ECSBeginLayer(UI_LAYER_0);
+    ECSBeginLayer(UI_LAYER);
 
     ECSCreateEntity("test-entity", {});
 
-    ECSLayerMakeVisible(UI_LAYER_0);
-    EXPECT_EQ(layer, UI_LAYER_0);
+    ECSLayerMakeVisible(UI_LAYER);
+    EXPECT_EQ(layer, UI_LAYER);
 
     ECSLayerMakeVisible(UI_LAYER_1);
     EXPECT_EQ(layer, UI_LAYER_1);
@@ -550,7 +550,7 @@ TEST_F(ECSTest, DebuggingBehaviorTest)
     // ResetEntityStates();
 
     // // When the ui layer is visible, then the debug layer will return that layer when continue
-    // ECSBeginLayer(UI_LAYER_0);
+    // ECSBeginLayer(UI_LAYER);
     // ECSUpdate(0.0f);
     // ResetEntityStates();
     // auto entity5 = ECSCreateEntity(
@@ -559,7 +559,7 @@ TEST_F(ECSTest, DebuggingBehaviorTest)
     //         ECS_CREATE_COMPONENT(TestLayerData),
     //     });
 
-    // ECSLayerMakeVisible(UI_LAYER_0);
+    // ECSLayerMakeVisible(UI_LAYER);
     // ECSUpdate(0.0f);
     // EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({entity, entity2, entity5}));
     // ResetEntityStates();
@@ -612,7 +612,7 @@ TEST_F(ECSTest, CreateEntityWithPriority)
     EXPECT_EQ(s_DrawnedEntites, List<entity_id_t>({textureEnt, textEnt}));
     ResetEntityStates();
 
-    ECSBeginLayer(UI_LAYER_0);
+    ECSBeginLayer(UI_LAYER);
 
     auto textureEnt2 = ECSCreateEntity(
         "test-entity-3",
@@ -627,8 +627,8 @@ TEST_F(ECSTest, CreateEntityWithPriority)
         });
 
     auto textureEntGeo2 = ECS_GET_COMPONENT(textureEnt2, Geometry);
-    EXPECT_EQ(textureEntGeo2->priority, PRIORITY_0 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
+    EXPECT_EQ(textureEntGeo2->priority, PRIORITY_0 + LAYER_PRIORITY_RANGE * UI_LAYER);
 
     auto textEntGeo2 = ECS_GET_COMPONENT(textEnt2, Geometry);
-    EXPECT_EQ(textEntGeo2->priority, PRIORITY_1 + LAYER_PRIORITY_RANGE * UI_LAYER_0);
+    EXPECT_EQ(textEntGeo2->priority, PRIORITY_1 + LAYER_PRIORITY_RANGE * UI_LAYER);
 }

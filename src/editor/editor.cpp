@@ -443,6 +443,18 @@ namespace ntt
             {
                 TriggerEvent(NTT_EDITOR_STOP_GAME);
             });
+        RegisterEvent(
+            NTT_GAME_OPEN_MENU,
+            [&](event_code_t code, void *sender, const EventContext &context)
+            {
+                TriggerEvent(NTT_EDITOR_STOP_GAME);
+            });
+        RegisterEvent(
+            NTT_GAME_CLOSE_MENU,
+            [&](event_code_t code, void *sender, const EventContext &context)
+            {
+                TriggerEvent(NTT_EDITOR_STOP_GAME);
+            });
         // ========================================
         // Event registration above
         // ========================================

@@ -26,7 +26,10 @@ void Update();
 static Timer s_timer;
 static Scope<ProjectInfo> project;
 static Scope<SceneInfo> scene;
+static Scope<SceneInfo> menu;
 String newScene = "";
+String menuSceneName = "";
+b8 isMenuOpen = FALSE;
 
 int main(void)
 {
@@ -119,6 +122,11 @@ int main(void)
         CreateRef<SpriteRenderSystem>(),
         {typeid(Sprite), typeid(TextureComponent)});
 
+    ECSBeginLayer(GAME_LAYER);
+    ECSBeginLayer(UI_LAYER);
+    ECSBeginLayer(EDITOR_LAYER);
+    ECSBeginLayer(GAME_LAYER);
+
     s_timer.Reset();
     project->ReloadDefaultResourcesInfo();
     ResourceLoad(project->defaultResources);
@@ -130,6 +138,22 @@ int main(void)
             char sceneName[256];
             memcpy(sceneName, sender, context.u32_data[0]);
             newScene = sceneName;
+        });
+
+    RegisterEvent(
+        NTT_GAME_OPEN_MENU,
+        [&](event_code_t code, void *sender, const EventContext &context)
+        {
+            char menuName[256];
+            memcpy(menuName, sender, context.u32_data[0]);
+            menuSceneName = menuName;
+        });
+
+    RegisterEvent(
+        NTT_GAME_CLOSE_MENU,
+        [&](event_code_t code, void *sender, const EventContext &context)
+        {
+            isMenuOpen = FALSE;
         });
 
     ProfilingBegin("Update");
@@ -166,6 +190,44 @@ int main(void)
 
             newScene = "";
         }
+
+        if (menuSceneName != "")
+        {
+            if (scene == nullptr)
+            {
+                scene = CreateScope<SceneInfo>();
+            }
+
+            if (project->scenes.Contains(menuSceneName) && !isMenuOpen)
+            {
+                String sceneCfgFilePath = JoinPath({project->path,
+                                                    "scenes",
+                                                    format("{}.json", menuSceneName)});
+
+                JSON sceneCfg = JSON(ReadFile(sceneCfgFilePath));
+                menu = CreateScope<SceneInfo>();
+                menu->FromJSON(sceneCfg);
+                menu->ReloadResourceInfo();
+                ResourceLoad(menu->resources);
+                ECSBeginLayer(UI_LAYER);
+                menu->ReloadEntities();
+                ECSLayerMakeVisible(UI_LAYER);
+                isMenuOpen = TRUE;
+            }
+
+            menuSceneName = "";
+        }
+
+        if (!isMenuOpen)
+        {
+            if (menu != nullptr)
+            {
+                menu->RemoveAllEntities();
+                ResourceUnload(menu->resources);
+                ECSBeginLayer(GAME_LAYER);
+                ECSLayerMakeVisible(GAME_LAYER);
+            }
+        }
     }
 
     if (scene != nullptr)
@@ -173,6 +235,13 @@ int main(void)
         scene->RemoveAllEntities();
         ResourceUnload(scene->resources);
         scene.reset();
+    }
+
+    if (menu != nullptr)
+    {
+        menu->RemoveAllEntities();
+        ResourceUnload(menu->resources);
+        menu.reset();
     }
 
     ResourceUnload(project->defaultResources);

@@ -131,6 +131,9 @@ namespace ntt
 
 #define NTT_GAME_CHANGE_SCENE 0x37 ///< When the scene is changed in the game
 
+#define NTT_GAME_OPEN_MENU 0x38  ///< When the menu is opened in the editor
+#define NTT_GAME_CLOSE_MENU 0x39 ///< When the menu is closed in the editor
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

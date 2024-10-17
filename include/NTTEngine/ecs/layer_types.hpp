@@ -20,7 +20,7 @@ namespace ntt
 #define GAME_LAYER 0x00 ///< The main game layer where the physics, rendering
                         ///<     and the game logic are updated.
 
-#define UI_LAYER_0 0x01 ///< First slot for the UI layer
+#define UI_LAYER 0x01   ///< First slot for the UI layer
 #define UI_LAYER_1 0x02 ///< Second slot for the UI layer
 #define UI_LAYER_2 0x03 ///< Third slot for the UI layer
 #define UI_LAYER_3 0x04 ///< Fourth slot for the UI layer

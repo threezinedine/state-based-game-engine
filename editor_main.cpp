@@ -114,6 +114,7 @@ int main(void)
     EditorInit(CurrentDirectory());
 
     ECSBeginLayer(GAME_LAYER);
+    ECSBeginLayer(UI_LAYER);
     ECSBeginLayer(EDITOR_LAYER);
     ECSLayerMakeVisible(EDITOR_LAYER);
     ECSBeginLayer(GAME_LAYER);
