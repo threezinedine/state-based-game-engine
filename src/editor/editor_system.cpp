@@ -1050,28 +1050,25 @@ namespace ntt
 
         if (GetMouseScroll() != 0)
         {
-            auto mouseScroll = GetMouseScroll();
-
-            if (mouseScroll > 0)
-            {
-                camera->camZoom += 0.03f * camera->camZoom;
-            }
-            else
-            {
-                camera->camZoom -= 0.03f * camera->camZoom;
-            }
-
             auto currentMouse = GetMousePosition();
             auto windowSize = GetWindowSize();
 
-            if (0 <= currentMouse.x && currentMouse.x <= windowSize.width &&
-                0 <= currentMouse.y && currentMouse.y <= windowSize.height)
+            camera->camZoom += 0.03f * GetMouseScroll();
+
+            if (camera->camZoom < 0.3f)
             {
-                camera->ShiftCamera(
-                    {camera->ReverseTransformX(currentMouse.x),
-                     camera->ReverseTransformY(currentMouse.y)},
-                    currentMouse);
+                camera->camZoom = 0.3f;
             }
+
+            if (camera->camZoom > 3.0f)
+            {
+                camera->camZoom = 3.0f;
+            }
+
+            camera->ShiftCamera(
+                {camera->ReverseTransformX(currentMouse.x),
+                 camera->ReverseTransformY(currentMouse.y)},
+                currentMouse);
         }
 
         if (CheckState(NTT_BUTTON_RIGHT, NTT_PRESS))
