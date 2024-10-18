@@ -189,7 +189,9 @@ namespace ntt
 
             s_isRunning = FALSE;
             ECSLayerMakeVisible(EDITOR_LAYER);
-            s_scene->RemoveAllEntities();
+            // s_scene->RemoveAllEntities();
+            ECS_ClearLayer(GAME_LAYER);
+            ECSBeginLayer(GAME_LAYER);
             s_scene->ReloadEntities();
         }
 
@@ -323,6 +325,12 @@ namespace ntt
             String file = String(fileName);
 
             s_changedFiles.push_back(file);
+
+            if (s_scene->sceneName != "")
+            {
+                // s_scene->RemoveAllEntities();
+                ECS_ClearLayer(GAME_LAYER);
+            }
 
             std::thread t1(
                 [](String fileName)

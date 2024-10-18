@@ -278,6 +278,23 @@ namespace ntt
         TriggerEvent(NTT_DEFINED_LAYER_CHANGED, nullptr, context);
     }
 
+    void ECS_ClearLayer(layer_t layer)
+    {
+        PROFILE_FUNCTION();
+
+        if (layer >= MAX_LAYERS)
+        {
+            return;
+        }
+
+        List<entity_id_t> entities = *layers[layer];
+
+        for (auto entity : entities)
+        {
+            InternalEntityDelete(entity);
+        }
+    }
+
     void ECSLayerMakeVisible(layer_t layer)
     {
         PROFILE_FUNCTION();

@@ -180,7 +180,8 @@ int main(void)
             {
                 if (scene != nullptr)
                 {
-                    scene->RemoveAllEntities();
+                    // scene->RemoveAllEntities();
+                    ECS_ClearLayer(GAME_LAYER);
                     ResourceUnload(scene->resources);
                 }
 
@@ -201,9 +202,9 @@ int main(void)
 
         if (menuSceneName != "")
         {
-            if (scene == nullptr)
+            if (menu == nullptr)
             {
-                scene = CreateScope<SceneInfo>();
+                menu = CreateScope<SceneInfo>();
             }
 
             if (project->scenes.Contains(menuSceneName) && !isMenuOpen)
@@ -213,7 +214,6 @@ int main(void)
                                                     format("{}.json", menuSceneName)});
 
                 JSON sceneCfg = JSON(ReadFile(sceneCfgFilePath));
-                menu = CreateScope<SceneInfo>();
                 menu->FromJSON(sceneCfg);
                 menu->ReloadResourceInfo();
                 ResourceLoad(menu->resources);
@@ -230,7 +230,8 @@ int main(void)
         {
             if (menu != nullptr)
             {
-                menu->RemoveAllEntities();
+                ECS_ClearLayer(UI_LAYER);
+                // menu->RemoveAllEntities();
                 ResourceUnload(menu->resources);
                 ECSBeginLayer(GAME_LAYER);
                 ECSLayerMakeVisible(GAME_LAYER);

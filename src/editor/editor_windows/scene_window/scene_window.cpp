@@ -123,7 +123,8 @@ namespace ntt
         {
             m_impl->scene->AddEntity();
             m_impl->scene->SaveEntitiesInfo();
-            m_impl->scene->ReloadEntities();
+            // m_impl->scene->ReloadEntities();
+            ECS_ClearLayer(GAME_LAYER);
         }
         ImGui::Separator();
 
@@ -144,8 +145,30 @@ namespace ntt
 
                 ImGui::SetWindowFocus("Entity");
             }
-        }
 
+            ImGui::PushID(entityName.RawString().c_str());
+            if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+            {
+                ImGui::OpenPopup("options");
+            }
+
+            if (ImGui::BeginPopup("options"))
+            {
+                if (ImGui::MenuItem("Duplicate"))
+                {
+                }
+
+                if (ImGui::MenuItem("Delete"))
+                {
+                    m_impl->scene->RemoveEntity(entityName);
+                    m_impl->scene->SaveEntitiesInfo();
+                    ECS_ClearLayer(GAME_LAYER);
+                }
+
+                ImGui::EndPopup();
+            }
+            ImGui::PopID();
+        }
         ImGui::End();
     }
 

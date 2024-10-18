@@ -85,6 +85,11 @@ namespace ntt
     void ECSBeginLayer(layer_t layer);
 
     /**
+     * Clear all the entities inside the layer and remove the layer from the system.
+     */
+    void ECS_ClearLayer(layer_t layer);
+
+    /**
      * Staring drawing the layers on the screen
      *      if the layer is already visible then
      *      the layer will be drawn on the screen

@@ -81,6 +81,18 @@ namespace ntt
         return scene;
     }
 
+    void SceneInfo::RemoveEntity(const String &entityName)
+    {
+        PROFILE_FUNCTION();
+        Ref<EntityInfo> entity = CreateRef<EntityInfo>();
+        entity->name = entityName;
+
+        entities.RemoveItem(
+            entity,
+            [](const Ref<EntityInfo> &info, const Ref<EntityInfo> &entity) -> b8
+            { return info->name == entity->name; });
+    }
+
     void SceneInfo::FromJSON(const JSON &scene)
     {
         PROFILE_FUNCTION();

@@ -114,8 +114,14 @@ namespace ntt
         b8 isFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
         SetInputModuleState(isFocus);
         auto camera = GetCameraInfo(m_impl->cameraId)->camera;
+        ImVec2 windowSize = ImGui::GetWindowSize();
+        ImVec2 windowPos = ImGui::GetWindowPos();
 
-        if (GetMouseScroll() != 0 && isFocus)
+        b8 isMouseInside = ImGui::IsMouseHoveringRect(
+            windowPos,
+            {windowPos.x + windowSize.x, windowPos.y + windowSize.y});
+
+        if (GetMouseScroll() != 0 && isFocus && isMouseInside)
         {
             auto currentMouse = GetMousePosition();
             auto windowSize = GetWindowSize();
@@ -138,13 +144,13 @@ namespace ntt
                 currentMouse);
         }
 
-        if (CheckState(NTT_BUTTON_RIGHT, NTT_PRESS))
+        if (CheckState(NTT_BUTTON_RIGHT, NTT_PRESS) && isFocus && isMouseInside)
         {
             m_impl->mouseStartPos = GetMousePosition();
             m_impl->cameraStartPos = camera->camPos;
         }
 
-        if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+        if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && isFocus && isMouseInside)
         {
             Position movedMouse = GetMousePosition();
             Position delta = {movedMouse.x - m_impl->mouseStartPos.x,
@@ -172,7 +178,6 @@ namespace ntt
         }
 
         m_impl->viewPortRatio = viewportSize.x / m_impl->screenWidth;
-        ImVec2 windowPos = ImGui::GetWindowPos();
 
         ImGui::SetCursorPosX(size.x / 2 - viewportSize.x / 2);
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + size.y / 2 - viewportSize.y / 2);

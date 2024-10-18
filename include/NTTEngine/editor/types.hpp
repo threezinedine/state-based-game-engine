@@ -27,7 +27,9 @@ namespace ntt
         void RemoveAllEntities();
         void ReloadEntities();
         void SaveEntitiesInfo();
+
         void AddEntity();
+        void RemoveEntity(const String &entityName);
 
     private:
         List<entity_id_t> m_entityIDs;
