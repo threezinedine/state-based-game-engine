@@ -7,6 +7,7 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/renderer/renderer.hpp>
 #include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/editor/editor_utils.hpp>
 
 namespace ntt
 {
@@ -108,6 +109,15 @@ namespace ntt
         }
 
         ImGui::Text(format("Scene: {}", m_impl->scene->sceneName).RawString().c_str());
+        ImGui::Separator();
+        if (ImGui::Button("Delete Scene"))
+        {
+            m_impl->project->RemoveScene(m_impl->scene->sceneName);
+            m_impl->scene->sceneName = "";
+            TriggerEvent(NTT_EDITOR_SAVE_PROJECT);
+            Editor_ChangeScene("");
+            // m_impl->scene->SaveEntitiesInfo();
+        }
         ImGui::Separator();
         if (ImGui::Button("New"))
         {

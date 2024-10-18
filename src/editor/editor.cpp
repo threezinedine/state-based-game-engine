@@ -56,6 +56,7 @@ namespace ntt
         Ref<EditorFileDialog> s_openProjectDialog;
         Ref<EditorFileDialog> s_saveAsProjectDialog;
 
+        Ref<ProjectWindow> s_projectWindow;
         Ref<SettingWindow> s_settingWindow;
         Ref<NewProjectWindow> s_newProjectWindow;
         Ref<ViewportWindow> s_viewportWindow;
@@ -481,6 +482,11 @@ namespace ntt
         s_openClosableWindows.push_back(s_entityWindow);
         s_reloadWindows.push_back(s_entityWindow);
         s_sceneChangeWindows.push_back(s_entityWindow);
+
+        s_projectWindow = CreateRef<ProjectWindow>(s_project);
+        s_normalWindows.push_back(s_projectWindow);
+        s_openClosableWindows.push_back(s_projectWindow);
+        s_reloadWindows.push_back(s_projectWindow);
 
         s_newProjectDialog = CreateScope<EditorFileDialog>(
             s_project,

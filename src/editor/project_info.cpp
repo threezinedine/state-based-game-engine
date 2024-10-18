@@ -80,6 +80,24 @@ namespace ntt
         }
     }
 
+    void ProjectInfo::RemoveScene(const String &sceneName)
+    {
+        PROFILE_FUNCTION();
+        if (!scenes.Contains(sceneName))
+        {
+            NTT_ENGINE_DEBUG("The scene with name {} is not existed", sceneName);
+            return;
+        }
+
+        if (defaultSceneName == sceneName)
+        {
+            defaultSceneName = "";
+        }
+
+        scenes.erase(sceneName);
+        RemoveFile(JoinPath({path, "scenes", format("{}.json", sceneName)}));
+    }
+
     void ProjectInfo::ReloadDefaultResourcesInfo()
     {
         PROFILE_FUNCTION();

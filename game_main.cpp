@@ -63,12 +63,14 @@ int main(void)
             SetWindowSize(
                 {static_cast<position_t>(project->width),
                  static_cast<position_t>(project->height)});
+
             break;
         }
     }
 
     SetTraceLogLevel(LOG_NONE);
     InitWindow(project->width, project->height, "NTT Engine");
+    SetWindowTitle(project->title.RawString().c_str());
     SetTargetFPS(60);
 
     ScriptStoreInit("CreateInstance", "DeleteInstance", "GetBaseType");

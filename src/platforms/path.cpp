@@ -321,4 +321,24 @@ namespace ntt
             }
         }
     }
+
+    void RemoveFile(const String &path)
+    {
+        if (!IsExist(path))
+        {
+            NTT_ENGINE_WARN("The file {} does not exist", path);
+            return;
+        }
+
+        auto sysPath = fs::path(path.RawString()).make_preferred();
+
+        try
+        {
+            fs::remove(sysPath);
+        }
+        catch (const ::std::exception &e)
+        {
+            NTT_ENGINE_WARN("The file {} cannot be deleted with error {}", path, e.what());
+        }
+    }
 } // namespace ntt

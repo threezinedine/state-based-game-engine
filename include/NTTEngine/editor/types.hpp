@@ -52,6 +52,7 @@ namespace ntt
         String GetProjectFilePath();
 
         void AddNewScene(const String &sceneName);
+        void RemoveScene(const String &sceneName);
 
         void ReloadDefaultResourcesInfo();
         void SaveDefaultResources();

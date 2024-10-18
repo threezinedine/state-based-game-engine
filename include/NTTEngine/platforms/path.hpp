@@ -215,4 +215,12 @@ namespace ntt
      *      nothing will be deleted and the warning will be logged
      */
     void ClearFolder(const String &folder);
+
+    /**
+     * Delete an existed file or folder
+     *
+     * @param path: The path of the file/folder if the file/folder is not exist
+     *      nothing will be deleted and the warning will be logged
+     */
+    void RemoveFile(const String &path);
 } // namespace ntt

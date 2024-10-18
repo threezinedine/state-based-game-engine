@@ -9,3 +9,4 @@
 #include "scene_window/scene_window.hpp"
 #include "open_scene/open_scene.hpp"
 #include "entity_window/entity_window.hpp"
+#include "project_window/project_window.hpp"
