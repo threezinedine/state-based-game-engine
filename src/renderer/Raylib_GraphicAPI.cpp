@@ -94,4 +94,19 @@ namespace ntt
                          rotate,
                          ::WHITE);
     }
+
+    void RaylibGraphicAPI::DrawNoFillRectangle(
+        f32 x, f32 y,
+        f32 width,
+        f32 height,
+        const RGBAColor &color)
+    {
+        constexpr f32 delta = 1.0f;
+        ::DrawRectangleLines(
+            x - delta,
+            y - delta,
+            width + delta * 2,
+            height + delta * 2,
+            ::Color{color.r, color.g, color.b, color.a});
+    }
 } // namespace ntt

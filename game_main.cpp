@@ -91,7 +91,7 @@ int main(void)
 
     ECSRegister(
         "Render System",
-        CreateRef<RenderSystem>(),
+        CreateRef<RenderSystem>(FALSE),
         {typeid(Geometry)},
         TRUE);
 
@@ -158,6 +158,10 @@ int main(void)
         {
             isMenuOpen = FALSE;
         });
+
+    f32 width = static_cast<f32>(project->width);
+    f32 height = static_cast<f32>(project->height);
+    AddCamera({width / 2, height / 2}, {width, height});
 
     ProfilingBegin("Update");
     ChangeScene(project->defaultSceneName);

@@ -43,6 +43,8 @@ namespace ntt
                          f32 th,
                          f32 rotate) override;
 
+        void DrawNoFillRectangle(f32 x, f32 y, f32 width, f32 height, const RGBAColor &color) override;
+
     private:
         class Impl;
         Scope<Impl> m_impl;

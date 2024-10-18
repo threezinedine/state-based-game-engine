@@ -6,6 +6,7 @@
 #include <NTTEngine/renderer/ParentSystem.hpp>
 #include <NTTEngine/renderer/RenderSystem.hpp>
 #include <NTTEngine/renderer/MouseHoveringSystem.hpp>
+#include <NTTEngine/renderer/Camera.hpp>
 
 #include <NTTEngine/physics/collision.hpp>
 #include <NTTEngine/physics/collision_system.hpp>
@@ -71,7 +72,7 @@ int main(void)
 
     ECSRegister(
         "Render System",
-        CreateRef<RenderSystem>(),
+        CreateRef<RenderSystem>(TRUE),
         {typeid(Geometry)},
         TRUE);
 

@@ -10,6 +10,8 @@
 #include <NTTEngine/application/scene_system/scene_system.hpp>
 #include <NTTEngine/platforms/application.hpp>
 #include <array>
+#include <NTTEngine/renderer/Camera.hpp>
+#include <NTTEngine/renderer/GraphicInterface.hpp>
 
 #include <NTTEngine/editor/EditorWindow.hpp>
 #include <NTTEngine/editor/OpenClosableWindow.hpp>

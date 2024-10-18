@@ -276,7 +276,8 @@ namespace ntt
     i16 GetMouseScroll()
     {
         PROFILE_FUNCTION();
-        return 0;
+        return GetMouseWheelMove() > 0 ? 1 : GetMouseWheelMove() < 0 ? -1
+                                                                     : 0;
     }
 
     void SetMousePosition(const Position &pos)

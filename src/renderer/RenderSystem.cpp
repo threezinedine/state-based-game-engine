@@ -17,13 +17,15 @@ namespace ntt
     class RenderSystem::Impl
     {
     public:
+        b8 editor;
     };
 
-    RenderSystem::RenderSystem()
+    RenderSystem::RenderSystem(b8 editor)
         : System()
     {
         PROFILE_FUNCTION();
         m_impl = CreateScope<Impl>();
+        m_impl->editor = editor;
     }
 
     RenderSystem::~RenderSystem()
@@ -82,14 +84,17 @@ namespace ntt
             return;
         }
 
-        // check if the texture is in the window or not
-        // if not, then don't draw it
-        if (geo->pos.x + geo->size.width / 2 < 0 ||
-            geo->pos.x - geo->size.width / 2 > windowSize.width ||
-            geo->pos.y + geo->size.height / 2 < 0 ||
-            geo->pos.y - geo->size.height / 2 > windowSize.height)
+        if (!m_impl->editor)
         {
-            return;
+            // check if the texture is in the window or not
+            // if not, then don't draw it
+            if (geo->pos.x + geo->size.width / 2 < 0 ||
+                geo->pos.x - geo->size.width / 2 > windowSize.width ||
+                geo->pos.y + geo->size.height / 2 < 0 ||
+                geo->pos.y - geo->size.height / 2 > windowSize.height)
+            {
+                return;
+            }
         }
 
         drawContext.priority = geo->priority;

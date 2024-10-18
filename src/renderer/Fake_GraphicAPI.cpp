@@ -87,4 +87,8 @@ namespace ntt
     {
         m_drawTextureCalled++;
     }
+
+    void FakeGraphicAPI::DrawNoFillRectangle(f32 x, f32 y, f32 width, f32 height, const RGBAColor &color)
+    {
+    }
 } // namespace ntt

@@ -59,5 +59,12 @@ namespace ntt
                                  f32 tw,
                                  f32 th,
                                  f32 rotate) = 0;
+
+        virtual void DrawNoFillRectangle(
+            f32 x,
+            f32 y,
+            f32 width,
+            f32 height,
+            const RGBAColor &color = {0, 0, 255, 95}) = 0;
     };
 } // namespace ntt

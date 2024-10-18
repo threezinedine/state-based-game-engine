@@ -95,6 +95,11 @@ namespace ntt
         {
             TriggerEvent(NTT_EDITOR_CLEAR_CHOSEN_ENTITY);
         }
+
+        if (ImGui::Button("Reset camera"))
+        {
+            TriggerEvent(NTT_EDITOR_RESET_CAMERA);
+        }
         ImGui::End();
     }
 

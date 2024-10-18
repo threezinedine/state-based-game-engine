@@ -134,6 +134,8 @@ namespace ntt
 #define NTT_GAME_OPEN_MENU 0x38  ///< When the menu is opened in the editor
 #define NTT_GAME_CLOSE_MENU 0x39 ///< When the menu is closed in the editor
 
+#define NTT_EDITOR_RESET_CAMERA 0x3A ///< When the camera is reset in the editor
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

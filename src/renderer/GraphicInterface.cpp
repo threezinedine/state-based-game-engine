@@ -83,6 +83,8 @@ namespace ntt
 
         Scope<GraphicAPI> s_graphicAPI;
 
+        Scope<Store<camera_id_t, CameraInfo>> s_cameraStore;
+
         b8 s_test = FALSE;
     } // namespace
 
@@ -95,6 +97,12 @@ namespace ntt
             TEXTURE_MAX,
             [](Ref<TextureInfo> texture, Ref<TextureInfo> other) -> b8
             { return texture->path == other->path; });
+
+        s_cameraStore = CreateScope<Store<camera_id_t, CameraInfo>>(
+            0,
+            10,
+            [](Ref<CameraInfo> camera, Ref<CameraInfo> other) -> b8
+            { return FALSE; });
 
         if (test)
         {
@@ -380,144 +388,185 @@ namespace ntt
             }
         }
 
-        for (auto i = 0; i < MAX_PRIORITIES; i++)
-        {
-            if (s_drawLists[i] == nullptr)
-            {
-                continue;
-            }
+        auto s_availableCameras = s_cameraStore->GetAvailableIds();
 
-            for (auto info : *s_drawLists[i])
+        for (auto cameraId : s_availableCameras)
+        {
+            Ref<CameraInfo> cameraInfo = s_cameraStore->Get(cameraId);
+            Ref<Camera> camera = cameraInfo->camera;
+
+            position_t projectSpaceX = GetWindowSize().width / 2;
+            position_t projectSpaceY = GetWindowSize().height / 2;
+            ntt_size_t projectSpaceWidth = GetWindowSize().width;
+            ntt_size_t projectSpaceHeight = GetWindowSize().height;
+
+            Position transformedMouse = {
+                camera->ReverseTransformX(mouse.x),
+                camera->ReverseTransformY(mouse.y)};
+
+            for (auto i = 0; i < MAX_PRIORITIES; i++)
             {
-                if (info.drawText)
+                if (s_drawLists[i] == nullptr)
                 {
-                    s_graphicAPI->DrawText(
-                        info.text,
-                        info.toX,
-                        info.toY,
-                        info.fontSize,
-                        info.color);
+                    continue;
                 }
-                else
+
+                for (auto info : *s_drawLists[i])
                 {
-                    if (info.texture_id == INVALID_RESOURCE_ID)
+                    if (info.drawText)
                     {
-                        s_graphicAPI->DrawRectanglePro(
-                            info.toX,
-                            info.toY,
-                            info.toWidth,
-                            info.toHeight,
-                            info.rotate,
+                        s_graphicAPI->DrawText(
+                            info.text,
+                            camera->TransformX(info.toX),
+                            camera->TransformY(info.toY),
+                            camera->TransformWidth(info.fontSize),
                             info.color);
                     }
                     else
                     {
-                        s_graphicAPI->DrawTexture(
-                            s_textureStore->Get(info.texture_id)->texture,
-                            info.fromX,
-                            info.fromY,
-                            info.fromWidth,
-                            info.fromHeight,
-                            info.toX,
-                            info.toY,
-                            info.toWidth,
-                            info.toHeight,
-                            info.rotate);
-                    }
-
-                    if (info.entity_id == INVALID_ENTITY_ID)
-                    {
-                        continue;
-                    }
-
-                    if (info.toX - info.toWidth / 2 <= mouse.x &&
-                        mouse.x <= info.toX + info.toWidth / 2 &&
-                        info.toY - info.toHeight / 2 <= mouse.y &&
-                        mouse.y <= info.toY + info.toHeight / 2)
-                    {
-                        s_hoveredTextures.push_back(info.entity_id);
-
-                        if (i < MAX_PRIORITIES - LAYER_PRIORITY_RANGE)
+                        if (info.texture_id == INVALID_RESOURCE_ID)
                         {
-                            // store the highest priority hovered texture
-                            hoveredEntityId = info.entity_id;
-                            context.position.x = info.toX;
-                            context.position.y = info.toY;
-                            context.size.width = static_cast<ntt_size_t>(info.toWidth);
-                            context.size.height = static_cast<ntt_size_t>(info.toHeight);
-                            context.rotate = info.rotate;
+                            s_graphicAPI->DrawRectanglePro(
+                                camera->TransformX(info.toX),
+                                camera->TransformY(info.toY),
+                                camera->TransformWidth(info.toWidth),
+                                camera->TransformHeight(info.toHeight),
+                                info.rotate,
+                                info.color);
                         }
                         else
                         {
-                            hoveredEntityId = INVALID_ENTITY_ID;
+                            s_graphicAPI->DrawTexture(
+                                s_textureStore->Get(info.texture_id)->texture,
+                                info.fromX,
+                                info.fromY,
+                                info.fromWidth,
+                                info.fromHeight,
+                                camera->TransformX(info.toX),
+                                camera->TransformY(info.toY),
+                                camera->TransformWidth(info.toWidth),
+                                camera->TransformHeight(info.toHeight),
+                                info.rotate);
                         }
 
-                        if (info.tooltip != "" &&
-                            i == highestPriority &&
-                            i < MAX_PRIORITIES - LAYER_PRIORITY_RANGE)
+                        if (cameraInfo->hoverChecking == FALSE)
                         {
-                            auto windowSize = GetWindowSize();
+                            continue;
+                        }
 
-                            auto textWidth = s_graphicAPI->GetTextWidth(
-                                info.tooltip,
-                                TOOL_TIP_FONT_SIZE);
-                            auto textHeight = TOOL_TIP_FONT_SIZE;
+                        if (info.entity_id == INVALID_ENTITY_ID)
+                        {
+                            continue;
+                        }
 
-                            auto toolTipX = mouse.x + TOOL_TOP_OFFSET_X;
+                        if (info.toX - info.toWidth / 2 <= transformedMouse.x &&
+                            transformedMouse.x <= info.toX + info.toWidth / 2 &&
+                            info.toY - info.toHeight / 2 <= transformedMouse.y &&
+                            transformedMouse.y <= info.toY + info.toHeight / 2)
+                        {
+                            s_hoveredTextures.push_back(info.entity_id);
 
-                            if (toolTipX + textWidth > windowSize.width)
+                            if (i < MAX_PRIORITIES - LAYER_PRIORITY_RANGE)
                             {
-                                toolTipX -= (textWidth + TOOL_TIP_PADDING * 2 + TOOL_TOP_OFFSET_X);
+                                // store the highest priority hovered texture
+                                hoveredEntityId = info.entity_id;
+                                context.position.x = info.toX;
+                                context.position.y = info.toY;
+                                context.size.width = static_cast<ntt_size_t>(info.toWidth);
+                                context.size.height = static_cast<ntt_size_t>(info.toHeight);
+                                context.rotate = info.rotate;
+                            }
+                            else
+                            {
+                                hoveredEntityId = INVALID_ENTITY_ID;
                             }
 
-                            auto toolTipY = mouse.y + TOOL_TOP_OFFSET_Y;
-
-                            if (toolTipY + textHeight > windowSize.height)
+                            if (info.tooltip != "" &&
+                                i == highestPriority &&
+                                i < MAX_PRIORITIES - LAYER_PRIORITY_RANGE)
                             {
-                                toolTipY -= textHeight - TOOL_TIP_PADDING * 2 - TOOL_TOP_OFFSET_Y;
+                                auto windowSize = GetWindowSize();
+
+                                auto textWidth = s_graphicAPI->GetTextWidth(
+                                    info.tooltip,
+                                    TOOL_TIP_FONT_SIZE);
+                                auto textHeight = TOOL_TIP_FONT_SIZE;
+
+                                auto toolTipX = transformedMouse.x + TOOL_TOP_OFFSET_X;
+
+                                if (toolTipX + textWidth > windowSize.width)
+                                {
+                                    toolTipX -= (textWidth + TOOL_TIP_PADDING * 2 + TOOL_TOP_OFFSET_X);
+                                }
+
+                                auto toolTipY = transformedMouse.y + TOOL_TOP_OFFSET_Y;
+
+                                if (toolTipY + textHeight > windowSize.height)
+                                {
+                                    toolTipY -= textHeight - TOOL_TIP_PADDING * 2 - TOOL_TOP_OFFSET_Y;
+                                }
+
+                                s_graphicAPI->DrawRectangle(
+                                    toolTipX,
+                                    toolTipY,
+                                    textWidth + TOOL_TIP_PADDING * 2,
+                                    textHeight + TOOL_TIP_PADDING * 2,
+                                    {0, 255, 255, 255});
+
+                                s_graphicAPI->DrawText(info.tooltip,
+                                                       toolTipX + TOOL_TIP_PADDING,
+                                                       toolTipY + TOOL_TIP_PADDING,
+                                                       TOOL_TIP_FONT_SIZE, info.color);
                             }
-
-                            s_graphicAPI->DrawRectangle(
-                                toolTipX,
-                                toolTipY,
-                                textWidth + TOOL_TIP_PADDING * 2,
-                                textHeight + TOOL_TIP_PADDING * 2,
-                                {0, 255, 255, 255});
-
-                            s_graphicAPI->DrawText(info.tooltip,
-                                                   toolTipX + TOOL_TIP_PADDING,
-                                                   toolTipY + TOOL_TIP_PADDING,
-                                                   TOOL_TIP_FONT_SIZE, info.color);
                         }
                     }
                 }
+
+                s_drawLists[i]->clear();
+                s_drawLists[i].reset();
+
+                ASSERT(s_drawLists[i] == nullptr);
             }
 
-            s_drawLists[i]->clear();
-            s_drawLists[i].reset();
+            s_graphicAPI->DrawNoFillRectangle(
+                camera->TransformX(0),
+                camera->TransformY(0),
+                camera->TransformWidth(projectSpaceWidth),
+                camera->TransformHeight(projectSpaceHeight),
+                {255, 255, 255, 255});
+        }
+    }
 
-            ASSERT(s_drawLists[i] == nullptr);
+    camera_id_t AddCamera(Position outputFramePos, Size outputFrameSize)
+    {
+        PROFILE_FUNCTION();
+        auto camera = CreateRef<Camera>(
+            outputFramePos.x,
+            outputFramePos.y,
+            outputFrameSize.width,
+            outputFrameSize.height);
+        auto info = CreateRef<CameraInfo>();
+        info->camera = camera;
+        info->hoverChecking = TRUE;
+        return s_cameraStore->Add(info);
+    }
+
+    Ref<CameraInfo> GetCameraInfo(camera_id_t cameraId)
+    {
+        PROFILE_FUNCTION();
+        if (cameraId == INVALID_CAMERA_ID)
+        {
+            NTT_ENGINE_WARN("The camera ID is invalid");
+            return nullptr;
         }
 
-        // When the debugging mode is on, then the highest hovered texture will be tracked
-        // if (DebugIsStopped())
-        // {
-        //     if (hoveredEntityId != INVALID_ENTITY_ID)
-        //     {
-        //         s_graphicAPI->DrawRectanglePro(context.position.x,
-        //                                        context.position.y,
-        //                                        context.size.width,
-        //                                        context.size.height,
-        //                                        context.rotate);
+        if (!s_cameraStore->Contains(cameraId))
+        {
+            NTT_ENGINE_WARN("The camera with the ID {} is not found", cameraId);
+            return nullptr;
+        }
 
-        //         if (CheckState(NTT_BUTTON_LEFT, NTT_PRESS))
-        //         {
-        //             EventContext context;
-        //             context.u32_data[0] = hoveredEntityId;
-        //             TriggerEvent(NTT_DEBUG_CHOOSE_ENTITY, nullptr, context);
-        //         }
-        //     }
-        // }
+        return s_cameraStore->Get(cameraId);
     }
 
     const List<entity_id_t> &GetHoveredTexture()
@@ -562,5 +611,6 @@ namespace ntt
                  "The texture store is not empty");
 
         s_textureStore.reset();
+        s_cameraStore.reset();
     }
 } // namespace ntt

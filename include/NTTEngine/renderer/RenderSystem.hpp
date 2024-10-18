@@ -8,7 +8,7 @@ namespace ntt
     class RenderSystem : public System
     {
     public:
-        RenderSystem();
+        RenderSystem(b8 editor = FALSE);
         ~RenderSystem();
 
         void InitSystem() override;

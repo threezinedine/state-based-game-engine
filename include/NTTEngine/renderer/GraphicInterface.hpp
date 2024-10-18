@@ -8,6 +8,7 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/structures/color.hpp>
 #include "Grid.hpp"
+#include "Camera.hpp"
 
 namespace ntt
 {
@@ -197,6 +198,27 @@ namespace ntt
      *      the higher priority texture will be at the end of the list
      */
     const List<entity_id_t> &GetHoveredTexture();
+
+    /**
+     * Registering the camera which will affect the rendering output into multiple
+     *      cameras' frames.
+     */
+    camera_id_t AddCamera(Position outputFramePos, Size outputFrameSize);
+
+    /**
+     * Camera information which is used for the rendering
+     */
+    struct CameraInfo
+    {
+        Ref<Camera> camera;
+        b8 hoverChecking;
+    };
+
+    /**
+     * Retrive the camera information with the given camera ID if the camera ID
+     *      is not found or the camera ID is invalid, then returns nullptr.
+     */
+    Ref<CameraInfo> GetCameraInfo(camera_id_t cameraId);
 
     /**
      * Actually draw the objects on the screen.
