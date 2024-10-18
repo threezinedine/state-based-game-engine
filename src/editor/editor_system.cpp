@@ -34,11 +34,6 @@ namespace ntt
         u16 currentLayer = EDITOR_LAYER;
         ToolType currentTool = MOVE;
 
-        b8 cameraMove = FALSE;
-        Position mouseStartPos;
-        Position cameraStartPos;
-        camera_id_t cameraId;
-
         void OnLayerChanged(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
@@ -905,13 +900,6 @@ namespace ntt
             }
         }
 
-        void ResetCamera(event_code_t code, void *sender, const EventContext &context)
-        {
-            PROFILE_FUNCTION();
-            auto camera = GetCameraInfo(cameraId)->camera;
-            camera->Reset();
-        }
-
         void OnToolTypeChanged(event_code_t code, void *sender, const EventContext &context)
         {
             PROFILE_FUNCTION();
@@ -941,7 +929,6 @@ namespace ntt
     void EditorSystem::InitSystem()
     {
         PROFILE_FUNCTION();
-        m_impl->cameraId = AddCamera({0, 0}, {GetWindowSize().width, GetWindowSize().height});
 
         m_impl->selectedEntities.clear();
         m_impl->drawnEntities.clear();
@@ -982,13 +969,6 @@ namespace ntt
 
         RegisterEvent(NTT_EDITOR_CLEAR_CHOSEN_ENTITY,
                       std::bind(&Impl::OnEditorClearChosenEntity,
-                                m_impl.get(),
-                                std::placeholders::_1,
-                                std::placeholders::_2,
-                                std::placeholders::_3));
-
-        RegisterEvent(NTT_EDITOR_RESET_CAMERA,
-                      std::bind(&Impl::ResetCamera,
                                 m_impl.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
@@ -1045,53 +1025,6 @@ namespace ntt
     void EditorSystem::Update(f32 delta, entity_id_t entityId)
     {
         PROFILE_FUNCTION();
-
-        auto camera = GetCameraInfo(m_impl->cameraId)->camera;
-
-        if (GetMouseScroll() != 0)
-        {
-            auto currentMouse = GetMousePosition();
-            auto windowSize = GetWindowSize();
-
-            camera->camZoom += 0.03f * GetMouseScroll();
-
-            if (camera->camZoom < 0.3f)
-            {
-                camera->camZoom = 0.3f;
-            }
-
-            if (camera->camZoom > 3.0f)
-            {
-                camera->camZoom = 3.0f;
-            }
-
-            camera->ShiftCamera(
-                {camera->ReverseTransformX(currentMouse.x),
-                 camera->ReverseTransformY(currentMouse.y)},
-                currentMouse);
-        }
-
-        if (CheckState(NTT_BUTTON_RIGHT, NTT_PRESS))
-        {
-            m_impl->cameraMove = TRUE;
-            m_impl->mouseStartPos = GetMousePosition();
-            m_impl->cameraStartPos = camera->camPos;
-        }
-
-        if (CheckState(NTT_BUTTON_RIGHT, NTT_DOWN))
-        {
-            Position movedMouse = GetMousePosition();
-            Position delta = {movedMouse.x - m_impl->mouseStartPos.x,
-                              movedMouse.y - m_impl->mouseStartPos.y};
-
-            camera->camPos.x = delta.x / camera->camZoom + m_impl->cameraStartPos.x;
-            camera->camPos.y = delta.y / camera->camZoom + m_impl->cameraStartPos.y;
-        }
-
-        if (CheckState(NTT_BUTTON_RIGHT, NTT_RELEASE))
-        {
-            m_impl->cameraMove = FALSE;
-        }
 
         auto hoveredIds = GetHoveredTexture();
 

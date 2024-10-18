@@ -6,6 +6,10 @@
 #include <NTTEngine/core/logging/logging.hpp>
 #include "../editor_tool/editor_tool.hpp"
 #include <NTTEngine/application/event_system/event_system.hpp>
+#include <NTTEngine/renderer/Camera.hpp>
+#include <NTTEngine/core/profiling.hpp>
+#include <NTTEngine/renderer/GraphicInterface.hpp>
+#include <NTTEngine/platforms/application.hpp>
 
 namespace ntt
 {
@@ -28,6 +32,10 @@ namespace ntt
 
         Scope<EditorTool> editorTool;
 
+        Position mouseStartPos;
+        Position cameraStartPos;
+        camera_id_t cameraId;
+
         Position EditorToViewportPosTransform(const Position &pos)
         {
             return {(pos.x - viewPortOffsetX) / viewPortRatio,
@@ -47,6 +55,13 @@ namespace ntt
             return {size.width / screenWidth * viewPortSizeX,
                     size.height / screenHeight * viewPortSizeY};
         }
+
+        void ResetCamera(event_code_t code, void *sender, const EventContext &context)
+        {
+            PROFILE_FUNCTION();
+            auto camera = GetCameraInfo(cameraId)->camera;
+            camera->Reset();
+        }
     };
 
     ViewportWindow::ViewportWindow(f32 width, f32 height)
@@ -60,6 +75,15 @@ namespace ntt
         m_impl->screenWidth = width;
 
         m_impl->editorTool = CreateScope<EditorTool>();
+
+        RegisterEvent(NTT_EDITOR_RESET_CAMERA,
+                      std::bind(&Impl::ResetCamera,
+                                m_impl.get(),
+                                std::placeholders::_1,
+                                std::placeholders::_2,
+                                std::placeholders::_3));
+
+        m_impl->cameraId = AddCamera({0, 0}, {GetWindowSize().width, GetWindowSize().height});
     }
 
     ViewportWindow::~ViewportWindow()
@@ -87,11 +111,51 @@ namespace ntt
         m_impl->editorTool->Update(flags);
 
         ImGui::Begin("Viewport");
-        ImVec2 size = ImGui::GetContentRegionAvail();
-        ImVec2 viewportSize = {0, 0};
-
         b8 isFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
         SetInputModuleState(isFocus);
+        auto camera = GetCameraInfo(m_impl->cameraId)->camera;
+
+        if (GetMouseScroll() != 0 && isFocus)
+        {
+            auto currentMouse = GetMousePosition();
+            auto windowSize = GetWindowSize();
+
+            camera->camZoom += 0.03f * GetMouseScroll();
+
+            if (camera->camZoom < 0.3f)
+            {
+                camera->camZoom = 0.3f;
+            }
+
+            if (camera->camZoom > 3.0f)
+            {
+                camera->camZoom = 3.0f;
+            }
+
+            camera->ShiftCamera(
+                {camera->ReverseTransformX(currentMouse.x),
+                 camera->ReverseTransformY(currentMouse.y)},
+                currentMouse);
+        }
+
+        if (CheckState(NTT_BUTTON_RIGHT, NTT_PRESS))
+        {
+            m_impl->mouseStartPos = GetMousePosition();
+            m_impl->cameraStartPos = camera->camPos;
+        }
+
+        if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
+        {
+            Position movedMouse = GetMousePosition();
+            Position delta = {movedMouse.x - m_impl->mouseStartPos.x,
+                              movedMouse.y - m_impl->mouseStartPos.y};
+
+            camera->camPos.x = delta.x / camera->camZoom + m_impl->cameraStartPos.x;
+            camera->camPos.y = delta.y / camera->camZoom + m_impl->cameraStartPos.y;
+        }
+
+        ImVec2 size = ImGui::GetContentRegionAvail();
+        ImVec2 viewportSize = {0, 0};
 
         f32 aspectRatio = static_cast<f32>(m_impl->screenWidth) /
                           static_cast<f32>(m_impl->screenHeight);
