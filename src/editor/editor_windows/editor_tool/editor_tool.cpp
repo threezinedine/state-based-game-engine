@@ -78,6 +78,11 @@ namespace ntt
             TriggerEvent(NTT_EDITOR_TOOL_TYPE_CHANGED, nullptr, context);
         }
 
+        if (CHECK_PRESS(NTT_KEY_C))
+        {
+            TriggerEvent(NTT_EDITOR_CLEAR_CHOSEN_ENTITY);
+        }
+
         ImGui::Begin("Tools", p_open, ImGuiWindowFlags_NoTitleBar);
 
         for (i32 i = 0; i < m_impl->toolNames.size(); i++)

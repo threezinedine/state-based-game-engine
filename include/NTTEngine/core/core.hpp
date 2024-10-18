@@ -32,3 +32,4 @@
 #include "object.hpp"
 #include "utils.hpp"
 #include "history/history.hpp"
+#include "auto_naming.hpp"
