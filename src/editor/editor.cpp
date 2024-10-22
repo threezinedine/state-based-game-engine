@@ -755,6 +755,7 @@ namespace ntt
                 s_scene->sceneName = s_newSceneName;
             }
 
+            // ECS_ClearLayer(GAME_LAYER);
             ClearEventsRange(0xA0, 0xAF);
 
             if (s_project->scenes.Contains(s_scene->sceneName))

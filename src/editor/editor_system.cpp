@@ -18,6 +18,8 @@
 #include "editor_windows/editor_tool/editor_tool.hpp"
 
 #define CENTER_SIZE 20 ///< The size of the center rect
+#define LIMIT_SIZE 20  ///< The limit size of the entity
+#define INVALID_NEAREST_POSITION -999999
 
 namespace ntt
 {
@@ -33,6 +35,9 @@ namespace ntt
 
         u16 currentLayer = EDITOR_LAYER;
         ToolType currentTool = MOVE;
+
+        position_t prevX = INVALID_NEAREST_POSITION;
+        position_t prevY = INVALID_NEAREST_POSITION;
 
         void OnLayerChanged(event_code_t code, void *sender, const EventContext &context)
         {
@@ -66,6 +71,44 @@ namespace ntt
 
             drawnEntities.clear();
             selectedEntities.clear();
+        }
+
+        position_t CheckNearXAlign(const Position &pos)
+        {
+            auto windowSize = GetWindowSize();
+            List<position_t> xAlignPoints = {};
+            xAlignPoints.push_back(0);
+            xAlignPoints.push_back(windowSize.width / 2);
+            xAlignPoints.push_back(windowSize.width);
+
+            for (auto align : xAlignPoints)
+            {
+                if (abs(align - pos.x) < LIMIT_SIZE)
+                {
+                    return align;
+                }
+            }
+
+            return INVALID_NEAREST_POSITION;
+        }
+
+        position_t CheckNearYAlign(const Position &pos)
+        {
+            auto windowSize = GetWindowSize();
+            List<position_t> yAlignPoints = {};
+            yAlignPoints.push_back(0);
+            yAlignPoints.push_back(windowSize.height / 2);
+            yAlignPoints.push_back(windowSize.height);
+
+            for (auto align : yAlignPoints)
+            {
+                if (abs(align - pos.y) < LIMIT_SIZE)
+                {
+                    return align;
+                }
+            }
+
+            return INVALID_NEAREST_POSITION;
         }
 
         void ChooseNewEntity(entity_id_t entityId)
@@ -106,13 +149,96 @@ namespace ntt
             TransformScriptData centerData;
             centerData.entity = entityId;
             centerData.onResizeMain =
-                [](
+                [&](
                     const Position delta,
                     const f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                geo->pos.x += delta.x;
-                geo->pos.y += delta.y;
+                if (prevX == INVALID_NEAREST_POSITION)
+                {
+                    geo->pos.x += delta.x;
+                }
+
+                if (prevY == INVALID_NEAREST_POSITION)
+                {
+                    geo->pos.y += delta.y;
+                }
+
+                auto windowSize = GetWindowSize();
+
+                position_t xAlign;
+
+                if (prevX == INVALID_NEAREST_POSITION)
+                {
+                    xAlign = CheckNearXAlign(geo->pos);
+                }
+                else
+                {
+                    xAlign = CheckNearXAlign({prevX, geo->pos.y});
+                }
+
+                if (xAlign != INVALID_NEAREST_POSITION)
+                {
+                    if (prevX == INVALID_NEAREST_POSITION)
+                    {
+                        prevX = geo->pos.x;
+                        geo->pos.x = xAlign;
+                    }
+
+                    prevX += delta.x;
+                    DrawContext context;
+                    context.lineType = 1;
+                    context.color = NTT_RED;
+                    context.priority = PRIORITY_4;
+                    DrawLine({xAlign, 0},
+                             {xAlign, windowSize.height},
+                             context);
+                }
+                else
+                {
+                    if (prevX != INVALID_NEAREST_POSITION)
+                    {
+                        geo->pos.x = prevX;
+                        prevX = INVALID_NEAREST_POSITION;
+                    }
+                }
+
+                position_t yAlign;
+
+                if (prevY == INVALID_NEAREST_POSITION)
+                {
+                    yAlign = CheckNearYAlign(geo->pos);
+                }
+                else
+                {
+                    yAlign = CheckNearYAlign({geo->pos.x, prevY});
+                }
+
+                if (yAlign != INVALID_NEAREST_POSITION)
+                {
+                    if (prevY == INVALID_NEAREST_POSITION)
+                    {
+                        prevY = geo->pos.y;
+                        geo->pos.y = yAlign;
+                    }
+
+                    prevY += delta.y;
+                    DrawContext context;
+                    context.lineType = 1;
+                    context.priority = PRIORITY_4;
+                    context.color = NTT_RED;
+                    DrawLine({0, yAlign},
+                             {windowSize.width, yAlign},
+                             context);
+                }
+                else
+                {
+                    if (prevY != INVALID_NEAREST_POSITION)
+                    {
+                        geo->pos.y = prevY;
+                        prevY = INVALID_NEAREST_POSITION;
+                    }
+                }
             };
             centerData.onEntityChanged = onEntityChanged;
 
@@ -916,7 +1042,7 @@ namespace ntt
     };
 
     EditorSystem::EditorSystem()
-        : m_impl(CreateScope<Impl>())
+        : m(CreateScope<Impl>())
     {
         PROFILE_FUNCTION();
     }
@@ -930,8 +1056,8 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
-        m_impl->selectedEntities.clear();
-        m_impl->drawnEntities.clear();
+        m->selectedEntities.clear();
+        m->drawnEntities.clear();
 
         ScriptStoreLoad(
             "transform-script",
@@ -948,42 +1074,42 @@ namespace ntt
 
         RegisterEvent(NTT_LAYER_CHANGED,
                       std::bind(&Impl::OnLayerChanged,
-                                m_impl.get(),
+                                m.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
 
         RegisterEvent(NTT_EDITOR_CHOOSE_ENTITY,
                       std::bind(&Impl::OnEditorChooseEntity,
-                                m_impl.get(),
+                                m.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
 
         RegisterEvent(NTT_EDITOR_APPEND_ENTITY,
                       std::bind(&Impl::OnEditorAppendEntity,
-                                m_impl.get(),
+                                m.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
 
         RegisterEvent(NTT_EDITOR_CLEAR_CHOSEN_ENTITY,
                       std::bind(&Impl::OnEditorClearChosenEntity,
-                                m_impl.get(),
+                                m.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
 
         RegisterEvent(NTT_EDITOR_SELECTED_MOVE_REQUEST,
                       std::bind(&Impl::OnEditorSelectedRequest,
-                                m_impl.get(),
+                                m.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
 
         RegisterEvent(NTT_EDITOR_SELECTED_RESIZE_REQUEST,
                       std::bind(&Impl::OnEditorSelectedRequest,
-                                m_impl.get(),
+                                m.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
@@ -991,7 +1117,7 @@ namespace ntt
         RegisterEvent(
             NTT_EDITOR_TRANSFORM_CHANGED_REQUEST,
             std::bind(&Impl::OnEditorSelectedRequest,
-                      m_impl.get(),
+                      m.get(),
                       std::placeholders::_1,
                       std::placeholders::_2,
                       std::placeholders::_3));
@@ -999,7 +1125,7 @@ namespace ntt
         RegisterEvent(
             NTT_EDITOR_OPEN_SCENE,
             std::bind(&Impl::OnSceneChanged,
-                      m_impl.get(),
+                      m.get(),
                       std::placeholders::_1,
                       std::placeholders::_2,
                       std::placeholders::_3));
@@ -1007,11 +1133,11 @@ namespace ntt
         RegisterEvent(
             NTT_SCENE_CHANGED,
             [&](event_code_t code, void *sender, const EventContext &context)
-            { m_impl->Clear(); });
+            { m->Clear(); });
 
         RegisterEvent(NTT_EDITOR_TOOL_TYPE_CHANGED,
                       std::bind(&Impl::OnToolTypeChanged,
-                                m_impl.get(),
+                                m.get(),
                                 std::placeholders::_1,
                                 std::placeholders::_2,
                                 std::placeholders::_3));
@@ -1026,6 +1152,14 @@ namespace ntt
     {
         PROFILE_FUNCTION();
 
+        if (CheckState(NTT_BUTTON_LEFT, NTT_UP) &&
+            (m->prevX != INVALID_NEAREST_POSITION ||
+             m->prevY != INVALID_NEAREST_POSITION))
+        {
+            m->prevX = INVALID_NEAREST_POSITION;
+            m->prevY = INVALID_NEAREST_POSITION;
+        }
+
         auto hoveredIds = GetHoveredTexture();
 
         if (hoveredIds.size() == 0)
@@ -1038,7 +1172,7 @@ namespace ntt
             return;
         }
 
-        if (m_impl->allDrawnEntities.Contains(entityId))
+        if (m->allDrawnEntities.Contains(entityId))
         {
             return;
         }
@@ -1057,7 +1191,7 @@ namespace ntt
         }
         else
         {
-            if (m_impl->selectedEntities.Contains(entityId))
+            if (m->selectedEntities.Contains(entityId))
             {
                 return;
             }

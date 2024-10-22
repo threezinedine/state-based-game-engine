@@ -109,10 +109,20 @@ namespace ntt
          */
         RGBAColor color;
 
+        /**
+         * Line type for the line drawing only
+         *
+         * 0: Solid line
+         * 1: Dashed line
+         * 2: Dotted line
+         */
+        u8 lineType;
+
         DrawContext() : entity_id(INVALID_ENTITY_ID),
                         priority(PRIORITY_0),
                         fontSize(10),
-                        color(NTT_WHITE)
+                        color(NTT_WHITE),
+                        lineType(0)
         {
         }
     };
@@ -187,6 +197,17 @@ namespace ntt
      */
     void DrawRectangle(const RectContext &rect = RectContext{},
                        const DrawContext &drawContext = DrawContext{});
+
+    /**
+     * Draw a line on the screen with the given start and end position and
+     *      some additional information.
+     *
+     * @param start: The start position of the line
+     * @param end: The end position of the line
+     * @param drawContext: (Optional) The additional information for the drawing context
+     */
+    void DrawLine(const Position &start, const Position &end,
+                  const DrawContext &drawContext = DrawContext{});
 
     /**
      * Each texture which is hovered by the mouse will be returned

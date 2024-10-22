@@ -10,7 +10,7 @@ namespace ntt
     FakeGraphicAPI *FakeGraphicAPI::s_instance = nullptr;
 
     FakeGraphicAPI::FakeGraphicAPI()
-        : m_impl(CreateScope<Impl>())
+        : m(CreateScope<Impl>())
     {
 
         m_drawTextCalled = 0;
@@ -89,6 +89,13 @@ namespace ntt
     }
 
     void FakeGraphicAPI::DrawNoFillRectangle(f32 x, f32 y, f32 width, f32 height, const RGBAColor &color)
+    {
+    }
+
+    void FakeGraphicAPI::DrawLine(f32 startX, f32 startY,
+                                  f32 endX, f32 endY,
+                                  const RGBAColor &color,
+                                  u8 lineType)
     {
     }
 } // namespace ntt

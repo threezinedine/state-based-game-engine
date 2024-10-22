@@ -81,6 +81,24 @@ namespace ntt
         return scene;
     }
 
+    void SceneInfo::DuplicateEntity(const String &entityName)
+    {
+        PROFILE_FUNCTION();
+
+        Ref<EntityInfo> entity = CreateRef<EntityInfo>();
+        entity->name = format("{}_copy", entityName);
+
+        for (auto &entityInfo : entities)
+        {
+            if (entityInfo->name == entityName)
+            {
+                entity->components = entityInfo->components;
+                entities.push_back(entity);
+                break;
+            }
+        }
+    }
+
     void SceneInfo::RemoveEntity(const String &entityName)
     {
         PROFILE_FUNCTION();

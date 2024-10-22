@@ -20,6 +20,6 @@ namespace ntt
 
     private:
         class Impl;
-        Scope<Impl> m_impl;
+        Scope<Impl> m;
     };
 } // namespace ntt

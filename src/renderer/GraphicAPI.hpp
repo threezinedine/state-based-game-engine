@@ -66,5 +66,13 @@ namespace ntt
             f32 width,
             f32 height,
             const RGBAColor &color = {0, 0, 255, 95}) = 0;
+
+        virtual void DrawLine(
+            f32 startX,
+            f32 startY,
+            f32 endX,
+            f32 endY,
+            const RGBAColor &color = {0, 0, 255, 95},
+            u8 lineType = 0) = 0;
     };
 } // namespace ntt

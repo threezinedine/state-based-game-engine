@@ -1,15 +1,35 @@
 #include "Raylib_GraphicAPI.hpp"
 #include <raylib.h>
+#include <raymath.h>
 
 namespace ntt
 {
     class RaylibGraphicAPI::Impl
     {
     public:
+        void DrawDashedLine(Vector2 start, Vector2 end, float dashLength, float gapLength, Color color)
+        {
+            float totalLength = Vector2Distance(start, end);
+            Vector2 direction = Vector2Normalize(Vector2Subtract(end, start));
+            Vector2 currentPos = start;
+
+            while (Vector2Distance(start, currentPos) < totalLength)
+            {
+                Vector2 dashEnd = Vector2Add(currentPos, Vector2Scale(direction, dashLength));
+
+                if (Vector2Distance(start, dashEnd) > totalLength)
+                {
+                    dashEnd = end;
+                }
+
+                DrawLineV(currentPos, dashEnd, color);
+                currentPos = Vector2Add(dashEnd, Vector2Scale(direction, gapLength));
+            }
+        }
     };
 
     RaylibGraphicAPI::RaylibGraphicAPI()
-        : m_impl(CreateScope<Impl>())
+        : m(CreateScope<Impl>())
     {
     }
 
@@ -108,5 +128,35 @@ namespace ntt
             width + delta * 2,
             height + delta * 2,
             ::Color{color.r, color.g, color.b, color.a});
+    }
+
+    void RaylibGraphicAPI::DrawLine(f32 startX, f32 startY,
+                                    f32 endX, f32 endY,
+                                    const RGBAColor &color,
+                                    u8 lineType)
+    {
+        switch (lineType)
+        {
+        case 0:
+            ::DrawLine(startX, startY, endX, endY, ::Color{color.r, color.g, color.b, color.a});
+            break;
+        case 1:
+            m->DrawDashedLine(
+                {startX, startY},
+                {endX, endY},
+                5.0f,
+                5.0f,
+                ::Color{color.r, color.g, color.b, color.a});
+            break;
+        case 2:
+            ::DrawLineEx(
+                {startX, startY},
+                {endX, endY},
+                1.0f,
+                ::Color{color.r, color.g, color.b, color.a});
+            break;
+        default:
+            break;
+        }
     }
 } // namespace ntt

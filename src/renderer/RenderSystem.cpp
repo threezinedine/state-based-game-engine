@@ -8,6 +8,7 @@
 #include <NTTEngine/ecs/ecs.hpp>
 #include <NTTEngine/core/profiling.hpp>
 #include <NTTEngine/renderer/Text.hpp>
+#include <NTTEngine/renderer/line.hpp>
 #include <NTTEngine/resources/ResourceManager.hpp>
 
 namespace ntt
@@ -72,6 +73,7 @@ namespace ntt
         auto geo = ECS_GET_COMPONENT(id, Geometry);
         auto texture = ECS_GET_COMPONENT(id, TextureComponent);
         auto text = ECS_GET_COMPONENT(id, Text);
+        auto line = ECS_GET_COMPONENT(id, Line);
 
         RectContext context;
         Grid cell;
@@ -119,6 +121,14 @@ namespace ntt
             drawContext.color = geo->color;
 
             DrawText(text->text, {geo->pos.x, geo->pos.y}, drawContext);
+        }
+        else if (line != nullptr)
+        {
+            drawContext.color = line->color;
+            drawContext.lineType = line->lineType;
+            drawContext.priority = geo->priority;
+
+            DrawLine(line->start, line->end, drawContext);
         }
         else
         {

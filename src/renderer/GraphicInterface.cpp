@@ -61,6 +61,10 @@ namespace ntt
         String text;
         u32 fontSize;
         RGBAColor color;
+        b8 drawLine = FALSE;
+        u8 lineType;
+        f32 toXEnd;
+        f32 toYEnd;
     };
 
     namespace
@@ -332,6 +336,34 @@ namespace ntt
         s_drawLists[drawContext.priority]->push_back(info);
     }
 
+    void DrawLine(const Position &start, const Position &end,
+                  const DrawContext &drawContext)
+    {
+        PROFILE_FUNCTION();
+
+        if (s_drawLists[drawContext.priority] == nullptr)
+        {
+            s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
+        }
+
+        if (s_drawLists[drawContext.priority] == nullptr)
+        {
+            s_drawLists[drawContext.priority] = CreateScope<List<DrawInfo>>();
+        }
+
+        DrawInfo info;
+        info.drawLine = TRUE;
+        info.entity_id = drawContext.entity_id;
+        info.toX = static_cast<f32>(start.x);
+        info.toY = static_cast<f32>(start.y);
+        info.toXEnd = static_cast<f32>(end.x);
+        info.toYEnd = static_cast<f32>(end.y);
+        info.color = drawContext.color;
+        info.lineType = drawContext.lineType;
+
+        s_drawLists[drawContext.priority]->push_back(info);
+    }
+
     void DrawRectangle(const RectContext &rect, const DrawContext &drawContext)
     {
         PROFILE_FUNCTION();
@@ -421,6 +453,16 @@ namespace ntt
                             camera->TransformY(info.toY),
                             camera->TransformWidth(info.fontSize),
                             info.color);
+                    }
+                    else if (info.drawLine)
+                    {
+                        s_graphicAPI->DrawLine(
+                            camera->TransformX(info.toX),
+                            camera->TransformY(info.toY),
+                            camera->TransformX(info.toXEnd),
+                            camera->TransformY(info.toYEnd),
+                            info.color,
+                            info.lineType);
                     }
                     else
                     {

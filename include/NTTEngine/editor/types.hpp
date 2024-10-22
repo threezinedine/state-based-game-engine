@@ -29,6 +29,7 @@ namespace ntt
         void SaveEntitiesInfo();
 
         void AddEntity();
+        void DuplicateEntity(const String &entityName);
         void RemoveEntity(const String &entityName);
 
     private:

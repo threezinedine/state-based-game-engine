@@ -156,13 +156,16 @@ namespace ntt
             {
                 if (ImGui::MenuItem("Duplicate"))
                 {
+                    m_impl->scene->DuplicateEntity(entityName);
+                    m_impl->scene->SaveEntitiesInfo();
+                    Editor_ChangeScene(m_impl->scene->sceneName);
                 }
 
                 if (ImGui::MenuItem("Delete"))
                 {
                     m_impl->scene->RemoveEntity(entityName);
                     m_impl->scene->SaveEntitiesInfo();
-                    ECS_ClearLayer(GAME_LAYER);
+                    Editor_ChangeScene(m_impl->scene->sceneName);
                 }
 
                 ImGui::EndPopup();

@@ -44,6 +44,10 @@ namespace ntt
                          f32 rotate) override;
 
         void DrawNoFillRectangle(f32 x, f32 y, f32 width, f32 height, const RGBAColor &color) override;
+        void DrawLine(f32 startX, f32 startY,
+                      f32 endX, f32 endY,
+                      const RGBAColor &color,
+                      u8 lineType) override;
 
         u8 m_drawTextCalled;
         u8 m_drawRectangleCalled;
@@ -56,6 +60,6 @@ namespace ntt
 
     private:
         class Impl;
-        Scope<Impl> m_impl;
+        Scope<Impl> m;
     };
 } // namespace ntt
