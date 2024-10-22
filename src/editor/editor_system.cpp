@@ -20,8 +20,6 @@
 #include "utils/utils.hpp"
 
 #define CENTER_SIZE 20 ///< The size of the center rect
-#define LIMIT_SIZE 20  ///< The limit size of the entity
-#define INVALID_NEAREST_POSITION -999999
 
 namespace ntt
 {
@@ -37,9 +35,6 @@ namespace ntt
 
         u16 currentLayer = EDITOR_LAYER;
         ToolType currentTool = MOVE;
-
-        position_t prevX = INVALID_NEAREST_POSITION;
-        position_t prevY = INVALID_NEAREST_POSITION;
 
         List<Ref<AlignItem>> alignItems;
         Ref<XAlign> xAlign;
@@ -77,44 +72,6 @@ namespace ntt
 
             drawnEntities.clear();
             selectedEntities.clear();
-        }
-
-        position_t CheckNearXAlign(const Position &pos)
-        {
-            auto windowSize = GetWindowSize();
-            List<position_t> xAlignPoints = {};
-            xAlignPoints.push_back(0);
-            xAlignPoints.push_back(windowSize.width / 2);
-            xAlignPoints.push_back(windowSize.width);
-
-            for (auto align : xAlignPoints)
-            {
-                if (abs(align - pos.x) < LIMIT_SIZE)
-                {
-                    return align;
-                }
-            }
-
-            return INVALID_NEAREST_POSITION;
-        }
-
-        position_t CheckNearYAlign(const Position &pos)
-        {
-            auto windowSize = GetWindowSize();
-            List<position_t> yAlignPoints = {};
-            yAlignPoints.push_back(0);
-            yAlignPoints.push_back(windowSize.height / 2);
-            yAlignPoints.push_back(windowSize.height);
-
-            for (auto align : yAlignPoints)
-            {
-                if (abs(align - pos.y) < LIMIT_SIZE)
-                {
-                    return align;
-                }
-            }
-
-            return INVALID_NEAREST_POSITION;
         }
 
         void ChooseNewEntity(entity_id_t entityId)
@@ -392,47 +349,22 @@ namespace ntt
                     const f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                if (prevY == INVALID_NEAREST_POSITION)
-                {
-                    geo->pos.y += delta.y;
-                }
-
                 auto windowSize = GetWindowSize();
-                position_t yAlign;
 
-                if (prevY == INVALID_NEAREST_POSITION)
-                {
-                    yAlign = CheckNearYAlign(geo->pos);
-                }
-                else
-                {
-                    yAlign = CheckNearYAlign({geo->pos.x, prevY});
-                }
+                yAlign->Update(
+                    geo->pos,
+                    delta,
+                    {0, windowSize.height / 2, windowSize.height});
 
-                if (yAlign != INVALID_NEAREST_POSITION)
+                if (yAlign->IsMatched())
                 {
-                    if (prevY == INVALID_NEAREST_POSITION)
-                    {
-                        prevY = geo->pos.y;
-                        geo->pos.y = yAlign;
-                    }
-
-                    prevY += delta.y;
                     DrawContext context;
                     context.lineType = 1;
                     context.color = NTT_RED;
                     context.priority = PRIORITY_4;
-                    DrawLine({0, yAlign},
-                             {windowSize.width, yAlign},
+                    DrawLine({0, yAlign->GetMatchedValue()},
+                             {windowSize.width, yAlign->GetMatchedValue()},
                              context);
-                }
-                else
-                {
-                    if (prevY != INVALID_NEAREST_POSITION)
-                    {
-                        geo->pos.y = prevY;
-                        prevY = INVALID_NEAREST_POSITION;
-                    }
                 }
             };
             yPointData.onEntityChanged = onEntityChanged;
@@ -467,47 +399,22 @@ namespace ntt
                     const f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                if (prevY == INVALID_NEAREST_POSITION)
-                {
-                    geo->pos.y += delta.y;
-                }
-
                 auto windowSize = GetWindowSize();
-                position_t yAlign;
 
-                if (prevY == INVALID_NEAREST_POSITION)
-                {
-                    yAlign = CheckNearYAlign(geo->pos);
-                }
-                else
-                {
-                    yAlign = CheckNearYAlign({geo->pos.x, prevY});
-                }
+                yAlign->Update(
+                    geo->pos,
+                    delta,
+                    {0, windowSize.height / 2, windowSize.height});
 
-                if (yAlign != INVALID_NEAREST_POSITION)
+                if (yAlign->IsMatched())
                 {
-                    if (prevY == INVALID_NEAREST_POSITION)
-                    {
-                        prevY = geo->pos.y;
-                        geo->pos.y = yAlign;
-                    }
-
-                    prevY += delta.y;
                     DrawContext context;
                     context.lineType = 1;
                     context.color = NTT_RED;
                     context.priority = PRIORITY_4;
-                    DrawLine({0, yAlign},
-                             {windowSize.width, yAlign},
+                    DrawLine({0, yAlign->GetMatchedValue()},
+                             {windowSize.width, yAlign->GetMatchedValue()},
                              context);
-                }
-                else
-                {
-                    if (prevY != INVALID_NEAREST_POSITION)
-                    {
-                        geo->pos.y = prevY;
-                        prevY = INVALID_NEAREST_POSITION;
-                    }
                 }
             };
             yPointNegData.onEntityChanged = onEntityChanged;
@@ -1230,14 +1137,6 @@ namespace ntt
             {
                 alignItem->Reset();
             }
-        }
-
-        if (CheckState(NTT_BUTTON_LEFT, NTT_UP) &&
-            (m->prevX != INVALID_NEAREST_POSITION ||
-             m->prevY != INVALID_NEAREST_POSITION))
-        {
-            m->prevX = INVALID_NEAREST_POSITION;
-            m->prevY = INVALID_NEAREST_POSITION;
         }
 
         auto hoveredIds = GetHoveredTexture();
