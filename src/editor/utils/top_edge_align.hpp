@@ -1,20 +1,21 @@
-#include "align_item.hpp"
+#pragma once
 #include <NTTEngine/core/memory.hpp>
+#include "align_item.hpp"
 
 namespace ntt
 {
-    class YAlign : public AlignItem
+    class TopEdgeAlign : public AlignItem
     {
     public:
-        YAlign();
-        ~YAlign();
+        TopEdgeAlign();
+        ~TopEdgeAlign();
 
         void Update(
             Ref<Geometry> geo,
             const Position &delta,
             List<position_t> points) override;
-        void Reset() override;
 
+        void Reset() override;
         b8 IsMatched() const override;
         position_t GetMatchedValue() const override;
 

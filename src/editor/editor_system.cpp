@@ -118,7 +118,7 @@ namespace ntt
                     Ref<Geometry> geo)
             {
                 xAlign->Update(
-                    geo->pos,
+                    geo,
                     delta,
                     {0, GetWindowSize().width / 2, GetWindowSize().width});
 
@@ -134,7 +134,7 @@ namespace ntt
                 }
 
                 yAlign->Update(
-                    geo->pos,
+                    geo,
                     delta,
                     {0, GetWindowSize().height / 2, GetWindowSize().height});
 
@@ -221,7 +221,7 @@ namespace ntt
             {
                 auto windowSize = GetWindowSize();
                 xAlign->Update(
-                    geo->pos,
+                    geo,
                     delta,
                     {0, windowSize.width / 2, windowSize.width});
 
@@ -270,7 +270,7 @@ namespace ntt
             {
                 auto windowSize = GetWindowSize();
                 xAlign->Update(
-                    geo->pos,
+                    geo,
                     delta,
                     {0, windowSize.width / 2, windowSize.width});
 
@@ -352,7 +352,7 @@ namespace ntt
                 auto windowSize = GetWindowSize();
 
                 yAlign->Update(
-                    geo->pos,
+                    geo,
                     delta,
                     {0, windowSize.height / 2, windowSize.height});
 
@@ -402,7 +402,7 @@ namespace ntt
                 auto windowSize = GetWindowSize();
 
                 yAlign->Update(
-                    geo->pos,
+                    geo,
                     delta,
                     {0, windowSize.height / 2, windowSize.height});
 

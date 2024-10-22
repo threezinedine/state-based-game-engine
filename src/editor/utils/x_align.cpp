@@ -46,27 +46,27 @@ namespace ntt
     }
 
     void XAlign::Update(
-        Position &geo,
+        Ref<Geometry> geo,
         const Position &delta,
         List<position_t> points)
     {
         if (m->isMatched)
         {
-            m->CheckMatched({m->temp, geo.y}, points);
+            m->CheckMatched({m->temp, geo->pos.y}, points);
 
             if (!m->isMatched)
             {
-                geo.x = m->temp;
+                geo->pos.x = m->temp;
             }
         }
         else
         {
-            m->CheckMatched(geo, points);
+            m->CheckMatched(geo->pos, points);
 
             if (m->isMatched)
             {
-                m->temp = geo.x;
-                geo.x = m->matchedValue;
+                m->temp = geo->pos.x;
+                geo->pos.x = m->matchedValue;
             }
         }
 
@@ -76,7 +76,7 @@ namespace ntt
         }
         else
         {
-            geo.x += delta.x;
+            geo->pos.x += delta.x;
         }
     }
 

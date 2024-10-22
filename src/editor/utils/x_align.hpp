@@ -10,7 +10,7 @@ namespace ntt
         ~XAlign();
 
         void Update(
-            Position &geo,
+            Ref<Geometry> geo,
             const Position &delta,
             List<position_t> points) override;
         void Reset() override;

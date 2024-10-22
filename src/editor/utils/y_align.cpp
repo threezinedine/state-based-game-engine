@@ -46,27 +46,27 @@ namespace ntt
     }
 
     void YAlign::Update(
-        Position &geo,
+        Ref<Geometry> geo,
         const Position &delta,
         List<position_t> points)
     {
         if (m->isMatched)
         {
-            m->CheckMatched({geo.x, m->temp}, points);
+            m->CheckMatched({geo->pos.x, m->temp}, points);
 
             if (!m->isMatched)
             {
-                geo.y = m->temp;
+                geo->pos.y = m->temp;
             }
         }
         else
         {
-            m->CheckMatched(geo, points);
+            m->CheckMatched(geo->pos, points);
 
             if (m->isMatched)
             {
-                m->temp = geo.y;
-                geo.y = m->matchedValue;
+                m->temp = geo->pos.y;
+                geo->pos.y = m->matchedValue;
             }
         }
 
@@ -76,7 +76,7 @@ namespace ntt
         }
         else
         {
-            geo.y += delta.y;
+            geo->pos.y += delta.y;
         }
     }
 

@@ -2,6 +2,7 @@
 #include <NTTEngine/defines.hpp>
 #include <NTTEngine/structures/position.hpp>
 #include <NTTEngine/structures/list.hpp>
+#include <NTTEngine/renderer/Geometry.hpp>
 
 namespace ntt
 {
@@ -9,7 +10,7 @@ namespace ntt
     {
     public:
         virtual void Update(
-            Position &geo,
+            Ref<Geometry> geo,
             const Position &delta,
             List<position_t> points) = 0;
 
