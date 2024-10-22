@@ -305,12 +305,53 @@ namespace ntt
             TransformScriptData xPointData;
             xPointData.entity = entityId;
             xPointData.onResizeMain =
-                [](
+                [&](
                     const Position delta,
                     const f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                geo->pos.x += delta.x;
+                if (prevX == INVALID_NEAREST_POSITION)
+                {
+                    geo->pos.x += delta.x;
+                }
+
+                auto windowSize = GetWindowSize();
+                position_t xAlign;
+
+                if (prevX == INVALID_NEAREST_POSITION)
+                {
+                    xAlign = CheckNearXAlign(geo->pos);
+                }
+                else
+                {
+                    xAlign = CheckNearXAlign({prevX, geo->pos.y});
+                }
+
+                if (xAlign != INVALID_NEAREST_POSITION)
+                {
+                    if (prevX == INVALID_NEAREST_POSITION)
+                    {
+                        prevX = geo->pos.x;
+                        geo->pos.x = xAlign;
+                    }
+
+                    prevX += delta.x;
+                    DrawContext context;
+                    context.lineType = 1;
+                    context.color = NTT_RED;
+                    context.priority = PRIORITY_4;
+                    DrawLine({xAlign, 0},
+                             {xAlign, windowSize.height},
+                             context);
+                }
+                else
+                {
+                    if (prevX != INVALID_NEAREST_POSITION)
+                    {
+                        geo->pos.x = prevX;
+                        prevX = INVALID_NEAREST_POSITION;
+                    }
+                }
             };
             xPointData.onEntityChanged = onEntityChanged;
 
@@ -339,12 +380,53 @@ namespace ntt
             TransformScriptData xPointNegData;
             xPointNegData.entity = entityId;
             xPointNegData.onResizeMain =
-                [](
+                [&](
                     const Position delta,
                     const f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                geo->pos.x += delta.x;
+                if (prevX == INVALID_NEAREST_POSITION)
+                {
+                    geo->pos.x += delta.x;
+                }
+
+                auto windowSize = GetWindowSize();
+                position_t xAlign;
+
+                if (prevX == INVALID_NEAREST_POSITION)
+                {
+                    xAlign = CheckNearXAlign(geo->pos);
+                }
+                else
+                {
+                    xAlign = CheckNearXAlign({prevX, geo->pos.y});
+                }
+
+                if (xAlign != INVALID_NEAREST_POSITION)
+                {
+                    if (prevX == INVALID_NEAREST_POSITION)
+                    {
+                        prevX = geo->pos.x;
+                        geo->pos.x = xAlign;
+                    }
+
+                    prevX += delta.x;
+                    DrawContext context;
+                    context.lineType = 1;
+                    context.color = NTT_RED;
+                    context.priority = PRIORITY_4;
+                    DrawLine({xAlign, 0},
+                             {xAlign, windowSize.height},
+                             context);
+                }
+                else
+                {
+                    if (prevX != INVALID_NEAREST_POSITION)
+                    {
+                        geo->pos.x = prevX;
+                        prevX = INVALID_NEAREST_POSITION;
+                    }
+                }
             };
             xPointNegData.onEntityChanged = onEntityChanged;
 
@@ -405,12 +487,53 @@ namespace ntt
             TransformScriptData yPointData;
             yPointData.entity = entityId;
             yPointData.onResizeMain =
-                [](
+                [&](
                     const Position delta,
                     const f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                geo->pos.y += delta.y;
+                if (prevY == INVALID_NEAREST_POSITION)
+                {
+                    geo->pos.y += delta.y;
+                }
+
+                auto windowSize = GetWindowSize();
+                position_t yAlign;
+
+                if (prevY == INVALID_NEAREST_POSITION)
+                {
+                    yAlign = CheckNearYAlign(geo->pos);
+                }
+                else
+                {
+                    yAlign = CheckNearYAlign({geo->pos.x, prevY});
+                }
+
+                if (yAlign != INVALID_NEAREST_POSITION)
+                {
+                    if (prevY == INVALID_NEAREST_POSITION)
+                    {
+                        prevY = geo->pos.y;
+                        geo->pos.y = yAlign;
+                    }
+
+                    prevY += delta.y;
+                    DrawContext context;
+                    context.lineType = 1;
+                    context.color = NTT_RED;
+                    context.priority = PRIORITY_4;
+                    DrawLine({0, yAlign},
+                             {windowSize.width, yAlign},
+                             context);
+                }
+                else
+                {
+                    if (prevY != INVALID_NEAREST_POSITION)
+                    {
+                        geo->pos.y = prevY;
+                        prevY = INVALID_NEAREST_POSITION;
+                    }
+                }
             };
             yPointData.onEntityChanged = onEntityChanged;
 
@@ -439,12 +562,53 @@ namespace ntt
             TransformScriptData yPointNegData;
             yPointNegData.entity = entityId;
             yPointNegData.onResizeMain =
-                [](
+                [&](
                     const Position delta,
                     const f32 angularDelta,
                     Ref<Geometry> geo)
             {
-                geo->pos.y += delta.y;
+                if (prevY == INVALID_NEAREST_POSITION)
+                {
+                    geo->pos.y += delta.y;
+                }
+
+                auto windowSize = GetWindowSize();
+                position_t yAlign;
+
+                if (prevY == INVALID_NEAREST_POSITION)
+                {
+                    yAlign = CheckNearYAlign(geo->pos);
+                }
+                else
+                {
+                    yAlign = CheckNearYAlign({geo->pos.x, prevY});
+                }
+
+                if (yAlign != INVALID_NEAREST_POSITION)
+                {
+                    if (prevY == INVALID_NEAREST_POSITION)
+                    {
+                        prevY = geo->pos.y;
+                        geo->pos.y = yAlign;
+                    }
+
+                    prevY += delta.y;
+                    DrawContext context;
+                    context.lineType = 1;
+                    context.color = NTT_RED;
+                    context.priority = PRIORITY_4;
+                    DrawLine({0, yAlign},
+                             {windowSize.width, yAlign},
+                             context);
+                }
+                else
+                {
+                    if (prevY != INVALID_NEAREST_POSITION)
+                    {
+                        geo->pos.y = prevY;
+                        prevY = INVALID_NEAREST_POSITION;
+                    }
+                }
             };
             yPointNegData.onEntityChanged = onEntityChanged;
 
