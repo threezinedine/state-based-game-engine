@@ -1,5 +1,7 @@
 #include "y_align.hpp"
 
+#define MATCH_GAP 10
+
 namespace ntt
 {
     class YAlign::Impl
@@ -9,19 +11,44 @@ namespace ntt
         position_t temp;
         position_t matchedValue;
 
-        void CheckMatched(Position geo, List<position_t> points)
+        b8 isTopEdgeMatched = FALSE;
+        b8 isBottomEdgeMatched = FALSE;
+
+        void CheckMatched(Position geo, Size size, List<position_t> points)
         {
             for (auto point : points)
             {
-                if (abs(geo.y - point) < 20)
+                if (abs(geo.y - point) < MATCH_GAP)
                 {
                     matchedValue = point;
                     isMatched = TRUE;
+                    isTopEdgeMatched = FALSE;
+                    isBottomEdgeMatched = FALSE;
+                    return;
+                }
+
+                if (abs(geo.y - size.height / 2 - point) < MATCH_GAP)
+                {
+                    isTopEdgeMatched = TRUE;
+                    isMatched = FALSE;
+                    isBottomEdgeMatched = FALSE;
+                    matchedValue = point;
+                    return;
+                }
+
+                if (abs(geo.y + size.height / 2 - point) < MATCH_GAP)
+                {
+                    isBottomEdgeMatched = TRUE;
+                    isMatched = FALSE;
+                    isTopEdgeMatched = FALSE;
+                    matchedValue = point;
                     return;
                 }
             }
 
             isMatched = FALSE;
+            isTopEdgeMatched = FALSE;
+            isBottomEdgeMatched = FALSE;
         }
     };
 
@@ -29,6 +56,8 @@ namespace ntt
         : m(CreateScope<Impl>())
     {
         m->isMatched = FALSE;
+        m->isBottomEdgeMatched = FALSE;
+        m->isTopEdgeMatched = FALSE;
     }
 
     YAlign::~YAlign()
@@ -37,7 +66,7 @@ namespace ntt
 
     b8 YAlign::IsMatched() const
     {
-        return m->isMatched;
+        return m->isMatched || m->isTopEdgeMatched || m->isBottomEdgeMatched;
     }
 
     position_t YAlign::GetMatchedValue() const
@@ -50,27 +79,41 @@ namespace ntt
         const Position &delta,
         List<position_t> points)
     {
-        if (m->isMatched)
+        if (m->isMatched || m->isBottomEdgeMatched || m->isTopEdgeMatched)
         {
-            m->CheckMatched({geo->pos.x, m->temp}, points);
+            m->CheckMatched({geo->pos.x, m->temp}, geo->size, points);
 
-            if (!m->isMatched)
+            if (!m->isMatched && !m->isTopEdgeMatched && !m->isBottomEdgeMatched)
             {
                 geo->pos.y = m->temp;
             }
         }
         else
         {
-            m->CheckMatched(geo->pos, points);
+            m->CheckMatched(geo->pos, geo->size, points);
+
+            if (m->isMatched || m->isTopEdgeMatched || m->isBottomEdgeMatched)
+            {
+                m->temp = geo->pos.y;
+            }
 
             if (m->isMatched)
             {
-                m->temp = geo->pos.y;
                 geo->pos.y = m->matchedValue;
+            }
+
+            if (m->isTopEdgeMatched)
+            {
+                geo->pos.y = m->matchedValue + geo->size.height / 2;
+            }
+
+            if (m->isBottomEdgeMatched)
+            {
+                geo->pos.y = m->matchedValue - geo->size.height / 2;
             }
         }
 
-        if (m->isMatched)
+        if (m->isMatched || m->isTopEdgeMatched || m->isBottomEdgeMatched)
         {
             m->temp += delta.y;
         }
@@ -83,5 +126,7 @@ namespace ntt
     void YAlign::Reset()
     {
         m->isMatched = FALSE;
+        m->isBottomEdgeMatched = FALSE;
+        m->isTopEdgeMatched = FALSE;
     }
 } // namespace ntt
