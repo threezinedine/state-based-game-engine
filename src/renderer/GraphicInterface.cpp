@@ -161,8 +161,8 @@ namespace ntt
         return s_textureStore->Add(textureInfo);
     }
 
-    Size ValidateSize(resource_id_t texture_id,
-                      const RectContext &context)
+    std::pair<Size, Size> ValidateSize(resource_id_t texture_id,
+                                       const RectContext &context)
     {
         PROFILE_FUNCTION();
         auto textureInfo = s_textureStore->Get(texture_id);
@@ -200,7 +200,8 @@ namespace ntt
             height = static_cast<f32>(frameHeight);
         }
 
-        return {static_cast<ntt_size_t>(width), static_cast<ntt_size_t>(height)};
+        return {{static_cast<ntt_size_t>(width), static_cast<ntt_size_t>(height)},
+                {static_cast<ntt_size_t>(textureWidth), static_cast<ntt_size_t>(textureHeight)}};
     }
 
     const Grid GetTextureGrid(resource_id_t texture_id)
@@ -299,8 +300,8 @@ namespace ntt
         info.fromHeight = frameHeight;
         info.toX = static_cast<f32>(context.position.x);
         info.toY = static_cast<f32>(context.position.y);
-        info.toWidth = static_cast<f32>(actualSize.width);
-        info.toHeight = static_cast<f32>(actualSize.height);
+        info.toWidth = static_cast<f32>(actualSize.first.width);
+        info.toHeight = static_cast<f32>(actualSize.first.height);
         info.rotate = static_cast<f32>(context.rotate);
         info.tooltip = drawContext.tooltip;
         info.drawText = FALSE;

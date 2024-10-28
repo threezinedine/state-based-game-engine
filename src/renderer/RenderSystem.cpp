@@ -63,8 +63,11 @@ namespace ntt
                                   geo->size,
                                   geo->rotation});
 
-        geo->size.width = size.width;
-        geo->size.height = size.height;
+        geo->size.width = size.first.width;
+        geo->size.height = size.first.height;
+
+        geo->originalSize.width = size.second.width;
+        geo->originalSize.height = size.second.height;
     }
 
     void RenderSystem::Update(f32 delta, entity_id_t id)

@@ -131,8 +131,14 @@ namespace ntt
      * Use for validating the size of the texture with some texture which
      *      use the default size (auto ratio size). The function will be
      *      call at the begging of the creation of the object.
+     *
+     * @param textureId: The ID of the texture which is loaded
+     * @param context: The context which the renderer used for drawing
+     *
+     * @return The size of the texture which is validated with the context size
+     *      and the original size of the texture (the grid size).
      */
-    Size ValidateSize(resource_id_t textureId, const RectContext &context);
+    std::pair<Size, Size> ValidateSize(resource_id_t textureId, const RectContext &context);
 
     /**
      * Get the configuration of the number of rows and columns

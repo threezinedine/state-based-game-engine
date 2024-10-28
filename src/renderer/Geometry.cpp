@@ -37,6 +37,7 @@ namespace ntt
         json.Set("size", size.ToJSON());
         json.Set("rotation", rotation);
         json.Set("priority", priority);
+        json.Set("keepRatio", keepRatio);
         json.Set("color", color.ToJSON());
         return json;
     }
@@ -47,13 +48,14 @@ namespace ntt
         size.FromJSON(json.Get<JSON>("size"));
         rotation = json.Get<f32>("rotation", 0.0f);
         priority = json.Get<u8>("priority", PRIORITY_0);
+        keepRatio = json.Get<b8>("keepRatio", FALSE);
         color.FromJSON(json.Get<JSON>("color"));
     }
 
     void Geometry::OnEditorUpdate(std::function<void()> onChanged, void *data)
     {
         pos.OnEditorUpdate(onChanged);
-        size.OnEditorUpdate(onChanged);
+        size.OnEditorUpdate(onChanged, keepRatio ? originalSize.width / originalSize.height : -1.0f);
         if (ImGui::InputFloat("rotation",
                               &rotation, 1.0f, 10.f,
                               "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
@@ -63,6 +65,14 @@ namespace ntt
                 onChanged();
             }
         }
+
+        ImGui::Checkbox("Keep ratio", &keepRatio);
+
+        if (keepRatio)
+        {
+            size.height = size.width * originalSize.height / originalSize.width;
+        }
+
         color.OnEditorUpdate(onChanged);
 
         if (ImGui::BeginCombo("priority", priorities[priority].RawString().c_str()))

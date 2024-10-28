@@ -15,6 +15,7 @@ protected:
     {
         InputInit(TRUE);
         RendererInit(TRUE);
+        AddCamera(Position{0, 0}, Size{100, 100});
     }
 
     void TearDown() override
@@ -97,16 +98,20 @@ TEST_F(GraphicInterfaceTest, ValidateSizeTest)
     auto texture = LoadTexture("path");
 
     auto size = ValidateSize(texture, {{}, {50, 50}});
-    EXPECT_EQ(size, (Size{50, 50}));
+    EXPECT_EQ(size.first, (Size{50, 50}));
+    EXPECT_EQ(size.second, (Size{100, 200}));
 
     size = ValidateSize(texture, {{}, {200, SIZE_DEFAULT}});
-    EXPECT_EQ(size, (Size{200, 400}));
+    EXPECT_EQ(size.first, (Size{200, 400}));
+    EXPECT_EQ(size.second, (Size{100, 200}));
 
     size = ValidateSize(texture, {{}, {SIZE_DEFAULT, 150}});
-    EXPECT_EQ(size, (Size{75, 150}));
+    EXPECT_EQ(size.first, (Size{75, 150}));
+    EXPECT_EQ(size.second, (Size{100, 200}));
 
     size = ValidateSize(texture, {{}, {SIZE_DEFAULT, SIZE_DEFAULT}});
-    EXPECT_EQ(size, (Size{100, 200}));
+    EXPECT_EQ(size.first, (Size{100, 200}));
+    EXPECT_EQ(size.second, (Size{100, 200}));
 }
 
 TEST_F(GraphicInterfaceTest, HoveringChecking)

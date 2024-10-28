@@ -34,7 +34,9 @@ namespace ntt
 
         void FromJSON(const JSON &json);
         JSON ToJSON() const;
-        void OnEditorUpdate(std::function<void()> onChanged = nullptr);
+        void OnEditorUpdate(
+            std::function<void()> onChanged = nullptr,
+            f32 ratio = -1.0f);
     };
 
     typedef Size (*SizeTransform)(const Size &size);

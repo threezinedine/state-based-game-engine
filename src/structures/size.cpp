@@ -17,16 +17,22 @@ namespace ntt
         return json;
     }
 
-    void Size::OnEditorUpdate(std::function<void()> onChanged)
+    void Size::OnEditorUpdate(std::function<void()> onChanged, f32 ratio)
     {
         if (ImGui::InputFloat("width", &width, 1.0f, 10.f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
         {
+            if (ratio >= 0)
+            {
+                height = width * ratio;
+            }
+
             if (onChanged)
             {
                 onChanged();
             }
         }
 
+        ImGui::BeginDisabled(ratio > 0);
         if (ImGui::InputFloat("heigth", &height, 1.0f, 10.f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
         {
             if (onChanged)
@@ -34,5 +40,6 @@ namespace ntt
                 onChanged();
             }
         }
+        ImGui::EndDisabled();
     }
 } // namespace ntt

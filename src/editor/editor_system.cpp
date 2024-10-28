@@ -74,6 +74,16 @@ namespace ntt
             selectedEntities.clear();
         }
 
+        List<position_t> GetXAlignPoints()
+        {
+            List<position_t> points;
+            points.push_back(0);
+            points.push_back(GetWindowSize().width / 2);
+            points.push_back(GetWindowSize().width);
+
+            return points;
+        }
+
         void ChooseNewEntity(entity_id_t entityId)
         {
             PROFILE_FUNCTION();
@@ -461,7 +471,11 @@ namespace ntt
                     Ref<Geometry> geo)
             {
                 geo->size.width -= delta.x * 2;
-                geo->size.height -= delta.y * 2;
+
+                if (!geo->keepRatio)
+                {
+                    geo->size.height -= delta.y * 2;
+                }
             };
 
             auto leftTopPoint = ECSCreateEntity(

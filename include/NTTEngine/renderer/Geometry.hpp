@@ -19,12 +19,20 @@ namespace ntt
         f32 rotation;
 
         u8 priority;
+        b8 keepRatio;
         RGBAColor color;
+
+        // should not be used by user, only used by the renderer and editor
+        Size originalSize;
 
         Geometry(position_t x = POSITION_DEFAULT, position_t y = POSITION_DEFAULT,
                  ntt_size_t width = SIZE_DEFAULT, ntt_size_t height = SIZE_DEFAULT,
-                 f32 rotation = 0.0f, u8 priority = PRIORITY_0, RGBAColor color = NTT_WHITE)
-            : pos(x, y), size(width, height), rotation(rotation), priority(priority), color(color)
+                 f32 rotation = 0.0f, u8 priority = PRIORITY_0,
+                 RGBAColor color = NTT_WHITE,
+                 b8 keepRatio = FALSE)
+            : pos(x, y), size(width, height), rotation(rotation), priority(priority),
+              keepRatio(keepRatio), color(color),
+              originalSize(100, 100)
         {
         }
 

@@ -107,6 +107,29 @@ namespace ntt
 
         List<entity_id_t> s_deletedEntities;
 
+        b8 IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)
+        {
+            PROFILE_FUNCTION();
+            auto system = s_systemsStore->Get(system_id);
+            auto entities = system->entities;
+            auto systemTypes = system->componentTypes;
+
+            auto components = s_entityStore->Get(entity_id)->components;
+
+            b8 isValid = TRUE;
+            for (auto j = 0; j < systemTypes.size(); j++)
+            {
+                auto type = systemTypes[j];
+
+                if (!components.Contains(type))
+                {
+                    return FALSE;
+                }
+            }
+
+            return isValid;
+        }
+
         void InternalEntityDelete(entity_id_t id)
         {
             PROFILE_FUNCTION();
@@ -131,6 +154,11 @@ namespace ntt
 
             for (auto systemId : availabeSystems)
             {
+                // if (!IsEntityInSystem(systemId, id))
+                // {
+                //     continue;
+                // }
+
                 auto system = s_systemsStore->Get(systemId);
                 if (system->entities.Contains(id))
                 {
@@ -161,29 +189,6 @@ namespace ntt
             // must be changed when the entity_id_t is changed
             context.u32_data[0] = id;
             TriggerEvent(NTT_ENTITY_DESTROYED, nullptr, context);
-        }
-
-        b8 IsEntityInSystem(system_id_t system_id, entity_id_t entity_id)
-        {
-            PROFILE_FUNCTION();
-            auto system = s_systemsStore->Get(system_id);
-            auto entities = system->entities;
-            auto systemTypes = system->componentTypes;
-
-            auto components = s_entityStore->Get(entity_id)->components;
-
-            b8 isValid = TRUE;
-            for (auto j = 0; j < systemTypes.size(); j++)
-            {
-                auto type = systemTypes[j];
-
-                if (!components.Contains(type))
-                {
-                    return FALSE;
-                }
-            }
-
-            return isValid;
         }
 
     } // namespace
@@ -608,11 +613,15 @@ namespace ntt
 
         auto availableIds = s_entityStore->GetAvailableIds();
 
-        for (auto entityId : availableIds)
-        {
-            // ECSDeleteEntity(entityId);
-            InternalEntityDelete(entityId);
-        }
+        ECS_ClearLayer(GAME_LAYER);
+        ECS_ClearLayer(EDITOR_LAYER);
+        ECS_ClearLayer(UI_LAYER);
+
+        // for (auto entityId : availableIds)
+        // {
+        //     // ECSDeleteEntity(entityId);
+        //     InternalEntityDelete(entityId);
+        // }
 
         auto availableSystems = s_systemsStore->GetAvailableIds();
         for (auto systemId : availableSystems)
