@@ -180,6 +180,7 @@ namespace ntt
                 {
                     continue;
                 }
+
                 layer->RemoveItem(id);
             }
 
@@ -298,6 +299,18 @@ namespace ntt
         {
             InternalEntityDelete(entity);
         }
+    }
+
+    List<entity_id_t> ECS_GetAllEntitiesIn(layer_t layer)
+    {
+        PROFILE_FUNCTION();
+
+        if (layer >= MAX_LAYERS)
+        {
+            return {};
+        }
+
+        return *layers[layer];
     }
 
     void ECSLayerMakeVisible(layer_t layer)

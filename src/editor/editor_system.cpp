@@ -76,10 +76,36 @@ namespace ntt
 
         List<position_t> GetXAlignPoints()
         {
+            if (selectedEntities.size() > 1)
+            {
+                return {};
+            }
+
             List<position_t> points;
             points.push_back(0);
             points.push_back(GetWindowSize().width / 2);
             points.push_back(GetWindowSize().width);
+
+            List<entity_id_t> entities = ECS_GetAllEntitiesIn(GAME_LAYER);
+
+            for (auto entity : entities)
+            {
+                if (entity == selectedEntities[0])
+                {
+                    continue;
+                }
+
+                auto geo = ECS_GET_COMPONENT(entity, Geometry);
+
+                if (geo == nullptr || geo->active == FALSE)
+                {
+                    continue;
+                }
+
+                points.push_back(geo->pos.x);
+                points.push_back(geo->pos.x + geo->size.width / 2);
+                points.push_back(geo->pos.x - geo->size.width / 2);
+            }
 
             return points;
         }
@@ -130,7 +156,7 @@ namespace ntt
                 xAlign->Update(
                     geo,
                     delta,
-                    {0, GetWindowSize().width / 2, GetWindowSize().width});
+                    GetXAlignPoints());
 
                 if (xAlign->IsMatched())
                 {

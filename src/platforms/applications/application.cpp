@@ -170,14 +170,6 @@ namespace ntt
         ECSBeginLayer(GAME_LAYER);
 
         ECSBeginLayer(UI_LAYER);
-        ECSBeginLayer(UI_LAYER_1);
-        ECSBeginLayer(UI_LAYER_2);
-        ECSBeginLayer(UI_LAYER_3);
-        ECSBeginLayer(UI_LAYER_4);
-        ECSBeginLayer(UI_LAYER_5);
-        ECSBeginLayer(UI_LAYER_6);
-        ECSBeginLayer(UI_LAYER_7);
-        ECSBeginLayer(UI_LAYER_8);
         ECSBeginLayer(EDITOR_LAYER);
 
         NTT_ENGINE_INFO("The application is started.");

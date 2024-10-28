@@ -86,8 +86,19 @@ namespace ntt
 
     /**
      * Clear all the entities inside the layer and remove the layer from the system.
+     *
+     * @param layer The layer to be cleared
+     *      if the layer is not found, then nothing will be changed
      */
     void ECS_ClearLayer(layer_t layer);
+
+    /**
+     * Retrieve all the entities which are attached to the layer.
+     *
+     * @param layer The layer which the entities are attached to
+     *      if the layer is not found, then return an empty list
+     */
+    List<entity_id_t> ECS_GetAllEntitiesIn(layer_t layer);
 
     /**
      * Staring drawing the layers on the screen
