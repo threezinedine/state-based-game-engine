@@ -166,6 +166,18 @@ namespace ntt
         return s_registered.Contains(filePath);
     }
 
+    void HotReload_ReloadAll()
+    {
+        PROFILE_FUNCTION();
+
+        ClearFolder(JoinPath({s_projectPath, "temp"}));
+
+        for (auto &file : s_watchedFiles)
+        {
+            Comparing(file);
+        }
+    }
+
     void HotReloadShutdown()
     {
         PROFILE_FUNCTION();

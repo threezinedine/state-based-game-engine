@@ -136,6 +136,8 @@ namespace ntt
 
 #define NTT_EDITOR_RESET_CAMERA 0x3A ///< When the camera is reset in the editor
 
+#define NTT_EDITOR_BUILD_GAME 0x3B ///< When the game is built in the editor
+
     // TODO: Change the default event < 255 and the user's event >= 255
 
     /**

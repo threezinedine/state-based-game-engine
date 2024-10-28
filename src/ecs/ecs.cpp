@@ -613,9 +613,7 @@ namespace ntt
 
         auto availableIds = s_entityStore->GetAvailableIds();
 
-        ECS_ClearLayer(GAME_LAYER);
         ECS_ClearLayer(EDITOR_LAYER);
-        ECS_ClearLayer(UI_LAYER);
 
         // for (auto entityId : availableIds)
         // {

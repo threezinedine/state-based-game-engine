@@ -260,6 +260,29 @@ namespace ntt
             s_newProjectWindow->Open();
         }
 
+        void OnEditorBuildGame(event_code_t code, void *sender, const EventContext &context)
+        {
+            auto projectPath = s_project->path;
+            auto currentPath = CurrentDirectory();
+
+            auto libFile = JoinPath({currentPath, "libNTTEngine.dll"});
+            auto gameFile = JoinPath({currentPath, "Game.exe"});
+
+            auto targetLibFile = JoinPath({projectPath, "libNTTEngine.dll"});
+            auto targetGameFile = JoinPath({projectPath, "Game.exe"});
+
+            try
+            {
+                NTTCopyFile(libFile, targetLibFile);
+                NTTCopyFile(gameFile, targetGameFile);
+                HotReload_ReloadAll();
+            }
+            catch (std::exception &exp)
+            {
+                NTT_ENGINE_ERROR("The game cannot be built with error {}", exp.what());
+            }
+        }
+
         b8 CheckProjectExistance(const String &fileName)
         {
             PROFILE_FUNCTION();
@@ -420,6 +443,7 @@ namespace ntt
         RegisterEvent(NTT_EDITOR_SAVE_SCENE, OnSaveScene);
         RegisterEvent(NTT_WATCHED_FILE_CHANGED, OnWatchFileChanged);
         RegisterEvent(NTT_WATCHED_FILE_HANDLED, OnWatchingFileHandleComplete);
+        RegisterEvent(NTT_EDITOR_BUILD_GAME, OnEditorBuildGame);
         RegisterEvent(
             NTT_GAME_CHANGE_SCENE,
             [&](event_code_t code, void *sender, const EventContext &context)
@@ -666,6 +690,14 @@ namespace ntt
             }
             ImGui::EndCombo();
         }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Build"))
+        {
+            TriggerEvent(NTT_EDITOR_BUILD_GAME);
+        }
+
         ImGui::EndDisabled();
         ImGui::End();
 
@@ -746,7 +778,6 @@ namespace ntt
             if (s_project->scenes.Contains(s_scene->sceneName))
             {
                 ECS_ClearLayer(GAME_LAYER);
-                // s_scene->RemoveAllEntities();
                 ResourceUnload(s_scene->resources);
             }
 

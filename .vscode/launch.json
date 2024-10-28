@@ -35,13 +35,13 @@
 			]
 		},
 		{
-			"name": "Game",
+			"name": "Chess",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/examples/MagicCard/Game.exe",
+			"program": "C:/Users/Acer/Games/Chess/Game.exe",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${workspaceFolder}/examples/MagicCard",
+			"cwd": "C:/Users/Acer/Games/Chess/",
 			"miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
 			"environment": [],
 			"externalConsole": false,

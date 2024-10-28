@@ -43,6 +43,13 @@ namespace ntt
     b8 HotReload_RegisterContains(const String &filePath);
 
     /**
+     * Trigger the event of file updated for all tracked files, this function is used in build
+     *      action when the whole controller and state of the game need to be recompiled (the temporary
+     *      folder will be deleted.
+     */
+    void HotReload_ReloadAll();
+
+    /**
      * Delete, free all needed resources for the hot reload system.
      */
     void HotReloadShutdown();

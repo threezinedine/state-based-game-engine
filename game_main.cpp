@@ -241,25 +241,26 @@ int main(void)
 
     if (scene != nullptr)
     {
-        scene->RemoveAllEntities();
+        // scene->RemoveAllEntities();
+        ECS_ClearLayer(GAME_LAYER);
         ResourceUnload(scene->resources);
         scene.reset();
     }
 
     if (menu != nullptr)
     {
-        menu->RemoveAllEntities();
+        ECS_ClearLayer(UI_LAYER);
+        // menu->RemoveAllEntities();
         ResourceUnload(menu->resources);
         menu.reset();
     }
 
+    ECSShutdown();
     ResourceUnload(project->defaultResources);
     project.reset();
 
     ProfilingBegin("Shutdown");
     // EditorShutdown();
-
-    ECSShutdown();
 
     AudioShutdown();
     InputShutdown();
