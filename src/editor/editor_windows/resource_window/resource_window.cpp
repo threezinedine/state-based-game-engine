@@ -83,7 +83,7 @@ namespace ntt
             {
                 try
                 {
-                    std::system(format("{}", info.path).RawString().c_str());
+                    std::system(format("\"{}\"", info.path).RawString().c_str());
                 }
                 catch (const std::exception &e)
                 {
